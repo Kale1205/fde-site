@@ -1,0 +1,55 @@
+/* Baked Kale brand layer — loaded last. White + deep green + charcoal + soft sage. */
+:root{
+  --ink:#172433;
+  --muted:#65736c;
+  --blue:#0b6b43;
+  --blue2:#168456;
+  --navy:#084f34;
+  --pale:#edf6f0;
+  --pale2:#f6f8f6;
+  --line:#d4e0d8;
+  --white:#fff;
+  --green:#0b6b43;
+  --red:#a9444f;
+  --shadow:0 22px 60px rgba(8,79,52,.10);
+  --hover:0 16px 38px rgba(11,107,67,.14);
+}
+body{background:#fff;color:var(--ink)}
+.site-header{background:rgba(255,255,255,.97);border-bottom-color:#cfdcd4}
+.brand{width:250px;height:58px;flex:0 0 250px;background:url('assets/baked-kale-logo.svg') left center/contain no-repeat;display:block}
+.brand:before,.brand span,.brand small{display:none!important}
+.main-nav a{color:#45554c}.main-nav a:hover,.main-nav a.active{color:var(--navy)}.main-nav a:after{background:var(--blue)}
+.language{border-color:#c8d7ce;color:#20342a;background:#fff}.language:hover,.language:focus{border-color:#77a88d;box-shadow:0 0 0 4px rgba(11,107,67,.08)}
+.button{border-color:#bfd1c5;color:var(--navy)}.button.dark{background:var(--navy);box-shadow:0 10px 25px rgba(8,79,52,.18)}.button.dark:hover{background:#063e29;box-shadow:0 14px 32px rgba(8,79,52,.24)}.button:hover,.button:focus-visible{border-color:#95b6a3;box-shadow:5px 5px 0 rgba(11,107,67,.12)}
+.page-hero{background:radial-gradient(circle at 82% 18%,rgba(22,132,86,.10),transparent 30%),linear-gradient(#fff,#f7faf8);border-bottom-color:#e2ebe5}.eyebrow{color:var(--navy);border-left-color:var(--blue)}
+.strength-row{border-top-color:#cbd9d0}.strength-row span,.made-japan{color:var(--navy)}
+.news-strip{background:var(--navy);border-bottom-color:#c7d6cc}.news-strip b{color:#a8d5bb}
+.section{border-top-color:#d8e3dc}.section:nth-of-type(odd):not(.dark){background:#f7faf8}.section.dark{background:linear-gradient(135deg,#063b28,#0b6b43)}.section-kicker{color:var(--blue)}
+.hero-illustration,.plan-face,.service-table-wrap,.demo-box,.contact-form,.business-profile-grid,.news-grid,.editorial-grid,.approach-grid,.steps-three{border-color:#bfcfc5}
+.demo-preview-player{box-shadow:8px 8px 0 rgba(8,79,52,.10)!important}
+.plan-face:before{background:linear-gradient(90deg,#084f34,#168456)}.plan-back{background:linear-gradient(145deg,#063b28,#0b6b43);border-color:#0b6b43}.plan-back:before{background:#8cc4a4}.plan-price{color:var(--navy)}
+.segmented{background:#edf6f0}.segmented span.active{background:var(--navy)}.tag-soon{color:var(--blue);background:#edf6f0}
+.service-table th{background:#f0f5f2}.service-table tr:hover td{background:#f7fbf8}.yes{color:#0b6b43}
+.step:hover,.editorial-card:hover,.approach-grid article:hover{box-shadow:inset 0 -6px 0 var(--blue)}
+.security-grid{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.15)}
+.business-model-diagram,.approach-grid,.editorial-grid,.steps-three{border-color:#bfcfc5}.model-node,.approach-grid article,.editorial-card,.step{border-color:#bfcfc5!important}.fde-node{background:var(--navy)}
+.inquiry-state .state-icon{background:#edf6f0;color:var(--blue)}.inquiry-complete .state-icon{background:#e8f5ed;color:#0b6b43}
+.business-profile{border-color:#bfcfc5}.business-profile-grid{border-top-color:#d4e0d8;border-left-color:#d4e0d8}.business-profile-item{border-right-color:#d4e0d8;border-bottom-color:#d4e0d8}.business-profile-item strong{color:var(--navy)}
+.news-category-nav{border-color:#b9c9bf}.news-category-nav .active{color:var(--navy)}.news-lead-grid,.news-lead-story,.news-section-rule,.news-wire-list,.latest-row,.instagram-editorial{border-color:#bfcfc5}.news-section-rule{border-bottom-color:var(--navy)}.news-label,.wire-type{color:var(--blue)}.latest-row:hover strong,.news-link,.instagram-cta{color:var(--blue)}.instagram-mark{border-color:var(--navy);color:var(--navy)}
+.site-footer{border-top-color:#bfcfc5;background:#f8faf8}.footer-brand{width:min(340px,100%);height:92px;background:url('assets/baked-kale-logo.svg') left center/contain no-repeat;font-size:0!important;color:transparent}.footer-title{color:var(--blue)!important}.footer-grid a:hover{color:var(--blue)}.copyright{border-top-color:#d4e0d8}
+
+/* Demo language selector bug: force readable native select text/options across Safari/Chrome. */
+.demo-app .demo-language,.demo-app .demo-language option{
+  color:#172433!important;
+  -webkit-text-fill-color:#172433!important;
+  background:#fff!important;
+  opacity:1!important;
+}
+.demo-app .demo-language{color-scheme:light!important;border:1px solid #b9cbbf!important;min-width:142px!important;appearance:auto!important;-webkit-appearance:menulist!important}
+.demo-app .demo-bar{background:#fff!important;border-bottom:1px solid #cbd9d0!important;color:#172433!important}
+.demo-app .demo-version{background:#edf6f0!important;color:#0b6b43!important}
+.demo-app .mini-btn:hover{border-color:#79a98e!important;background:#edf6f0!important;color:#084f34!important}
+
+@media(max-width:900px){.brand{width:205px;flex-basis:205px;height:52px}}
+@media(max-width:760px){.brand{width:44px;flex:0 0 44px;height:44px;background-image:url('assets/baked-kale-mark.svg');background-position:center}.site-header .header-inner{gap:10px}.demo-app .demo-language{min-width:112px!important;max-width:125px!important}}
+@media(max-width:430px){.brand{width:40px;flex-basis:40px;height:40px}.demo-app .demo-language{min-width:102px!important;max-width:108px!important;font-size:11px!important}}
