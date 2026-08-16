@@ -1,7 +1,9 @@
 from pathlib import Path
+from datetime import datetime, timezone, timedelta
 import json, os, re, sys
 
 PATH=Path('content/site-content.json')
+JST=timezone(timedelta(hours=9))
 
 def load():
     return json.loads(PATH.read_text(encoding='utf-8'))
@@ -30,7 +32,7 @@ def unique_id(data, base):
 
 def news_from_env(existing=None):
     n=dict(existing or {})
-    n['date']=env('DATE') or n.get('date','')
+    n['date']=env('DATE') or n.get('date') or datetime.now(JST).date().isoformat()
     n['category']=env('CATEGORY') or n.get('category','Development')
     n['featured']=bool_env('FEATURED',n.get('featured',False))
     n['link']=env('LINK') or n.get('link','#')
