@@ -6,7 +6,7 @@ const LOCALE_BY_LANG={ja:'ja-JP',en:'en-US','zh-CN':'zh-CN','zh-TW':'zh-TW',ko:'
 const LABELS={
  en:{currency:'Price currency',note:'Monthly reference conversion from JPY. Exchange rates are updated at the beginning of each month; the final amount is confirmed in the quotation.'},
  'zh-CN':{currency:'价格货币',note:'参考换算价。汇率于每月月初更新，最终金额以报价为准。'},
- 'zh-TW':{currency:'價格貨幣',note:'參考換算價。匯率於每月月初更新，最終金額以報價為準。'},
+ 'zh-TW':{currency:'價格貨幣',note:'參考換算價。匯率於每月月初更新，最終金額以報價為准。'},
  ko:{currency:'가격 통화',note:'참고 환산 가격입니다. 환율은 매월 초 갱신되며 최종 금액은 견적에서 확정됩니다.'},
  id:{currency:'Mata uang harga',note:'Konversi referensi. Kurs diperbarui pada awal setiap bulan; harga akhir dikonfirmasi dalam penawaran.'},
  ms:{currency:'Mata wang harga',note:'Penukaran rujukan. Kadar dikemas kini pada awal setiap bulan; harga akhir disahkan dalam sebut harga.'},
@@ -31,5 +31,6 @@ function render(){const prices=qsa('#plans .plan-price');if(!prices.length)retur
 async function loadRates(){try{const r=await fetch(`content/pricing-rates.json?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);const j=await r.json();if(j&&j.rates){rates={...DEFAULT_RATES,...j.rates};asOf=j.asOf||asOf}}catch(e){console.warn('Pricing rate load failed; using fallback rates',e)}render()}
 function scheduleRender(){setTimeout(render,30)}
 function init(){loadRates();qs('#lang')?.addEventListener('change',scheduleRender);new MutationObserver(scheduleRender).observe(document.documentElement,{attributes:true,attributeFilter:['lang']})}
+window.FDE_renderMonthlyPricing=render;
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
