@@ -11,6 +11,7 @@
     },
     "link": "news.html"
   },
+  "newsFallbackImage": "assets/news-fallback-user.svg",
   "instagram": {
     "profileUrl": "https://www.instagram.com/kale1999_?igsi=MXRzYnp5eGl2b3NxMw%3D%3D&utm_source=qr",
     "handle": "@kale1999_",
