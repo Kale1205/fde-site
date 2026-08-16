@@ -6,7 +6,6 @@ const pick=obj=>{if(obj==null)return'';if(typeof obj==='string')return obj;const
 const esc=s=>String(s??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));
 const attr=s=>esc(s).replace(/`/g,'&#96;');
 const dateLabel=s=>String(s||'').replaceAll('-','.');
-const demoAttr=link=>(link||'').includes('demo.html')?' data-demo-open':'';
 function renderStrip(){
  const bar=document.querySelector('.news-strip');if(!bar||!CMS)return;
  const d=CMS.latestStrip||{};bar.hidden=d.enabled===false;
@@ -16,14 +15,27 @@ function renderStrip(){
 }
 function newsSorted(){return [...(CMS?.news||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))}
 function newsImage(n,cls){return n.image?`<div class="${cls}"><img src="${attr(n.image)}" alt="${attr(pick(n.title))}" loading="lazy"></div>`:''}
+function ensureArticleModal(){
+ let modal=document.getElementById('newsArticleModal');if(modal)return modal;
+ modal=document.createElement('div');modal.id='newsArticleModal';modal.className='news-article-modal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','newsArticleTitle');
+ modal.innerHTML='<div class="news-article-backdrop" data-news-close></div><article class="news-article-panel"><button class="news-article-close" type="button" aria-label="Close" data-news-close>×</button><div id="newsArticleContent"></div></article>';
+ document.body.appendChild(modal);return modal;
+}
+function openArticle(id){
+ const n=(CMS?.news||[]).find(x=>x.id===id);if(!n)return;
+ const modal=ensureArticleModal(),content=modal.querySelector('#newsArticleContent');
+ content.innerHTML=`<div class="news-article-meta">${esc(dateLabel(n.date))} / ${esc(n.category||'Update')}</div><h2 id="newsArticleTitle">${esc(pick(n.title))}</h2>${newsImage(n,'news-article-image')}<div class="news-article-body">${esc(pick(n.body)).replace(/\n/g,'<br>')}</div>`;
+ modal.hidden=false;document.body.classList.add('news-modal-open');modal.querySelector('.news-article-close')?.focus();
+}
+function closeArticle(){const modal=document.getElementById('newsArticleModal');if(!modal)return;modal.hidden=true;document.body.classList.remove('news-modal-open')}
 function renderNews(){
  if(!CMS||!document.body.classList.contains('cms-news-page'))return;
  const all=newsSorted();if(!all.length)return;
  const featured=all.find(x=>x.featured)||all[0];
  const lead=document.getElementById('cmsNewsLead');
- if(lead){lead.href=featured.link||'#';if((featured.link||'').includes('demo.html'))lead.setAttribute('data-demo-open','');else lead.removeAttribute('data-demo-open');lead.innerHTML=`${newsImage(featured,'cms-lead-image')}<div class="news-label">${esc(featured.category||'Update')}</div><h2>${esc(pick(featured.title))}</h2><p>${esc(pick(featured.body))}</p><div class="news-meta">${esc(dateLabel(featured.date))} / ${esc(featured.category||'Update')}</div>`;}
- const latest=document.getElementById('cmsLatestList');if(latest){latest.innerHTML='<h2>Latest</h2>'+all.slice(0,5).map(n=>`<a class="latest-row" href="${attr(n.link||'#')}"${demoAttr(n.link)}>${newsImage(n,'cms-latest-image')}<small>${esc(dateLabel(n.date))} / ${esc(n.category||'Update')}</small><strong>${esc(pick(n.title))}</strong></a>`).join('');}
- const wire=document.getElementById('cmsNewsWire');if(wire){wire.innerHTML=all.map(n=>`<a class="wire-row" href="${attr(n.link||'#')}"${demoAttr(n.link)}><div class="wire-type">${esc(n.category||'Update')}</div><div class="wire-content">${newsImage(n,'cms-wire-image')}<h3>${esc(pick(n.title))}</h3><p>${esc(pick(n.body))}</p></div><time>${esc(dateLabel(n.date))}</time></a>`).join('');}
+ if(lead){lead.href='#';lead.dataset.newsId=featured.id;lead.removeAttribute('data-demo-open');lead.innerHTML=`${newsImage(featured,'cms-lead-image')}<div class="news-label">${esc(featured.category||'Update')}</div><h2>${esc(pick(featured.title))}</h2><p>${esc(pick(featured.body))}</p><div class="news-meta">${esc(dateLabel(featured.date))} / ${esc(featured.category||'Update')}</div>`;}
+ const latest=document.getElementById('cmsLatestList');if(latest){latest.innerHTML='<h2>Latest</h2>'+all.slice(0,5).map(n=>`<button class="latest-row news-open" type="button" data-news-id="${attr(n.id)}"><small>${esc(dateLabel(n.date))} / ${esc(n.category||'Update')}</small><strong>${esc(pick(n.title))}</strong></button>`).join('');}
+ const wire=document.getElementById('cmsNewsWire');if(wire){wire.innerHTML=all.map(n=>`<button class="wire-row news-open" type="button" data-news-id="${attr(n.id)}"><div class="wire-type">${esc(n.category||'Update')}</div><div class="wire-content"><h3>${esc(pick(n.title))}</h3><p>${esc(pick(n.body))}</p></div><time>${esc(dateLabel(n.date))}</time></button>`).join('');}
  renderInstagram();
 }
 function renderInstagram(){
@@ -34,5 +46,6 @@ function renderInstagram(){
 }
 async function load(){try{const r=await fetch(`${CMS_URL}?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);CMS=await r.json();renderStrip();renderNews();renderInstagram();}catch(e){console.warn('CMS content load failed',e)}}
 document.addEventListener('DOMContentLoaded',()=>{load();const sel=document.getElementById('lang');if(sel)sel.addEventListener('change',()=>setTimeout(()=>{renderStrip();renderNews();renderInstagram()},0));new MutationObserver(()=>{renderStrip();renderNews();renderInstagram()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});});
-document.addEventListener('click',e=>{const a=e.target.closest('[data-demo-open]');if(!a||!document.body.classList.contains('cms-news-page'))return;e.preventDefault();const w=window.open('demo.html','KalesFDE_IMS_Demo');if(w)w.focus();else window.location.href='demo.html';});
+document.addEventListener('click',e=>{const open=e.target.closest('[data-news-id]');if(open&&document.body.classList.contains('cms-news-page')){e.preventDefault();openArticle(open.dataset.newsId);return}if(e.target.closest('[data-news-close]'))closeArticle()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeArticle()});
 })();
