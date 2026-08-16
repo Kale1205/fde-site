@@ -6,15 +6,28 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <title>CMS Media Admin | Baked Kale</title>
 <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
-<link rel="stylesheet" href="cms-admin.css?v=20260816-2109">
-<script defer src="cms-admin.js?v=20260816-2109"></script>
+<link rel="stylesheet" href="cms-admin.css?v=20260816-2120">
+<script defer src="cms-admin.js?v=20260816-2120"></script>
 </head>
 <body>
-<header class="admin-header"><div class="admin-shell"><div class="admin-brand"><img src="assets/baked-kale-mark.svg" alt="Baked Kale"><div><strong>Baked Kale CMS</strong><small>Media uploader for Kale’s FDE</small></div></div></div></header>
+<header class="admin-header"><div class="admin-shell"><div class="admin-brand"><img src="assets/baked-kale-mark.svg" alt="Baked Kale"><div><strong>Baked Kale CMS</strong><small>News & media admin for Kale’s FDE</small></div></div></div></header>
 <main class="admin-main"><div class="admin-shell">
-<section class="admin-intro"><div class="admin-kicker">Private operation tool</div><h1>CMS Image Uploader</h1><p>News記事、Newsのデフォルト画像、Instagram紹介欄に使う画像を選択すると、GitHubへ保存し、CMSデータの画像URLまで自動更新します。</p><div class="admin-warning"><strong>重要:</strong> このページ自体は公開リポジトリ上の静的ファイルのため、URLを知れば閲覧できます。ただし書き込みにはGitHubトークンが必要です。トークンはコードやCMSデータへ保存されません。</div></section>
+<section class="admin-intro"><div class="admin-kicker">Private operation tool</div><h1>CMS Media & News Admin</h1><p>News投稿、News画像、Newsのデフォルト画像、Instagram紹介画像をこのページから管理できます。</p><div class="admin-warning"><strong>重要:</strong> このページ自体は公開リポジトリ上の静的ファイルのため、URLを知れば閲覧できます。ただし書き込みにはGitHubトークンが必要です。トークンはコードやCMSデータへ保存されません。</div></section>
 <section class="admin-card"><h2>1. GitHubへ接続</h2><p>Fine-grained personal access tokenを入力してください。対象リポジトリを <strong>Kale1205/fde-site</strong> のみに限定し、ContentsをRead and writeにしてください。</p><div class="field"><label for="token">GitHub token</label><input id="token" type="password" autocomplete="off" placeholder="github_pat_..."><div class="token-note">この画面ではトークンをlocalStorageへ保存しません。タブを閉じたら再入力が必要です。</div></div><div class="actions"><button id="connectBtn" class="admin-button" type="button">GitHubへ接続</button></div></section>
-<section id="uploaderCard" class="admin-card hidden"><h2>2. 画像を選択して反映</h2><p id="targetHelp">選択したNews記事のメイン画像として設定します。</p><fieldset class="field"><legend>反映先</legend><div class="radio-row"><label class="radio-chip"><input type="radio" name="target" value="news" checked> News記事</label><label class="radio-chip"><input type="radio" name="target" value="fallback"> News デフォルト画像</label><label class="radio-chip"><input type="radio" name="target" value="instagram"> Instagram紹介</label></div></fieldset><div id="newsField" class="field"><label for="newsTarget">News</label><select id="newsTarget"></select></div><div class="admin-grid"><div><div class="field"><label for="imageFile">画像ファイル</label><input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div class="token-note">PNG / JPEG / WebP / GIF、8MB以下。ファイル名はアップロード時に安全な名前へ自動変換します。</div></div><div class="actions"><button id="uploadBtn" class="admin-button" type="button">アップロードして反映</button><button id="removeBtn" class="admin-button secondary" type="button">画像指定を解除</button></div><div id="resultUrl" class="result-url hidden"></div></div><div id="preview" class="preview-box"><div class="preview-placeholder">画像を選択すると、ここにプレビューが表示されます。</div></div></div></section>
+
+<section id="newsCreateCard" class="admin-card hidden"><h2>2. Newsを投稿</h2><p>本文と画像をまとめて登録できます。画像は任意です。画像未設定の場合はNewsデフォルト画像が使われます。</p><div class="admin-form-grid">
+<div class="field"><label for="createTitleJa">タイトル（日本語）</label><input id="createTitleJa" type="text" maxlength="120"></div>
+<div class="field"><label for="createTitleEn">Title（English / 任意）</label><input id="createTitleEn" type="text" maxlength="120"></div>
+<div class="field field-full"><label for="createBodyJa">本文（日本語）</label><textarea id="createBodyJa"></textarea></div>
+<div class="field field-full"><label for="createBodyEn">Body（English / 任意）</label><textarea id="createBodyEn"></textarea></div>
+<div class="field"><label for="createCategory">カテゴリ</label><select id="createCategory"><option value="Product">Product</option><option value="Development">Development</option><option value="Social">Social</option></select></div>
+<div class="field"><label for="createDate">更新日</label><input id="createDate" type="date"></div>
+<div class="field field-full"><label class="check-row"><input id="createFeatured" type="checkbox"> Top Newsとして表示する</label></div>
+<div class="field field-full"><label for="createImageFile">画像（任意）</label><input id="createImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div class="token-note">PNG / JPEG / WebP / GIF、8MB以下。画像なしでも投稿できます。</div></div>
+<div class="field-full admin-grid"><div><div class="actions"><button id="createNewsBtn" class="admin-button" type="button">Newsを投稿</button></div></div><div id="createPreview" class="preview-box compact"><div class="preview-placeholder">画像を選択すると、ここにプレビューが表示されます。</div></div></div>
+</div></section>
+
+<section id="uploaderCard" class="admin-card hidden"><h2>3. 既存画像を管理</h2><p id="targetHelp">選択したNews記事のメイン画像として設定します。</p><fieldset class="field"><legend>反映先</legend><div class="radio-row"><label class="radio-chip"><input type="radio" name="target" value="news" checked> News記事</label><label class="radio-chip"><input type="radio" name="target" value="fallback"> News デフォルト画像</label><label class="radio-chip"><input type="radio" name="target" value="instagram"> Instagram紹介</label></div></fieldset><div id="newsField" class="field"><label for="newsTarget">News</label><select id="newsTarget"></select></div><div class="admin-grid"><div><div class="field"><label for="imageFile">画像ファイル</label><input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div class="token-note">PNG / JPEG / WebP / GIF、8MB以下。ファイル名はアップロード時に安全な名前へ自動変換します。</div></div><div class="actions"><button id="uploadBtn" class="admin-button" type="button">アップロードして反映</button><button id="removeBtn" class="admin-button secondary" type="button">画像指定を解除</button></div><div id="resultUrl" class="result-url hidden"></div></div><div id="preview" class="preview-box"><div class="preview-placeholder">画像を選択すると、ここにプレビューが表示されます。</div></div></div></section>
 <div id="adminStatus" class="status" hidden></div>
 </div></main>
 </body></html>
