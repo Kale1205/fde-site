@@ -1,5 +1,5 @@
 name = "kales-fde-contact"
-main = "src/index.js"
+main = "src/index-v2.js"
 compatibility_date = "2026-08-16"
 workers_dev = true
 
@@ -9,3 +9,5 @@ ADMIN_EMAIL = "reyouinjune@gmail.com"
 FROM_NAME = "Kale’s FDE"
 # FROM_EMAIL should be set to a sender address verified in Brevo.
 # BREVO_API_KEY must be stored as a Worker secret, never committed here.
+# ADMIN_FULFILLMENT_KEY must be stored as a Worker secret for admin-only status/delivery actions.
+# Add a Workers KV binding named ORDER_STATUS in the Cloudflare dashboard for persistent order-status lookup.
