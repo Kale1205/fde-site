@@ -30,5 +30,6 @@ function render(){const prices=qsa('#plans .plan-price');if(!prices.length)retur
  const ui=ensureUi();if(!ui)return;const copy=LABELS[l]||LABELS.en;ui.label.textContent=copy.currency;ui.note.textContent=`${copy.note} (${asOf})`;ui.select.innerHTML=`<option value="${local}">${local}</option><option value="USD">USD</option>`;ui.select.value=currency;ui.select.onchange=e=>{localStorage.setItem(`fde-price-currency-${l}`,e.target.value);render()}}
 async function loadRates(){try{const r=await fetch(`content/pricing-rates.json?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);const j=await r.json();if(j&&j.rates){rates={...DEFAULT_RATES,...j.rates};asOf=j.asOf||asOf}}catch(e){console.warn('Pricing rate load failed; using fallback rates',e)}render()}
 function scheduleRender(){setTimeout(render,30)}
-document.addEventListener('DOMContentLoaded',()=>{loadRates();qs('#lang')?.addEventListener('change',scheduleRender);new MutationObserver(scheduleRender).observe(document.documentElement,{attributes:true,attributeFilter:['lang']})});
+function init(){loadRates();qs('#lang')?.addEventListener('change',scheduleRender);new MutationObserver(scheduleRender).observe(document.documentElement,{attributes:true,attributeFilter:['lang']})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
