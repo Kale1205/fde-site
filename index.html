@@ -8,9 +8,11 @@
 <meta name="description" content="Kale’s FDE provides practical desktop business software, starting with inventory management. One-time purchase and maintenance subscription options are available.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://kale1205.github.io/fde-site/">
-<link rel="stylesheet" href="styles.css?v=20260816-1615">
-<script defer src="i18n-v2.js?v=20260816-1615"></script>
-<script defer src="site.js?v=20260816-1615"></script>
+<link rel="stylesheet" href="styles.css?v=20260816-1650">
+<link rel="stylesheet" href="refinements.css?v=20260816-1650">
+<script defer src="i18n-v2.js?v=20260816-1650"></script>
+<script defer src="i18n-overrides.js?v=20260816-1650"></script>
+<script defer src="site.js?v=20260816-1650"></script>
 </head>
 <body data-default-title="Kale’s FDE | Products">
 <header class="site-header">
@@ -20,7 +22,7 @@
     <nav class="main-nav">
       <a class="active" href="index.html" data-i18n="navProducts">Products</a>
       <a href="why.html" data-i18n="navWhy">Why FDE</a>
-      <a href="about.html" data-i18n="navAbout">About</a>
+      <a href="goals.html" data-i18n="navAbout">Kale’s Goals</a>
       <a href="contact.html" data-i18n="navContact">Contact</a>
     </nav>
     <div class="header-actions">
@@ -38,15 +40,23 @@
       <p class="lede" data-i18n="productsLead">在庫管理から始め、必要に応じて承認・帳票・分析へ。デスクトップ型の業務ソフトを、買い切りまたは保守付き月額プランで提供します。</p>
       <div class="hero-actions">
         <a class="button dark" href="#plans" data-i18n="viewPlans">プランを見る</a>
-        <a class="button" href="demo.html" target="_blank" rel="noopener" data-i18n="launchDemo">IMSデモを別ページで開く ↗</a>
+        <a class="button" href="demo.html" data-demo-open data-i18n="launchDemo">IMSデモを開く ↗</a>
       </div>
       <div class="strength-row">
         <span data-i18n="strengthJapan">日本製</span><span data-i18n="strengthBuy">買い切りあり</span><span data-i18n="strengthSource">ソースコード付属</span>
       </div>
     </div>
-    <div class="hero-illustration product-visual" aria-label="Desktop business software interface">
-      <div class="software-window large"><div class="software-top"><i></i><i></i><i></i><b>IMS Starter</b></div><div class="software-body"><div class="software-kpis"><i></i><i></i><i></i></div><div class="software-table"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
-      <div class="visual-badge" data-i18n="desktopLocal">Desktop / Local-first</div>
+    <div class="hero-illustration demo-preview-player" aria-label="IMS Starter demo operation preview">
+      <div class="preview-head"><div><strong>IMS Starter</strong><small data-i18n="previewLabel">操作プレビュー</small></div><span class="preview-live">● DEMO</span></div>
+      <div class="preview-kpis"><div><small>ITEMS</small><b>5</b></div><div><small>LOW STOCK</small><b class="preview-low">1</b></div><div><small>VERSION</small><b>0.1.0</b></div></div>
+      <div class="preview-table">
+        <div class="preview-row preview-header"><span>Product</span><span>SKU</span><span>Stock</span></div>
+        <div class="preview-row"><span>Paper Cup 12oz</span><span>PC-1204</span><span>326</span></div>
+        <div class="preview-row preview-active"><span>Label Roll</span><span>LR-0041</span><span class="preview-stock">18</span></div>
+        <div class="preview-row"><span>Thermal Paper</span><span>TP-3011</span><span>41</span></div>
+      </div>
+      <div class="preview-action"><span class="preview-cursor">➤</span><button type="button" tabindex="-1">+ Receive</button><button type="button" tabindex="-1">− Ship</button></div>
+      <div class="preview-caption" data-i18n="previewCaption">実際のIMSデモ画面をイメージした操作プレビューです。</div>
     </div>
   </div>
 </section>
@@ -105,21 +115,21 @@
 
 <section class="section">
   <div class="shell">
-    <div class="section-head"><div><div class="section-kicker">How it works</div><h2 class="section-title" data-i18n="howTitle">導入は4ステップ。</h2></div></div>
-    <div class="steps"><article class="step"><div class="n">01</div><h3 data-i18n="step1T">IMSデモを試す</h3><p data-i18n="step1D">無料デモで操作感と標準機能を確認します。</p></article><article class="step"><div class="n">02</div><h3 data-i18n="step2T">契約方法を選ぶ</h3><p data-i18n="step2D">買い切り、またはアップデート・保守付きの月額プランから選びます。</p></article><article class="step"><div class="n">03</div><h3 data-i18n="step3T">PCへ導入する</h3><p data-i18n="step3D">社内PCにインストールし、ローカル環境を中心に運用を始めます。</p></article><article class="step"><div class="n">04</div><h3 data-i18n="step4T">必要に応じて更新する</h3><p data-i18n="step4D">月額プランでは、新機能・修正・セキュリティ改善を継続して受け取れます。</p></article></div>
+    <div class="section-head"><div><div class="section-kicker">How it works</div><h2 class="section-title" data-i18n="howTitle">導入は3ステップ。</h2></div></div>
+    <div class="steps steps-three"><article class="step"><div class="n">01</div><h3 data-i18n="step2T">契約方法を選ぶ</h3><p data-i18n="step2D">買い切り、またはアップデート・保守付きの月額プランから選びます。</p></article><article class="step"><div class="n">02</div><h3 data-i18n="step3T">PCへ導入する</h3><p data-i18n="step3D">社内PCにインストールし、ローカル環境を中心に運用を始めます。</p></article><article class="step"><div class="n">03</div><h3 data-i18n="step4T">必要に応じて更新する</h3><p data-i18n="step4D">月額プランでは、新機能・修正・セキュリティ改善を継続して受け取れます。</p></article></div>
   </div>
 </section>
 
 <section class="section dark">
   <div class="shell">
     <div class="section-head"><div><div class="section-kicker">Security & Deployment</div><h2 class="section-title" data-i18n="securityTitle">デスクトップ型・ローカル運用を基本に。</h2></div><p class="section-copy" data-i18n="securityIntro">常時クラウド接続を前提とせず、企業PCで動くデスクトップアプリケーションとして設計します。</p></div>
-    <div class="security-grid"><article><h3 data-i18n="sec1T">Local-first data</h3><p data-i18n="sec1D">在庫や取引先などの業務データは、企業側の端末・ローカル環境で扱う構成を基本とします。</p></article><article><h3 data-i18n="sec2T">Desktop application</h3><p data-i18n="sec2D">日常操作は専用デスクトップアプリから行い、Webログインを必須にしません。</p></article><article><h3 data-i18n="sec3T">Controlled updates</h3><p data-i18n="sec3D">更新パッケージを配布し、導入企業が適用タイミングを判断できる方式を目指します。</p></article><article><h3 data-i18n="sec4T">Permissions & backup</h3><p data-i18n="sec4D">権限管理、操作履歴、バックアップなど、業務ソフトに必要な管理機能を段階的に整備します。</p></article></div>
+    <div class="security-grid"><article><h3 data-i18n="sec1T">Local-first data</h3><p data-i18n="sec1D">在庫や取引先などの業務データは、企業側の端末・ローカル環境で扱う構成を基本とします。</p></article><article><h3 data-i18n="sec2T">Desktop application</h3><p data-i18n="sec2D">日常操作は専用デスクトップアプリから行い、Webログインを必須としない運用を想定します。</p></article><article><h3 data-i18n="sec3T">Controlled updates</h3><p data-i18n="sec3D">アップデートは配布パッケージとして管理し、導入企業が適用タイミングを決められる方式を目指します。</p></article><article><h3 data-i18n="sec4T">Audit & permissions</h3><p data-i18n="sec4D">権限分離、操作履歴、バックアップなど、業務ソフトに必要な管理機能を段階的に整備します。</p></article></div>
   </div>
 </section>
 
-<section class="section white">
-  <div class="shell"><div class="demo-box"><div class="demo-main"><div class="section-kicker">IMS Demo</div><h2 class="section-title" data-i18n="demoTitle">無料デモはIMS Starterから。</h2><p data-i18n="demoDesc">現在、操作できる無料デモはIMS Starterのみです。別ページで起動し、サンプル在庫の検索・入出庫操作を試せます。</p><a class="button dark" href="demo.html" target="_blank" rel="noopener" data-i18n="launchDemo">IMSデモを別ページで開く ↗</a></div><div class="demo-meta"><div class="meta-row"><span>Version</span><strong>v0.1.0</strong></div><div class="meta-row"><span data-i18n="lastUpdated">最終更新</span><strong>2026.08.16</strong></div><details class="changelog"><summary data-i18n="changelogTitle">更新履歴を見る</summary><article><strong>v0.1.0 — 2026.08.16</strong><p data-i18n="initialRelease">初回公開。サンプル在庫一覧、検索、入出庫操作、在庫アラート表示を追加しました。</p></article></details></div></div></div>
+<section id="demo" class="section white">
+  <div class="shell"><div class="demo-box"><div class="demo-main"><div class="section-kicker">IMS Demo</div><h2 class="section-title" data-i18n="demoTitle">無料デモはIMS Starterから。</h2><p data-i18n="demoDesc">現在、操作できる無料デモはIMS Starterのみです。別タブで起動し、閉じるとこのページへ戻ります。</p><button class="button dark" type="button" data-demo-open data-i18n="launchDemo">IMSデモを開く ↗</button></div><div class="demo-meta"><div class="meta-row"><span>Version</span><strong>v0.1.0</strong></div><div class="meta-row"><span data-i18n="lastUpdated">最終更新</span><strong>2026.08.16</strong></div><details class="changelog"><summary data-i18n="changelogTitle">更新履歴を見る</summary><article><strong>v0.1.0 — 2026.08.16</strong><p data-i18n="initialRelease">初回公開。サンプル在庫一覧、検索、入出庫操作、在庫アラート表示を追加しました。</p></article></details></div></div></div>
 </section>
 </main>
-<footer class="site-footer"><div class="shell"><div class="footer-grid"><div><div class="footer-brand">Kale’s FDE</div><p>Forward Deployed Engineering</p></div><div><div class="footer-title">Menu</div><a href="index.html">Products</a><a href="why.html">Why FDE</a><a href="about.html">About</a></div><div><div class="footer-title">Contact</div><a href="contact.html">Contact</a><a href="mailto:reyouinjune@gmail.com">reyouinjune@gmail.com</a></div></div><div class="copyright">© 2026 Kale’s FDE.</div></div></footer>
+<footer class="site-footer"><div class="shell"><div class="footer-grid"><div><div class="footer-brand">Kale’s FDE</div><p>Forward Deployed Engineering</p></div><div><div class="footer-title">Menu</div><a href="index.html">Products</a><a href="why.html">Why FDE</a><a href="goals.html">Kale’s Goals</a></div><div><div class="footer-title">Contact</div><a href="contact.html">Contact</a><a href="mailto:reyouinjune@gmail.com">reyouinjune@gmail.com</a></div></div><div class="copyright">© 2026 Kale’s FDE.</div></div></footer>
 </body></html>
