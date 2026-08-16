@@ -35,6 +35,10 @@ function ensureUiRefinements(){
   target?.classList.add('why-matters-kicker');
  }
 }
+function ensurePricingModule(){
+ if(document.getElementById('fde-monthly-pricing-script'))return;
+ const s=document.createElement('script');s.id='fde-monthly-pricing-script';s.src='pricing-monthly.js?v=20260816-2304';s.async=true;document.head.appendChild(s);
+}
 function setStripItem(index,animate=true){
  const bar=document.querySelector('.news-strip');if(!bar||!STRIP_ITEMS.length)return;
  stripIndex=(index+STRIP_ITEMS.length)%STRIP_ITEMS.length;
@@ -110,7 +114,7 @@ function renderInstagram(){
  box.innerHTML=`${media}<div class="instagram-copy"><small>Instagram / Creative</small><h2>${esc(d.handle||'Instagram')}</h2><p>${esc(pick(d.description))}</p></div><div class="instagram-cta">View Instagram ↗</div>`;
 }
 async function load(){try{const r=await fetch(`${CMS_URL}?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);CMS=await r.json();renderStrip();renderNews();renderInstagram();ensureUiRefinements();}catch(e){console.warn('CMS content load failed',e);ensureUiRefinements()}}
-document.addEventListener('DOMContentLoaded',()=>{ensureUiRefinements();load();const sel=document.getElementById('lang');if(sel)sel.addEventListener('change',()=>setTimeout(()=>{renderStrip();renderNews();renderInstagram();ensureUiRefinements()},0));new MutationObserver(()=>{renderStrip();renderNews();renderInstagram();ensureUiRefinements()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});});
+document.addEventListener('DOMContentLoaded',()=>{ensurePricingModule();ensureUiRefinements();load();const sel=document.getElementById('lang');if(sel)sel.addEventListener('change',()=>setTimeout(()=>{renderStrip();renderNews();renderInstagram();ensureUiRefinements()},0));new MutationObserver(()=>{renderStrip();renderNews();renderInstagram();ensureUiRefinements()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});});
 document.addEventListener('click',e=>{
  const prev=e.target.closest('[data-latest-prev]');if(prev){e.preventDefault();goLatest(latestIndex-1,true);startLatestAuto();return}
  const next=e.target.closest('[data-latest-next]');if(next){e.preventDefault();goLatest(latestIndex+1,true);startLatestAuto();return}
