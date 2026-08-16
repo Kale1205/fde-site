@@ -25,7 +25,7 @@
       "id": "ims-demo-v0-1-0",
       "date": "2026-08-16",
       "category": "Product",
-      "featured": true,
+      "featured": false,
       "link": "demo.html",
       "image": "",
       "title": {
@@ -52,6 +52,22 @@
         "ja": "Products、Why FDE、Kale’s Goals、Contactを中心に情報構成と多言語表示を整理しました。",
         "en": "The site structure and multilingual presentation have been refined around Products, Why FDE, Kale’s Goals and Contact."
       }
+    },
+    {
+      "date": "2026-08-16",
+      "category": "Social",
+      "featured": true,
+      "link": "news.html",
+      "image": "ChatGPT Image Aug 16, 2026, 06_24_32 PM.png",
+      "title": {
+        "ja": "テストNews",
+        "en": "test news"
+      },
+      "body": {
+        "ja": "こんにちわ",
+        "en": "hello everyone"
+      },
+      "id": "20260816-test-news"
     }
   ]
 }
