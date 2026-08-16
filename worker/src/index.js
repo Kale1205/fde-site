@@ -1,4 +1,10 @@
 const BREVO_URL = 'https://api.brevo.com/v3/smtp/email';
+const RATE_URL = 'https://raw.githubusercontent.com/Kale1205/fde-site/main/content/pricing-rates.json';
+const CATALOG = {
+  'ims-starter': { name: 'IMS Starter', available: true, prices: { 'one-time': 49800, monthly: 4980 } },
+  'business-dx-pack': { name: 'Business DX Pack', available: false, prices: { 'one-time': 99800, monthly: 9800 } },
+};
+const SUPPORTED_CURRENCIES = new Set(['JPY','USD','CNY','TWD','KRW','IDR','MYR','VND','THB','INR','AED']);
 
 function cors(origin, allowedOrigin) {
   const allow = origin && origin === allowedOrigin ? origin : allowedOrigin;
@@ -9,123 +15,110 @@ function cors(origin, allowedOrigin) {
     'Vary': 'Origin',
   };
 }
-
 function json(data, status, origin, allowedOrigin) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-      ...cors(origin, allowedOrigin),
-    },
-  });
+  return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', ...cors(origin, allowedOrigin) } });
 }
-
-function clean(value, max = 4000) {
-  return String(value ?? '').trim().slice(0, max);
-}
-
+function clean(value, max = 4000) { return String(value ?? '').trim().slice(0, max); }
 function escapeHtml(value) {
-  return clean(value, 20000)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+  return clean(value, 20000).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
-
+function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+function validHttpUrl(v) { try { const u = new URL(v); return u.protocol === 'https:' || u.protocol === 'http:'; } catch { return false; } }
+function isoDate(date = new Date()) { return date.toISOString().slice(0,10); }
+function addDays(date, days) { const d = new Date(date); d.setUTCDate(d.getUTCDate() + days); return d; }
+function makeOrderId() { return `BK-${isoDate().replaceAll('-','')}-${crypto.randomUUID().replaceAll('-','').slice(0,8).toUpperCase()}`; }
+function normalizeOrderId(v) { const s = clean(v, 40).toUpperCase(); return /^BK-\d{8}-[A-F0-9]{8}$/.test(s) ? s : makeOrderId(); }
+function money(value, currency) {
+  try { return new Intl.NumberFormat('en-US',{style:'currency',currency,minimumFractionDigits:0,maximumFractionDigits:0}).format(Math.round(value)); }
+  catch { return `${Math.round(value).toLocaleString('en-US')} ${currency}`; }
+}
 async function sendBrevo(env, payload) {
-  const res = await fetch(BREVO_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'api-key': env.BREVO_API_KEY,
-      'Accept': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const body = await res.text().catch(() => '');
-    throw new Error(`BREVO_${res.status}:${body.slice(0, 500)}`);
-  }
-  return res.json().catch(() => ({}));
+  const res = await fetch(BREVO_URL, { method:'POST', headers:{'Content-Type':'application/json','api-key':env.BREVO_API_KEY,'Accept':'application/json'}, body:JSON.stringify(payload) });
+  if (!res.ok) { const body = await res.text().catch(()=> ''); throw new Error(`BREVO_${res.status}:${body.slice(0,500)}`); }
+  return res.json().catch(()=>({}));
 }
-
+async function pricing(productKey, plan, currency) {
+  const item = CATALOG[productKey];
+  if (!item || !item.available || !item.prices[plan]) throw new Error('PRODUCT_NOT_AVAILABLE');
+  const cur = SUPPORTED_CURRENCIES.has(currency) ? currency : 'JPY';
+  let rates = { JPY: 1 }, asOf = '';
+  try {
+    const r = await fetch(`${RATE_URL}?v=${Date.now()}`, { cf: { cacheTtl: 300, cacheEverything: true } });
+    if (r.ok) { const j = await r.json(); rates = { JPY:1, ...(j.rates||{}) }; asOf = clean(j.asOf,20); }
+  } catch (e) { console.warn('Pricing rate fetch failed', e); }
+  if (!rates[cur]) throw new Error('CURRENCY_NOT_AVAILABLE');
+  const baseJpy = item.prices[plan];
+  const converted = Math.round(baseJpy * rates[cur]);
+  return { item, currency:cur, baseJpy, converted, asOf, display:money(converted,cur) };
+}
 function adminHtml(data) {
-  const rows = [
-    ['Name', data.name],
-    ['Company', data.company],
-    ['Country', data.country],
-    ['Reply email', data.email],
-    ['Product', data.product],
-  ];
+  const rows = [['Name',data.name],['Company',data.company],['Country',data.country],['Reply email',data.email],['Product',data.product]];
   return `<!doctype html><html><body style="font-family:Arial,sans-serif;color:#17231e;line-height:1.65"><h2>Kale’s FDE Inquiry</h2>${rows.map(([k,v])=>`<p><strong>${escapeHtml(k)}</strong><br>${escapeHtml(v)}</p>`).join('')}<p><strong>Message</strong><br>${escapeHtml(data.message).replaceAll('\n','<br>')}</p></body></html>`;
 }
-
 function autoReplyHtml(data) {
   const ja = data.lang === 'ja';
-  if (ja) {
-    return `<!doctype html><html><body style="font-family:Arial,'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;color:#17231e;line-height:1.8"><p>${escapeHtml(data.name)} 様</p><p>Kale’s FDEへお問い合わせいただきありがとうございます。</p><p>以下の内容でお問い合わせを受け付けました。内容を確認のうえ、返信いたします。</p><hr><p><strong>製品</strong><br>${escapeHtml(data.product)}</p><p><strong>お問い合わせ内容</strong><br>${escapeHtml(data.message).replaceAll('\n','<br>')}</p><hr><p>このメールは自動返信です。</p><p>Baked Kale / Kale’s FDE</p></body></html>`;
-  }
+  if (ja) return `<!doctype html><html><body style="font-family:Arial,'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;color:#17231e;line-height:1.8"><p>${escapeHtml(data.name)} 様</p><p>Kale’s FDEへお問い合わせいただきありがとうございます。</p><p>以下の内容でお問い合わせを受け付けました。内容を確認のうえ、返信いたします。</p><hr><p><strong>製品</strong><br>${escapeHtml(data.product)}</p><p><strong>お問い合わせ内容</strong><br>${escapeHtml(data.message).replaceAll('\n','<br>')}</p><hr><p>このメールは自動返信です。</p><p>Baked Kale / Kale’s FDE</p></body></html>`;
   return `<!doctype html><html><body style="font-family:Arial,sans-serif;color:#17231e;line-height:1.8"><p>Dear ${escapeHtml(data.name)},</p><p>Thank you for contacting Kale’s FDE.</p><p>We received your inquiry with the details below and will reply after reviewing it.</p><hr><p><strong>Product</strong><br>${escapeHtml(data.product)}</p><p><strong>Message</strong><br>${escapeHtml(data.message).replaceAll('\n','<br>')}</p><hr><p>This is an automated confirmation email.</p><p>Baked Kale / Kale’s FDE</p></body></html>`;
+}
+function orderHtml(data, p, quoteDate, validUntil, forAdmin=false) {
+  const ja = data.lang === 'ja';
+  const planLabel = data.plan === 'monthly' ? (ja ? '月額プラン' : 'Monthly plan') : (ja ? '買い切り' : 'One-time purchase');
+  const priceText = `${p.display}${data.plan==='monthly' ? (ja?' / 月':' / month') : ''}`;
+  const heading = ja ? '見積書兼注文書' : 'Quotation & Order Form';
+  const statusText = ja ? '決済方法・請求書・納品方法は別途案内します。支払い確認後に請求書とインストーラーリンクを送付します。' : 'Payment instructions, invoice and delivery details will be provided separately. The invoice and installer link will be sent after payment confirmation.';
+  return `<!doctype html><html><body style="font-family:Arial,'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;color:#17231e;line-height:1.7"><h2>${heading}</h2><table style="border-collapse:collapse;width:100%;max-width:720px"><tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>Order ID</strong></td><td style="padding:8px;border-bottom:1px solid #ddd">${escapeHtml(data.orderId)}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>${ja?'見積日':'Quote date'}</strong></td><td style="padding:8px;border-bottom:1px solid #ddd">${quoteDate}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>${ja?'有効期限':'Valid until'}</strong></td><td style="padding:8px;border-bottom:1px solid #ddd">${validUntil}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>${ja?'製品':'Product'}</strong></td><td style="padding:8px;border-bottom:1px solid #ddd">${escapeHtml(p.item.name)}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>${ja?'契約方法':'Plan'}</strong></td><td style="padding:8px;border-bottom:1px solid #ddd">${planLabel}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>${ja?'価格':'Price'}</strong></td><td style="padding:8px;border-bottom:1px solid #ddd">${escapeHtml(priceText)}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>${ja?'購入者':'Buyer'}</strong></td><td style="padding:8px;border-bottom:1px solid #ddd">${escapeHtml(data.name)} / ${escapeHtml(data.company)}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>Email</strong></td><td style="padding:8px;border-bottom:1px solid #ddd">${escapeHtml(data.email)}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>${ja?'国':'Country'}</strong></td><td style="padding:8px;border-bottom:1px solid #ddd">${escapeHtml(data.country)}</td></tr></table>${data.notes?`<p><strong>${ja?'備考':'Notes'}</strong><br>${escapeHtml(data.notes).replaceAll('\n','<br>')}</p>`:''}<p style="margin-top:24px;padding:14px;background:#fff7e8">${statusText}</p>${p.asOf?`<p style="font-size:12px;color:#667">FX reference date: ${escapeHtml(p.asOf)}</p>`:''}${forAdmin?'<p style="font-size:12px;color:#667">Admin copy</p>':''}<p>Baked Kale / Kale’s FDE</p></body></html>`;
+}
+function fulfillmentHtml(data) {
+  const ja = data.lang === 'ja';
+  return `<!doctype html><html><body style="font-family:Arial,'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;color:#17231e;line-height:1.8"><p>${escapeHtml(data.name)} ${ja?'様':''}</p><h2>${ja?'ご注文製品の納品について':'Your product delivery'}</h2><p>${ja?'ご注文ありがとうございます。請求書と製品インストーラーをご案内します。':'Thank you for your order. Your invoice and product installer are available below.'}</p><p><strong>Order ID</strong><br>${escapeHtml(data.orderId)}</p><p><strong>${ja?'製品':'Product'}</strong><br>${escapeHtml(data.product)}</p><p><strong>${ja?'請求書':'Invoice'}</strong><br><a href="${escapeHtml(data.invoiceUrl)}">${escapeHtml(data.invoiceUrl)}</a></p><p><strong>${ja?'インストーラー':'Installer'}</strong><br><a href="${escapeHtml(data.installerUrl)}">${escapeHtml(data.installerUrl)}</a></p>${data.note?`<p><strong>${ja?'補足':'Notes'}</strong><br>${escapeHtml(data.note).replaceAll('\n','<br>')}</p>`:''}<p style="font-size:12px;color:#667">${ja?'インストーラーURLは第三者へ共有しないでください。':'Do not share the installer URL with third parties.'}</p><p>Baked Kale / Kale’s FDE</p></body></html>`;
 }
 
 export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
     const allowedOrigin = env.ALLOWED_ORIGIN || 'https://kale1205.github.io';
-
-    if (request.method === 'OPTIONS') {
-      if (origin && origin !== allowedOrigin) return new Response(null, { status: 403 });
-      return new Response(null, { status: 204, headers: cors(origin, allowedOrigin) });
-    }
-    if (request.method !== 'POST') return json({ ok: false, error: 'METHOD_NOT_ALLOWED' }, 405, origin, allowedOrigin);
-    if (origin && origin !== allowedOrigin) return json({ ok: false, error: 'ORIGIN_NOT_ALLOWED' }, 403, origin, allowedOrigin);
-
-    let raw;
-    try { raw = await request.json(); } catch { return json({ ok: false, error: 'INVALID_JSON' }, 400, origin, allowedOrigin); }
-
-    const data = {
-      name: clean(raw.name, 120),
-      company: clean(raw.company, 160),
-      country: clean(raw.country, 120),
-      email: clean(raw.email, 254),
-      product: clean(raw.product, 120),
-      message: clean(raw.message, 8000),
-      lang: clean(raw.lang, 10) || 'ja',
-      website: clean(raw.website, 200),
-    };
-
-    if (data.website) return json({ ok: true }, 200, origin, allowedOrigin);
-    if (!data.name || !data.company || !data.country || !data.email || !data.product || !data.message) {
-      return json({ ok: false, error: 'MISSING_FIELDS' }, 400, origin, allowedOrigin);
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return json({ ok: false, error: 'INVALID_EMAIL' }, 400, origin, allowedOrigin);
-
-    const senderEmail = env.FROM_EMAIL;
-    const senderName = env.FROM_NAME || "Kale’s FDE";
-    const adminEmail = env.ADMIN_EMAIL || 'reyouinjune@gmail.com';
-    if (!env.BREVO_API_KEY || !senderEmail) return json({ ok: false, error: 'SERVER_NOT_CONFIGURED' }, 500, origin, allowedOrigin);
+    if (request.method === 'OPTIONS') { if (origin && origin !== allowedOrigin) return new Response(null,{status:403}); return new Response(null,{status:204,headers:cors(origin,allowedOrigin)}); }
+    if (request.method !== 'POST') return json({ok:false,error:'METHOD_NOT_ALLOWED'},405,origin,allowedOrigin);
+    if (origin && origin !== allowedOrigin) return json({ok:false,error:'ORIGIN_NOT_ALLOWED'},403,origin,allowedOrigin);
+    let raw; try { raw = await request.json(); } catch { return json({ok:false,error:'INVALID_JSON'},400,origin,allowedOrigin); }
+    const type = clean(raw.type,30) || 'inquiry';
+    const senderEmail = env.FROM_EMAIL, senderName = env.FROM_NAME || "Kale’s FDE", adminEmail = env.ADMIN_EMAIL || 'reyouinjune@gmail.com';
+    if (!env.BREVO_API_KEY || !senderEmail) return json({ok:false,error:'SERVER_NOT_CONFIGURED'},500,origin,allowedOrigin);
 
     try {
-      await sendBrevo(env, {
-        sender: { email: senderEmail, name: senderName },
-        to: [{ email: adminEmail, name: 'Baked Kale' }],
-        replyTo: { email: data.email, name: data.name },
-        subject: `Kale’s FDE Inquiry — ${data.product}`,
-        htmlContent: adminHtml(data),
-      });
+      if (type === 'fulfillment') {
+        if (!env.ADMIN_FULFILLMENT_KEY) return json({ok:false,error:'ADMIN_FULFILLMENT_NOT_CONFIGURED'},503,origin,allowedOrigin);
+        const data={adminKey:clean(raw.adminKey,300),orderId:clean(raw.orderId,60),product:clean(raw.product,120),name:clean(raw.name,120),email:clean(raw.email,254),invoiceUrl:clean(raw.invoiceUrl,1200),installerUrl:clean(raw.installerUrl,1200),note:clean(raw.note,4000),lang:clean(raw.lang,10)||'ja'};
+        if (data.adminKey !== env.ADMIN_FULFILLMENT_KEY) return json({ok:false,error:'ADMIN_AUTH_FAILED'},403,origin,allowedOrigin);
+        if (!data.orderId||!data.product||!data.name||!validEmail(data.email)||!validHttpUrl(data.invoiceUrl)||!validHttpUrl(data.installerUrl)) return json({ok:false,error:'INVALID_FULFILLMENT_DATA'},400,origin,allowedOrigin);
+        await sendBrevo(env,{sender:{email:senderEmail,name:senderName},to:[{email:data.email,name:data.name}],subject:data.lang==='ja'?`【Kale’s FDE】${data.product} 納品のご案内`:`Kale’s FDE — ${data.product} delivery`,htmlContent:fulfillmentHtml(data)});
+        await sendBrevo(env,{sender:{email:senderEmail,name:senderName},to:[{email:adminEmail,name:'Baked Kale'}],subject:`Kale’s FDE Fulfillment sent — ${data.orderId}`,htmlContent:`<p>Fulfillment email sent.</p><p><strong>Order:</strong> ${escapeHtml(data.orderId)}<br><strong>Buyer:</strong> ${escapeHtml(data.email)}<br><strong>Product:</strong> ${escapeHtml(data.product)}</p>`});
+        return json({ok:true,orderId:data.orderId},200,origin,allowedOrigin);
+      }
 
-      await sendBrevo(env, {
-        sender: { email: senderEmail, name: senderName },
-        to: [{ email: data.email, name: data.name }],
-        subject: data.lang === 'ja' ? '【Kale’s FDE】お問い合わせを受け付けました' : 'Kale’s FDE — We received your inquiry',
-        htmlContent: autoReplyHtml(data),
-      });
+      if (type === 'order') {
+        const data={orderId:normalizeOrderId(raw.quoteId),name:clean(raw.name,120),company:clean(raw.company,160),country:clean(raw.country,120),email:clean(raw.email,254),productKey:clean(raw.productKey,80),plan:clean(raw.plan,30),currency:clean(raw.currency,10).toUpperCase(),notes:clean(raw.notes,5000),lang:clean(raw.lang,10)||'ja',website:clean(raw.website,200)};
+        if (data.website) return json({ok:true},200,origin,allowedOrigin);
+        if (!data.name||!data.company||!data.country||!validEmail(data.email)||!CATALOG[data.productKey]||!['one-time','monthly'].includes(data.plan)) return json({ok:false,error:'INVALID_ORDER_DATA'},400,origin,allowedOrigin);
+        const p=await pricing(data.productKey,data.plan,data.currency);
+        const quoteDate=isoDate(),validUntil=isoDate(addDays(new Date(),14));
+        await sendBrevo(env,{sender:{email:senderEmail,name:senderName},to:[{email:adminEmail,name:'Baked Kale'}],replyTo:{email:data.email,name:data.name},subject:`Kale’s FDE Order — ${data.orderId} — ${p.item.name}`,htmlContent:orderHtml(data,p,quoteDate,validUntil,true)});
+        await sendBrevo(env,{sender:{email:senderEmail,name:senderName},to:[{email:data.email,name:data.name}],subject:data.lang==='ja'?`【Kale’s FDE】見積書兼注文書 ${data.orderId}`:`Kale’s FDE — Quotation & Order ${data.orderId}`,htmlContent:orderHtml(data,p,quoteDate,validUntil,false)});
+        return json({ok:true,orderId:data.orderId,price:p.display,currency:p.currency,validUntil},200,origin,allowedOrigin);
+      }
 
-      return json({ ok: true }, 200, origin, allowedOrigin);
+      const data={name:clean(raw.name,120),company:clean(raw.company,160),country:clean(raw.country,120),email:clean(raw.email,254),product:clean(raw.product,120),message:clean(raw.message,8000),lang:clean(raw.lang,10)||'ja',website:clean(raw.website,200)};
+      if (data.website) return json({ok:true},200,origin,allowedOrigin);
+      if (!data.name||!data.company||!data.country||!data.email||!data.product||!data.message) return json({ok:false,error:'MISSING_FIELDS'},400,origin,allowedOrigin);
+      if (!validEmail(data.email)) return json({ok:false,error:'INVALID_EMAIL'},400,origin,allowedOrigin);
+      await sendBrevo(env,{sender:{email:senderEmail,name:senderName},to:[{email:adminEmail,name:'Baked Kale'}],replyTo:{email:data.email,name:data.name},subject:`Kale’s FDE Inquiry — ${data.product}`,htmlContent:adminHtml(data)});
+      await sendBrevo(env,{sender:{email:senderEmail,name:senderName},to:[{email:data.email,name:data.name}],subject:data.lang==='ja'?'【Kale’s FDE】お問い合わせを受け付けました':'Kale’s FDE — We received your inquiry',htmlContent:autoReplyHtml(data)});
+      return json({ok:true},200,origin,allowedOrigin);
     } catch (error) {
       console.error(error);
-      return json({ ok: false, error: 'MAIL_SEND_FAILED' }, 502, origin, allowedOrigin);
+      const msg=String(error?.message||'');
+      if (msg==='PRODUCT_NOT_AVAILABLE'||msg==='CURRENCY_NOT_AVAILABLE') return json({ok:false,error:msg},400,origin,allowedOrigin);
+      return json({ok:false,error:'MAIL_SEND_FAILED'},502,origin,allowedOrigin);
     }
   },
 };
