@@ -12,4 +12,5 @@ add('en',{
   tradeNameLabel:'Business name',
   instagramBody:'A personal creative account focused on photography, short-form video and literary writing. It is kept separate from Kale’s FDE business updates.'
 });
+['pricing-monthly.js?v=20260817-0850','commerce-ui.js?v=20260817-0850'].forEach(src=>{const s=document.createElement('script');s.src=src;s.async=false;document.head.appendChild(s)});
 })();
