@@ -5,6 +5,7 @@ pages = {
     'index.html':'products',
     'why.html':'why',
     'goals.html':'goals',
+    'news.html':'news',
     'contact.html':'contact',
 }
 
