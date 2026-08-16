@@ -1,0 +1,57 @@
+{
+  "latestStrip": {
+    "enabled": true,
+    "label": {
+      "ja": "最新情報",
+      "en": "Latest"
+    },
+    "text": {
+      "ja": "IMS Starter デモ v0.1.0 を公開",
+      "en": "IMS Starter demo v0.1.0 is now available"
+    },
+    "link": "news.html"
+  },
+  "instagram": {
+    "profileUrl": "https://www.instagram.com/kale1999_?igsi=MXRzYnp5eGl2b3NxMw%3D%3D&utm_source=qr",
+    "handle": "@kale1999_",
+    "description": {
+      "ja": "写真・映像・小説を中心とした個人のクリエイティブ活動を発信しています。FDEの業務情報とは分け、作品や制作活動を掲載しています。",
+      "en": "A personal creative account focused on photography, short-form video and literary writing. It is kept separate from Kale’s FDE business updates."
+    },
+    "image": ""
+  },
+  "news": [
+    {
+      "id": "ims-demo-v0-1-0",
+      "date": "2026-08-16",
+      "category": "Product",
+      "featured": true,
+      "link": "demo.html",
+      "image": "",
+      "title": {
+        "ja": "IMS Starter デモ v0.1.0 を公開",
+        "en": "IMS Starter demo v0.1.0 released"
+      },
+      "body": {
+        "ja": "在庫一覧、検索、入出庫操作、在庫アラートを試せる初回デモを公開しました。",
+        "en": "The first interactive demo is now available with inventory search, stock movements and low-stock alerts."
+      }
+    },
+    {
+      "id": "website-update-20260816",
+      "date": "2026-08-16",
+      "category": "Development",
+      "featured": false,
+      "link": "index.html",
+      "image": "",
+      "title": {
+        "ja": "Kale’s FDE サイトを更新",
+        "en": "Kale’s FDE website updated"
+      },
+      "body": {
+        "ja": "Products、Why FDE、Kale’s Goals、Contactを中心に情報構成と多言語表示を整理しました。",
+        "en": "The site structure and multilingual presentation have been refined around Products, Why FDE, Kale’s Goals and Contact."
+      }
+    }
+  ]
+}
