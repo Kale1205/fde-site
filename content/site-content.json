@@ -21,6 +21,41 @@
     },
     "image": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-205541-IMG_8969-3c7112.jpg"
   },
+  "faq": [
+    {
+      "id": "payment-after-purchase",
+      "question": {
+        "ja": "買い切り後に月額料金は発生しますか？",
+        "en": "Is there a monthly fee after a one-time purchase?"
+      },
+      "answer": {
+        "ja": "買い切りプランでは、基本利用に必須の月額料金はありません。継続的な更新や保守が必要な場合は月額プランを選択できます。",
+        "en": "The one-time purchase plan does not require a monthly fee for basic use. A monthly plan is available if you need ongoing updates and maintenance."
+      }
+    },
+    {
+      "id": "source-customization",
+      "question": {
+        "ja": "自社向けに変更できますか？",
+        "en": "Can we modify the software for our own company?"
+      },
+      "answer": {
+        "ja": "標準製品を優先します。ソースコードを付属するため、自社または外部エンジニアによる拡張が可能です。個別カスタム開発は基本サービスに含みません。",
+        "en": "The standard product is prioritized. Source code is included, so your internal team or an external engineer can extend it. Bespoke development is not included in the standard service."
+      }
+    },
+    {
+      "id": "international-use",
+      "question": {
+        "ja": "海外企業でも利用できますか？",
+        "en": "Can companies outside Japan use the products?"
+      },
+      "answer": {
+        "ja": "主要言語の固定UIを用意しています。提供条件や利用可能時期についてはお問い合わせください。",
+        "en": "The site and product information support major languages. Please contact us regarding availability and delivery conditions for your region."
+      }
+    }
+  ],
   "news": [
     {
       "id": "ims-demo-v0-1-0",
