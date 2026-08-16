@@ -1,0 +1,30 @@
+name: Refresh News visual assets
+
+on:
+  push:
+    paths:
+      - '.github/scripts/refresh-news-visual-assets.py'
+      - '.github/workflows/refresh-news-visual-assets.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh asset references
+        run: python .github/scripts/refresh-news-visual-assets.py
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Refresh News visual CMS assets"
+          git push
