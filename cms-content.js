@@ -20,9 +20,8 @@ function categoryLatest(all=newsSorted()){
  return [...selected,...extras].slice(0,5);
 }
 function newsImage(n,cls){
- const src=n?.image||'assets/news-fallback.svg';
- const alt=n?.image?pick(n.title):'Kale’s FDE News';
- return `<div class="${cls}${n?.image?'':' cms-image-fallback'}"><img src="${attr(src)}" alt="${attr(alt)}" loading="lazy"></div>`;
+ if(n?.image)return `<div class="${cls}"><img src="${attr(n.image)}" alt="${attr(pick(n.title))}" loading="lazy"></div>`;
+ return `<div class="${cls} cms-image-fallback"><img src="assets/baked-kale-mark.svg" alt="" aria-hidden="true"><span>Baked Kale / Kale’s FDE</span></div>`;
 }
 function setStripItem(index,animate=true){
  const bar=document.querySelector('.news-strip');if(!bar||!STRIP_ITEMS.length)return;
