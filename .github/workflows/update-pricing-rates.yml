@@ -1,0 +1,63 @@
+name: Pricing - Monthly FX Update
+
+on:
+  schedule:
+    - cron: '15 0 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-rates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update JPY exchange rates
+        shell: python
+        run: |
+          import json
+          import urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          currencies = ['JPY','USD','CNY','TWD','KRW','IDR','MYR','VND','THB','INR','AED']
+          url = 'https://open.er-api.com/v6/latest/JPY'
+          req = urllib.request.Request(url, headers={'User-Agent': 'Kales-FDE-Pricing/1.0'})
+          with urllib.request.urlopen(req, timeout=30) as response:
+              data = json.load(response)
+
+          if data.get('result') != 'success':
+              raise RuntimeError(f"FX API failed: {data.get('error-type') or data}")
+
+          source = data.get('rates', {})
+          missing = [c for c in currencies if c not in source and c != 'JPY']
+          if missing:
+              raise RuntimeError(f'Missing currencies: {missing}')
+
+          rates = {'JPY': 1}
+          for c in currencies:
+              if c != 'JPY':
+                  rates[c] = source[c]
+
+          payload = {
+              'base': 'JPY',
+              'asOf': datetime.now(timezone.utc).date().isoformat(),
+              'rates': rates,
+          }
+          path = Path('content/pricing-rates.json')
+          path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+      - name: Commit updated rates
+        run: |
+          if git diff --quiet -- content/pricing-rates.json; then
+            echo "No exchange-rate changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/pricing-rates.json
+          git commit -m "Update monthly pricing exchange rates"
+          git push
