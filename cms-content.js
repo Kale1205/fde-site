@@ -21,7 +21,8 @@ function categoryLatest(all=newsSorted()){
 }
 function newsImage(n,cls){
  if(n?.image)return `<div class="${cls}"><img src="${attr(n.image)}" alt="${attr(pick(n.title))}" loading="lazy"></div>`;
- return `<div class="${cls} cms-image-fallback"><img src="assets/news-fallback-user.svg" alt="Baked Kale kale and circuit logo" loading="lazy"></div>`;
+ const fallback=CMS?.newsFallbackImage||'assets/news-fallback-user.svg';
+ return `<div class="${cls} cms-image-fallback"><img src="${attr(fallback)}" alt="Baked Kale kale and circuit logo" loading="lazy"></div>`;
 }
 function ensureUiRefinements(){
  let style=document.getElementById('fde-ui-refinements');
