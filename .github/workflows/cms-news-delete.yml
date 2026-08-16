@@ -1,0 +1,30 @@
+name: CMS - Delete News
+run-name: "CMS Delete News: ${{ inputs.news_id }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      news_id:
+        description: "削除するNews ID"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Delete News
+        env:
+          NEWS_ID: ${{ inputs.news_id }}
+        run: python .github/scripts/cms_update.py delete_news
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/site-content.json
+          git commit -m "CMS: delete News item"
+          git push
