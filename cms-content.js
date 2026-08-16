@@ -21,7 +21,18 @@ function categoryLatest(all=newsSorted()){
 }
 function newsImage(n,cls){
  if(n?.image)return `<div class="${cls}"><img src="${attr(n.image)}" alt="${attr(pick(n.title))}" loading="lazy"></div>`;
- return `<div class="${cls} cms-image-fallback"><img src="assets/baked-kale-mark.svg" alt="" aria-hidden="true"><span>Baked Kale / Kale’s FDE</span></div>`;
+ return `<div class="${cls} cms-image-fallback"><img src="assets/news-fallback-user.svg" alt="Baked Kale kale and circuit logo" loading="lazy"></div>`;
+}
+function ensureUiRefinements(){
+ let style=document.getElementById('fde-ui-refinements');
+ if(!style){style=document.createElement('style');style.id='fde-ui-refinements';style.textContent='@media(min-width:901px){.why-matters-kicker{font-size:15px!important;line-height:1.2!important;letter-spacing:.12em!important}}';document.head.appendChild(style)}
+ const securityTitle=document.querySelector('[data-i18n="securityTitle"]');
+ if(securityTitle){const l=lang();if(l==='ja'){securityTitle.innerHTML='デスクトップ型<br>ローカル運用を基本に。'}else{const v=window.FDE_I18N?.[l]?.securityTitle||window.FDE_I18N?.en?.securityTitle;if(v)securityTitle.innerHTML=v}}
+ if(location.pathname.endsWith('/why.html')||location.pathname.endsWith('why.html')){
+  const kickers=[...document.querySelectorAll('.section.dark .section-kicker')];
+  const target=kickers.find(el=>el.textContent.trim().toLowerCase()==='why it matters')||kickers[0];
+  target?.classList.add('why-matters-kicker');
+ }
 }
 function setStripItem(index,animate=true){
  const bar=document.querySelector('.news-strip');if(!bar||!STRIP_ITEMS.length)return;
@@ -97,8 +108,8 @@ function renderInstagram(){
  const media=d.image?`<div class="instagram-photo"><img src="${attr(d.image)}" alt="${attr(d.handle||'Instagram')}"></div>`:`<div class="instagram-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.4" cy="6.7" r="1"></circle></svg></div>`;
  box.innerHTML=`${media}<div class="instagram-copy"><small>Instagram / Creative</small><h2>${esc(d.handle||'Instagram')}</h2><p>${esc(pick(d.description))}</p></div><div class="instagram-cta">View Instagram ↗</div>`;
 }
-async function load(){try{const r=await fetch(`${CMS_URL}?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);CMS=await r.json();renderStrip();renderNews();renderInstagram();}catch(e){console.warn('CMS content load failed',e)}}
-document.addEventListener('DOMContentLoaded',()=>{load();const sel=document.getElementById('lang');if(sel)sel.addEventListener('change',()=>setTimeout(()=>{renderStrip();renderNews();renderInstagram()},0));new MutationObserver(()=>{renderStrip();renderNews();renderInstagram()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});});
+async function load(){try{const r=await fetch(`${CMS_URL}?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);CMS=await r.json();renderStrip();renderNews();renderInstagram();ensureUiRefinements();}catch(e){console.warn('CMS content load failed',e);ensureUiRefinements()}}
+document.addEventListener('DOMContentLoaded',()=>{ensureUiRefinements();load();const sel=document.getElementById('lang');if(sel)sel.addEventListener('change',()=>setTimeout(()=>{renderStrip();renderNews();renderInstagram();ensureUiRefinements()},0));new MutationObserver(()=>{renderStrip();renderNews();renderInstagram();ensureUiRefinements()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});});
 document.addEventListener('click',e=>{
  const prev=e.target.closest('[data-latest-prev]');if(prev){e.preventDefault();goLatest(latestIndex-1,true);startLatestAuto();return}
  const next=e.target.closest('[data-latest-next]');if(next){e.preventDefault();goLatest(latestIndex+1,true);startLatestAuto();return}
