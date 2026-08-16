@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kale1205.github.io/fde-site/sitemap.xml
