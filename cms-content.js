@@ -3,7 +3,7 @@ let CMS=null;
 const CMS_URL='https://raw.githubusercontent.com/Kale1205/fde-site/main/content/site-content.json';
 const lang=()=>document.documentElement.lang||localStorage.getItem('fde-lang')||'ja';
 const pick=obj=>{if(obj==null)return'';if(typeof obj==='string')return obj;const l=lang();return obj[l]||obj.en||obj.ja||Object.values(obj)[0]||''};
-const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const esc=s=>String(s??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));
 const attr=s=>esc(s).replace(/`/g,'&#96;');
 const dateLabel=s=>String(s||'').replaceAll('-','.');
 const demoAttr=link=>(link||'').includes('demo.html')?' data-demo-open':'';
@@ -15,14 +15,15 @@ function renderStrip(){
  if(a)a.href=d.link||'news.html';if(b)b.textContent=pick(d.label);if(spans[0])spans[0].textContent=pick(d.text);
 }
 function newsSorted(){return [...(CMS?.news||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))}
+function newsImage(n,cls){return n.image?`<div class="${cls}"><img src="${attr(n.image)}" alt="${attr(pick(n.title))}" loading="lazy"></div>`:''}
 function renderNews(){
  if(!CMS||!document.body.classList.contains('cms-news-page'))return;
  const all=newsSorted();if(!all.length)return;
  const featured=all.find(x=>x.featured)||all[0];
  const lead=document.getElementById('cmsNewsLead');
- if(lead){lead.href=featured.link||'#';if((featured.link||'').includes('demo.html'))lead.setAttribute('data-demo-open','');else lead.removeAttribute('data-demo-open');lead.innerHTML=`${featured.image?`<div class="cms-lead-image"><img src="${attr(featured.image)}" alt=""></div>`:''}<div class="news-label">${esc(featured.category||'Update')}</div><h2>${esc(pick(featured.title))}</h2><p>${esc(pick(featured.body))}</p><div class="news-meta">${esc(dateLabel(featured.date))} / ${esc(featured.category||'Update')}</div>`;}
- const latest=document.getElementById('cmsLatestList');if(latest){latest.innerHTML='<h2>Latest</h2>'+all.slice(0,5).map(n=>`<a class="latest-row" href="${attr(n.link||'#')}"${demoAttr(n.link)}><small>${esc(dateLabel(n.date))} / ${esc(n.category||'Update')}</small><strong>${esc(pick(n.title))}</strong></a>`).join('');}
- const wire=document.getElementById('cmsNewsWire');if(wire){wire.innerHTML=all.map(n=>`<a class="wire-row" href="${attr(n.link||'#')}"${demoAttr(n.link)}><div class="wire-type">${esc(n.category||'Update')}</div><div><h3>${esc(pick(n.title))}</h3><p>${esc(pick(n.body))}</p></div><time>${esc(dateLabel(n.date))}</time></a>`).join('');}
+ if(lead){lead.href=featured.link||'#';if((featured.link||'').includes('demo.html'))lead.setAttribute('data-demo-open','');else lead.removeAttribute('data-demo-open');lead.innerHTML=`${newsImage(featured,'cms-lead-image')}<div class="news-label">${esc(featured.category||'Update')}</div><h2>${esc(pick(featured.title))}</h2><p>${esc(pick(featured.body))}</p><div class="news-meta">${esc(dateLabel(featured.date))} / ${esc(featured.category||'Update')}</div>`;}
+ const latest=document.getElementById('cmsLatestList');if(latest){latest.innerHTML='<h2>Latest</h2>'+all.slice(0,5).map(n=>`<a class="latest-row" href="${attr(n.link||'#')}"${demoAttr(n.link)}>${newsImage(n,'cms-latest-image')}<small>${esc(dateLabel(n.date))} / ${esc(n.category||'Update')}</small><strong>${esc(pick(n.title))}</strong></a>`).join('');}
+ const wire=document.getElementById('cmsNewsWire');if(wire){wire.innerHTML=all.map(n=>`<a class="wire-row" href="${attr(n.link||'#')}"${demoAttr(n.link)}><div class="wire-type">${esc(n.category||'Update')}</div><div class="wire-content">${newsImage(n,'cms-wire-image')}<h3>${esc(pick(n.title))}</h3><p>${esc(pick(n.body))}</p></div><time>${esc(dateLabel(n.date))}</time></a>`).join('');}
  renderInstagram();
 }
 function renderInstagram(){
