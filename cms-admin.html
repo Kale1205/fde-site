@@ -6,13 +6,14 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <title>CMS Media Admin | Baked Kale</title>
 <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
-<link rel="stylesheet" href="cms-admin.css?v=20260816-2120">
-<script defer src="cms-admin.js?v=20260816-2120"></script>
+<link rel="stylesheet" href="cms-admin.css?v=20260816-2135">
+<script defer src="cms-admin.js?v=20260816-2135"></script>
 </head>
 <body>
 <header class="admin-header"><div class="admin-shell"><div class="admin-brand"><img src="assets/baked-kale-mark.svg" alt="Baked Kale"><div><strong>Baked Kale CMS</strong><small>News & media admin for Kale’s FDE</small></div></div></div></header>
 <main class="admin-main"><div class="admin-shell">
-<section class="admin-intro"><div class="admin-kicker">Private operation tool</div><h1>CMS Media & News Admin</h1><p>News投稿、News画像、Newsのデフォルト画像、Instagram紹介画像をこのページから管理できます。</p><div class="admin-warning"><strong>重要:</strong> このページ自体は公開リポジトリ上の静的ファイルのため、URLを知れば閲覧できます。ただし書き込みにはGitHubトークンが必要です。トークンはコードやCMSデータへ保存されません。</div></section>
+<section class="admin-intro"><div class="admin-kicker">Private operation tool</div><h1>CMS Media & News Admin</h1><p>Newsの投稿・編集・削除、Top News指定、News画像、Newsデフォルト画像、Instagram紹介画像をこのページから管理できます。</p><div class="admin-warning"><strong>重要:</strong> このページ自体は公開リポジトリ上の静的ファイルのため、URLを知れば閲覧できます。ただし書き込みにはGitHubトークンが必要です。トークンはコードやCMSデータへ保存されません。</div></section>
+
 <section class="admin-card"><h2>1. GitHubへ接続</h2><p>Fine-grained personal access tokenを入力してください。対象リポジトリを <strong>Kale1205/fde-site</strong> のみに限定し、ContentsをRead and writeにしてください。</p><div class="field"><label for="token">GitHub token</label><input id="token" type="password" autocomplete="off" placeholder="github_pat_..."><div class="token-note">この画面ではトークンをlocalStorageへ保存しません。タブを閉じたら再入力が必要です。</div></div><div class="actions"><button id="connectBtn" class="admin-button" type="button">GitHubへ接続</button></div></section>
 
 <section id="newsCreateCard" class="admin-card hidden"><h2>2. Newsを投稿</h2><p>本文と画像をまとめて登録できます。画像は任意です。画像未設定の場合はNewsデフォルト画像が使われます。</p><div class="admin-form-grid">
@@ -27,7 +28,22 @@
 <div class="field-full admin-grid"><div><div class="actions"><button id="createNewsBtn" class="admin-button" type="button">Newsを投稿</button></div></div><div id="createPreview" class="preview-box compact"><div class="preview-placeholder">画像を選択すると、ここにプレビューが表示されます。</div></div></div>
 </div></section>
 
-<section id="uploaderCard" class="admin-card hidden"><h2>3. 既存画像を管理</h2><p id="targetHelp">選択したNews記事のメイン画像として設定します。</p><fieldset class="field"><legend>反映先</legend><div class="radio-row"><label class="radio-chip"><input type="radio" name="target" value="news" checked> News記事</label><label class="radio-chip"><input type="radio" name="target" value="fallback"> News デフォルト画像</label><label class="radio-chip"><input type="radio" name="target" value="instagram"> Instagram紹介</label></div></fieldset><div id="newsField" class="field"><label for="newsTarget">News</label><select id="newsTarget"></select></div><div class="admin-grid"><div><div class="field"><label for="imageFile">画像ファイル</label><input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div class="token-note">PNG / JPEG / WebP / GIF、8MB以下。ファイル名はアップロード時に安全な名前へ自動変換します。</div></div><div class="actions"><button id="uploadBtn" class="admin-button" type="button">アップロードして反映</button><button id="removeBtn" class="admin-button secondary" type="button">画像指定を解除</button></div><div id="resultUrl" class="result-url hidden"></div></div><div id="preview" class="preview-box"><div class="preview-placeholder">画像を選択すると、ここにプレビューが表示されます。</div></div></div></section>
+<section id="newsManageCard" class="admin-card hidden"><h2>3. Newsを編集・削除</h2><p>既存Newsの本文・カテゴリ・日付・Top News指定・画像をまとめて変更できます。</p>
+<div class="field"><label for="editNewsTarget">編集するNews</label><select id="editNewsTarget"></select></div>
+<div id="editNewsFields" class="admin-form-grid">
+<div class="field"><label for="editTitleJa">タイトル（日本語）</label><input id="editTitleJa" type="text" maxlength="120"></div>
+<div class="field"><label for="editTitleEn">Title（English / 任意）</label><input id="editTitleEn" type="text" maxlength="120"></div>
+<div class="field field-full"><label for="editBodyJa">本文（日本語）</label><textarea id="editBodyJa"></textarea></div>
+<div class="field field-full"><label for="editBodyEn">Body（English / 任意）</label><textarea id="editBodyEn"></textarea></div>
+<div class="field"><label for="editCategory">カテゴリ</label><select id="editCategory"><option value="Product">Product</option><option value="Development">Development</option><option value="Social">Social</option></select></div>
+<div class="field"><label for="editDate">更新日</label><input id="editDate" type="date"></div>
+<div class="field field-full"><label class="check-row"><input id="editFeatured" type="checkbox"> Top Newsとして表示する</label></div>
+<div class="field field-full"><label for="editImageFile">新しい画像（任意）</label><input id="editImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div class="token-note">画像を選ばず保存した場合は現在の画像を維持します。</div></div>
+<div class="field-full admin-grid"><div><div class="current-image-note">現在の画像</div><div id="editCurrentImage" class="preview-box compact"><div class="preview-placeholder">画像未設定</div></div></div><div><div class="current-image-note">差し替え画像プレビュー</div><div id="editPreview" class="preview-box compact"><div class="preview-placeholder">新しい画像を選択すると表示されます。</div></div></div></div>
+<div class="field-full actions"><button id="saveNewsBtn" class="admin-button" type="button">変更を保存</button><button id="removeNewsImageBtn" class="admin-button secondary" type="button">この記事の画像を解除</button><button id="deleteNewsBtn" class="admin-button danger" type="button">Newsを削除</button></div>
+</div></section>
+
+<section id="uploaderCard" class="admin-card hidden"><h2>4. 共通メディアを管理</h2><p id="targetHelp">Newsデフォルト画像またはInstagram紹介画像を変更できます。</p><fieldset class="field"><legend>反映先</legend><div class="radio-row"><label class="radio-chip"><input type="radio" name="target" value="fallback" checked> News デフォルト画像</label><label class="radio-chip"><input type="radio" name="target" value="instagram"> Instagram紹介</label></div></fieldset><div class="admin-grid"><div><div class="field"><label for="imageFile">画像ファイル</label><input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div class="token-note">PNG / JPEG / WebP / GIF、8MB以下。ファイル名はアップロード時に安全な名前へ自動変換します。</div></div><div class="actions"><button id="uploadBtn" class="admin-button" type="button">アップロードして反映</button><button id="removeBtn" class="admin-button secondary" type="button">画像指定を解除</button></div><div id="resultUrl" class="result-url hidden"></div></div><div id="preview" class="preview-box"><div class="preview-placeholder">画像を選択すると、ここにプレビューが表示されます。</div></div></div></section>
 <div id="adminStatus" class="status" hidden></div>
 </div></main>
 </body></html>
