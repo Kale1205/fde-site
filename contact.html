@@ -6,7 +6,7 @@
 <meta name="description" content="Contact Kale’s FDE about products, demos, pricing, and deployment.">
 <link rel="canonical" href="https://kale1205.github.io/fde-site/contact.html">
 <link rel="stylesheet" href="styles.css?v=20260816-1718"><link rel="stylesheet" href="refinements.css?v=20260816-1718"><link rel="stylesheet" href="polish.css?v=20260816-1718">
-<script defer src="i18n-v2.js?v=20260816-1718"></script><script defer src="i18n-overrides.js?v=20260816-1718"></script><script defer src="i18n-polish.js?v=20260816-1718"></script><script defer src="i18n-brand.js?v=20260816-1744"></script><script defer src="i18n-final.js?v=20260816-1810"></script><script defer src="site.js?v=20260816-1718"></script>
+<script defer src="i18n-v2.js?v=20260816-1718"></script><script defer src="i18n-overrides.js?v=20260816-1718"></script><script defer src="i18n-polish.js?v=20260816-1718"></script><script defer src="i18n-brand.js?v=20260816-1744"></script><script defer src="i18n-final.js?v=20260816-1810"></script><script defer src="site.js?v=20260816-1718"></script><script defer src="contact-mailer.js?v=20260816-2109"></script>
 <link rel="stylesheet" href="editorial.css?v=20260816-1744">
 <link rel="stylesheet" href="responsive.css?v=20260816-1810">
 <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
@@ -29,11 +29,11 @@
   <div class="field"><label for="product" data-i18n="fieldProduct">製品名</label><select id="product" name="product" required><option value="" selected disabled data-i18n="selectProduct">選択してください</option><option value="IMS Starter">IMS Starter</option><option value="Business DX Pack">Business DX Pack</option><option value="Other" data-i18n="productOther">その他</option></select></div>
   <div class="field field-full"><label for="message" data-i18n="fieldMessage">お問い合わせ内容</label><textarea id="message" name="message" rows="8" required></textarea></div>
   <div class="field-full form-actions single-action"><button class="button dark inquiry-submit" type="submit" data-i18n="submitInquiry">送信する</button></div>
-  <p id="formNotice" class="form-notice" data-i18n="formNotice">Gmailを選択した場合はGmailの作成画面へ移動します。Gmail以外は内容確認画面へ進みます。</p>
+  <p id="formNotice" class="form-notice" data-i18n="formNotice">Gmailを選択するとGmailの作成画面が開きます。Gmail以外を選択すると端末の既定メールアプリが開きます。</p>
 </form>
 
 <section id="inquiryConfirm" class="inquiry-state" hidden aria-live="polite">
-  <div class="state-icon">✓</div><div class="section-kicker" data-i18n="confirmKicker">内容確認</div><h2 data-i18n="confirmTitle">この内容で送信しますか？</h2><div id="confirmSummary" class="confirm-summary"></div><div class="form-actions"><button id="confirmBack" class="button" type="button" data-i18n="confirmBack">修正する</button><button id="confirmSend" class="button dark" type="button" data-i18n="confirmSend">送信する</button></div><p class="form-notice" id="directSendNotice" data-i18n="directSendNotice">直接送信には送信用バックエンドの接続が必要です。</p>
+  <div class="state-icon">✓</div><div class="section-kicker" data-i18n="confirmKicker">内容確認</div><h2 data-i18n="confirmTitle">この内容で送信しますか？</h2><div id="confirmSummary" class="confirm-summary"></div><div class="form-actions"><button id="confirmBack" class="button" type="button" data-i18n="confirmBack">修正する</button><button id="confirmSend" class="button dark" type="button" data-i18n="confirmSend">送信する</button></div><p class="form-notice" id="directSendNotice" data-i18n="directSendNotice">メールアプリから送信してください。</p>
 </section>
 <section id="inquiryComplete" class="inquiry-state inquiry-complete" hidden aria-live="polite"><div class="state-icon">✓</div><h2 data-i18n="completeTitle">送信が完了しました</h2><p data-i18n="completeBody">お問い合わせありがとうございます。内容を確認後、返信します。</p><a class="button dark" href="index.html" data-i18n="backProducts">Productsへ戻る</a></section>
 
