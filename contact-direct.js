@@ -1,0 +1,40 @@
+(()=>{
+const ENDPOINT='https://formsubmit.co/ajax/reyouinjune@gmail.com';
+const $=(s,c=document)=>c.querySelector(s);
+const labels={
+ ja:{intro:'すべて必須項目です。入力内容を確認してから、サイト上で送信できます。',notice:'入力後に内容確認画面が表示されます。確認後、このサイトから直接送信されます。',sending:'送信中…',failed:'送信に失敗しました。時間をおいてもう一度お試しください。',confirm:'この内容で送信しますか？'},
+ en:{intro:'All fields are required. Review your inquiry before sending it directly from this website.',notice:'After entering your details, you can review them before the inquiry is sent directly from this website.',sending:'Sending…',failed:'The message could not be sent. Please try again later.',confirm:'Send this inquiry?'}
+};
+const lang=()=>document.documentElement.lang||'ja';
+const tr=k=>(labels[lang()]||labels.en)[k]||labels.en[k];
+function value(id){return $('#'+id)?.value.trim()||''}
+function validate(form){if(form.checkValidity())return true;form.reportValidity();return false}
+function summaryRows(){return [
+ [$('#name')?.previousElementSibling?.textContent||'Name',value('name')],
+ [$('#company')?.previousElementSibling?.textContent||'Company',value('company')],
+ [$('#country')?.previousElementSibling?.textContent||'Country',value('country')],
+ [$('#contact')?.previousElementSibling?.textContent||'Email',value('contact')],
+ [$('#product')?.previousElementSibling?.textContent||'Product',value('product')],
+ [$('#message')?.previousElementSibling?.textContent||'Message',value('message')]
+ ]}
+function renderSummary(){const box=$('#confirmSummary');if(!box)return;box.innerHTML='';summaryRows().forEach(([label,val])=>{const row=document.createElement('div');row.className='confirm-row';const a=document.createElement('strong');a.textContent=label;const b=document.createElement('span');b.textContent=val;row.append(a,b);box.appendChild(row)})}
+function showConfirm(){const form=$('#contactForm'),confirm=$('#inquiryConfirm'),complete=$('#inquiryComplete');if(!form||!confirm)return;renderSummary();form.hidden=true;if(complete)complete.hidden=true;confirm.hidden=false;confirm.querySelector('h2').textContent=tr('confirm');$('#directSendNotice').textContent=tr('notice');confirm.scrollIntoView({behavior:'smooth',block:'start'})}
+function showForm(){const form=$('#contactForm'),confirm=$('#inquiryConfirm');if(confirm)confirm.hidden=true;if(form){form.hidden=false;form.scrollIntoView({behavior:'smooth',block:'start'})}}
+function payload(){return{
+ name:value('name'),
+ company:value('company'),
+ country:value('country'),
+ email:value('contact'),
+ product:value('product'),
+ message:value('message'),
+ _subject:`Kale’s FDE Inquiry — ${value('product')||'Inquiry'}`,
+ _template:'table',
+ _replyto:value('contact'),
+ _honey:''
+ }}
+async function send(){const btn=$('#confirmSend'),confirm=$('#inquiryConfirm'),complete=$('#inquiryComplete'),form=$('#contactForm');if(!btn||!confirm||!complete||!form)return;btn.disabled=true;const original=btn.textContent;btn.textContent=tr('sending');try{const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload())});const data=await res.json().catch(()=>({}));if(!res.ok||data.success===false)throw new Error(data.message||`HTTP ${res.status}`);confirm.hidden=true;complete.hidden=false;complete.scrollIntoView({behavior:'smooth',block:'start'});form.reset()}catch(e){console.warn('Contact submission failed',e);alert(tr('failed'))}finally{btn.disabled=false;btn.textContent=original}}
+function refreshCopy(){const intro=document.querySelector('.form-wrap .section-head .section-copy');if(intro)intro.textContent=tr('intro');const notice=$('#formNotice');if(notice)notice.textContent=tr('notice');const direct=$('#directSendNotice');if(direct)direct.textContent=tr('notice')}
+document.addEventListener('submit',e=>{if(e.target?.id!=='contactForm')return;e.preventDefault();e.stopImmediatePropagation();if(validate(e.target))showConfirm()},true);
+document.addEventListener('click',e=>{if(e.target.closest('#confirmSend')){e.preventDefault();e.stopImmediatePropagation();send();return}if(e.target.closest('#confirmBack')){e.preventDefault();e.stopImmediatePropagation();showForm()}},true);
+document.addEventListener('DOMContentLoaded',()=>{refreshCopy();$('#lang')?.addEventListener('change',()=>setTimeout(refreshCopy,0))});
+})();
