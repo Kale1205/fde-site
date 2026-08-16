@@ -1,0 +1,44 @@
+name: Refine contact localization
+on:
+  push:
+    paths:
+      - '.github/workflows/refine-contact-i18n.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch localized copy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('i18n-v2.js')
+          s=p.read_text(encoding='utf-8')
+          replacements={
+            "下のボタンからGmailの新規作成画面を開けます。":"メールアドレスをクリックすると、Gmailの新規作成画面が開きます。",
+            "Use the button below to open a new Gmail message.":"Click the email address to open a new Gmail message.",
+            "点击下方按钮可打开 Gmail 新建邮件页面。":"点击邮箱地址即可打开 Gmail 新建邮件页面。",
+            "點擊下方按鈕即可開啟 Gmail 新郵件。":"點擊電子郵件地址即可開啟 Gmail 新郵件。",
+            "아래 버튼을 누르면 Gmail 새 메일 작성 화면이 열립니다.":"이메일 주소를 클릭하면 Gmail 새 메일 작성 화면이 열립니다.",
+            "Gunakan tombol di bawah untuk membuka pesan baru di Gmail.":"Klik alamat email untuk membuka pesan baru di Gmail.",
+            "Gunakan butang di bawah untuk membuka mesej baharu dalam Gmail.":"Klik alamat e-mel untuk membuka mesej baharu dalam Gmail.",
+            "Nhấn nút bên dưới để mở cửa sổ soạn thư mới trong Gmail.":"Nhấp vào địa chỉ email để mở cửa sổ soạn thư mới trong Gmail.",
+            "กดปุ่มด้านล่างเพื่อเปิดหน้าสร้างอีเมลใหม่ใน Gmail":"คลิกที่อยู่อีเมลเพื่อเปิดหน้าสร้างอีเมลใหม่ใน Gmail",
+            "नीचे के बटन से Gmail में नया संदेश खोलें।":"ईमेल पते पर क्लिक करके Gmail में नया संदेश खोलें।",
+            "استخدم الزر أدناه لفتح رسالة جديدة في Gmail.":"انقر على عنوان البريد الإلكتروني لفتح رسالة جديدة في Gmail.",
+            "难以 확보":"难以确保"
+          }
+          for old,new in replacements.items():
+              s=s.replace(old,new)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add i18n-v2.js
+          git commit -m "Refine localized contact wording"
+          git push
