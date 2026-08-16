@@ -27,7 +27,7 @@
       "category": "Product",
       "featured": false,
       "link": "demo.html",
-      "image": "",
+      "image": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-192851-ChatGPT-Image-Aug-16-2026-06_24_32-PM-3977cd.png",
       "title": {
         "ja": "IMS Starter デモ v0.1.0 を公開",
         "en": "IMS Starter demo v0.1.0 released"
