@@ -1,0 +1,47 @@
+/* Focused refinements layered on top of the existing blue/white design. */
+
+/* Pricing cards: avoid mirrored back faces by rotating each face independently. */
+.flip-shell{min-height:620px}
+.plan-card{min-height:620px;transform:none!important;transform-style:flat!important;position:relative}
+.plan-face{transition:opacity .28s ease,transform .42s cubic-bezier(.2,.7,.2,1),box-shadow .2s ease;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.plan-front{opacity:1;transform:rotateY(0deg);pointer-events:auto;z-index:2}
+.plan-back{opacity:0;transform:rotateY(92deg)!important;pointer-events:none;z-index:1}
+.plan-card.flipped{transform:none!important}
+.plan-card.flipped .plan-front{opacity:0;transform:rotateY(-92deg);pointer-events:none;z-index:1}
+.plan-card.flipped .plan-back{opacity:1;transform:rotateY(0deg)!important;pointer-events:auto;z-index:2}
+.plan-card:hover .plan-face{box-shadow:0 24px 60px rgba(16,52,115,.14)}
+.plan-desc{min-height:76px;line-height:1.7}
+.plan-face{overflow:auto}
+.plan-actions{padding-top:10px;flex-wrap:wrap}
+
+/* IMS animated preview instead of the ambiguous static mockup. */
+.demo-preview-player{position:relative;overflow:hidden;transform:none!important;padding:22px;background:linear-gradient(145deg,#fff,#f6f9ff)}
+.preview-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.preview-head>div{display:flex;flex-direction:column;gap:2px}.preview-head strong{font-size:20px}.preview-head small{color:var(--muted);font-size:11px;font-weight:750}
+.preview-live{font-size:10px;font-weight:900;letter-spacing:.08em;color:#187247;background:#eaf7ef;border-radius:999px;padding:6px 9px}
+.preview-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}.preview-kpis div{border:1px solid #e5ebf4;background:#fff;border-radius:12px;padding:11px}.preview-kpis small{display:block;color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.08em}.preview-kpis b{font-size:20px;color:var(--navy)}
+.preview-table{border:1px solid #e5ebf4;border-radius:13px;overflow:hidden;background:#fff}.preview-row{display:grid;grid-template-columns:1.55fr .8fr .45fr;gap:9px;padding:10px 12px;font-size:10px;transition:.3s}.preview-row+.preview-row{border-top:1px solid #eef2f7}.preview-header{background:#f7f9fd;color:#68748a;font-weight:900}.preview-active{animation:previewHighlight 4.8s ease-in-out infinite}.preview-stock{animation:previewStock 4.8s steps(1,end) infinite}
+.preview-action{display:flex;gap:8px;justify-content:flex-end;align-items:center;margin-top:13px;position:relative}.preview-action button{border:1px solid #cfdcf0;background:#fff;border-radius:999px;padding:7px 11px;color:var(--navy);font-size:10px;font-weight:850;pointer-events:none}.preview-cursor{position:absolute;right:108px;top:-10px;color:var(--blue);font-size:19px;transform:rotate(-18deg);animation:previewCursor 4.8s ease-in-out infinite}.preview-caption{margin-top:11px;color:var(--muted);font-size:11px}
+@keyframes previewCursor{0%,20%{transform:translate(0,0) rotate(-18deg);opacity:.15}35%,55%{transform:translate(42px,20px) rotate(-18deg);opacity:1}70%,100%{transform:translate(0,0) rotate(-18deg);opacity:.15}}
+@keyframes previewHighlight{0%,25%,75%,100%{background:#fff}35%,65%{background:#eef4ff}}
+@keyframes previewStock{0%,39%{color:inherit}40%,64%{color:var(--blue);font-weight:900}65%,100%{color:inherit}}
+
+.steps-three{grid-template-columns:repeat(3,1fr)}
+
+/* Kale's Goals visual business model. */
+.business-model-diagram{display:grid;grid-template-columns:1fr .58fr 1fr .58fr 1.15fr;align-items:center;gap:12px;margin-top:10px}
+.model-node{min-height:190px;border:1px solid var(--line);border-radius:22px;background:#fff;padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 12px 34px rgba(16,52,115,.055)}
+.model-node strong,.model-label{font-size:21px;font-weight:900;color:var(--navy)}.model-node small{display:block;margin-top:10px;color:var(--muted)}
+.fde-node{background:linear-gradient(145deg,#071e4c,#0b3b83);border-color:#0b3b83}.fde-node strong{color:#fff;font-size:27px}.fde-node small{color:#bdd0ea}
+.model-arrow{text-align:center;color:var(--blue);display:flex;flex-direction:column;gap:5px;align-items:center}.model-arrow span{font-size:34px;font-weight:900}.model-arrow small{font-size:10px;color:var(--muted);font-weight:800;line-height:1.45}
+.model-explainer{max-width:820px;margin:28px auto 0;text-align:center;color:var(--muted);font-size:15px}
+
+/* Contact: form first and clearly required. */
+.form-wrap{max-width:980px}.contact-form{box-shadow:0 18px 50px rgba(16,52,115,.07);border:1px solid var(--line);border-radius:24px;padding:30px;background:#fff}
+.contact-form .field label:after{content:' *';color:#b34b54}.contact-form input,.contact-form select,.contact-form textarea{transition:border-color .18s,box-shadow .18s,background .18s}.contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{border-color:#7ea6e7!important;box-shadow:0 0 0 4px rgba(22,89,199,.1)!important;background:#fff!important}.contact-form .field-error{border-color:#c5525d!important;box-shadow:0 0 0 4px rgba(197,82,93,.1)!important}.single-action{display:flex;justify-content:flex-end}.inquiry-submit{min-width:210px}.faq-shell{max-width:900px}
+
+/* Demo close control. */
+.demo-back{cursor:pointer}
+
+@media(max-width:940px){.business-model-diagram{grid-template-columns:1fr}.model-arrow{transform:rotate(90deg);min-height:50px}.model-arrow small{transform:rotate(-90deg);position:absolute;left:55%;max-width:120px}.model-arrow{position:relative}.steps-three{grid-template-columns:1fr}.flip-shell,.plan-card{min-height:760px}}
+@media(max-width:620px){.demo-preview-player{padding:15px}.preview-kpis{grid-template-columns:1fr 1fr 1fr}.preview-row{grid-template-columns:1.35fr .8fr .45fr}.contact-form{padding:20px}.single-action .button{width:100%}.flip-shell,.plan-card{min-height:860px}}
