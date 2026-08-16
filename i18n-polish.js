@@ -2,7 +2,7 @@
 const add=(lang,values)=>{if(!window.FDE_I18N||!window.FDE_I18N[lang])return;Object.assign(window.FDE_I18N[lang],values)};
 add('ja',{
  productsEyebrow:'業務向けデスクトップソフト',strengthJapan:'',madeJapan:'',
- productsHero:'業務ソフトを、必要なところから',
+ productsHero:'業務ソフトを、必要なところから',whyHero:'技術を導入するだけでなく、現場で使えるところまで届ける',
  productsLead:'在庫管理から始め、必要に応じて承認・帳票・分析へ広げられます。デスクトップ型の業務ソフトを、買い切りまたは保守付きの月額プランで提供します。',
  plansTitle:'2つの製品、2つの契約方法',plansIntro:'各カードで、買い切りと月額プランを切り替えて確認できます。初期表示は買い切りです。',coverageTitle:'対応範囲を比較',howTitle:'導入は3ステップ',
  demoTitle:'IMS Starterの無料デモ',demoDesc:'現在、操作できる無料デモはIMS Starterのみです。デモは別タブで開き、閉じると元のProductsページに戻ります。',
