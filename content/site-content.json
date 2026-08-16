@@ -11,7 +11,7 @@
     },
     "link": "news.html"
   },
-  "newsFallbackImage": "assets/news-fallback-user.svg",
+  "newsFallbackImage": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-211414-ChatGPT-Image-Aug-16-2026-08_58_09-PM-1f5fe7.png",
   "instagram": {
     "profileUrl": "https://www.instagram.com/kale1999_?igsi=MXRzYnp5eGl2b3NxMw%3D%3D&utm_source=qr",
     "handle": "@kale1999_",
