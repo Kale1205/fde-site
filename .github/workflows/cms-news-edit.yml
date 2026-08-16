@@ -1,0 +1,78 @@
+name: CMS - Edit News
+run-name: "CMS Edit News: ${{ inputs.news_id }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      news_id:
+        description: "編集するNews ID"
+        required: true
+        type: string
+      title_ja:
+        description: "タイトル（日本語）"
+        required: true
+        type: string
+      title_en:
+        description: "Title (English)"
+        required: true
+        type: string
+      body_ja:
+        description: "本文・概要（日本語）"
+        required: true
+        type: string
+      body_en:
+        description: "Body / summary (English)"
+        required: true
+        type: string
+      category:
+        description: "Category"
+        required: true
+        default: "Development"
+        type: choice
+        options: [Product, Development, Social]
+      link:
+        description: "リンク先"
+        required: true
+        type: string
+      date:
+        description: "日付 YYYY-MM-DD"
+        required: false
+        type: string
+      featured:
+        description: "Newsトップのメイン記事にする"
+        required: true
+        default: false
+        type: boolean
+      image_url:
+        description: "画像URLまたはリポジトリ内パス（空欄で画像なし）"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Edit News
+        env:
+          NEWS_ID: ${{ inputs.news_id }}
+          TITLE_JA: ${{ inputs.title_ja }}
+          TITLE_EN: ${{ inputs.title_en }}
+          BODY_JA: ${{ inputs.body_ja }}
+          BODY_EN: ${{ inputs.body_en }}
+          CATEGORY: ${{ inputs.category }}
+          LINK: ${{ inputs.link }}
+          DATE: ${{ inputs.date }}
+          FEATURED: ${{ inputs.featured }}
+          IMAGE_URL: ${{ inputs.image_url }}
+        run: python .github/scripts/cms_update.py edit_news
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/site-content.json
+          git commit -m "CMS: edit News item"
+          git push
