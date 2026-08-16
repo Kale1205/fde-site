@@ -1,5 +1,6 @@
 (()=>{
 let CMS=null;
+const CMS_URL='https://raw.githubusercontent.com/Kale1205/fde-site/main/content/site-content.json';
 const lang=()=>document.documentElement.lang||localStorage.getItem('fde-lang')||'ja';
 const pick=obj=>{if(obj==null)return'';if(typeof obj==='string')return obj;const l=lang();return obj[l]||obj.en||obj.ja||Object.values(obj)[0]||''};
 const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -30,7 +31,7 @@ function renderInstagram(){
  const media=d.image?`<div class="instagram-photo"><img src="${attr(d.image)}" alt="${attr(d.handle||'Instagram')}"></div>`:`<div class="instagram-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.4" cy="6.7" r="1"></circle></svg></div>`;
  box.innerHTML=`${media}<div class="instagram-copy"><small>Instagram / Creative</small><h2>${esc(d.handle||'Instagram')}</h2><p>${esc(pick(d.description))}</p></div><div class="instagram-cta">Instagram ↗</div>`;
 }
-async function load(){try{const r=await fetch(`content/site-content.json?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);CMS=await r.json();renderStrip();renderNews();renderInstagram();}catch(e){console.warn('CMS content load failed',e)}}
+async function load(){try{const r=await fetch(`${CMS_URL}?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);CMS=await r.json();renderStrip();renderNews();renderInstagram();}catch(e){console.warn('CMS content load failed',e)}}
 document.addEventListener('DOMContentLoaded',()=>{load();const sel=document.getElementById('lang');if(sel)sel.addEventListener('change',()=>setTimeout(()=>{renderStrip();renderNews();renderInstagram()},0));new MutationObserver(()=>{renderStrip();renderNews();renderInstagram()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});});
 document.addEventListener('click',e=>{const a=e.target.closest('[data-demo-open]');if(!a||!document.body.classList.contains('cms-news-page'))return;e.preventDefault();const w=window.open('demo.html','KalesFDE_IMS_Demo');if(w)w.focus();else window.location.href='demo.html';});
 })();
