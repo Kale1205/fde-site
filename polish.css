@@ -1,0 +1,19 @@
+/* Language and copy polish */
+html[lang="ja"] [data-origin-note]{display:none!important}
+.display,.section-title,.lede,.section-copy,.editorial-card h3,.principle h3,.model-explainer{text-wrap:balance}
+p,.faq-a,.form-notice{text-wrap:pretty}
+
+/* Same-page inquiry confirmation and completion states */
+.inquiry-state{max-width:820px;margin:0 auto;border:1px solid var(--line);border-radius:24px;background:#fff;padding:34px;box-shadow:0 18px 50px rgba(16,52,115,.08)}
+.inquiry-state[hidden]{display:none!important}
+.inquiry-state .state-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--pale);color:var(--blue);font-weight:900;margin-bottom:18px}
+.inquiry-state h2{margin:8px 0 22px;font-size:clamp(28px,4vw,40px);line-height:1.2;color:var(--ink)}
+.confirm-summary{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:24px 0;padding:8px 0}
+.confirm-row{display:grid;grid-template-columns:190px 1fr;gap:22px;padding:13px 4px;border-bottom:1px solid #edf1f7}
+.confirm-row:last-child{border-bottom:0}.confirm-row strong{color:var(--muted);font-size:12px}.confirm-row span{white-space:pre-wrap;overflow-wrap:anywhere}
+.inquiry-complete{text-align:center}.inquiry-complete .state-icon{margin-left:auto;margin-right:auto;background:#eaf7ef;color:#187247}.inquiry-complete p{color:var(--muted);margin-bottom:24px}
+
+/* Origin note is a service-provider cue, not a product-origin claim. */
+[data-origin-note]{font-weight:750}
+
+@media(max-width:620px){.inquiry-state{padding:22px}.confirm-row{grid-template-columns:1fr;gap:4px}.display,.section-title{text-wrap:pretty}}
