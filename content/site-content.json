@@ -114,13 +114,33 @@
     },
     {
       "id": "faq-20260818-78170ddc",
+      "translationStatus": "translated",
       "question": {
-        "ja": "てすと"
+        "ja": "てすと",
+        "en": "Test",
+        "zh-CN": "测试",
+        "zh-TW": "測試",
+        "ko": "테스트",
+        "id": "Tes",
+        "ms": "Ujian",
+        "vi": "Kiểm tra",
+        "th": "ทดสอบ",
+        "hi": "परीक्षण",
+        "ar": "اختبار"
       },
       "answer": {
-        "ja": "おっけー"
-      },
-      "translationStatus": "pending"
+        "ja": "おっけー",
+        "en": "Okay",
+        "zh-CN": "好的",
+        "zh-TW": "好的",
+        "ko": "좋습니다",
+        "id": "Oke",
+        "ms": "Baik",
+        "vi": "Được",
+        "th": "ตกลง",
+        "hi": "ठीक है",
+        "ar": "حسنًا"
+      }
     }
   ],
   "news": [
@@ -131,13 +151,32 @@
       "featured": true,
       "link": "demo.html",
       "image": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png",
+      "translationStatus": "translated",
       "title": {
         "ja": "IMS Starter デモ v0.1.0 を公開",
-        "en": "IMS Starter demo v0.1.0 released"
+        "en": "IMS Starter demo v0.1.0 released",
+        "zh-CN": "IMS Starter 演示 v0.1.0 已发布",
+        "zh-TW": "IMS Starter 示範 v0.1.0 已發布",
+        "ko": "IMS Starter 데모 v0.1.0 공개",
+        "id": "Demo IMS Starter v0.1.0 dirilis",
+        "ms": "Demo IMS Starter v0.1.0 diterbitkan",
+        "vi": "Đã phát hành bản demo IMS Starter v0.1.0",
+        "th": "เปิดตัวเดโม IMS Starter v0.1.0",
+        "hi": "IMS Starter डेमो v0.1.0 जारी",
+        "ar": "إصدار العرض التجريبي IMS Starter v0.1.0"
       },
       "body": {
         "ja": "在庫一覧、検索、入出庫操作、在庫アラートを試せる初回デモを公開しました。",
-        "en": "The first interactive demo is now available with inventory search, stock movements and low-stock alerts."
+        "en": "The first interactive demo is now available with inventory search, stock movements and low-stock alerts.",
+        "zh-CN": "首个交互式演示现已发布，可体验库存搜索、入库与出库操作以及低库存提醒。",
+        "zh-TW": "首個互動式示範現已發布，可體驗庫存搜尋、入庫與出庫操作以及低庫存提醒。",
+        "ko": "재고 검색, 입출고 작업, 재고 부족 알림을 체험할 수 있는 첫 번째 인터랙티브 데모를 공개했습니다.",
+        "id": "Demo interaktif pertama kini tersedia dengan pencarian inventaris, pergerakan stok, dan peringatan stok rendah.",
+        "ms": "Demo interaktif pertama kini tersedia dengan carian inventori, pergerakan stok dan amaran stok rendah.",
+        "vi": "Bản demo tương tác đầu tiên hiện đã có, với chức năng tìm kiếm tồn kho, nhập xuất kho và cảnh báo tồn kho thấp.",
+        "th": "เดโมแบบโต้ตอบครั้งแรกพร้อมให้ใช้งานแล้ว โดยสามารถทดลองค้นหาสินค้าคงคลัง การรับเข้าและจ่ายออก และการแจ้งเตือนสต็อกต่ำ",
+        "hi": "पहला इंटरैक्टिव डेमो अब उपलब्ध है, जिसमें इन्वेंटरी खोज, स्टॉक आवक-जावक और कम स्टॉक अलर्ट शामिल हैं।",
+        "ar": "أصبح العرض التجريبي التفاعلي الأول متاحًا الآن، ويشمل البحث في المخزون وحركات الإدخال والإخراج وتنبيهات انخفاض المخزون."
       }
     },
     {
@@ -147,13 +186,32 @@
       "featured": false,
       "link": "index.html",
       "image": "",
+      "translationStatus": "translated",
       "title": {
         "ja": "Kale’s FDE サイトを更新",
-        "en": "Kale’s FDE website updated"
+        "en": "Kale’s FDE website updated",
+        "zh-CN": "Kale’s FDE 网站已更新",
+        "zh-TW": "Kale’s FDE 網站已更新",
+        "ko": "Kale’s FDE 웹사이트 업데이트",
+        "id": "Situs Kale’s FDE diperbarui",
+        "ms": "Laman Kale’s FDE dikemas kini",
+        "vi": "Đã cập nhật trang web Kale’s FDE",
+        "th": "อัปเดตเว็บไซต์ Kale’s FDE",
+        "hi": "Kale’s FDE वेबसाइट अपडेट की गई",
+        "ar": "تم تحديث موقع Kale’s FDE"
       },
       "body": {
         "ja": "Products、Why FDE、Kale’s Goals、Contactを中心に情報構成と多言語表示を整理しました。",
-        "en": "The site structure and multilingual presentation have been refined around Products, Why FDE, Kale’s Goals and Contact."
+        "en": "The site structure and multilingual presentation have been refined around Products, Why FDE, Kale’s Goals and Contact.",
+        "zh-CN": "我们围绕 Products、Why FDE、Kale’s Goals 和 Contact 优化了网站结构与多语言显示。",
+        "zh-TW": "我們圍繞 Products、Why FDE、Kale’s Goals 與 Contact 優化了網站結構與多語言顯示。",
+        "ko": "Products, Why FDE, Kale’s Goals, Contact를 중심으로 사이트 구조와 다국어 표시를 정리했습니다.",
+        "id": "Struktur situs dan tampilan multibahasa telah disempurnakan dengan fokus pada Products, Why FDE, Kale’s Goals, dan Contact.",
+        "ms": "Struktur laman dan paparan berbilang bahasa telah diperhalusi dengan fokus pada Products, Why FDE, Kale’s Goals dan Contact.",
+        "vi": "Cấu trúc trang web và cách hiển thị đa ngôn ngữ đã được tinh chỉnh, tập trung vào Products, Why FDE, Kale’s Goals và Contact.",
+        "th": "ได้ปรับโครงสร้างเว็บไซต์และการแสดงผลหลายภาษา โดยเน้นที่ Products, Why FDE, Kale’s Goals และ Contact",
+        "hi": "Products, Why FDE, Kale’s Goals और Contact पर केंद्रित साइट संरचना और बहुभाषी प्रस्तुति को बेहतर किया गया है।",
+        "ar": "تم تحسين بنية الموقع والعرض متعدد اللغات مع التركيز على Products وWhy FDE وKale’s Goals وContact."
       }
     }
   ]
