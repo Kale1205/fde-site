@@ -7,7 +7,7 @@ if(location.pathname.endsWith('/cms-admin.html')||location.pathname.endsWith('cm
   const writeSessionKey=value=>{try{if(value)sessionStorage.setItem(ADMIN_KEY_SESSION,value);else sessionStorage.removeItem(ADMIN_KEY_SESSION)}catch{}};
   const syncAdminKeyFields=value=>{const key=String(value??readSessionKey()).trim();if(!key)return;KEY_SELECTORS.forEach(sel=>{const el=document.querySelector(sel);if(el&&el.value!==key)el.value=key})};
   window.FDE_ADMIN_KEY={get:readSessionKey,set(value){const key=String(value||'').trim();writeSessionKey(key);syncAdminKeyFields(key);return key},clear(){writeSessionKey('');KEY_SELECTORS.forEach(sel=>{const el=document.querySelector(sel);if(el)el.value=''})}};
-  document.addEventListener('input',e=>{const el=e.target;if(!(el instanceof HTMLInputElement))return;if(KEY_SELECTORS.some(sel=>el.matches(sel))){const key=el.value.trim();if(key){writeSessionKey(key);syncAdminKeyFields(key)}}},true);
+  document.addEventListener('input',e=>{const el=e.target;if(!(el instanceof HTMLInputElement))return;if(KEY_SELECTORS.some(sel=>el.matches(sel))){const key=el.value.trim();writeSessionKey(key);if(key)syncAdminKeyFields(key)}},true);
 
   if(!window.__FDE_CMS_SCROLL_PATCHED__){window.__FDE_CMS_SCROLL_PATCHED__=true;const nativeScrollIntoView=Element.prototype.scrollIntoView;Element.prototype.scrollIntoView=function(...args){if(this?.id==='adminStatus')return;return nativeScrollIntoView.apply(this,args)}}
 
