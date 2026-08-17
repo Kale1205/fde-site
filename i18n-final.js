@@ -25,7 +25,7 @@ const PORTAL_LABELS={
   hi:'ग्राहक पोर्टल / ऑर्डर स्थिति ↗',
   ar:'بوابة العملاء / حالة الطلب ↗'
 };
-function currentLang(){return document.documentElement.lang||localStorage.getItem('fde-lang')||'ja'}
+function currentLang(){return document.querySelector('#lang')?.value||localStorage.getItem('fde-lang')||document.documentElement.lang||'ja'}
 function portalLabel(){const l=currentLang();return PORTAL_LABELS[l]||PORTAL_LABELS.en}
 function ensurePortal(){
   if(location.pathname.endsWith('/customer.html')||location.pathname.endsWith('customer.html'))return;
