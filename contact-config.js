@@ -11,9 +11,9 @@ if(location.pathname.endsWith('/cms-admin.html')||location.pathname.endsWith('cm
     };
   }
   [
-    'order-status-admin.js?v=20260818-0743',
-    'customer-orders-admin.js?v=20260818-0743',
-    'order-documents-admin.js?v=20260818-0743'
+    'order-status-admin.js?v=20260818-0805',
+    'customer-orders-admin.js?v=20260818-0805',
+    'order-documents-admin.js?v=20260818-0805'
   ].forEach(src=>{
     const s=document.createElement('script');
     s.src=src;
