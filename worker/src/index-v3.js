@@ -7,6 +7,8 @@ function json(data,status,origin,allowedOrigin){return new Response(JSON.stringi
 
 export default{
   async fetch(request,env,ctx){
+    const url=new URL(request.url);
+    if(request.method==='GET'&&url.pathname==='/health')return new Response(JSON.stringify({ok:true,service:'kales-fde-contact',version:'admin-orders-v1'}),{status:200,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}});
     if(request.method!=='POST')return baseWorker.fetch(request,env,ctx);
     const origin=request.headers.get('Origin')||'';
     const allowedOrigin=env.ALLOWED_ORIGIN||'https://kale1205.github.io';
