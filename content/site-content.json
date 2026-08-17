@@ -24,35 +24,92 @@
   "faq": [
     {
       "id": "payment-after-purchase",
+      "translationStatus": "translated",
       "question": {
         "ja": "買い切り後に月額料金は発生しますか？",
-        "en": "Is there a monthly fee after a one-time purchase?"
+        "en": "Is there a monthly fee after a one-time purchase?",
+        "zh-CN": "一次性购买后还会产生月费吗？",
+        "zh-TW": "買斷後還會產生月費嗎？",
+        "ko": "일회성 구매 후에도 월 요금이 발생하나요?",
+        "id": "Apakah ada biaya bulanan setelah pembelian satu kali?",
+        "ms": "Adakah yuran bulanan selepas pembelian sekali bayar?",
+        "vi": "Sau khi mua một lần có phát sinh phí hàng tháng không?",
+        "th": "หลังจากซื้อแบบครั้งเดียวแล้ว มีค่าบริการรายเดือนหรือไม่?",
+        "hi": "एकमुश्त खरीद के बाद क्या मासिक शुल्क लगता है?",
+        "ar": "هل توجد رسوم شهرية بعد الشراء لمرة واحدة؟"
       },
       "answer": {
         "ja": "買い切りプランでは、基本利用に必須の月額料金はありません。継続的な更新や保守が必要な場合は月額プランを選択できます。",
-        "en": "The one-time purchase plan does not require a monthly fee for basic use. A monthly plan is available if you need ongoing updates and maintenance."
+        "en": "The one-time purchase plan does not require a monthly fee for basic use. A monthly plan is available if you need ongoing updates and maintenance.",
+        "zh-CN": "一次性购买方案的基本使用无需支付月费。如需持续更新和维护，可选择月度方案。",
+        "zh-TW": "買斷方案的基本使用不需要支付月費。如需持續更新與維護，可選擇月費方案。",
+        "ko": "일회성 구매 플랜은 기본 사용에 필수적인 월 요금이 없습니다. 지속적인 업데이트와 유지보수가 필요하면 월간 플랜을 선택할 수 있습니다.",
+        "id": "Paket pembelian satu kali tidak memerlukan biaya bulanan untuk penggunaan dasar. Jika Anda memerlukan pembaruan dan pemeliharaan berkelanjutan, Anda dapat memilih paket bulanan.",
+        "ms": "Pelan pembelian sekali bayar tidak memerlukan yuran bulanan untuk penggunaan asas. Jika anda memerlukan kemas kini dan penyelenggaraan berterusan, anda boleh memilih pelan bulanan.",
+        "vi": "Gói mua một lần không yêu cầu phí hàng tháng cho việc sử dụng cơ bản. Nếu cần cập nhật và bảo trì liên tục, bạn có thể chọn gói hàng tháng.",
+        "th": "แผนซื้อครั้งเดียวไม่มีค่าบริการรายเดือนที่จำเป็นสำหรับการใช้งานพื้นฐาน หากต้องการการอัปเดตและการบำรุงรักษาอย่างต่อเนื่อง สามารถเลือกแผนรายเดือนได้",
+        "hi": "एकमुश्त खरीद योजना में बुनियादी उपयोग के लिए कोई अनिवार्य मासिक शुल्क नहीं है। यदि आपको निरंतर अपडेट और रखरखाव चाहिए, तो मासिक योजना चुनी जा सकती है।",
+        "ar": "لا تتطلب خطة الشراء لمرة واحدة رسوماً شهرية للاستخدام الأساسي. إذا كنت بحاجة إلى تحديثات وصيانة مستمرة، يمكنك اختيار الخطة الشهرية."
       }
     },
     {
       "id": "source-customization",
+      "translationStatus": "translated",
       "question": {
         "ja": "自社向けに変更できますか？",
-        "en": "Can we modify the software for our own company?"
+        "en": "Can we modify the software for our own company?",
+        "zh-CN": "可以根据本公司的需求进行修改吗？",
+        "zh-TW": "可以依照本公司的需求進行修改嗎？",
+        "ko": "우리 회사에 맞게 수정할 수 있나요?",
+        "id": "Apakah perangkat lunak dapat diubah untuk kebutuhan perusahaan kami?",
+        "ms": "Bolehkah perisian diubah mengikut keperluan syarikat kami?",
+        "vi": "Có thể chỉnh sửa phần mềm cho phù hợp với công ty của chúng tôi không?",
+        "th": "สามารถปรับแก้ซอฟต์แวร์ให้เหมาะกับบริษัทของเราได้หรือไม่?",
+        "hi": "क्या सॉफ़्टवेयर को हमारी कंपनी के अनुसार बदला जा सकता है?",
+        "ar": "هل يمكن تعديل البرنامج ليناسب شركتنا؟"
       },
       "answer": {
         "ja": "標準製品を優先します。ソースコードを付属するため、自社または外部エンジニアによる拡張が可能です。個別カスタム開発は基本サービスに含みません。",
-        "en": "The standard product is prioritized. Source code is included, so your internal team or an external engineer can extend it. Bespoke development is not included in the standard service."
+        "en": "The standard product is prioritized. Source code is included, so your internal team or an external engineer can extend it. Bespoke development is not included in the standard service.",
+        "zh-CN": "我们优先提供标准产品。产品附带源代码，因此可以由贵公司的内部团队或外部工程师进行扩展。个别定制开发不包含在标准服务中。",
+        "zh-TW": "我們優先提供標準產品。產品附帶原始碼，因此可由貴公司的內部團隊或外部工程師進行擴充。個別客製開發不包含在標準服務中。",
+        "ko": "표준 제품 제공을 우선합니다. 소스 코드가 포함되어 있어 사내 팀이나 외부 엔지니어가 확장할 수 있습니다. 개별 맞춤 개발은 기본 서비스에 포함되지 않습니다.",
+        "id": "Kami memprioritaskan produk standar. Kode sumber disertakan, sehingga tim internal Anda atau engineer eksternal dapat melakukan pengembangan lebih lanjut. Pengembangan khusus per perusahaan tidak termasuk dalam layanan standar.",
+        "ms": "Kami mengutamakan produk standard. Kod sumber disertakan, jadi pasukan dalaman anda atau jurutera luar boleh membuat pengembangan lanjut. Pembangunan tersuai secara individu tidak termasuk dalam perkhidmatan standard.",
+        "vi": "Chúng tôi ưu tiên sản phẩm tiêu chuẩn. Mã nguồn được cung cấp kèm theo, vì vậy đội ngũ nội bộ hoặc kỹ sư bên ngoài có thể mở rộng hệ thống. Phát triển tùy chỉnh riêng cho từng doanh nghiệp không nằm trong dịch vụ tiêu chuẩn.",
+        "th": "เราให้ความสำคัญกับผลิตภัณฑ์มาตรฐานเป็นหลัก โดยมีซอร์สโค้ดให้มาด้วย จึงสามารถขยายระบบโดยทีมภายในหรือวิศวกรภายนอกได้ การพัฒนาแบบเฉพาะรายไม่รวมอยู่ในบริการมาตรฐาน",
+        "hi": "हम मानक उत्पाद को प्राथमिकता देते हैं। स्रोत कोड शामिल होता है, इसलिए आपकी आंतरिक टीम या बाहरी इंजीनियर इसे आगे बढ़ा सकते हैं। अलग से कस्टम विकास मानक सेवा में शामिल नहीं है।",
+        "ar": "نعطي الأولوية للمنتج القياسي. يتم تضمين الشيفرة المصدرية، لذلك يمكن لفريقك الداخلي أو لمهندس خارجي توسيع النظام. التطوير المخصص لكل شركة غير مشمول في الخدمة القياسية."
       }
     },
     {
       "id": "international-use",
+      "translationStatus": "translated",
       "question": {
         "ja": "海外企業でも利用できますか？",
-        "en": "Can companies outside Japan use the products?"
+        "en": "Can companies outside Japan use the products?",
+        "zh-CN": "日本以外的企业也可以使用这些产品吗？",
+        "zh-TW": "日本以外的企業也可以使用這些產品嗎？",
+        "ko": "일본 외 국가의 기업도 사용할 수 있나요?",
+        "id": "Apakah perusahaan di luar Jepang dapat menggunakan produk ini?",
+        "ms": "Bolehkah syarikat di luar Jepun menggunakan produk ini?",
+        "vi": "Doanh nghiệp ngoài Nhật Bản có thể sử dụng sản phẩm không?",
+        "th": "บริษัทนอกประเทศญี่ปุ่นสามารถใช้ผลิตภัณฑ์ได้หรือไม่?",
+        "hi": "क्या जापान के बाहर की कंपनियाँ इन उत्पादों का उपयोग कर सकती हैं?",
+        "ar": "هل يمكن للشركات خارج اليابان استخدام المنتجات؟"
       },
       "answer": {
         "ja": "主要言語の固定UIを用意しています。提供条件や利用可能時期についてはお問い合わせください。",
-        "en": "The site and product information support major languages. Please contact us regarding availability and delivery conditions for your region."
+        "en": "The site and product information support major languages. Please contact us regarding availability and delivery conditions for your region.",
+        "zh-CN": "网站和产品信息支持主要语言。有关您所在地区的提供条件和可用时间，请联系我们。",
+        "zh-TW": "網站與產品資訊支援主要語言。關於您所在地區的提供條件與可用時間，請與我們聯絡。",
+        "ko": "사이트와 제품 정보는 주요 언어를 지원합니다. 지역별 제공 조건과 이용 가능 시기는 문의해 주세요.",
+        "id": "Situs dan informasi produk mendukung bahasa-bahasa utama. Silakan hubungi kami untuk mengetahui ketersediaan dan ketentuan penyediaan di wilayah Anda.",
+        "ms": "Laman dan maklumat produk menyokong bahasa-bahasa utama. Sila hubungi kami untuk mengetahui ketersediaan dan syarat penyediaan di wilayah anda.",
+        "vi": "Trang web và thông tin sản phẩm hỗ trợ các ngôn ngữ chính. Vui lòng liên hệ với chúng tôi để biết điều kiện cung cấp và thời điểm khả dụng tại khu vực của bạn.",
+        "th": "เว็บไซต์และข้อมูลผลิตภัณฑ์รองรับภาษาหลักหลายภาษา กรุณาติดต่อเราเพื่อสอบถามเงื่อนไขการให้บริการและช่วงเวลาที่สามารถใช้งานได้ในภูมิภาคของคุณ",
+        "hi": "वेबसाइट और उत्पाद जानकारी प्रमुख भाषाओं का समर्थन करती है। आपके क्षेत्र में उपलब्धता और आपूर्ति की शर्तों के लिए कृपया हमसे संपर्क करें।",
+        "ar": "يدعم الموقع ومعلومات المنتج اللغات الرئيسية. يرجى التواصل معنا لمعرفة شروط التوفير وموعد الإتاحة في منطقتك."
       }
     }
   ],
