@@ -2,24 +2,77 @@
 const OWNER='Kale1205',REPO='fde-site',BRANCH='main';
 const API=`https://api.github.com/repos/${OWNER}/${REPO}`;
 const PATH='content/site-content.json';
+const ENDPOINT=String(window.FDE_CONTACT_API||'').trim();
 const $=s=>document.querySelector(s);
 let currentFaq=[];
 const headers=()=>({'Accept':'application/vnd.github+json','Authorization':`Bearer ${($('#token')?.value||'').trim()}`,'X-GitHub-Api-Version':'2022-11-28'});
 const decode=b64=>new TextDecoder().decode(Uint8Array.from(atob(String(b64).replace(/\n/g,'')),c=>c.charCodeAt(0)));
 const encode=text=>{const bytes=new TextEncoder().encode(text);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin)};
-function show(msg,type=''){const el=$('#adminStatus');if(!el)return;el.textContent=msg;el.className=`status ${type}`.trim();el.hidden=false;el.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function show(msg,type=''){const el=$('#adminStatus');if(!el)return;el.textContent=msg;el.className=`status ${type}`.trim();el.hidden=false}
 function token(){return ($('#token')?.value||'').trim()}
+function adminKey(){return ($('#faqAdminKey')?.value||$('#ordersAdminKey')?.value||$('#fulfillmentKey')?.value||$('#adminStatusKey')?.value||'').trim()}
 function uid(){const d=new Date();const stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;const rand=crypto.getRandomValues(new Uint32Array(1))[0].toString(16).padStart(8,'0').slice(0,8);return`faq-${stamp}-${rand}`}
 async function readCms(){if(!token())throw new Error('先にGitHubへ接続してください。');const r=await fetch(`${API}/contents/${PATH}?ref=${encodeURIComponent(BRANCH)}&t=${Date.now()}`,{headers:headers(),cache:'no-store'});if(!r.ok){let m='';try{m=(await r.json()).message||''}catch{}throw new Error(`${r.status} ${m}`.trim())}const f=await r.json();return{sha:f.sha,data:JSON.parse(decode(f.content))}}
 async function writeCms(data,sha,message){const r=await fetch(`${API}/contents/${PATH}`,{method:'PUT',headers:{...headers(),'Content-Type':'application/json'},body:JSON.stringify({message,content:encode(JSON.stringify(data,null,2)+'\n'),sha,branch:BRANCH})});if(!r.ok){let m='';try{m=(await r.json()).message||''}catch{}throw new Error(`${r.status} ${m}`.trim())}return r.json()}
+async function translate(q,a){
+ if(!ENDPOINT)throw new Error('TRANSLATION_ENDPOINT_NOT_CONFIGURED');
+ const key=adminKey();if(!key)throw new Error('ADMIN_KEY_REQUIRED');
+ const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({type:'admin_faq_translate',adminKey:key,questionJa:q,answerJa:a})});
+ const data=await r.json().catch(()=>({}));
+ if(!r.ok||data.ok===false)throw new Error(data.error||`HTTP_${r.status}`);
+ return data.translations||{};
+}
+function multilingualFaq(id,q,a,translations){
+ const question={ja:q},answer={ja:a};
+ Object.entries(translations).forEach(([lang,v])=>{if(v?.question&&v?.answer){question[lang]=String(v.question).trim();answer[lang]=String(v.answer).trim()}});
+ return{id,translationStatus:'translated',question,answer};
+}
+function errorText(code){const map={ADMIN_KEY_REQUIRED:'FAQの自動翻訳にはAdmin fulfillment keyを入力してください。',ADMIN_AUTH_FAILED:'Admin fulfillment keyが一致しません。',ADMIN_FULFILLMENT_NOT_CONFIGURED:'Cloudflare WorkerにADMIN_FULFILLMENT_KEYが設定されていません。',AI_NOT_CONFIGURED:'Cloudflare Workers AI bindingが有効になっていません。最新WorkerをDeploy / Promoteしてください。',FAQ_TRANSLATION_FAILED:'FAQの自動翻訳に失敗しました。保存は行っていません。',TRANSLATION_ENDPOINT_NOT_CONFIGURED:'Cloudflare WorkerのURLが設定されていません。'};return map[code]||code}
 function renderOptions(preferred=''){const sel=$('#editFaqTarget');if(!sel)return;const prev=preferred||sel.value;sel.innerHTML='';currentFaq.forEach(item=>{const o=document.createElement('option');o.value=item.id;o.textContent=item.question?.ja||item.id;sel.appendChild(o)});sel.disabled=!currentFaq.length;if(prev&&currentFaq.some(x=>x.id===prev))sel.value=prev;populate()}
 function populate(){const id=$('#editFaqTarget')?.value;const item=currentFaq.find(x=>x.id===id);const fields=$('#editFaqFields');if(fields)fields.classList.toggle('hidden',!item);if(!item)return;$('#faqEditQJa').value=item.question?.ja||'';$('#faqEditAJa').value=item.answer?.ja||'';if($('#faqEditQEn'))$('#faqEditQEn').value=item.question?.en||'';if($('#faqEditAEn'))$('#faqEditAEn').value=item.answer?.en||''}
 async function refresh(preferred=''){try{const {data}=await readCms();currentFaq=Array.isArray(data.faq)?data.faq:[];renderOptions(preferred)}catch(e){show(`FAQの読み込みに失敗しました: ${e.message}`,'error')}}
-async function create(){const q=($('#faqCreateQJa')?.value||'').trim(),a=($('#faqCreateAJa')?.value||'').trim();if(!q||!a){show('FAQの質問と回答を日本語で入力してください。','error');return}const btn=$('#createFaqBtn');btn.disabled=true;try{const {sha,data}=await readCms();data.faq=Array.isArray(data.faq)?data.faq:[];const id=uid();data.faq.push({id,question:{ja:q},answer:{ja:a},translationStatus:'pending'});await writeCms(data,sha,`CMS: add FAQ ${q}`);$('#faqCreateQJa').value='';$('#faqCreateAJa').value='';currentFaq=data.faq;renderOptions(id);show(`FAQ「${q}」を追加しました。日本語版は公開済みです。`,'success')}catch(e){show(`FAQ追加に失敗しました: ${e.message}`,'error')}finally{btn.disabled=false}}
-async function save(){const id=$('#editFaqTarget')?.value,q=($('#faqEditQJa')?.value||'').trim(),a=($('#faqEditAJa')?.value||'').trim();if(!id||!q||!a){show('編集するFAQの質問と回答を日本語で入力してください。','error');return}const btn=$('#saveFaqBtn');btn.disabled=true;try{const {sha,data}=await readCms();data.faq=Array.isArray(data.faq)?data.faq:[];const item=data.faq.find(x=>x.id===id);if(!item)throw new Error('編集対象のFAQが見つかりません。');item.question=item.question||{};item.answer=item.answer||{};item.question.ja=q;item.answer.ja=a;item.translationStatus='pending';await writeCms(data,sha,`CMS: edit FAQ ${q}`);currentFaq=data.faq;renderOptions(id);show(`FAQ「${q}」を更新しました。日本語版は公開済みです。`,'success')}catch(e){show(`FAQ更新に失敗しました: ${e.message}`,'error')}finally{btn.disabled=false}}
+async function create(){
+ const q=($('#faqCreateQJa')?.value||'').trim(),a=($('#faqCreateAJa')?.value||'').trim();
+ if(!q||!a){show('FAQの質問と回答を日本語で入力してください。','error');return}
+ const btn=$('#createFaqBtn');btn.disabled=true;const old=btn.textContent;btn.textContent='翻訳・保存中…';
+ try{
+   show('日本語FAQを10言語へ自動翻訳しています…');
+   const translations=await translate(q,a);
+   const {sha,data}=await readCms();data.faq=Array.isArray(data.faq)?data.faq:[];
+   const id=uid();data.faq.push(multilingualFaq(id,q,a,translations));
+   await writeCms(data,sha,`CMS: add multilingual FAQ ${q}`);
+   $('#faqCreateQJa').value='';$('#faqCreateAJa').value='';currentFaq=data.faq;renderOptions(id);
+   show(`FAQ「${q}」を追加し、全対応言語へ自動翻訳しました。`,'success');
+ }catch(e){show(`FAQ追加に失敗しました: ${errorText(e.message)}`,'error')}finally{btn.disabled=false;btn.textContent=old}
+}
+async function save(){
+ const id=$('#editFaqTarget')?.value,q=($('#faqEditQJa')?.value||'').trim(),a=($('#faqEditAJa')?.value||'').trim();
+ if(!id||!q||!a){show('編集するFAQの質問と回答を日本語で入力してください。','error');return}
+ const btn=$('#saveFaqBtn');btn.disabled=true;const old=btn.textContent;btn.textContent='翻訳・保存中…';
+ try{
+   show('変更内容を10言語へ自動翻訳しています…');
+   const translations=await translate(q,a);
+   const {sha,data}=await readCms();data.faq=Array.isArray(data.faq)?data.faq:[];
+   const index=data.faq.findIndex(x=>x.id===id);if(index<0)throw new Error('編集対象のFAQが見つかりません。');
+   data.faq[index]=multilingualFaq(id,q,a,translations);
+   await writeCms(data,sha,`CMS: edit multilingual FAQ ${q}`);
+   currentFaq=data.faq;renderOptions(id);
+   show(`FAQ「${q}」を更新し、全対応言語を再翻訳しました。`,'success');
+ }catch(e){show(`FAQ更新に失敗しました: ${errorText(e.message)}`,'error')}finally{btn.disabled=false;btn.textContent=old}
+}
 async function remove(){const id=$('#editFaqTarget')?.value,item=currentFaq.find(x=>x.id===id);if(!item)return;const title=item.question?.ja||id;if(!confirm(`FAQ「${title}」を削除します。\nこの操作を続けますか？`))return;const btn=$('#deleteFaqBtn');btn.disabled=true;try{const {sha,data}=await readCms();data.faq=(Array.isArray(data.faq)?data.faq:[]).filter(x=>x.id!==id);await writeCms(data,sha,`CMS: delete FAQ ${title}`);currentFaq=data.faq;renderOptions();show(`FAQ「${title}」を削除しました。`,'success')}catch(e){show(`FAQ削除に失敗しました: ${e.message}`,'error')}finally{btn.disabled=false}}
-function hideEnglish(){['faqCreateQEn','faqCreateAEn','faqEditQEn','faqEditAEn'].forEach(id=>{const el=$('#'+id);if(el)el.closest('.field')?.setAttribute('hidden','')});const panel=$('#faqPanel');panel?.querySelectorAll('p').forEach(p=>{if(p.textContent.includes('日本語と英語を登録'))p.textContent='質問と回答は日本語だけ入力してください。他言語の翻訳はサイト側の翻訳データとして管理します。'})}
+function prepareUi(){
+ ['faqCreateQEn','faqCreateAEn','faqEditQEn','faqEditAEn'].forEach(id=>{const el=$('#'+id);if(el)el.closest('.field')?.setAttribute('hidden','')});
+ const panel=$('#faqPanel');if(!panel)return;
+ panel.querySelectorAll('p').forEach(p=>{if(p.textContent.includes('他言語')||p.textContent.includes('日本語と英語'))p.textContent='質問と回答は日本語だけ入力してください。追加・更新時に英語、中国語（簡体・繁体）、韓国語、インドネシア語、マレー語、ベトナム語、タイ語、ヒンディー語、アラビア語へ自動翻訳して同時公開します。'});
+ const firstCard=panel.querySelector('.admin-card');
+ if(firstCard&&!$('#faqAdminKey')){
+   const wrap=document.createElement('div');wrap.className='field field-full';
+   wrap.innerHTML='<label for="faqAdminKey">Admin fulfillment key</label><input id="faqAdminKey" type="password" autocomplete="off" placeholder="ADMIN_FULFILLMENT_KEY"><div class="token-note">自動翻訳の管理者認証に使用します。Cloudflare Secretと同じ値を入力してください。この画面では保存しません。</div>';
+   const form=firstCard.querySelector('.admin-form-grid');form?.insertBefore(wrap,form.firstChild);
+ }
+}
 function intercept(e){const id=e.target.closest('button')?.id;if(!['createFaqBtn','saveFaqBtn','deleteFaqBtn'].includes(id))return;e.preventDefault();e.stopImmediatePropagation();if(id==='createFaqBtn')create();else if(id==='saveFaqBtn')save();else remove()}
-function init(){hideEnglish();document.addEventListener('click',intercept,true);$('#editFaqTarget')?.addEventListener('change',e=>{e.stopImmediatePropagation();populate()},true);document.querySelector('[data-admin-tab="faq"]')?.addEventListener('click',()=>setTimeout(()=>refresh(),0));}
+function init(){prepareUi();document.addEventListener('click',intercept,true);$('#editFaqTarget')?.addEventListener('change',e=>{e.stopImmediatePropagation();populate()},true);document.querySelector('[data-admin-tab="faq"]')?.addEventListener('click',()=>setTimeout(()=>refresh(),0));}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
