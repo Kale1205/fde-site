@@ -4,7 +4,7 @@ const API=`https://api.github.com/repos/${OWNER}/${REPO}`;
 const PATH='content/site-content.json';
 const ENDPOINT=String(window.FDE_CONTACT_API||'').trim();
 const $=s=>document.querySelector(s);
-let pending=null;
+let pending=null,backfillRunning=false;
 const replay=new WeakSet();
 const decode=b64=>new TextDecoder().decode(Uint8Array.from(atob(String(b64).replace(/\n/g,'')),c=>c.charCodeAt(0)));
 const encode=text=>{const bytes=new TextEncoder().encode(text);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin)};
@@ -16,38 +16,15 @@ async function readCms(){const r=await fetch(`${API}/contents/${PATH}?ref=${enco
 async function writeCms(data,sha,message){const r=await fetch(`${API}/contents/${PATH}`,{method:'PUT',headers:{...headers(),'Content-Type':'application/json'},body:JSON.stringify({message,content:encode(JSON.stringify(data,null,2)+'\n'),sha,branch:BRANCH})});if(!r.ok)throw new Error(`GitHub ${r.status}`);return r.json()}
 async function translate(title,body){const key=adminKey();if(!key)throw new Error('ADMIN_KEY_REQUIRED');window.FDE_ADMIN_KEY?.set?.(key);const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({type:'admin_translate_fields',adminKey:key,fields:{title,body}})});const data=await r.json().catch(()=>({}));if(!r.ok||data.ok===false)throw new Error(data.error||`HTTP_${r.status}`);return data.translations||{}}
 function errorText(code){const map={ADMIN_KEY_REQUIRED:'Newsの自動翻訳にはAdmin fulfillment keyが必要です。Customers / OrdersまたはFAQで一度入力すると、このタブ中は共通利用できます。',ADMIN_AUTH_FAILED:'Admin fulfillment keyが一致しません。',AI_NOT_CONFIGURED:'Cloudflare Workers AI bindingが本番Workerへ反映されていません。',CONTENT_TRANSLATION_FAILED:'Newsの自動翻訳に失敗しました。保存は開始していません。最新Worker v8がActiveか確認してください。'};return map[code]||code}
-async function prepareAndReplay(btn,mode){
- if(!token()){toast('先にGitHubへ接続してください。','error');return}
- if(!ENDPOINT){toast('Cloudflare WorkerのURLが設定されていません。','error');return}
- const title=mode==='create'?$('#createTitleJa')?.value.trim():$('#editTitleJa')?.value.trim();
- const body=mode==='create'?$('#createBodyJa')?.value.trim():$('#editBodyJa')?.value.trim();
- if(!title||!body){toast('Newsの日本語タイトルと本文を入力してください。','error');return}
- const original=btn.textContent;btn.disabled=true;btn.textContent='翻訳中…';toast('Newsを10言語へ自動翻訳しています…');
- try{
-  const translations=await translate(title,body);
-  const en=translations.en||{};
-  if(mode==='create'){if($('#createTitleEn'))$('#createTitleEn').value=en.title||'';if($('#createBodyEn'))$('#createBodyEn').value=en.body||''}
-  else{if($('#editTitleEn'))$('#editTitleEn').value=en.title||'';if($('#editBodyEn'))$('#editBodyEn').value=en.body||''}
-  pending={mode,id:mode==='save'?$('#editNewsTarget')?.value||'':'',title,translations};
-  replay.add(btn);btn.disabled=false;btn.textContent=original;btn.click();
- }catch(e){btn.disabled=false;btn.textContent=original;toast(`News翻訳に失敗しました: ${errorText(e.message)}`,'error')}
-}
-async function patchSavedNews(){
- const job=pending;if(!job)return;pending=null;
- try{
-  const {sha,data}=await readCms();data.news=Array.isArray(data.news)?data.news:[];
-  let item=job.mode==='save'?data.news.find(n=>n.id===job.id):[...data.news].reverse().find(n=>n.title?.ja===job.title);
-  if(!item)throw new Error('保存されたNewsが見つかりません。');
-  item.title=item.title||{};item.body=item.body||{};item.translationStatus='translated';
-  Object.entries(job.translations).forEach(([locale,v])=>{if(v?.title)item.title[locale]=String(v.title).trim();if(v?.body)item.body[locale]=String(v.body).trim()});
-  await writeCms(data,sha,`CMS: translate News ${job.title}`);
-  try{if('BroadcastChannel'in window){const ch=new BroadcastChannel('fde-cms-updates');ch.postMessage({type:'news-updated',ts:Date.now()});ch.close()}}catch{}
-  toast(`News「${job.title}」を全対応言語へ反映しました。`,'success');
- }catch(e){toast(`News本体は保存されましたが、多言語データの反映に失敗しました: ${e.message}`,'error')}
-}
+function applyTranslations(item,translations){item.title=item.title||{};item.body=item.body||{};item.translationStatus='translated';Object.entries(translations).forEach(([locale,v])=>{if(v?.title)item.title[locale]=String(v.title).trim();if(v?.body)item.body[locale]=String(v.body).trim()})}
+async function prepareAndReplay(btn,mode){if(!token()){toast('先にGitHubへ接続してください。','error');return}if(!ENDPOINT){toast('Cloudflare WorkerのURLが設定されていません。','error');return}const title=mode==='create'?$('#createTitleJa')?.value.trim():$('#editTitleJa')?.value.trim();const body=mode==='create'?$('#createBodyJa')?.value.trim():$('#editBodyJa')?.value.trim();if(!title||!body){toast('Newsの日本語タイトルと本文を入力してください。','error');return}const original=btn.textContent;btn.disabled=true;btn.textContent='翻訳中…';toast('Newsを10言語へ自動翻訳しています…');try{const translations=await translate(title,body);const en=translations.en||{};if(mode==='create'){if($('#createTitleEn'))$('#createTitleEn').value=en.title||'';if($('#createBodyEn'))$('#createBodyEn').value=en.body||''}else{if($('#editTitleEn'))$('#editTitleEn').value=en.title||'';if($('#editBodyEn'))$('#editBodyEn').value=en.body||''}pending={mode,id:mode==='save'?$('#editNewsTarget')?.value||'':'',title,translations};replay.add(btn);btn.disabled=false;btn.textContent=original;btn.click()}catch(e){btn.disabled=false;btn.textContent=original;toast(`News翻訳に失敗しました: ${errorText(e.message)}`,'error')}}
+async function patchSavedNews(){const job=pending;if(!job)return;pending=null;try{const {sha,data}=await readCms();data.news=Array.isArray(data.news)?data.news:[];const item=job.mode==='save'?data.news.find(n=>n.id===job.id):[...data.news].reverse().find(n=>n.title?.ja===job.title);if(!item)throw new Error('保存されたNewsが見つかりません。');applyTranslations(item,job.translations);await writeCms(data,sha,`CMS: translate News ${job.title}`);notifyNewsUpdated();toast(`News「${job.title}」を全対応言語へ反映しました。`,'success')}catch(e){toast(`News本体は保存されましたが、多言語データの反映に失敗しました: ${e.message}`,'error')}}
+function needsTranslation(item){return !!(item?.title?.ja&&item?.body?.ja&&(item.translationStatus!=='translated'||['en','zh-CN','zh-TW','ko','id','ms','vi','th','hi','ar'].some(l=>!item.title?.[l]||!item.body?.[l])))}
+function notifyNewsUpdated(){try{if('BroadcastChannel'in window){const ch=new BroadcastChannel('fde-cms-updates');ch.postMessage({type:'news-updated',ts:Date.now()});ch.close()}}catch{}}
+async function backfillPendingNews(){if(backfillRunning||!token()||!adminKey())return;backfillRunning=true;try{let {sha,data}=await readCms();data.news=Array.isArray(data.news)?data.news:[];const targets=data.news.filter(needsTranslation);if(!targets.length)return;toast(`未翻訳News ${targets.length}件を自動翻訳しています…`);for(const item of targets){const translations=await translate(item.title.ja,item.body.ja);applyTranslations(item,translations)}await writeCms(data,sha,`CMS: backfill multilingual News (${targets.length})`);notifyNewsUpdated();toast(`未翻訳News ${targets.length}件を全対応言語へ反映しました。`,'success')}catch(e){toast(`未翻訳Newsの自動補完に失敗しました: ${errorText(e.message)}`,'error')}finally{backfillRunning=false}}
 function capture(e){const btn=e.target.closest('button');if(!btn||!['createNewsBtn','saveNewsBtn'].includes(btn.id))return;if(replay.has(btn)){replay.delete(btn);return}e.preventDefault();e.stopImmediatePropagation();prepareAndReplay(btn,btn.id==='createNewsBtn'?'create':'save')}
-function watchStatus(){const el=$('#adminStatus');if(!el)return;new MutationObserver(()=>{const text=el.textContent||'';if(!pending)return;if(text.includes('投稿しました')||text.includes('更新しました'))patchSavedNews();else if(text.includes('失敗しました'))pending=null}).observe(el,{childList:true,subtree:true})}
+function watchStatus(){const el=$('#adminStatus');if(!el)return;new MutationObserver(()=>{const text=el.textContent||'';if(pending){if(text.includes('投稿しました')||text.includes('更新しました'))patchSavedNews();else if(text.includes('失敗しました'))pending=null}if(text.includes('として接続しました'))setTimeout(backfillPendingNews,250)}).observe(el,{childList:true,subtree:true})}
 function prepareUi(){['createTitleEn','createBodyEn','editTitleEn','editBodyEn'].forEach(id=>{const el=$('#'+id);if(!el)return;const field=el.closest('.field');if(field)field.hidden=true});const create=$('#newsCreateCard>p');if(create)create.textContent='タイトルと本文は日本語だけ入力してください。保存前に対応する10言語へ自動翻訳し、日本語を含む11言語で公開します。画像は任意です。';const manage=$('#newsManageCard>p');if(manage)manage.textContent='既存Newsの日本語タイトル・本文・カテゴリ・日付・Top News指定・画像を変更できます。保存時に全対応言語も再翻訳します。'}
-function init(){prepareUi();document.addEventListener('click',capture,true);watchStatus()}
+function init(){prepareUi();document.addEventListener('click',capture,true);document.addEventListener('input',e=>{if(e.target?.matches?.('#ordersAdminKey,#faqAdminKey,#fulfillmentKey,#adminStatusKey'))setTimeout(backfillPendingNews,400)},true);document.querySelector('[data-admin-tab="news"]')?.addEventListener('click',()=>setTimeout(backfillPendingNews,150));watchStatus();setTimeout(backfillPendingNews,500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
