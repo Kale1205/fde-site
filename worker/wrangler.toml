@@ -1,5 +1,5 @@
 name = "kales-fde-contact"
-main = "src/index-v6.js"
+main = "src/index-v7.js"
 compatibility_date = "2026-08-16"
 workers_dev = true
 
