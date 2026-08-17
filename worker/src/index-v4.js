@@ -4,7 +4,7 @@ const PAID_STATUSES=new Set(['payment_confirmed','preparing_delivery','delivered
 
 function clean(v,max=4000){return String(v??'').trim().slice(0,max)}
 function esc(v){return clean(v,20000).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
-function cors(origin,allowedOrigin){const allow=origin&&origin===allowedOrigin?origin:allowedOrigin;return{'Access-Control-Allow-Origin':allow,'Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Access-Control-Expose-Headers':'Content-Disposition','Vary':'Origin'}}
+function cors(origin,allowedOrigin){const allow=origin&&origin===allowedOrigin?origin:allowedOrigin;return{'Access-Control-Allow-Origin':allow,'Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Access-Control-Expose-Headers':'Content-Disposition','Vary':'Origin'}}
 function json(data,status,origin,allowedOrigin){return new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8',...cors(origin,allowedOrigin)}})}
 function validOrderId(v){return /^BK-\d{8}-[A-F0-9]{8}$/i.test(v)}
 function planLabel(v){return v==='monthly'?'月額プラン / Monthly plan':'買い切り / One-time purchase'}
@@ -50,9 +50,11 @@ async function generatePdf(env,type,order,status){
 
 export default{
  async fetch(request,env,ctx){
+  const origin=request.headers.get('Origin')||'',allowedOrigin=env.ALLOWED_ORIGIN||'https://kale1205.github.io';
+  const url=new URL(request.url);
+  if(request.method==='GET'&&url.pathname.endsWith('/health'))return json({ok:true,service:'kales-fde-contact',version:'v4',browserConfigured:!!env.BROWSER,orderStatusConfigured:!!env.ORDER_STATUS},200,origin,allowedOrigin);
   if(request.method==='OPTIONS')return baseWorker.fetch(request,env,ctx);
   if(request.method!=='POST')return baseWorker.fetch(request,env,ctx);
-  const origin=request.headers.get('Origin')||'',allowedOrigin=env.ALLOWED_ORIGIN||'https://kale1205.github.io';
   let raw=null;try{raw=await request.clone().json()}catch{}
   const type=clean(raw?.type,40);
   if(type!=='admin_pdf')return baseWorker.fetch(request,env,ctx);
