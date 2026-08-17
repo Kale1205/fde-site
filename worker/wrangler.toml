@@ -1,5 +1,5 @@
 name = "kales-fde-contact"
-main = "src/index-v3.js"
+main = "src/index-v4.js"
 compatibility_date = "2026-08-16"
 workers_dev = true
 
@@ -9,7 +9,10 @@ ADMIN_EMAIL = "reyouinjune@gmail.com"
 FROM_NAME = "Kale’s FDE"
 # FROM_EMAIL should be set to a sender address verified in Brevo.
 # BREVO_API_KEY must be stored as a Worker secret, never committed here.
-# ADMIN_FULFILLMENT_KEY must be stored as a Worker secret for admin-only status/delivery/customer actions.
+# ADMIN_FULFILLMENT_KEY must be stored as a Worker secret for admin-only status/delivery/customer/PDF actions.
+
+[browser]
+binding = "BROWSER"
 
 [[kv_namespaces]]
 binding = "ORDER_STATUS"
