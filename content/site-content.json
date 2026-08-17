@@ -148,7 +148,7 @@
       "id": "ims-demo-v0-1-0",
       "date": "2026-08-16",
       "category": "Product",
-      "featured": true,
+      "featured": false,
       "link": "demo.html",
       "image": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png",
       "translationStatus": "translated",
@@ -213,6 +213,22 @@
         "hi": "Products, Why FDE, Kale’s Goals और Contact पर केंद्रित साइट संरचना और बहुभाषी प्रस्तुति को बेहतर किया गया है।",
         "ar": "تم تحسين بنية الموقع والعرض متعدد اللغات مع التركيز على Products وWhy FDE وKale’s Goals وContact."
       }
+    },
+    {
+      "date": "2026-08-18",
+      "category": "Social",
+      "featured": true,
+      "link": "news.html",
+      "image": "",
+      "title": {
+        "ja": "てすと",
+        "en": ""
+      },
+      "body": {
+        "ja": "やめとけ",
+        "en": ""
+      },
+      "id": "20260818-item"
     }
   ]
 }
