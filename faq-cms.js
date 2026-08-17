@@ -1,7 +1,7 @@
 (()=>{
 const CMS_URL='https://raw.githubusercontent.com/Kale1205/fde-site/main/content/site-content.json';
 const $=(s,c=document)=>c.querySelector(s);
-const lang=()=>document.documentElement.lang||localStorage.getItem('fde-lang')||'ja';
+const lang=()=>document.querySelector('#lang')?.value||localStorage.getItem('fde-lang')||document.documentElement.lang||'ja';
 const pick=obj=>{if(!obj)return'';if(typeof obj==='string')return obj;const l=lang();return obj[l]||obj.en||obj.ja||Object.values(obj)[0]||''};
 let faq=[];
 function render(){const box=$('#cmsFaqList');if(!box)return;box.innerHTML=faq.map(item=>`<div class="faq-item"><button class="faq-q" type="button"><span>${escapeHtml(pick(item.question))}</span><span>＋</span></button><div class="faq-a">${escapeHtml(pick(item.answer)).replace(/\n/g,'<br>')}</div></div>`).join('');filterFaq()}
