@@ -28,5 +28,5 @@ if(location.pathname.endsWith('/cms-admin.html')||location.pathname.endsWith('cm
     'order-documents-admin.js?v=20260818-0935',
     'news-translation-hook.js?v=20260818-0935',
     'news-delete-v2.js?v=20260818-0935'
-  ].forEach(src=>{const s=document.createElement('script');s.src=src;document.head.appendChild(s)});
+  ].forEach(src=>{const s=document.createElement('script');s.async=false;s.src=src;document.head.appendChild(s)});
 }
