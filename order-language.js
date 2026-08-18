@@ -15,8 +15,9 @@ const NOTE={
  hi:'यह ऑर्डर वेबसाइट पर वर्तमान में दिखाई जा रही हिन्दी संस्करण के रूप में दर्ज किया जाएगा। वेबसाइट की भाषा बदलने पर ऑर्डर की भाषा भी बदल जाएगी।',
  ar:'سيتم تسجيل هذا الطلب باعتباره النسخة العربية المعروضة حالياً على الموقع. يؤدي تغيير لغة الموقع أيضاً إلى تغيير لغة الطلب.'
 };
-function lang(){return $('#lang')?.value||localStorage.getItem('fde-lang')||document.documentElement.lang||'ja'}
+function lang(){return $('#lang')?.value||localStorage.getItem('fde-lang')||document.documentElement.lang||'en'}
 function languageName(l){return NAME[l]||NAME.en}
+function setText(el,value){if(el&&el.textContent!==value)el.textContent=value}
 function ensure(){
  const grid=$('.quote-grid');
  if(grid&&!$('#quoteLanguageCell')){
@@ -25,8 +26,26 @@ function ensure(){
  }
  const complete=$('#orderComplete');if(complete&&!$('#completeOrderLanguage')){const p=document.createElement('p');p.id='completeOrderLanguage';const orderIdLine=complete.querySelector('p:has(#completeOrderId)');(orderIdLine||complete.lastElementChild)?.insertAdjacentElement('afterend',p)}
 }
-function syncSummary(){const box=$('#orderSummary');if(!box||!box.children.length)return;let row=$('#orderLanguageSummary');if(!row){row=document.createElement('div');row.id='orderLanguageSummary';row.className='order-summary-row';row.innerHTML='<strong></strong><span></span>';box.appendChild(row)}const l=lang();row.querySelector('strong').textContent=LABEL[l]||LABEL.en;row.querySelector('span').textContent=languageName(l)}
-function render(){ensure();const l=lang();if($('#quoteLanguageLabel'))$('#quoteLanguageLabel').textContent=LABEL[l]||LABEL.en;if($('#quoteLanguage'))$('#quoteLanguage').textContent=languageName(l);if($('#orderLanguageNotice'))$('#orderLanguageNotice').textContent=NOTE[l]||NOTE.en;if($('#completeOrderLanguage'))$('#completeOrderLanguage').textContent=`${LABEL[l]||LABEL.en}: ${languageName(l)}`;syncSummary();document.body.dataset.orderLanguage=l}
-function init(){ensure();render();const summary=$('#orderSummary');if(summary)new MutationObserver(syncSummary).observe(summary,{childList:true,subtree:true});$('#lang')?.addEventListener('change',()=>setTimeout(render,0));new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['lang']})}
+function syncSummary(){
+ const box=$('#orderSummary');if(!box||!box.children.length)return;
+ let row=$('#orderLanguageSummary');
+ if(!row){row=document.createElement('div');row.id='orderLanguageSummary';row.className='order-summary-row';row.innerHTML='<strong></strong><span></span>';box.appendChild(row)}
+ const l=lang();setText(row.querySelector('strong'),LABEL[l]||LABEL.en);setText(row.querySelector('span'),languageName(l));
+}
+function render(){
+ ensure();const l=lang();
+ setText($('#quoteLanguageLabel'),LABEL[l]||LABEL.en);
+ setText($('#quoteLanguage'),languageName(l));
+ setText($('#orderLanguageNotice'),NOTE[l]||NOTE.en);
+ setText($('#completeOrderLanguage'),`${LABEL[l]||LABEL.en}: ${languageName(l)}`);
+ syncSummary();document.body.dataset.orderLanguage=l;
+}
+function init(){
+ ensure();render();
+ const form=$('#orderForm');if(form)form.addEventListener('submit',()=>setTimeout(syncSummary,0));
+ const summary=$('#orderSummary');if(summary)new MutationObserver(mutations=>{if(mutations.some(m=>[...m.addedNodes].some(n=>n.nodeType===1&&n.id!=='orderLanguageSummary')))syncSummary()}).observe(summary,{childList:true});
+ $('#lang')?.addEventListener('change',()=>setTimeout(render,0));
+ new MutationObserver(()=>render()).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
