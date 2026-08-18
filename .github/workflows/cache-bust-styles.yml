@@ -1,39 +1,35 @@
-name: Force refresh site styles
+name: Sync site build version
 
 on:
+  workflow_dispatch:
   push:
     paths:
+      - 'build-version.txt'
+      - 'scripts/sync_build_version.py'
       - '.github/workflows/cache-bust-styles.yml'
 
 permissions:
   contents: write
 
 jobs:
-  cache-bust:
+  sync-build-version:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Add stylesheet version query
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          version = '20260816-1546'
-          for p in Path('.').glob('*.html'):
-              s = p.read_text(encoding='utf-8')
-              s = s.replace('href="styles.css"', f'href="styles.css?v={version}"')
-              p.write_text(s, encoding='utf-8')
-          PY
+      - name: Sync JS and CSS cache keys
+        run: python scripts/sync_build_version.py
 
-      - name: Commit changes
+      - name: Commit synchronized asset versions
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add *.html
+          git add '*.html' contact-config.js i18n-final.js
           if git diff --cached --quiet; then
-            echo "No changes needed."
+            echo "All pages already use the current build version."
             exit 0
           fi
-          git commit -m "Bust stylesheet cache"
+          VERSION="$(cat build-version.txt)"
+          git commit -m "Sync site asset build ${VERSION}"
           git push
