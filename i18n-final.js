@@ -1,4 +1,17 @@
 (()=>{
+const DEFAULT_LANG='en';
+const SUPPORTED_LANGS=new Set(['ja','en','zh-CN','zh-TW','ko','id','ms','vi','th','hi','ar']);
+try{
+  const saved=localStorage.getItem('fde-lang');
+  if(!SUPPORTED_LANGS.has(saved)){
+    localStorage.setItem('fde-lang',DEFAULT_LANG);
+    document.documentElement.lang=DEFAULT_LANG;
+  }else{
+    document.documentElement.lang=saved;
+  }
+}catch{
+  document.documentElement.lang=DEFAULT_LANG;
+}
 const add=(lang,values)=>{if(window.FDE_I18N&&window.FDE_I18N[lang])Object.assign(window.FDE_I18N[lang],values)};
 add('ja',{
   productsEyebrow:'Baked Kale / Kale’s FDE — 小規模企業向け業務ソフトウェア',
@@ -86,7 +99,7 @@ const PORTAL_LABELS={
   hi:'ग्राहक पोर्टल / ऑर्डर स्थिति ↗',
   ar:'بوابة العملاء / حالة الطلب ↗'
 };
-function currentLang(){return document.querySelector('#lang')?.value||localStorage.getItem('fde-lang')||document.documentElement.lang||'ja'}
+function currentLang(){return document.querySelector('#lang')?.value||localStorage.getItem('fde-lang')||document.documentElement.lang||DEFAULT_LANG}
 function portalLabel(){const l=currentLang();return PORTAL_LABELS[l]||PORTAL_LABELS.en}
 function ensureHeroIdentity(){
   if(!(location.pathname.endsWith('/fde-site/')||location.pathname.endsWith('/fde-site/index.html')||location.pathname==='/'||location.pathname.endsWith('/index.html')))return;
