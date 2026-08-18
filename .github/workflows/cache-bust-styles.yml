@@ -25,8 +25,8 @@ jobs:
 
       - name: Generate one build ID for the whole frontend
         run: |
-          date -u +'%Y%m%d-%H%M%S' > build-version.txt
-          echo "Build ID: $(cat build-version.txt)"
+          TZ=Asia/Tokyo date +'%Y%m%d-%H%M%S' > build-version.txt
+          echo "Build ID (JST): $(cat build-version.txt)"
 
       - name: Sync JS and CSS cache keys
         run: python scripts/sync_build_version.py
