@@ -17,6 +17,7 @@ async function readJson(env,key){
 export async function saveAdminOrder(env,raw,result){
   if(!env.ORDER_STATUS||!result?.orderId)return false;
   const orderId=clean(result.orderId,40).toUpperCase();
+  const displayPrice=clean(result.price,80);
   const record={
     orderId,
     customer:{
@@ -28,7 +29,9 @@ export async function saveAdminOrder(env,raw,result){
     product:PRODUCT_NAMES[clean(raw.productKey,80)]||clean(raw.product,120)||clean(raw.productKey,80),
     productKey:clean(raw.productKey,80),
     plan:clean(raw.plan,30),
-    price:clean(result.price,80),
+    originalPrice:displayPrice,
+    specialDiscount:0,
+    price:displayPrice,
     currency:clean(result.currency,10),
     notes:clean(raw.notes,5000),
     quoteDate:orderDateFromId(orderId),
@@ -47,7 +50,15 @@ export async function listAdminOrders(env,limit=1000){
   const ids=new Set(adminRecords.map(r=>r.orderId));
   const merged=await Promise.all(adminRecords.map(async admin=>{
     const status=await readJson(env,`order:${admin.orderId}`);
-    return {...admin,status:status?.status||'order_received',statusMessage:status?.message||'',updatedAt:status?.updatedAt||admin.createdAt};
+    return {
+      ...admin,
+      originalPrice:admin.originalPrice||admin.price||status?.originalPrice||status?.price||'',
+      specialDiscount:Number(admin.specialDiscount||status?.specialDiscount||0)||0,
+      price:admin.price||status?.price||'',
+      status:status?.status||'order_received',
+      statusMessage:status?.message||'',
+      updatedAt:status?.updatedAt||admin.updatedAt||admin.createdAt
+    };
   }));
 
   // Keep older status-only records visible even if they predate customer registry storage.
@@ -60,7 +71,8 @@ export async function listAdminOrders(env,limit=1000){
     merged.push({
       orderId,
       customer:{name:'',company:'',country:'',email:''},
-      product:status.product||'',productKey:'',plan:status.plan||'',price:status.price||'',currency:status.currency||'',notes:'',
+      product:status.product||'',productKey:'',plan:status.plan||'',
+      originalPrice:status.originalPrice||status.price||'',specialDiscount:Number(status.specialDiscount||0)||0,price:status.price||'',currency:status.currency||'',notes:'',
       quoteDate:status.quoteDate||orderDateFromId(orderId),validUntil:status.validUntil||'',createdAt:status.updatedAt||'',
       status:status.status||'order_received',statusMessage:status.message||'',updatedAt:status.updatedAt||'',legacy:true
     });
