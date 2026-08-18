@@ -1,4 +1,6 @@
 (()=>{
+if(window.__FDE_TURNSTILE_RUNTIME__)return;
+window.__FDE_TURNSTILE_RUNTIME__=true;
 const SITE_KEY=String(window.FDE_TURNSTILE_SITE_KEY||'').trim();
 const WORKER_ENDPOINT=String(window.FDE_CONTACT_API||'').trim();
 if(!SITE_KEY)return;
