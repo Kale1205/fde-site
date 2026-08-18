@@ -2,6 +2,7 @@ const PRODUCT_NAMES={
   'ims-starter':'IMS Starter',
   'business-dx-pack':'Business DX Pack'
 };
+const SUPPORTED_LANGS=new Set(['ja','en','zh-CN','zh-TW','ko','id','ms','vi','th','hi','ar']);
 
 function clean(v,max=5000){return String(v??'').trim().slice(0,max)}
 function orderDateFromId(orderId){
@@ -18,6 +19,7 @@ export async function saveAdminOrder(env,raw,result){
   if(!env.ORDER_STATUS||!result?.orderId)return false;
   const orderId=clean(result.orderId,40).toUpperCase();
   const displayPrice=clean(result.price,80);
+  const requestedLang=clean(raw.lang,20);
   const record={
     orderId,
     customer:{
@@ -29,6 +31,7 @@ export async function saveAdminOrder(env,raw,result){
     product:PRODUCT_NAMES[clean(raw.productKey,80)]||clean(raw.product,120)||clean(raw.productKey,80),
     productKey:clean(raw.productKey,80),
     plan:clean(raw.plan,30),
+    lang:SUPPORTED_LANGS.has(requestedLang)?requestedLang:'ja',
     originalPrice:displayPrice,
     specialDiscount:0,
     price:displayPrice,
@@ -52,6 +55,7 @@ export async function listAdminOrders(env,limit=1000){
     const status=await readJson(env,`order:${admin.orderId}`);
     return {
       ...admin,
+      lang:SUPPORTED_LANGS.has(admin.lang)?admin.lang:'ja',
       originalPrice:admin.originalPrice||admin.price||status?.originalPrice||status?.price||'',
       specialDiscount:Number(admin.specialDiscount||status?.specialDiscount||0)||0,
       price:admin.price||status?.price||'',
@@ -61,7 +65,6 @@ export async function listAdminOrders(env,limit=1000){
     };
   }));
 
-  // Keep older status-only records visible even if they predate customer registry storage.
   const legacyList=await env.ORDER_STATUS.list({prefix:'order:',limit:safeLimit});
   for(const key of legacyList.keys){
     const orderId=key.name.slice('order:'.length);
@@ -71,7 +74,7 @@ export async function listAdminOrders(env,limit=1000){
     merged.push({
       orderId,
       customer:{name:'',company:'',country:'',email:''},
-      product:status.product||'',productKey:'',plan:status.plan||'',
+      product:status.product||'',productKey:'',plan:status.plan||'',lang:'ja',
       originalPrice:status.originalPrice||status.price||'',specialDiscount:Number(status.specialDiscount||0)||0,price:status.price||'',currency:status.currency||'',notes:'',
       quoteDate:status.quoteDate||orderDateFromId(orderId),validUntil:status.validUntil||'',createdAt:status.updatedAt||'',
       status:status.status||'order_received',statusMessage:status.message||'',updatedAt:status.updatedAt||'',legacy:true
