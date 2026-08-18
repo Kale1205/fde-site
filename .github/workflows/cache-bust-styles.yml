@@ -3,7 +3,7 @@ name: Sync site build version
 on:
   workflow_dispatch:
   push:
-    branches:
+    branches-ignore:
       - main
     paths:
       - '*.html'
@@ -17,10 +17,10 @@ permissions:
 
 jobs:
   sync-build-version:
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout working branch
         uses: actions/checkout@v4
 
       - name: Generate one build ID for the whole frontend
@@ -31,7 +31,7 @@ jobs:
       - name: Sync JS and CSS cache keys
         run: python scripts/sync_build_version.py
 
-      - name: Commit synchronized asset versions
+      - name: Commit synchronized asset versions to this branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
