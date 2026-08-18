@@ -22,10 +22,11 @@ if(location.pathname.endsWith('/cms-admin.html')||location.pathname.endsWith('cm
   new MutationObserver(()=>hydrateAdminUi()).observe(document.documentElement,{childList:true,subtree:true});
 
   [
-    'order-status-admin.js?v=20260818-0905',
-    'customer-orders-admin.js?v=20260818-0905',
-    'customer-orders-operations.js?v=20260818-0905',
-    'order-documents-admin.js?v=20260818-0905',
-    'news-translation-hook.js?v=20260818-0905'
+    'order-status-admin.js?v=20260818-0935',
+    'customer-orders-admin.js?v=20260818-0935',
+    'customer-orders-operations.js?v=20260818-0935',
+    'order-documents-admin.js?v=20260818-0935',
+    'news-translation-hook.js?v=20260818-0935',
+    'news-delete-v2.js?v=20260818-0935'
   ].forEach(src=>{const s=document.createElement('script');s.src=src;document.head.appendChild(s)});
 }
