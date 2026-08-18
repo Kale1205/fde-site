@@ -12,6 +12,10 @@ function clean(v,max=10000){return String(v??'').trim().slice(0,max)}
 function cors(origin,allowedOrigin){const allow=origin&&origin===allowedOrigin?origin:allowedOrigin;return{'Access-Control-Allow-Origin':allow,'Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Vary':'Origin'}}
 function json(data,status,origin,allowedOrigin){return new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8',...cors(origin,allowedOrigin)}})}
 function validOrderId(v){return /^BK-\d{8}-[A-F0-9]{8}$/i.test(v)}
+function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
+async function hashEmail(email){const bytes=new TextEncoder().encode(clean(email,254).toLowerCase());const digest=await crypto.subtle.digest('SHA-256',bytes);return[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+function parseMoney(value){const s=String(value??'').replace(/[^0-9.-]/g,'');const n=Number(s);return Number.isFinite(n)?n:null}
+function money(value,currency){try{return new Intl.NumberFormat('en-US',{style:'currency',currency:clean(currency,10)||'JPY',minimumFractionDigits:0,maximumFractionDigits:0}).format(Math.round(value))}catch{return`${Math.round(value).toLocaleString('en-US')} ${clean(currency,10)||''}`.trim()}}
 function protect(text){let value=String(text||'');const tokens=[];PROTECTED.forEach((term,i)=>{const token=`FDETERM${i}X`;if(value.includes(term)){value=value.split(term).join(token);tokens.push([token,term])}});return{value,tokens}}
 function restore(text,tokens){let value=String(text||'').trim();for(const [token,term] of tokens)value=value.split(token).join(term);return value}
 function extractText(result){const value=result?.translated_text??result?.response??result?.result?.translated_text??result?.result?.response??result;if(typeof value!=='string'||!value.trim())throw new Error('AI_TRANSLATION_EMPTY');return value.trim()}
@@ -20,7 +24,42 @@ async function translateWithLlama(env,text,locale){const {value,tokens}=protect(
 async function translateOne(env,text,locale){if(!env.AI?.run)throw new Error('AI_NOT_CONFIGURED');if(locale==='zh-TW')return translateWithLlama(env,text,locale);const target=M2M_TARGET[locale];if(!target)return translateWithLlama(env,text,locale);const {value,tokens}=protect(text);try{const result=await runWithRetry(()=>env.AI.run('@cf/meta/m2m100-1.2b',{text:value,source_lang:'ja',target_lang:target}));return restore(extractText(result),tokens)}catch(error){console.warn(`m2m100 fallback for ${locale}`,error);return translateWithLlama(env,text,locale)}}
 async function translateFields(env,fields){const source={};for(const [key,value] of Object.entries(fields||{})){if(!/^[a-z][a-z0-9_]{0,30}$/i.test(key))continue;const text=clean(value,8000);if(text)source[key]=text}const keys=Object.keys(source);if(!keys.length||keys.length>6)throw new Error('INVALID_TRANSLATION_FIELDS');const pairs=await Promise.all(LOCALES.map(async locale=>{const item={};for(const key of keys)item[key]=await translateOne(env,source[key],locale);return[locale,item]}));return Object.fromEntries(pairs)}
 async function readJson(env,key){const raw=await env.ORDER_STATUS?.get(key);if(!raw)return null;try{return JSON.parse(raw)}catch{return null}}
-async function writeOrderUpdate(env,raw){if(!env.ORDER_STATUS)throw new Error('ORDER_STATUS_NOT_CONFIGURED');const orderId=clean(raw.orderId,40).toUpperCase();if(!validOrderId(orderId))throw new Error('INVALID_ORDER_ID');const admin=await readJson(env,`admin-order:${orderId}`),statusRecord=await readJson(env,`order:${orderId}`);if(!admin||!statusRecord)throw new Error('ORDER_NOT_FOUND');const status=clean(raw.status,50),product=clean(raw.product,120),plan=clean(raw.plan,30);if(status&&!ORDER_STATUSES.has(status))throw new Error('INVALID_STATUS_DATA');if(product&&!PRODUCTS.has(product))throw new Error('INVALID_PRODUCT');if(plan&&!PLANS.has(plan))throw new Error('INVALID_PLAN');if(status)statusRecord.status=status;if(product){statusRecord.product=product;admin.product=product;admin.productKey=PRODUCTS.get(product)}if(plan){statusRecord.plan=plan;admin.plan=plan}if(Object.prototype.hasOwnProperty.call(raw,'message'))statusRecord.message=clean(raw.message,1200);const now=new Date().toISOString();statusRecord.updatedAt=now;admin.updatedAt=now;await Promise.all([env.ORDER_STATUS.put(`order:${orderId}`,JSON.stringify(statusRecord)),env.ORDER_STATUS.put(`admin-order:${orderId}`,JSON.stringify(admin))]);return{admin,status:statusRecord}}
+async function writeOrderUpdate(env,raw){
+ if(!env.ORDER_STATUS)throw new Error('ORDER_STATUS_NOT_CONFIGURED');
+ const orderId=clean(raw.orderId,40).toUpperCase();if(!validOrderId(orderId))throw new Error('INVALID_ORDER_ID');
+ const admin=await readJson(env,`admin-order:${orderId}`),statusRecord=await readJson(env,`order:${orderId}`);if(!admin||!statusRecord)throw new Error('ORDER_NOT_FOUND');
+ const status=clean(raw.status,50),product=clean(raw.product,120),plan=clean(raw.plan,30);
+ if(status&&!ORDER_STATUSES.has(status))throw new Error('INVALID_STATUS_DATA');
+ if(product&&!PRODUCTS.has(product))throw new Error('INVALID_PRODUCT');
+ if(plan&&!PLANS.has(plan))throw new Error('INVALID_PLAN');
+ if(status)statusRecord.status=status;
+ if(product){statusRecord.product=product;admin.product=product;admin.productKey=PRODUCTS.get(product)}
+ if(plan){statusRecord.plan=plan;admin.plan=plan}
+ if(Object.prototype.hasOwnProperty.call(raw,'message'))statusRecord.message=clean(raw.message,1200);
+
+ admin.customer=admin.customer||{};
+ if(Object.prototype.hasOwnProperty.call(raw,'name')){const v=clean(raw.name,120);if(!v)throw new Error('INVALID_CUSTOMER_NAME');admin.customer.name=v}
+ if(Object.prototype.hasOwnProperty.call(raw,'company')){const v=clean(raw.company,160);if(!v)throw new Error('INVALID_COMPANY');admin.customer.company=v}
+ if(Object.prototype.hasOwnProperty.call(raw,'country')){const v=clean(raw.country,120);if(!v)throw new Error('INVALID_COUNTRY');admin.customer.country=v}
+ if(Object.prototype.hasOwnProperty.call(raw,'email')){const v=clean(raw.email,254).toLowerCase();if(!validEmail(v))throw new Error('INVALID_EMAIL');admin.customer.email=v;statusRecord.emailHash=await hashEmail(v)}
+
+ if(Object.prototype.hasOwnProperty.call(raw,'specialDiscount')){
+   const discount=Number(raw.specialDiscount);
+   if(!Number.isFinite(discount)||discount<0)throw new Error('INVALID_SPECIAL_DISCOUNT');
+   const originalDisplay=clean(admin.originalPrice||statusRecord.originalPrice||admin.price||statusRecord.price,80);
+   const originalAmount=parseMoney(originalDisplay);
+   if(originalAmount===null||discount>originalAmount)throw new Error('INVALID_SPECIAL_DISCOUNT');
+   const currency=clean(admin.currency||statusRecord.currency,10)||'JPY';
+   const total=Math.max(0,originalAmount-discount);
+   const totalDisplay=money(total,currency);
+   admin.originalPrice=originalDisplay;admin.specialDiscount=Math.round(discount);admin.price=totalDisplay;
+   statusRecord.originalPrice=originalDisplay;statusRecord.specialDiscount=Math.round(discount);statusRecord.price=totalDisplay;
+ }
+
+ const now=new Date().toISOString();statusRecord.updatedAt=now;admin.updatedAt=now;
+ await Promise.all([env.ORDER_STATUS.put(`order:${orderId}`,JSON.stringify(statusRecord)),env.ORDER_STATUS.put(`admin-order:${orderId}`,JSON.stringify(admin))]);
+ return{admin,status:statusRecord};
+}
 
 export default{
  async fetch(request,env,ctx){
@@ -34,7 +73,7 @@ export default{
   if(!env.ADMIN_FULFILLMENT_KEY)return json({ok:false,error:'ADMIN_FULFILLMENT_NOT_CONFIGURED'},503,origin,allowedOrigin);
   if(clean(raw?.adminKey,300)!==env.ADMIN_FULFILLMENT_KEY)return json({ok:false,error:'ADMIN_AUTH_FAILED'},403,origin,allowedOrigin);
   if(type==='admin_order_update'){
-   try{const updated=await writeOrderUpdate(env,raw);return json({ok:true,status:updated.status.status,message:updated.status.message,product:updated.status.product,plan:updated.status.plan,updatedAt:updated.status.updatedAt},200,origin,allowedOrigin)}catch(error){const code=String(error?.message||'ORDER_UPDATE_FAILED');const status=code==='ORDER_NOT_FOUND'?404:code==='ORDER_STATUS_NOT_CONFIGURED'?503:400;return json({ok:false,error:code},status,origin,allowedOrigin)}
+   try{const updated=await writeOrderUpdate(env,raw);return json({ok:true,status:updated.status.status,message:updated.status.message,product:updated.status.product,plan:updated.status.plan,name:updated.admin.customer?.name||'',company:updated.admin.customer?.company||'',country:updated.admin.customer?.country||'',email:updated.admin.customer?.email||'',originalPrice:updated.admin.originalPrice||updated.admin.price,specialDiscount:Number(updated.admin.specialDiscount||0)||0,price:updated.admin.price||updated.status.price,updatedAt:updated.status.updatedAt},200,origin,allowedOrigin)}catch(error){const code=String(error?.message||'ORDER_UPDATE_FAILED');const status=code==='ORDER_NOT_FOUND'?404:code==='ORDER_STATUS_NOT_CONFIGURED'?503:400;return json({ok:false,error:code},status,origin,allowedOrigin)}
   }
   if(!env.AI?.run)return json({ok:false,error:'AI_NOT_CONFIGURED'},503,origin,allowedOrigin);
   try{return json({ok:true,translations:await translateFields(env,raw?.fields)},200,origin,allowedOrigin)}catch(error){console.error('CMS translation failed',error);const detail=String(error?.message||'CONTENT_TRANSLATION_FAILED');return json({ok:false,error:detail==='AI_NOT_CONFIGURED'?detail:'CONTENT_TRANSLATION_FAILED',detail},detail==='AI_NOT_CONFIGURED'?503:502,origin,allowedOrigin)}
