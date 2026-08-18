@@ -7,9 +7,9 @@
 <title>CMS Media Admin | Baked Kale</title>
 <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
 <link rel="stylesheet" href="cms-admin.css?v=20260817-1355">
-<script defer src="contact-config.js?v=20260818-0935"></script>
+<script defer src="contact-config.js?v=20260818-0947"></script>
 <script defer src="cms-admin.js?v=20260817-1355"></script>
-<script defer src="faq-admin-v2.js?v=20260818-0935"></script>
+<script defer src="faq-admin-v2.js?v=20260818-0947"></script>
 <script defer src="fulfillment-v2.js?v=20260817-0925"></script>
 </head>
 <body>
@@ -45,7 +45,6 @@
 <section class="admin-card"><h2>FAQを編集・削除</h2><p>公開中のFAQを選択し、日本語の質問・回答を編集できます。「FAQを保存」を押した時だけ全対応言語を再翻訳します。</p><div class="field"><label for="editFaqTarget">編集するFAQ</label><select id="editFaqTarget"></select></div><div id="editFaqFields" class="admin-form-grid"><div class="field field-full"><label for="faqEditQJa">質問（日本語）</label><input id="faqEditQJa" type="text" maxlength="180"></div><div class="field field-full"><label for="faqEditAJa">回答（日本語）</label><textarea id="faqEditAJa"></textarea></div><input id="faqEditQEn" type="hidden"><textarea id="faqEditAEn" hidden></textarea><div class="field-full actions"><button id="saveFaqBtn" class="admin-button" type="button">FAQを保存</button><button id="deleteFaqBtn" class="admin-button danger" type="button">FAQを削除</button></div></div></section>
 </div>
 
-<!-- Legacy fulfillment form is kept only for script compatibility. Operations are surfaced in Customers / Orders. -->
 <div id="fulfillmentPanel" class="admin-panel hidden" data-admin-panel="fulfillment" aria-hidden="true"><section class="admin-card"><div class="admin-form-grid"><div class="field"><label for="fulfillOrderId">注文番号</label><input id="fulfillOrderId" type="text"></div><div class="field"><label for="fulfillProduct">製品名</label><select id="fulfillProduct"><option value="IMS Starter">IMS Starter</option><option value="Business DX Pack">Business DX Pack</option></select></div><div class="field"><label for="fulfillName">購入者名</label><input id="fulfillName" type="text"></div><div class="field"><label for="fulfillEmail">購入者メールアドレス</label><input id="fulfillEmail" type="email"></div><div class="field field-full"><label for="deliveryNoteUrl">納品書URL</label><input id="deliveryNoteUrl" type="url"></div><div class="field field-full"><label for="receiptUrl">領収書URL</label><input id="receiptUrl" type="url"></div><div class="field field-full"><label for="installerUrl">インストーラーURL</label><input id="installerUrl" type="url"></div><div class="field field-full"><label for="fulfillNote">補足</label><textarea id="fulfillNote"></textarea></div><div class="field field-full"><label for="fulfillmentKey">Admin fulfillment key</label><input id="fulfillmentKey" type="password"></div><div class="field-full actions"><button id="sendFulfillmentBtn" class="admin-button" type="button">送信</button></div></div></section></div>
 <div id="adminStatus" class="status" hidden></div>
 </div></main>
