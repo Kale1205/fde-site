@@ -1,0 +1,124 @@
+from pathlib import Path
+import re
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+errors = []
+
+
+def fail(message):
+    errors.append(message)
+
+
+version_file = ROOT / "build-version.txt"
+if not version_file.exists():
+    fail("build-version.txt is missing")
+    version = ""
+else:
+    version = version_file.read_text(encoding="utf-8").strip()
+    if not re.fullmatch(r"[0-9A-Za-z._-]+", version):
+        fail(f"Invalid build version: {version!r}")
+
+asset_ref = re.compile(r"(?:src|href)=[\"'](?P<path>[^\"']+\.(?:js|css)(?:\?[^\"']*)?)[\"']", re.IGNORECASE)
+version_param = re.compile(r"(?:\?|&)v=([^&]+)")
+public_pages = {
+    "index.html",
+    "why.html",
+    "goals.html",
+    "news.html",
+    "contact.html",
+    "order.html",
+    "customer.html",
+    "demo.html",
+}
+legacy_loaders = ("contact-mailer.js", "fulfillment-v2.js")
+
+for path in sorted(ROOT.glob("*.html")):
+    text = path.read_text(encoding="utf-8")
+    if path.name in public_pages and not re.search(r"<html\s+lang=[\"']en[\"']", text, re.IGNORECASE):
+        fail(f"{path.name}: customer-facing entry point must default to lang=en")
+
+    for legacy in legacy_loaders:
+        if legacy in text:
+            fail(f"{path.name}: legacy loader must not be referenced: {legacy}")
+
+    for match in asset_ref.finditer(text):
+        ref = match.group("path")
+        if ref.startswith(("http://", "https://", "//", "data:")):
+            continue
+        vm = version_param.search(ref)
+        if not vm:
+            fail(f"{path.name}: local asset is missing ?v= build key: {ref}")
+            continue
+        if version and vm.group(1) != version:
+            fail(f"{path.name}: asset build key {vm.group(1)!r} != {version!r}: {ref}")
+
+for name in ("contact-config.js", "i18n-final.js"):
+    path = ROOT / name
+    if not path.exists():
+        fail(f"{name} is missing")
+        continue
+    text = path.read_text(encoding="utf-8")
+    for match in re.finditer(r"[\"'](?P<path>(?!https?://|//)[A-Za-z0-9_./-]+\.(?:js|css))\?v=(?P<version>[0-9A-Za-z._-]+)[\"']", text):
+        if version and match.group("version") != version:
+            fail(f"{name}: dynamic asset build key {match.group('version')!r} != {version!r}: {match.group('path')}")
+
+wrangler = ROOT / "worker" / "wrangler.toml"
+if not wrangler.exists():
+    fail("worker/wrangler.toml is missing")
+else:
+    wrangler_text = wrangler.read_text(encoding="utf-8")
+    main_match = re.search(r"^main\s*=\s*[\"']([^\"']+)[\"']", wrangler_text, re.MULTILINE)
+    if not main_match:
+        fail("worker/wrangler.toml: main entry is missing")
+    else:
+        main_rel = main_match.group(1)
+        if main_rel != "src/index-v13.js":
+            fail(f"worker/wrangler.toml: expected src/index-v13.js, got {main_rel}")
+        if not (wrangler.parent / main_rel).exists():
+            fail(f"worker/wrangler.toml: configured entry does not exist: {main_rel}")
+
+text_extensions = {".html", ".js", ".css", ".py", ".yml", ".yaml", ".toml", ".md", ".txt", ".json"}
+secret_patterns = {
+    "GitHub token": re.compile(r"\b(?:github_pat_[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{20,})\b"),
+    "OpenAI-style key": re.compile(r"\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b"),
+    "Brevo API key": re.compile(r"\bxkeysib-[A-Za-z0-9_-]{20,}\b"),
+    "Private key block": re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
+    "Literal runtime secret assignment": re.compile(r"\b(?:BREVO_API_KEY|ADMIN_FULFILLMENT_KEY|TURNSTILE_SECRET_KEY)\s*=\s*[\"'][^\"']{8,}[\"']"),
+}
+
+for path in ROOT.rglob("*"):
+    if not path.is_file() or path.suffix.lower() not in text_extensions:
+        continue
+    if ".git" in path.parts:
+        continue
+    try:
+        text = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        continue
+    rel = path.relative_to(ROOT).as_posix()
+    for label, pattern in secret_patterns.items():
+        if pattern.search(text):
+            fail(f"{rel}: possible {label} detected")
+
+required_contact = {
+    "contact.html": ("contact-config.js", "contact-direct.js"),
+    "order.html": ("contact-config.js", "order.js", "order-language.js"),
+}
+for filename, required in required_contact.items():
+    path = ROOT / filename
+    if not path.exists():
+        fail(f"{filename} is missing")
+        continue
+    text = path.read_text(encoding="utf-8")
+    for asset in required:
+        if asset not in text:
+            fail(f"{filename}: required runtime is missing: {asset}")
+
+if errors:
+    print("Repository validation failed:\n")
+    for item in errors:
+        print(f"- {item}")
+    sys.exit(1)
+
+print(f"Repository validation passed. Build version: {version}")
