@@ -3,8 +3,12 @@ name: Sync site build version
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
-      - 'build-version.txt'
+      - '*.html'
+      - '*.js'
+      - '*.css'
       - 'scripts/sync_build_version.py'
       - '.github/workflows/cache-bust-styles.yml'
 
@@ -13,10 +17,16 @@ permissions:
 
 jobs:
   sync-build-version:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Generate one build ID for the whole frontend
+        run: |
+          date -u +'%Y%m%d-%H%M%S' > build-version.txt
+          echo "Build ID: $(cat build-version.txt)"
 
       - name: Sync JS and CSS cache keys
         run: python scripts/sync_build_version.py
@@ -25,7 +35,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add '*.html' contact-config.js i18n-final.js
+          git add build-version.txt '*.html' contact-config.js i18n-final.js
           if git diff --cached --quiet; then
             echo "All pages already use the current build version."
             exit 0
