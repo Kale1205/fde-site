@@ -73,8 +73,8 @@ else:
         fail("worker/wrangler.toml: main entry is missing")
     else:
         main_rel = main_match.group(1)
-        if main_rel != "src/index-v13.js":
-            fail(f"worker/wrangler.toml: expected src/index-v13.js, got {main_rel}")
+        if not re.fullmatch(r"src/index-v\d+\.js", main_rel):
+            fail(f"worker/wrangler.toml: Worker entry must use a versioned src/index-vN.js file, got {main_rel}")
         if not (wrangler.parent / main_rel).exists():
             fail(f"worker/wrangler.toml: configured entry does not exist: {main_rel}")
 
