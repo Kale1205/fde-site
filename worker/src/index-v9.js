@@ -2,6 +2,7 @@ import baseWorker from './index-v8.js';
 
 const LOCALES=['en','zh-CN','zh-TW','ko','id','ms','vi','th','hi','ar'];
 const M2M_TARGET={en:'en','zh-CN':'zh',ko:'ko',id:'id',ms:'ms',vi:'vi',th:'th',hi:'hi',ar:'ar'};
+const LOCALE_NAMES={en:'English','zh-CN':'Simplified Chinese','zh-TW':'Traditional Chinese used in Taiwan',ko:'Korean',id:'Bahasa Indonesia',ms:'Bahasa Melayu',vi:'Vietnamese',th:'Thai',hi:'Hindi',ar:'Arabic'};
 const ORDER_STATUSES=new Set(['order_received','billing_preparation','awaiting_payment','payment_confirmed','preparing_delivery','delivered']);
 const PRODUCTS=new Map([['IMS Starter','ims-starter'],['Business DX Pack','business-dx-pack']]);
 const PLANS=new Set(['one-time','monthly']);
@@ -15,26 +16,11 @@ function protect(text){let value=String(text||'');const tokens=[];PROTECTED.forE
 function restore(text,tokens){let value=String(text||'').trim();for(const [token,term] of tokens)value=value.split(token).join(term);return value}
 function extractText(result){const value=result?.translated_text??result?.response??result?.result?.translated_text??result?.result?.response??result;if(typeof value!=='string'||!value.trim())throw new Error('AI_TRANSLATION_EMPTY');return value.trim()}
 async function runWithRetry(fn){let last;for(let i=0;i<2;i++){try{return await fn()}catch(e){last=e;if(i===0)await new Promise(r=>setTimeout(r,120))}}throw last}
-async function translateTraditional(env,text){const {value,tokens}=protect(text);const result=await runWithRetry(()=>env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast',{prompt:`Translate the following Japanese website text into natural Traditional Chinese used in Taiwan. Preserve tokens such as FDETERM0X exactly. Output only the translation, with no explanation or quotation marks.\n\n${value}`,max_tokens:1800,temperature:0}));return restore(extractText(result).replace(/^['\"]|['\"]$/g,''),tokens)}
-async function translateOne(env,text,locale){if(!env.AI?.run)throw new Error('AI_NOT_CONFIGURED');if(locale==='zh-TW')return translateTraditional(env,text);const target=M2M_TARGET[locale];if(!target)throw new Error(`UNSUPPORTED_LOCALE_${locale}`);const {value,tokens}=protect(text);const result=await runWithRetry(()=>env.AI.run('@cf/meta/m2m100-1.2b',{text:value,source_lang:'ja',target_lang:target}));return restore(extractText(result),tokens)}
+async function translateWithLlama(env,text,locale){const {value,tokens}=protect(text),language=LOCALE_NAMES[locale]||locale;const result=await runWithRetry(()=>env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast',{prompt:`Translate the following Japanese B2B software website text into natural ${language}. Preserve tokens such as FDETERM0X exactly. Preserve numbers, URLs and technical meaning. Output only the translation, with no explanation or quotation marks.\n\n${value}`,max_tokens:1800,temperature:0}));return restore(extractText(result).replace(/^['\"]|['\"]$/g,''),tokens)}
+async function translateOne(env,text,locale){if(!env.AI?.run)throw new Error('AI_NOT_CONFIGURED');if(locale==='zh-TW')return translateWithLlama(env,text,locale);const target=M2M_TARGET[locale];if(!target)return translateWithLlama(env,text,locale);const {value,tokens}=protect(text);try{const result=await runWithRetry(()=>env.AI.run('@cf/meta/m2m100-1.2b',{text:value,source_lang:'ja',target_lang:target}));return restore(extractText(result),tokens)}catch(error){console.warn(`m2m100 fallback for ${locale}`,error);return translateWithLlama(env,text,locale)}}
 async function translateFields(env,fields){const source={};for(const [key,value] of Object.entries(fields||{})){if(!/^[a-z][a-z0-9_]{0,30}$/i.test(key))continue;const text=clean(value,8000);if(text)source[key]=text}const keys=Object.keys(source);if(!keys.length||keys.length>6)throw new Error('INVALID_TRANSLATION_FIELDS');const pairs=await Promise.all(LOCALES.map(async locale=>{const item={};for(const key of keys)item[key]=await translateOne(env,source[key],locale);return[locale,item]}));return Object.fromEntries(pairs)}
 async function readJson(env,key){const raw=await env.ORDER_STATUS?.get(key);if(!raw)return null;try{return JSON.parse(raw)}catch{return null}}
-async function writeOrderUpdate(env,raw){
- if(!env.ORDER_STATUS)throw new Error('ORDER_STATUS_NOT_CONFIGURED');
- const orderId=clean(raw.orderId,40).toUpperCase();if(!validOrderId(orderId))throw new Error('INVALID_ORDER_ID');
- const admin=await readJson(env,`admin-order:${orderId}`),statusRecord=await readJson(env,`order:${orderId}`);if(!admin||!statusRecord)throw new Error('ORDER_NOT_FOUND');
- const status=clean(raw.status,50),product=clean(raw.product,120),plan=clean(raw.plan,30);
- if(status&&!ORDER_STATUSES.has(status))throw new Error('INVALID_STATUS_DATA');
- if(product&&!PRODUCTS.has(product))throw new Error('INVALID_PRODUCT');
- if(plan&&!PLANS.has(plan))throw new Error('INVALID_PLAN');
- if(status)statusRecord.status=status;
- if(product){statusRecord.product=product;admin.product=product;admin.productKey=PRODUCTS.get(product)}
- if(plan){statusRecord.plan=plan;admin.plan=plan}
- if(Object.prototype.hasOwnProperty.call(raw,'message'))statusRecord.message=clean(raw.message,1200);
- const now=new Date().toISOString();statusRecord.updatedAt=now;admin.updatedAt=now;
- await Promise.all([env.ORDER_STATUS.put(`order:${orderId}`,JSON.stringify(statusRecord)),env.ORDER_STATUS.put(`admin-order:${orderId}`,JSON.stringify(admin))]);
- return{admin,status:statusRecord};
-}
+async function writeOrderUpdate(env,raw){if(!env.ORDER_STATUS)throw new Error('ORDER_STATUS_NOT_CONFIGURED');const orderId=clean(raw.orderId,40).toUpperCase();if(!validOrderId(orderId))throw new Error('INVALID_ORDER_ID');const admin=await readJson(env,`admin-order:${orderId}`),statusRecord=await readJson(env,`order:${orderId}`);if(!admin||!statusRecord)throw new Error('ORDER_NOT_FOUND');const status=clean(raw.status,50),product=clean(raw.product,120),plan=clean(raw.plan,30);if(status&&!ORDER_STATUSES.has(status))throw new Error('INVALID_STATUS_DATA');if(product&&!PRODUCTS.has(product))throw new Error('INVALID_PRODUCT');if(plan&&!PLANS.has(plan))throw new Error('INVALID_PLAN');if(status)statusRecord.status=status;if(product){statusRecord.product=product;admin.product=product;admin.productKey=PRODUCTS.get(product)}if(plan){statusRecord.plan=plan;admin.plan=plan}if(Object.prototype.hasOwnProperty.call(raw,'message'))statusRecord.message=clean(raw.message,1200);const now=new Date().toISOString();statusRecord.updatedAt=now;admin.updatedAt=now;await Promise.all([env.ORDER_STATUS.put(`order:${orderId}`,JSON.stringify(statusRecord)),env.ORDER_STATUS.put(`admin-order:${orderId}`,JSON.stringify(admin))]);return{admin,status:statusRecord}}
 
 export default{
  async fetch(request,env,ctx){
