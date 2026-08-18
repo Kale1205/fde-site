@@ -2,13 +2,18 @@
 window.FDE_CONTACT_API = 'https://kales-fde-contact.reyouinjune.workers.dev';
 // Cloudflare Turnstile public Site key. This value is intentionally public.
 window.FDE_TURNSTILE_SITE_KEY = '0x4AAAAAAEUE-c6Y6_E5XBLP';
-if(/(?:^|\/)(?:contact|order)\.html$/.test(location.pathname)){
+
+if(/(?:^|\/)(?:contact|order)\.html$/.test(location.pathname) && !window.__FDE_TURNSTILE_LOADER_ADDED__){
+  window.__FDE_TURNSTILE_LOADER_ADDED__=true;
   const turnstileScript=document.createElement('script');
-  turnstileScript.src='turnstile-protection.js?v=20260818-2120';
+  turnstileScript.src='turnstile-protection.js?v=20260818-2345';
   turnstileScript.async=false;
+  turnstileScript.dataset.fdeTurnstileLoader='1';
   document.head.appendChild(turnstileScript);
 }
-if(location.pathname.endsWith('/cms-admin.html')||location.pathname.endsWith('cms-admin.html')){
+
+if((location.pathname.endsWith('/cms-admin.html')||location.pathname.endsWith('cms-admin.html')) && !window.__FDE_ADMIN_RUNTIME_LOADED__){
+  window.__FDE_ADMIN_RUNTIME_LOADED__=true;
   const ADMIN_KEY_SESSION='fde-admin-key-session';
   const KEY_SELECTORS=['#ordersAdminKey','#fulfillmentKey','#adminStatusKey','#faqAdminKey'];
   const readSessionKey=()=>{try{return sessionStorage.getItem(ADMIN_KEY_SESSION)||''}catch{return''}};
@@ -32,5 +37,15 @@ if(location.pathname.endsWith('/cms-admin.html')||location.pathname.endsWith('cm
   function hydrateAdminUi(){syncAdminKeyFields();watchLegacyStatus();removeNewsEnglishFields();consolidateFulfillment();document.querySelectorAll('.token-note').forEach(note=>{if(note.textContent.includes('この画面では保存しません')||note.textContent.includes('キーは保存しません'))note.textContent='Admin keyはこのタブのセッション中だけ保持します。タブを閉じると消去され、GitHubやlocalStorageには保存しません。'})}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hydrateAdminUi,{once:true});else hydrateAdminUi();
   new MutationObserver(()=>hydrateAdminUi()).observe(document.documentElement,{childList:true,subtree:true});
-  ['order-status-admin.js?v=20260818-1400','customer-orders-admin.js?v=20260818-1400','customer-orders-operations.js?v=20260818-1400','order-documents-admin.js?v=20260818-1400','status-email-admin.js?v=20260818-1400','news-translation-hook.js?v=20260818-1400','news-delete-v2.js?v=20260818-1400'].forEach(src=>{const s=document.createElement('script');s.async=false;s.src=src;document.head.appendChild(s)});
+
+  const adminScripts=['order-status-admin.js','customer-orders-admin.js','customer-orders-operations.js','order-documents-admin.js','status-email-admin.js','news-translation-hook.js','news-delete-v2.js'];
+  adminScripts.forEach(file=>{
+    const marker=`fde-runtime-${file}`;
+    if(document.querySelector(`script[data-fde-runtime="${marker}"]`))return;
+    const s=document.createElement('script');
+    s.async=false;
+    s.src=`${file}?v=20260818-2345`;
+    s.dataset.fdeRuntime=marker;
+    document.head.appendChild(s);
+  });
 }
