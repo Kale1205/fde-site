@@ -72,11 +72,9 @@ function randomizeSignals(overlay){
 }
 function mountIntro(){
  const overlay=document.createElement('div');overlay.id='fdeEntryIntro';overlay.className='fde-entry-intro';overlay.setAttribute('aria-label','Baked Kale');
- overlay.innerHTML=`${circuitSvg()}<div class="fde-entry-center-glow" aria-hidden="true"></div><div class="fde-entry-stage"><div class="fde-entry-logo-wrap"><img class="fde-entry-logo" src="assets/baked-kale-logo-intro.svg" alt="Baked Kale — FDE / IT Engineering"></div></div><button class="fde-entry-skip" type="button" aria-label="Skip intro">SKIP</button>`;
+ overlay.innerHTML=`${circuitSvg()}<div class="fde-entry-center-glow" aria-hidden="true"></div><div class="fde-entry-stage"><div class="fde-entry-logo-wrap"><img class="fde-entry-logo" src="assets/baked-kale-logo-intro.svg" alt="Baked Kale — FDE / IT Engineering"></div></div>`;
  document.body.prepend(overlay);randomizeSignals(overlay);document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';
- overlay.querySelector('.fde-entry-skip')?.addEventListener('click',()=>finishIntro(overlay));
- overlay.addEventListener('click',e=>{if(e.target===overlay)finishIntro(overlay)});
- setTimeout(()=>finishIntro(overlay),2550);
+ setTimeout(()=>finishIntro(overlay),2300);
 }
 function init(){revealSections();if(shouldIntro)mountIntro();else heroIn(70)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
