@@ -6,7 +6,7 @@ window.FDE_TURNSTILE_SITE_KEY = '0x4AAAAAAEUE-c6Y6_E5XBLP';
 if(/(?:^|\/)(?:contact|order)\.html$/.test(location.pathname) && !window.__FDE_TURNSTILE_LOADER_ADDED__){
   window.__FDE_TURNSTILE_LOADER_ADDED__=true;
   const turnstileScript=document.createElement('script');
-  turnstileScript.src='turnstile-protection.js?v=20260819-075933';
+  turnstileScript.src='turnstile-protection.js?v=20260819-080159';
   turnstileScript.async=false;
   turnstileScript.dataset.fdeTurnstileLoader='1';
   document.head.appendChild(turnstileScript);
