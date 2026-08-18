@@ -18,6 +18,17 @@ string_asset = re.compile(
     re.IGNORECASE,
 )
 
+PUBLIC_ENTRYPOINTS = {
+    "index.html",
+    "why.html",
+    "goals.html",
+    "news.html",
+    "contact.html",
+    "order.html",
+    "customer.html",
+    "demo.html",
+}
+
 changed = []
 
 # All root HTML entry points: public pages, order/customer flows and CMS.
@@ -27,6 +38,10 @@ for path in sorted(ROOT.glob("*.html")):
         lambda m: f"{m.group('prefix')}{m.group('path')}?v={version}{m.group('suffix')}",
         text,
     )
+    # Public customer-facing entry points default to English. A saved user choice
+    # is still restored at runtime by the i18n layer.
+    if path.name in PUBLIC_ENTRYPOINTS:
+        new = re.sub(r'<html\s+lang=["\'][^"\']+["\']', '<html lang="en"', new, count=1, flags=re.IGNORECASE)
     if new != text:
         path.write_text(new, encoding="utf-8")
         changed.append(path.relative_to(ROOT).as_posix())
