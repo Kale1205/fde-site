@@ -6,7 +6,7 @@ const labels={
  ja:{intro:'すべて必須項目です。入力内容を確認してから、サイト上で送信できます。',notice:'入力後に内容確認画面が表示されます。確認後、このサイトから直接送信されます。',sending:'送信中…',failed:'送信に失敗しました。時間をおいてもう一度お試しください。',confirm:'この内容で送信しますか？',emailLabel:'メールアドレス',invalidEmail:'有効なメールアドレスを入力してください。例: name@example.com'},
  en:{intro:'All fields are required. Review your inquiry before sending it directly from this website.',notice:'After entering your details, you can review them before the inquiry is sent directly from this website.',sending:'Sending…',failed:'The message could not be sent. Please try again later.',confirm:'Send this inquiry?',emailLabel:'Email address',invalidEmail:'Enter a valid email address, for example name@example.com.'}
 };
-const lang=()=>document.documentElement.lang||'ja';
+const lang=()=>document.querySelector('#lang')?.value||document.documentElement.lang||'en';
 const tr=k=>(labels[lang()]||labels.en)[k]||labels.en[k];
 const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function value(id){return $('#'+id)?.value.trim()||''}
@@ -34,6 +34,7 @@ async function postJson(endpoint,payload){const res=await fetch(endpoint,{method
 async function send(){const btn=$('#confirmSend'),confirm=$('#inquiryConfirm'),complete=$('#inquiryComplete'),form=$('#contactForm');if(!btn||!confirm||!complete||!form)return;btn.disabled=true;const original=btn.textContent;btn.textContent=tr('sending');try{if(WORKER_ENDPOINT){await postJson(WORKER_ENDPOINT,workerPayload())}else{await postJson(FORM_SUBMIT_ENDPOINT,formSubmitPayload())}confirm.hidden=true;complete.hidden=false;complete.scrollIntoView({behavior:'smooth',block:'start'});form.reset()}catch(e){console.warn('Contact submission failed',e);alert(tr('failed'))}finally{btn.disabled=false;btn.textContent=original}}
 function refreshCopy(){const intro=document.querySelector('.form-wrap .section-head .section-copy');if(intro)intro.textContent=tr('intro');const notice=$('#formNotice');if(notice)notice.textContent=tr('notice');const direct=$('#directSendNotice');if(direct)direct.textContent=tr('notice');const emailLabel=$('#contact')?.previousElementSibling;if(emailLabel)emailLabel.textContent=tr('emailLabel');validateEmail()}
 document.addEventListener('submit',e=>{if(e.target?.id!=='contactForm')return;e.preventDefault();e.stopImmediatePropagation();if(validate(e.target))showConfirm()},true);
-document.addEventListener('click',e=>{if(e.target.closest('#confirmSend')){e.preventDefault();e.stopImmediatePropagation();send();return}if(e.target.closest('#confirmBack')){e.preventDefault();e.stopImmediatePropagation();showForm()}},true);
+// Use bubble phase here so Turnstile's capture-phase gate can block submission first.
+document.addEventListener('click',e=>{if(e.target.closest('#confirmSend')){e.preventDefault();send();return}if(e.target.closest('#confirmBack')){e.preventDefault();showForm()}},false);
 document.addEventListener('DOMContentLoaded',()=>{refreshCopy();const email=$('#contact');email?.addEventListener('input',()=>{email.setCustomValidity('');if(email.value.trim())validateEmail()});email?.addEventListener('blur',validateEmail);$('#lang')?.addEventListener('change',()=>setTimeout(refreshCopy,0))});
 })();
