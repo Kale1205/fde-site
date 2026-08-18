@@ -1,0 +1,62 @@
+/* Baked Kale / Kale's FDE — restrained motion layer for Products */
+:root{--fde-motion-green:#0b6b43;--fde-motion-ink:#172433;--fde-motion-soft:#edf6f0}
+
+.fde-entry-intro{position:fixed;inset:0;z-index:99990;display:grid;place-items:center;overflow:hidden;background:#fff;opacity:1;visibility:visible;transition:opacity .42s cubic-bezier(.2,.7,.2,1),visibility .42s linear}
+.fde-entry-intro::before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 50% 50%,rgba(11,107,67,.09),transparent 38%),radial-gradient(circle at 18% 70%,rgba(11,107,67,.045),transparent 24%);transform:scale(.92);opacity:0;animation:fdeGlowIn .9s .12s ease forwards}
+.fde-entry-intro::after{content:"";position:absolute;left:50%;top:0;width:1px;height:100%;background:linear-gradient(180deg,transparent,rgba(11,107,67,.22),transparent);transform:scaleY(0);transform-origin:50% 0;animation:fdeCenterLine .8s .1s cubic-bezier(.2,.8,.2,1) forwards}
+.fde-entry-intro.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
+.fde-entry-stage{position:relative;width:min(860px,86vw);padding:72px 24px;display:grid;place-items:center}
+.fde-entry-logo-wrap{position:relative;width:min(760px,78vw);filter:drop-shadow(0 18px 38px rgba(23,36,51,.06));transform:translateY(10px) scale(.985);opacity:0;animation:fdeLogoRise .62s .38s cubic-bezier(.16,1,.3,1) forwards}
+.fde-entry-logo-mask{overflow:hidden;clip-path:inset(0 100% 0 0);animation:fdeLogoReveal .82s .27s cubic-bezier(.16,1,.3,1) forwards}
+.fde-entry-logo{display:block;width:100%;height:auto}
+.fde-entry-pulse{position:absolute;left:17%;top:50%;width:12px;height:12px;border-radius:50%;background:var(--fde-motion-green);box-shadow:0 0 0 0 rgba(11,107,67,.28);opacity:0;animation:fdeNodePulse .65s .34s ease-out forwards}
+.fde-entry-circuit{position:absolute;left:0;right:0;top:50%;height:260px;transform:translateY(-50%);pointer-events:none}
+.fde-entry-wire{position:absolute;height:2px;background:linear-gradient(90deg,transparent,rgba(23,36,51,.48),rgba(11,107,67,.62));transform:scaleX(0);transform-origin:left center;opacity:.55;border-radius:999px}
+.fde-entry-wire::after{content:"";position:absolute;right:-4px;top:-3px;width:8px;height:8px;border-radius:50%;border:2px solid var(--fde-motion-green);background:#fff}
+.fde-entry-wire.w1{left:2%;top:28%;width:20%;animation:fdeWire .45s .06s ease-out forwards}
+.fde-entry-wire.w2{left:4%;top:42%;width:16%;animation:fdeWire .42s .13s ease-out forwards}
+.fde-entry-wire.w3{right:2%;left:auto;top:59%;width:18%;transform-origin:right center;background:linear-gradient(270deg,transparent,rgba(23,36,51,.42),rgba(11,107,67,.58));animation:fdeWire .45s .2s ease-out forwards}
+.fde-entry-wire.w3::after{right:auto;left:-4px}
+.fde-entry-wire.w4{right:5%;left:auto;top:72%;width:14%;transform-origin:right center;background:linear-gradient(270deg,transparent,rgba(23,36,51,.38),rgba(11,107,67,.52));animation:fdeWire .42s .27s ease-out forwards}
+.fde-entry-wire.w4::after{right:auto;left:-4px}
+.fde-entry-skip{position:absolute;right:22px;bottom:18px;border:0;background:transparent;color:#6a7771;font:600 11px/1.2 inherit;letter-spacing:.08em;cursor:pointer;padding:10px;opacity:.72}
+.fde-entry-skip:hover{opacity:1;color:var(--fde-motion-green)}
+
+.products-hero .hero-grid>div:first-child>*{opacity:0;transform:translateY(18px)}
+.products-hero .demo-preview-player{opacity:0;transform:translateX(22px) scale(.985)}
+body.fde-hero-enter .products-hero .hero-grid>div:first-child>*{animation:fdeHeroItem .64s cubic-bezier(.16,1,.3,1) forwards}
+body.fde-hero-enter .products-hero .hero-grid>div:first-child>*:nth-child(1){animation-delay:.02s}
+body.fde-hero-enter .products-hero .hero-grid>div:first-child>*:nth-child(2){animation-delay:.10s}
+body.fde-hero-enter .products-hero .hero-grid>div:first-child>*:nth-child(3){animation-delay:.18s}
+body.fde-hero-enter .products-hero .hero-grid>div:first-child>*:nth-child(4){animation-delay:.26s}
+body.fde-hero-enter .products-hero .hero-grid>div:first-child>*:nth-child(5){animation-delay:.34s}
+body.fde-hero-enter .products-hero .demo-preview-player{animation:fdePreviewIn .76s .16s cubic-bezier(.16,1,.3,1) forwards}
+
+.fde-reveal{opacity:0;transform:translateY(26px);transition:opacity .72s cubic-bezier(.2,.7,.2,1),transform .72s cubic-bezier(.16,1,.3,1)}
+.fde-reveal.is-visible{opacity:1;transform:none}
+.products-flow-rail .fde-reveal:nth-child(3),.steps .fde-reveal:nth-child(2),.security-grid .fde-reveal:nth-child(2){transition-delay:.07s}
+.products-flow-rail .fde-reveal:nth-child(5),.steps .fde-reveal:nth-child(3),.security-grid .fde-reveal:nth-child(3){transition-delay:.14s}
+.security-grid .fde-reveal:nth-child(4){transition-delay:.21s}
+
+.plan-card{transition:box-shadow .28s ease,border-color .28s ease,transform .28s cubic-bezier(.16,1,.3,1)}
+@media(hover:hover){.plan-card:hover{transform:translateY(-5px);box-shadow:0 18px 42px rgba(12,57,38,.10);border-color:rgba(11,107,67,.36)}}
+.demo-preview-player{position:relative;overflow:hidden}
+.demo-preview-player::after{content:"";position:absolute;inset:-40% -10%;background:linear-gradient(110deg,transparent 42%,rgba(255,255,255,.34) 49%,transparent 56%);transform:translateX(-70%);pointer-events:none;animation:fdePreviewSweep 8s 2.2s ease-in-out infinite}
+
+@keyframes fdeGlowIn{to{opacity:1;transform:scale(1)}}
+@keyframes fdeCenterLine{0%{transform:scaleY(0)}65%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:.18}}
+@keyframes fdeWire{to{transform:scaleX(1)}}
+@keyframes fdeLogoReveal{to{clip-path:inset(0 0 0 0)}}
+@keyframes fdeLogoRise{to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes fdeNodePulse{0%{opacity:0;box-shadow:0 0 0 0 rgba(11,107,67,.32)}35%{opacity:1}100%{opacity:0;box-shadow:0 0 0 26px rgba(11,107,67,0)}}
+@keyframes fdeHeroItem{to{opacity:1;transform:none}}
+@keyframes fdePreviewIn{to{opacity:1;transform:none}}
+@keyframes fdePreviewSweep{0%,72%,100%{transform:translateX(-75%);opacity:0}78%{opacity:.65}90%{transform:translateX(75%);opacity:0}}
+
+@media(max-width:760px){
+ .fde-entry-stage{width:94vw;padding:48px 12px}.fde-entry-logo-wrap{width:88vw}.fde-entry-circuit{height:210px}.fde-entry-wire.w1{width:15%}.fde-entry-wire.w2{width:12%}.fde-entry-wire.w3{width:14%}.fde-entry-wire.w4{width:10%}
+ .fde-entry-skip{right:10px;bottom:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .fde-entry-intro{display:none!important}.products-hero .hero-grid>div:first-child>*,.products-hero .demo-preview-player,.fde-reveal{opacity:1!important;transform:none!important;animation:none!important;transition:none!important}.demo-preview-player::after{display:none!important}.plan-card{transition:none!important}
+}
