@@ -3,11 +3,29 @@
     "enabled": true,
     "label": {
       "ja": "最新情報",
-      "en": "Latest"
+      "en": "Latest",
+      "zh-CN": "最新信息",
+      "zh-TW": "最新資訊",
+      "ko": "최신 소식",
+      "id": "Terbaru",
+      "ms": "Terkini",
+      "vi": "Mới nhất",
+      "th": "ล่าสุด",
+      "hi": "नवीनतम",
+      "ar": "الأحدث"
     },
     "text": {
       "ja": "IMS Starter デモ v0.1.0 を公開",
-      "en": "IMS Starter demo v0.1.0 is now available"
+      "en": "IMS Starter demo v0.1.0 is now available",
+      "zh-CN": "IMS Starter 演示 v0.1.0 现已发布",
+      "zh-TW": "IMS Starter 示範 v0.1.0 現已發布",
+      "ko": "IMS Starter 데모 v0.1.0이 공개되었습니다",
+      "id": "Demo IMS Starter v0.1.0 kini tersedia",
+      "ms": "Demo IMS Starter v0.1.0 kini tersedia",
+      "vi": "Bản demo IMS Starter v0.1.0 hiện đã có",
+      "th": "เดโม IMS Starter v0.1.0 พร้อมใช้งานแล้ว",
+      "hi": "IMS Starter डेमो v0.1.0 अब उपलब्ध है",
+      "ar": "أصبح عرض IMS Starter التجريبي v0.1.0 متاحًا الآن"
     },
     "link": "news.html"
   },
@@ -17,7 +35,16 @@
     "handle": "@kale1999_",
     "description": {
       "ja": "写真・映像・小説を中心とした個人のクリエイティブ活動を発信しています。FDEの業務情報とは分け、作品や制作活動を掲載しています。",
-      "en": "A personal creative account focused on photography, short-form video and literary writing. It is kept separate from Kale’s FDE business updates."
+      "en": "A personal creative account focused on photography, short-form video and literary writing. It is kept separate from Kale’s FDE business updates.",
+      "zh-CN": "这是一个以摄影、短视频和文学创作为主的个人创作账号，与 Kale’s FDE 的业务更新分开运营。",
+      "zh-TW": "這是一個以攝影、短影音與文學創作為主的個人創作帳號，與 Kale’s FDE 的業務更新分開營運。",
+      "ko": "사진, 숏폼 영상, 문학 창작을 중심으로 한 개인 창작 계정입니다. Kale’s FDE의 업무 업데이트와는 분리해 운영합니다.",
+      "id": "Akun kreatif pribadi yang berfokus pada fotografi, video pendek, dan karya sastra. Akun ini dikelola terpisah dari pembaruan bisnis Kale’s FDE.",
+      "ms": "Akaun kreatif peribadi yang memberi tumpuan kepada fotografi, video pendek dan penulisan sastera. Akaun ini diuruskan secara berasingan daripada kemas kini perniagaan Kale’s FDE.",
+      "vi": "Tài khoản sáng tạo cá nhân tập trung vào nhiếp ảnh, video ngắn và sáng tác văn học. Nội dung này được tách biệt với các cập nhật kinh doanh của Kale’s FDE.",
+      "th": "บัญชีงานสร้างสรรค์ส่วนบุคคลที่เน้นภาพถ่าย วิดีโอสั้น และงานเขียนวรรณกรรม โดยแยกจากข้อมูลอัปเดตทางธุรกิจของ Kale’s FDE",
+      "hi": "यह एक व्यक्तिगत रचनात्मक अकाउंट है, जिसमें फोटोग्राफी, शॉर्ट-फॉर्म वीडियो और साहित्यिक लेखन पर ध्यान दिया जाता है। इसे Kale’s FDE के व्यावसायिक अपडेट से अलग रखा गया है।",
+      "ar": "حساب إبداعي شخصي يركز على التصوير والفيديوهات القصيرة والكتابة الأدبية، ويتم تشغيله بشكل منفصل عن تحديثات أعمال Kale’s FDE."
     },
     "image": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-205541-IMG_8969-3c7112.jpg"
   },
@@ -185,20 +212,39 @@
       }
     },
     {
+      "id": "20260818-item",
       "date": "2026-08-18",
       "category": "Social",
       "featured": true,
       "link": "news.html",
       "image": "",
+      "translationStatus": "translated",
       "title": {
         "ja": "てすと",
-        "en": ""
+        "en": "Test",
+        "zh-CN": "测试",
+        "zh-TW": "測試",
+        "ko": "테스트",
+        "id": "Tes",
+        "ms": "Ujian",
+        "vi": "Kiểm tra",
+        "th": "ทดสอบ",
+        "hi": "परीक्षण",
+        "ar": "اختبار"
       },
       "body": {
         "ja": "やめとけ",
-        "en": ""
-      },
-      "id": "20260818-item"
+        "en": "Don't do it.",
+        "zh-CN": "别这么做。",
+        "zh-TW": "別這麼做。",
+        "ko": "하지 마세요.",
+        "id": "Jangan lakukan itu.",
+        "ms": "Jangan lakukannya.",
+        "vi": "Đừng làm vậy.",
+        "th": "อย่าทำแบบนั้น",
+        "hi": "ऐसा मत करें।",
+        "ar": "لا تفعل ذلك."
+      }
     }
   ]
 }
