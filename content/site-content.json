@@ -245,6 +245,22 @@
         "hi": "ऐसा मत करें।",
         "ar": "لا تفعل ذلك."
       }
+    },
+    {
+      "date": "2026-08-18",
+      "category": "Social",
+      "featured": false,
+      "link": "news.html",
+      "image": "",
+      "title": {
+        "ja": "2026/08/18 おはよう",
+        "en": "February 18th, 2018 Good Morning"
+      },
+      "body": {
+        "ja": "てすと",
+        "en": "to say."
+      },
+      "id": "20260818-february-18th-2018-good-morning"
     }
   ]
 }
