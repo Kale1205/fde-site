@@ -1,7 +1,7 @@
 // Public Contact configuration. Do not place API keys here.
 window.FDE_CONTACT_API = 'https://kales-fde-contact.reyouinjune.workers.dev';
-// Cloudflare Turnstile public Site key. This is intentionally public and will be filled after the widget is created.
-window.FDE_TURNSTILE_SITE_KEY = window.FDE_TURNSTILE_SITE_KEY || '';
+// Cloudflare Turnstile public Site key. This value is intentionally public.
+window.FDE_TURNSTILE_SITE_KEY = '0x4AAAAAAEUE-c6Y6_E5XBLP';
 if(/(?:^|\/)(?:contact|order)\.html$/.test(location.pathname)){
   const turnstileScript=document.createElement('script');
   turnstileScript.src='turnstile-protection.js?v=20260818-2120';
