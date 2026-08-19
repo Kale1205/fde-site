@@ -1,1 +1,0 @@
-(()=>{ /* Legacy flip UI intentionally disabled. Products plans are rendered as fixed stacked cards by products-clean.js. */ })();
