@@ -16,6 +16,7 @@ function installLangGuard(){const html=document.documentElement;if(html.__fdeLan
 function sessionBootstrap(){try{if(!sessionStorage.getItem('fde-site-session')){sessionStorage.setItem('fde-site-session','1');localStorage.setItem('fde-lang','en')}}catch{}const wanted=localStorage.getItem('fde-lang')||'en',sel=document.querySelector('#lang');if(sel&&sel.value!==wanted)sel.value=wanted;if(window.FDE_setLanguage)window.FDE_setLanguage(wanted);else document.documentElement.lang=wanted;if(sel)sel.dispatchEvent(new Event('change',{bubbles:true}))}
 function lang(){return localStorage.getItem('fde-lang')||document.querySelector('#lang')?.value||document.documentElement.lang||'en'}
 function apply(){const p=P[lang()]||P.en;const hs=[...document.querySelectorAll('h3')];const h=hs.find(x=>/Updates単独|Updates-only|仅订阅Updates|僅訂閱Updates|Updates 단독|Updates sahaja|Updates saja|chỉ Updates|Updates แบบเดี่ยว|केवल Updates|اشتراك Updates فقط/i.test(x.textContent));if(h){h.textContent=p.title;const next=h.nextElementSibling;if(next)next.textContent=p.body}}
-function init(){installLangGuard();sessionBootstrap();setTimeout(apply,0);document.querySelector('#lang')?.addEventListener('change',()=>setTimeout(apply,0))}
+function loadPrice(){if(document.querySelector('script[data-license-price-localize]'))return;const s=document.createElement('script');s.src='license-price-localize-v1.js?v=20260819-214423';s.defer=true;s.dataset.licensePriceLocalize='1';document.head.appendChild(s)}
+function init(){installLangGuard();sessionBootstrap();setTimeout(apply,0);document.querySelector('#lang')?.addEventListener('change',()=>setTimeout(apply,0));loadPrice()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
