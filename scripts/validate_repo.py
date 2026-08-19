@@ -5,10 +5,8 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
 
-
 def fail(message):
     errors.append(message)
-
 
 version_file = ROOT / "build-version.txt"
 if not version_file.exists():
@@ -23,14 +21,15 @@ asset_ref = re.compile(r"(?:src|href)=[\"'](?P<path>[^\"']+\.(?:js|css)(?:\?[^\"
 version_param = re.compile(r"(?:\?|&)v=([^&]+)")
 public_pages = {"index.html","why.html","goals.html","news.html","contact.html","order.html","customer.html","demo.html","license.html"}
 legacy_loaders = ("contact-mailer.js", "fulfillment-v2.js")
+obsolete_runtime_names = ("i18n-v2.js","i18n-overrides.js","i18n-polish.js","i18n-brand.js","i18n-final.js","ims-plan-flip.js")
 
 for path in sorted(ROOT.glob("*.html")):
     text = path.read_text(encoding="utf-8")
     if path.name in public_pages and not re.search(r"<html\s+lang=[\"']en[\"']", text, re.IGNORECASE):
-        fail(f"{path.name}: customer-facing entry point must default to lang=en")
-    for legacy in legacy_loaders:
+        fail(f"{path.name}: customer-facing entry point must use lang=en")
+    for legacy in legacy_loaders + obsolete_runtime_names:
         if legacy in text:
-            fail(f"{path.name}: legacy loader must not be referenced: {legacy}")
+            fail(f"{path.name}: obsolete runtime must not be referenced: {legacy}")
     for match in asset_ref.finditer(text):
         ref = match.group("path")
         if ref.startswith(("http://", "https://", "//", "data:")):
@@ -42,15 +41,18 @@ for path in sorted(ROOT.glob("*.html")):
         if version and vm.group(1) != version:
             fail(f"{path.name}: asset build key {vm.group(1)!r} != {version!r}: {ref}")
 
-for name in ("contact-config.js", "i18n-final.js"):
-    path = ROOT / name
-    if not path.exists():
-        fail(f"{name} is missing")
-        continue
-    text = path.read_text(encoding="utf-8")
+contact_config = ROOT / "contact-config.js"
+if not contact_config.exists():
+    fail("contact-config.js is missing")
+else:
+    text = contact_config.read_text(encoding="utf-8")
     for match in re.finditer(r"[\"'](?P<path>(?!https?://|//)[A-Za-z0-9_./-]+\.(?:js|css))\?v=(?P<version>[0-9A-Za-z._-]+)[\"']", text):
         if version and match.group("version") != version:
-            fail(f"{name}: dynamic asset build key {match.group('version')!r} != {version!r}: {match.group('path')}")
+            fail(f"contact-config.js: dynamic asset build key {match.group('version')!r} != {version!r}: {match.group('path')}")
+
+for obsolete in obsolete_runtime_names:
+    if (ROOT / obsolete).exists():
+        fail(f"obsolete runtime file should be deleted: {obsolete}")
 
 wrangler = ROOT / "worker" / "wrangler.toml"
 if not wrangler.exists():
@@ -98,15 +100,17 @@ secret_patterns = {
 for path in ROOT.rglob("*"):
     if not path.is_file() or path.suffix.lower() not in text_extensions or ".git" in path.parts:
         continue
-    try:text = path.read_text(encoding="utf-8")
-    except UnicodeDecodeError:continue
+    try:
+        text = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        continue
     rel = path.relative_to(ROOT).as_posix()
     for label, pattern in secret_patterns.items():
-        if pattern.search(text):fail(f"{rel}: possible {label} detected")
+        if pattern.search(text):
+            fail(f"{rel}: possible {label} detected")
 
 required_runtime = {
     "contact.html": ("contact-config.js", "contact-direct.js"),
-    "order.html": ("purchase-currency-clean.js",),
     "license.html": ("license-page-i18n.js",),
 }
 for filename, required in required_runtime.items():
@@ -116,10 +120,12 @@ for filename, required in required_runtime.items():
         continue
     text = path.read_text(encoding="utf-8")
     for asset in required:
-        if asset not in text:fail(f"{filename}: required runtime is missing: {asset}")
+        if asset not in text:
+            fail(f"{filename}: required runtime is missing: {asset}")
 
 if errors:
     print("Repository validation failed:\n")
-    for item in errors:print(f"- {item}")
+    for item in errors:
+        print(f"- {item}")
     sys.exit(1)
 print(f"Repository validation passed. Build version: {version}")
