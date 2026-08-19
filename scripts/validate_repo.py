@@ -39,6 +39,17 @@ OBSOLETE_FILES = {
     "scripts/refine_language_selector.py",
     "CMS_ENGLISH_ONLY_CHECK.md",
     "MAINTENANCE_ENGLISH_ONLY.md",
+    "products-clean.js",
+    "products-clean.css",
+    "order.js",
+    "commerce-ui.js",
+    "license-spec-patch.js",
+    "license-page-i18n.js",
+    "ims-plan-spec-patch.js",
+    ".github/scripts/apply_brand_editorial.py",
+    ".github/scripts/apply_cms_public.py",
+    ".github/scripts/apply_green_brand.py",
+    ".github/scripts/apply_responsive_news.py",
 }
 
 OBSOLETE_WORKFLOWS = {
@@ -110,12 +121,13 @@ for name in sorted(EN_PAGES):
         fail(f"paired English/Japanese page missing: {name}")
 
 required_markers = {
-    "index.html": ("class=\"news-strip\"", "id=\"plans\"", "class=\"ims-compare\"", "cms-content.js"),
+    "index.html": ("class=\"news-strip\"", "id=\"plans\"", "class=\"ims-compare\"", "cms-content.js", "ims-compare-en.js"),
     "ja/index.html": ("class=\"news-strip\"", "id=\"plans\"", "class=\"ims-compare\"", "cms-content-ja.js", "ims-compare-ja.js"),
     "news.html": ("cms-content.js", "id=\"cmsNewsLead\""),
     "ja/news.html": ("cms-content-ja.js", "id=\"cmsNewsLead\""),
     "contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
     "ja/contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
+    "license.html": ("license-page-en.js",),
 }
 for rel, markers in required_markers.items():
     path = ROOT / rel
@@ -125,6 +137,17 @@ for rel, markers in required_markers.items():
     for marker in markers:
         if marker not in text:
             fail(f"{rel}: required marker/runtime missing: {marker}")
+
+# Shared public runtimes must not depend on the retired browser language state.
+for rel in ("site.js", "faq-cms.js", "contact-direct.js", "cms-content.js", "cms-content-ja.js"):
+    path = ROOT / rel
+    if not path.exists():
+        fail(f"{rel} is missing")
+        continue
+    text = path.read_text(encoding="utf-8")
+    for legacy in ("fde-lang", "querySelector('#lang')", 'querySelector("#lang")', "getElementById('lang')", 'getElementById("lang")'):
+        if legacy in text:
+            fail(f"{rel}: retired browser language-state dependency found: {legacy}")
 
 # CMS admin remains Japanese; public CMS data must contain both Japanese and English.
 cms_admin = ROOT / "cms-admin.html"
