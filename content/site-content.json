@@ -1,32 +1,8 @@
 {
   "latestStrip": {
     "enabled": true,
-    "label": {
-      "ja": "最新情報",
-      "en": "Latest",
-      "zh-CN": "最新信息",
-      "zh-TW": "最新資訊",
-      "ko": "최신 소식",
-      "id": "Terbaru",
-      "ms": "Terkini",
-      "vi": "Mới nhất",
-      "th": "ล่าสุด",
-      "hi": "नवीनतम",
-      "ar": "الأحدث"
-    },
-    "text": {
-      "ja": "IMS Starter デモ v0.1.0 を公開",
-      "en": "IMS Starter demo v0.1.0 is now available",
-      "zh-CN": "IMS Starter 演示 v0.1.0 现已发布",
-      "zh-TW": "IMS Starter 示範 v0.1.0 現已發布",
-      "ko": "IMS Starter 데모 v0.1.0이 공개되었습니다",
-      "id": "Demo IMS Starter v0.1.0 kini tersedia",
-      "ms": "Demo IMS Starter v0.1.0 kini tersedia",
-      "vi": "Bản demo IMS Starter v0.1.0 hiện đã có",
-      "th": "เดโม IMS Starter v0.1.0 พร้อมใช้งานแล้ว",
-      "hi": "IMS Starter डेमो v0.1.0 अब उपलब्ध है",
-      "ar": "أصبح عرض IMS Starter التجريبي v0.1.0 متاحًا الآن"
-    },
+    "label": {"ja":"最新情報","en":"Latest","zh-CN":"最新信息","zh-TW":"最新資訊","ko":"최신 소식","id":"Terbaru","ms":"Terkini","vi":"Mới nhất","th":"ล่าสุด","hi":"नवीनतम","ar":"الأحدث"},
+    "text": {"ja":"FDE IMSのLicense / Updates提供方針を公開","en":"FDE IMS License / Updates model announced","zh-CN":"公布FDE IMS License / Updates产品模式","zh-TW":"公布FDE IMS License / Updates產品模式","ko":"FDE IMS License / Updates 운영 모델 공개","id":"Model FDE IMS License / Updates diumumkan","ms":"Model FDE IMS License / Updates diumumkan","vi":"Công bố mô hình FDE IMS License / Updates","th":"ประกาศโมเดล FDE IMS License / Updates","hi":"FDE IMS License / Updates मॉडल की घोषणा","ar":"الإعلان عن نموذج FDE IMS License / Updates"},
     "link": "news.html"
   },
   "newsFallbackImage": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-211414-ChatGPT-Image-Aug-16-2026-08_58_09-PM-1f5fe7.png",
@@ -48,168 +24,21 @@
     },
     "image": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-205541-IMG_8969-3c7112.jpg"
   },
-  "faq": [
-    {
-      "id": "payment-after-purchase",
-      "translationStatus": "translated",
-      "question": {
-        "ja": "買い切り後に月額料金は発生しますか？",
-        "en": "Is there a monthly fee after a one-time purchase?",
-        "zh-CN": "一次性购买后还会产生月费吗？",
-        "zh-TW": "買斷後還會產生月費嗎？",
-        "ko": "일회성 구매 후에도 월 요금이 발생하나요?",
-        "id": "Apakah ada biaya bulanan setelah pembelian satu kali?",
-        "ms": "Adakah yuran bulanan selepas pembelian sekali bayar?",
-        "vi": "Sau khi mua một lần có phát sinh phí hàng tháng không?",
-        "th": "หลังจากซื้อแบบครั้งเดียวแล้ว มีค่าบริการรายเดือนหรือไม่?",
-        "hi": "एकमुश्त खरीद के बाद क्या मासिक शुल्क लगता है?",
-        "ar": "هل توجد رسوم شهرية بعد الشراء لمرة واحدة؟"
-      },
-      "answer": {
-        "ja": "買い切りプランでは、基本利用に必須の月額料金はありません。継続的な更新や保守が必要な場合は月額プランを選択できます。",
-        "en": "The one-time purchase plan does not require a monthly fee for basic use. A monthly plan is available if you need ongoing updates and maintenance.",
-        "zh-CN": "一次性购买方案的基本使用无需支付月费。如需持续更新和维护，可选择月度方案。",
-        "zh-TW": "買斷方案的基本使用不需要支付月費。如需持續更新與維護，可選擇月費方案。",
-        "ko": "일회성 구매 플랜은 기본 사용에 필수적인 월 요금이 없습니다. 지속적인 업데이트와 유지보수가 필요하면 월간 플랜을 선택할 수 있습니다.",
-        "id": "Paket pembelian satu kali tidak memerlukan biaya bulanan untuk penggunaan dasar. Jika Anda memerlukan pembaruan dan pemeliharaan berkelanjutan, Anda dapat memilih paket bulanan.",
-        "ms": "Pelan pembelian sekali bayar tidak memerlukan yuran bulanan untuk penggunaan asas. Jika anda memerlukan kemas kini dan penyelenggaraan berterusan, anda boleh memilih pelan bulanan.",
-        "vi": "Gói mua một lần không yêu cầu phí hàng tháng cho việc sử dụng cơ bản. Nếu cần cập nhật và bảo trì liên tục, bạn có thể chọn gói hàng tháng.",
-        "th": "แผนซื้อครั้งเดียวไม่มีค่าบริการรายเดือนที่จำเป็นสำหรับการใช้งานพื้นฐาน หากต้องการการอัปเดตและการบำรุงรักษาอย่างต่อเนื่อง สามารถเลือกแผนรายเดือนได้",
-        "hi": "एकमुश्त खरीद योजना में बुनियादी उपयोग के लिए कोई अनिवार्य मासिक शुल्क नहीं है। यदि आपको निरंतर अपडेट और रखरखाव चाहिए, तो मासिक योजना चुनी जा सकती है।",
-        "ar": "لا تتطلب خطة الشراء لمرة واحدة رسوماً شهرية للاستخدام الأساسي. إذا كنت بحاجة إلى تحديثات وصيانة مستمرة، يمكنك اختيار الخطة الشهرية."
-      }
-    },
-    {
-      "id": "source-customization",
-      "translationStatus": "translated",
-      "question": {
-        "ja": "自社向けに変更できますか？",
-        "en": "Can we modify the software for our own company?",
-        "zh-CN": "可以根据本公司的需求进行修改吗？",
-        "zh-TW": "可以依照本公司的需求進行修改嗎？",
-        "ko": "우리 회사에 맞게 수정할 수 있나요?",
-        "id": "Apakah perangkat lunak dapat diubah untuk kebutuhan perusahaan kami?",
-        "ms": "Bolehkah perisian diubah mengikut keperluan syarikat kami?",
-        "vi": "Có thể chỉnh sửa phần mềm cho phù hợp với công ty của chúng tôi không?",
-        "th": "สามารถปรับแก้ซอฟต์แวร์ให้เหมาะกับบริษัทของเราได้หรือไม่?",
-        "hi": "क्या सॉफ़्टवेयर को हमारी कंपनी के अनुसार बदला जा सकता है?",
-        "ar": "هل يمكن تعديل البرنامج ليناسب شركتنا؟"
-      },
-      "answer": {
-        "ja": "標準製品を優先します。ソースコードを付属するため、自社または外部エンジニアによる拡張が可能です。個別カスタム開発は基本サービスに含みません。",
-        "en": "The standard product is prioritized. Source code is included, so your internal team or an external engineer can extend it. Bespoke development is not included in the standard service.",
-        "zh-CN": "我们优先提供标准产品。产品附带源代码，因此可以由贵公司的内部团队或外部工程师进行扩展。个别定制开发不包含在标准服务中。",
-        "zh-TW": "我們優先提供標準產品。產品附帶原始碼，因此可由貴公司的內部團隊或外部工程師進行擴充。個別客製開發不包含在標準服務中。",
-        "ko": "표준 제품 제공을 우선합니다. 소스 코드가 포함되어 있어 사내 팀이나 외부 엔지니어가 확장할 수 있습니다. 개별 맞춤 개발은 기본 서비스에 포함되지 않습니다.",
-        "id": "Kami memprioritaskan produk standar. Kode sumber disertakan, sehingga tim internal Anda atau engineer eksternal dapat melakukan pengembangan lebih lanjut. Pengembangan khusus per perusahaan tidak termasuk dalam layanan standar.",
-        "ms": "Kami mengutamakan produk standard. Kod sumber disertakan, jadi pasukan dalaman anda atau jurutera luar boleh membuat pengembangan lanjut. Pembangunan tersuai secara individu tidak termasuk dalam perkhidmatan standard.",
-        "vi": "Chúng tôi ưu tiên sản phẩm tiêu chuẩn. Mã nguồn được cung cấp kèm theo, vì vậy đội ngũ nội bộ hoặc kỹ sư bên ngoài có thể mở rộng hệ thống. Phát triển tùy chỉnh riêng cho từng doanh nghiệp không nằm trong dịch vụ tiêu chuẩn.",
-        "th": "เราให้ความสำคัญกับผลิตภัณฑ์มาตรฐานเป็นหลัก โดยมีซอร์สโค้ดให้มาด้วย จึงสามารถขยายระบบโดยทีมภายในหรือวิศวกรภายนอกได้ การพัฒนาแบบเฉพาะรายไม่รวมอยู่ในบริการมาตรฐาน",
-        "hi": "हम मानक उत्पाद को प्राथमिकता देते हैं। स्रोत कोड शामिल होता है, इसलिए आपकी आंतरिक टीम या बाहरी इंजीनियर इसे आगे बढ़ा सकते हैं। अलग से कस्टम विकास मानक सेवा में शामिल नहीं है।",
-        "ar": "نعطي الأولوية للمنتج القياسي. يتم تضمين الشيفرة المصدرية، لذلك يمكن لفريقك الداخلي أو لمهندس خارجي توسيع النظام. التطوير المخصص لكل شركة غير مشمول في الخدمة القياسية."
-      }
-    },
-    {
-      "id": "international-use",
-      "translationStatus": "translated",
-      "question": {
-        "ja": "海外企業でも利用できますか？",
-        "en": "Can companies outside Japan use the products?",
-        "zh-CN": "日本以外的企业也可以使用这些产品吗？",
-        "zh-TW": "日本以外的企業也可以使用這些產品嗎？",
-        "ko": "일본 외 국가의 기업도 사용할 수 있나요?",
-        "id": "Apakah perusahaan di luar Jepang dapat menggunakan produk ini?",
-        "ms": "Bolehkah syarikat di luar Jepun menggunakan produk ini?",
-        "vi": "Doanh nghiệp ngoài Nhật Bản có thể sử dụng sản phẩm không?",
-        "th": "บริษัทนอกประเทศญี่ปุ่นสามารถใช้ผลิตภัณฑ์ได้หรือไม่?",
-        "hi": "क्या जापान के बाहर की कंपनियाँ इन उत्पादों का उपयोग कर सकती हैं?",
-        "ar": "هل يمكن للشركات خارج اليابان استخدام المنتجات؟"
-      },
-      "answer": {
-        "ja": "主要言語の固定UIを用意しています。提供条件や利用可能時期についてはお問い合わせください。",
-        "en": "The site and product information support major languages. Please contact us regarding availability and delivery conditions for your region.",
-        "zh-CN": "网站和产品信息支持主要语言。有关您所在地区的提供条件和可用时间，请联系我们。",
-        "zh-TW": "網站與產品資訊支援主要語言。關於您所在地區的提供條件與可用時間，請與我們聯絡。",
-        "ko": "사이트와 제품 정보는 주요 언어를 지원합니다. 지역별 제공 조건과 이용 가능 시기는 문의해 주세요.",
-        "id": "Situs dan informasi produk mendukung bahasa-bahasa utama. Silakan hubungi kami untuk mengetahui ketersediaan dan ketentuan penyediaan di wilayah Anda.",
-        "ms": "Laman dan maklumat produk menyokong bahasa-bahasa utama. Sila hubungi kami untuk mengetahui ketersediaan dan syarat penyediaan di wilayah anda.",
-        "vi": "Trang web và thông tin sản phẩm hỗ trợ các ngôn ngữ chính. Vui lòng liên hệ với chúng tôi để biết điều kiện cung cấp và thời điểm khả dụng tại khu vực của bạn.",
-        "th": "เว็บไซต์และข้อมูลผลิตภัณฑ์รองรับภาษาหลักหลายภาษา กรุณาติดต่อเราเพื่อสอบถามเงื่อนไขการให้บริการและช่วงเวลาที่สามารถใช้งานได้ในภูมิภาคของคุณ",
-        "hi": "वेबसाइट और उत्पाद जानकारी प्रमुख भाषाओं का समर्थन करती है। आपके क्षेत्र में उपलब्धता और आपूर्ति की शर्तों के लिए कृपया हमसे संपर्क करें।",
-        "ar": "يدعم الموقع ومعلومات المنتج اللغات الرئيسية. يرجى التواصل معنا لمعرفة شروط التوفير وموعد الإتاحة في منطقتك."
-      }
-    }
-  ],
   "news": [
     {
-      "id": "ims-demo-v0-1-0",
-      "date": "2026-08-16",
-      "category": "Product",
-      "featured": true,
-      "link": "demo.html",
-      "image": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png",
-      "translationStatus": "translated",
-      "title": {
-        "ja": "IMS Starter デモ v0.1.0 を公開",
-        "en": "IMS Starter demo v0.1.0 released",
-        "zh-CN": "IMS Starter 演示 v0.1.0 已发布",
-        "zh-TW": "IMS Starter 示範 v0.1.0 已發布",
-        "ko": "IMS Starter 데모 v0.1.0 공개",
-        "id": "Demo IMS Starter v0.1.0 dirilis",
-        "ms": "Demo IMS Starter v0.1.0 diterbitkan",
-        "vi": "Đã phát hành bản demo IMS Starter v0.1.0",
-        "th": "เปิดตัวเดโม IMS Starter v0.1.0",
-        "hi": "IMS Starter डेमो v0.1.0 जारी",
-        "ar": "إصدار العرض التجريبي IMS Starter v0.1.0"
-      },
-      "body": {
-        "ja": "在庫一覧、検索、入出庫操作、在庫アラートを試せる初回デモを公開しました。",
-        "en": "The first interactive demo is now available with inventory search, stock movements and low-stock alerts.",
-        "zh-CN": "首个交互式演示现已发布，可体验库存搜索、入库与出库操作以及低库存提醒。",
-        "zh-TW": "首個互動式示範現已發布，可體驗庫存搜尋、入庫與出庫操作以及低庫存提醒。",
-        "ko": "재고 검색, 입출고 작업, 재고 부족 알림을 체험할 수 있는 첫 번째 인터랙티브 데모를 공개했습니다.",
-        "id": "Demo interaktif pertama kini tersedia dengan pencarian inventaris, pergerakan stok, dan peringatan stok rendah.",
-        "ms": "Demo interaktif pertama kini tersedia dengan carian inventori, pergerakan stok dan amaran stok rendah.",
-        "vi": "Bản demo tương tác đầu tiên hiện đã có, với chức năng tìm kiếm tồn kho, nhập xuất kho và cảnh báo tồn kho thấp.",
-        "th": "เดโมแบบโต้ตอบครั้งแรกพร้อมให้ใช้งานแล้ว โดยสามารถทดลองค้นหาสินค้าคงคลัง การรับเข้าและจ่ายออก และการแจ้งเตือนสต็อกต่ำ",
-        "hi": "पहला इंटरैक्टिव डेमो अब उपलब्ध है, जिसमें इन्वेंटरी खोज, स्टॉक आवक-जावक और कम स्टॉक अलर्ट शामिल हैं।",
-        "ar": "أصبح العرض التجريبي التفاعلي الأول متاحًا الآن، ويشمل البحث في المخزون وحركات الإدخال والإخراج وتنبيهات انخفاض المخزون."
-      }
+      "id":"ims-license-updates-policy-20260819","date":"2026-08-19","category":"Product","featured":true,"link":"license.html","image":"","translationStatus":"translated",
+      "title":{"ja":"FDE IMSのLicense / Updates提供方針を公開","en":"FDE IMS License / Updates product model announced","zh-CN":"公布FDE IMS License / Updates产品模式","zh-TW":"公布FDE IMS License / Updates產品模式","ko":"FDE IMS License / Updates 제품 모델 공개","id":"Model produk FDE IMS License / Updates diumumkan","ms":"Model produk FDE IMS License / Updates diumumkan","vi":"Công bố mô hình sản phẩm FDE IMS License / Updates","th":"ประกาศโมเดลผลิตภัณฑ์ FDE IMS License / Updates","hi":"FDE IMS License / Updates उत्पाद मॉडल की घोषणा","ar":"الإعلان عن نموذج منتج FDE IMS License / Updates"},
+      "body":{"ja":"FDE IMSは現在開発中です。予定価格49,800円のソースコード付き永続利用Licenseと、予定価格9,800円/月でFDEが継続更新するUpdatesの2モデルを設計しています。正式販売・製品バージョン・詳細な更新方針は確定後に案内します。","en":"FDE IMS is currently under development. Two models are planned: License, a JPY 49,800 one-time perpetual internal-use license with source code, and Updates, a JPY 9,800/month product continuously maintained by FDE. Formal availability, product versions and detailed update policies will be announced after they are finalized.","zh-CN":"FDE IMS目前仍在开发中。计划提供两种模式：49,800日元一次性、附源代码的永久内部使用License，以及9,800日元/月、由FDE持续更新的Updates。正式销售、产品版本及详细更新政策将在确定后公布。","zh-TW":"FDE IMS目前仍在開發中。預計提供兩種模式：49,800日圓一次、附原始碼的永久內部使用License，以及9,800日圓/月、由FDE持續更新的Updates。正式銷售、產品版本與詳細更新政策將在確定後公布。","ko":"FDE IMS는 현재 개발 중입니다. 예정 가격 JPY 49,800의 소스 코드 포함 영구 내부 사용 License와 JPY 9,800/월로 FDE가 지속 업데이트하는 Updates 두 모델을 설계하고 있습니다. 정식 판매, 제품 버전 및 상세 업데이트 정책은 확정 후 안내합니다.","id":"FDE IMS masih dalam pengembangan. Dua model direncanakan: License JPY 49.800 sekali bayar untuk penggunaan internal permanen dengan kode sumber, dan Updates JPY 9.800/bulan yang terus dipelihara FDE. Penjualan resmi, versi produk dan kebijakan pembaruan rinci akan diumumkan setelah ditetapkan.","ms":"FDE IMS masih dalam pembangunan. Dua model dirancang: License JPY 49,800 sekali bayar untuk penggunaan dalaman kekal dengan kod sumber, dan Updates JPY 9,800/bulan yang terus diselenggara FDE. Jualan rasmi, versi produk dan dasar kemas kini terperinci akan diumumkan selepas dimuktamadkan.","vi":"FDE IMS hiện đang được phát triển. Hai mô hình được dự kiến: License giá JPY 49.800 một lần, sử dụng nội bộ vĩnh viễn kèm mã nguồn; và Updates giá JPY 9.800/tháng do FDE liên tục duy trì. Thời điểm bán chính thức, phiên bản và chính sách cập nhật chi tiết sẽ được công bố sau khi chốt.","th":"FDE IMS อยู่ระหว่างการพัฒนา โดยวางแผนสองโมเดล: License ราคา JPY 49,800 ครั้งเดียวสำหรับใช้งานภายในถาวรพร้อมซอร์สโค้ด และ Updates ราคา JPY 9,800/เดือนที่ FDE ดูแลต่อเนื่อง รายละเอียดการขาย เวอร์ชัน และนโยบายอัปเดตจะแจ้งเมื่อกำหนดแล้ว","hi":"FDE IMS अभी विकासाधीन है। दो मॉडल नियोजित हैं: JPY 49,800 एकमुश्त स्रोत कोड सहित स्थायी आंतरिक उपयोग License, और JPY 9,800/माह FDE द्वारा लगातार बनाए रखा जाने वाला Updates. औपचारिक बिक्री, उत्पाद संस्करण और विस्तृत अपडेट नीति बाद में घोषित की जाएगी।","ar":"لا يزال FDE IMS قيد التطوير. ويُخطط لنموذجين: License بسعر 49,800 ين دفعة واحدة للاستخدام الداخلي الدائم مع الشيفرة المصدرية، وUpdates بسعر 9,800 ين شهرياً مع صيانة وتحديث مستمرين من FDE. وسيتم إعلان البيع الرسمي وإصدارات المنتج وسياسة التحديث التفصيلية بعد اعتمادها."}
     },
     {
-      "id": "website-update-20260816",
-      "date": "2026-08-16",
-      "category": "Development",
-      "featured": false,
-      "link": "index.html",
-      "image": "",
-      "translationStatus": "translated",
-      "title": {
-        "ja": "Kale’s FDE サイトを更新",
-        "en": "Kale’s FDE website updated",
-        "zh-CN": "Kale’s FDE 网站已更新",
-        "zh-TW": "Kale’s FDE 網站已更新",
-        "ko": "Kale’s FDE 웹사이트 업데이트",
-        "id": "Situs Kale’s FDE diperbarui",
-        "ms": "Laman Kale’s FDE dikemas kini",
-        "vi": "Đã cập nhật trang web Kale’s FDE",
-        "th": "อัปเดตเว็บไซต์ Kale’s FDE",
-        "hi": "Kale’s FDE वेबसाइट अपडेट की गई",
-        "ar": "تم تحديث موقع Kale’s FDE"
-      },
-      "body": {
-        "ja": "Products、Why FDE、Kale’s Goals、Contactを中心に情報構成と多言語表示を整理しました。",
-        "en": "The site structure and multilingual presentation have been refined around Products, Why FDE, Kale’s Goals and Contact.",
-        "zh-CN": "我们围绕 Products、Why FDE、Kale’s Goals 和 Contact 优化了网站结构与多语言显示。",
-        "zh-TW": "我們圍繞 Products、Why FDE、Kale’s Goals 與 Contact 優化了網站結構與多語言顯示。",
-        "ko": "Products, Why FDE, Kale’s Goals, Contact를 중심으로 사이트 구조와 다국어 표시를 정리했습니다.",
-        "id": "Struktur situs dan tampilan multibahasa telah disempurnakan dengan fokus pada Products, Why FDE, Kale’s Goals, dan Contact.",
-        "ms": "Struktur laman dan paparan berbilang bahasa telah diperhalusi dengan fokus pada Products, Why FDE, Kale’s Goals dan Contact.",
-        "vi": "Cấu trúc trang web và cách hiển thị đa ngôn ngữ đã được tinh chỉnh, tập trung vào Products, Why FDE, Kale’s Goals và Contact.",
-        "th": "ได้ปรับโครงสร้างเว็บไซต์และการแสดงผลหลายภาษา โดยเน้นที่ Products, Why FDE, Kale’s Goals และ Contact",
-        "hi": "Products, Why FDE, Kale’s Goals और Contact पर केंद्रित साइट संरचना और बहुभाषी प्रस्तुति को बेहतर किया गया है।",
-        "ar": "تم تحسين بنية الموقع والعرض متعدد اللغات مع التركيز على Products وWhy FDE وKale’s Goals وContact."
-      }
+      "id":"ims-demo-preview","date":"2026-08-16","category":"Development","featured":false,"link":"demo.html","image":"https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png","translationStatus":"translated",
+      "title":{"ja":"FDE IMS 開発プレビューを公開","en":"FDE IMS development preview available","zh-CN":"FDE IMS开发预览现已提供","zh-TW":"FDE IMS開發預覽現已提供","ko":"FDE IMS 개발 프리뷰 공개","id":"Pratinjau pengembangan FDE IMS tersedia","ms":"Pratonton pembangunan FDE IMS tersedia","vi":"Bản xem trước FDE IMS đang phát triển đã có","th":"เปิดตัวตัวอย่าง FDE IMS ระหว่างพัฒนา","hi":"FDE IMS विकास पूर्वावलोकन उपलब्ध","ar":"إتاحة معاينة تطوير FDE IMS"},
+      "body":{"ja":"在庫一覧、検索、入出庫操作、在庫アラート等の操作イメージを確認できるサンプルデモです。正式製品のバージョン、完成機能、更新履歴、提供実績を示すものではありません。","en":"This sample demo shows the intended experience for inventory lists, search, stock movements and low-stock alerts. It does not represent a released product version, completed feature set, update history or delivery record.","zh-CN":"此示例Demo用于展示库存列表、搜索、出入库和低库存提醒等操作概念，并不代表正式产品版本、完整功能、更新历史或交付实绩。","zh-TW":"此範例Demo用於展示庫存清單、搜尋、出入庫與低庫存提醒等操作概念，並不代表正式產品版本、完整功能、更新紀錄或交付實績。","ko":"재고 목록, 검색, 입출고, 재고 부족 알림 등의 조작 개념을 확인하는 샘플 Demo입니다. 정식 제품 버전, 완성 기능, 업데이트 이력 또는 제공 실적을 의미하지 않습니다.","id":"Demo sampel ini menunjukkan konsep daftar inventaris, pencarian, pergerakan stok, dan peringatan stok rendah. Ini bukan versi produk resmi, fitur lengkap, riwayat pembaruan, atau rekam jejak pengiriman.","ms":"Demo sampel ini menunjukkan konsep senarai inventori, carian, pergerakan stok dan amaran stok rendah. Ia bukan versi produk rasmi, ciri lengkap, sejarah kemas kini atau rekod penghantaran.","vi":"Demo mẫu này minh họa danh sách tồn kho, tìm kiếm, nhập xuất và cảnh báo tồn kho thấp. Đây không phải phiên bản chính thức, bộ tính năng hoàn chỉnh, lịch sử cập nhật hay thành tích bàn giao.","th":"เดโมตัวอย่างนี้ใช้แสดงแนวคิดรายการสินค้าคงคลัง การค้นหา การรับ-จ่าย และการแจ้งเตือนสต็อกต่ำ ไม่ใช่เวอร์ชันผลิตภัณฑ์จริง ฟังก์ชันครบถ้วน ประวัติอัปเดต หรือผลงานการส่งมอบ","hi":"यह नमूना Demo इन्वेंटरी सूची, खोज, स्टॉक मूवमेंट और कम-स्टॉक अलर्ट का अनुभव दिखाता है। यह जारी उत्पाद संस्करण, पूर्ण फीचर, अपडेट इतिहास या डिलीवरी रिकॉर्ड नहीं है।","ar":"يعرض هذا النموذج التجريبي مفهوم قوائم المخزون والبحث وحركات المخزون وتنبيهات انخفاضه. ولا يمثل إصداراً رسمياً أو مجموعة ميزات مكتملة أو سجل تحديثات أو تسليم."}
+    },
+    {
+      "id":"website-update-20260816","date":"2026-08-16","category":"Development","featured":false,"link":"index.html","image":"","translationStatus":"translated",
+      "title":{"ja":"Kale’s FDE サイトを更新","en":"Kale’s FDE website updated","zh-CN":"Kale’s FDE 网站已更新","zh-TW":"Kale’s FDE 網站已更新","ko":"Kale’s FDE 웹사이트 업데이트","id":"Situs Kale’s FDE diperbarui","ms":"Laman Kale’s FDE dikemas kini","vi":"Đã cập nhật trang web Kale’s FDE","th":"อัปเดตเว็บไซต์ Kale’s FDE","hi":"Kale’s FDE वेबसाइट अपडेट की गई","ar":"تم تحديث موقع Kale’s FDE"},
+      "body":{"ja":"Products、Why FDE、Kale’s Goals、Contactを中心に情報構成と多言語表示を整理しました。","en":"The site structure and multilingual presentation have been refined around Products, Why FDE, Kale’s Goals and Contact.","zh-CN":"我们围绕 Products、Why FDE、Kale’s Goals 和 Contact 优化了网站结构与多语言显示。","zh-TW":"我們圍繞 Products、Why FDE、Kale’s Goals 與 Contact 優化了網站結構與多語言顯示。","ko":"Products, Why FDE, Kale’s Goals, Contact를 중심으로 사이트 구조와 다국어 표시를 정리했습니다.","id":"Struktur situs dan tampilan multibahasa telah disempurnakan dengan fokus pada Products, Why FDE, Kale’s Goals, dan Contact.","ms":"Struktur laman dan paparan berbilang bahasa telah diperhalusi dengan fokus pada Products, Why FDE, Kale’s Goals dan Contact.","vi":"Cấu trúc trang web và cách hiển thị đa ngôn ngữ đã được tinh chỉnh, tập trung vào Products, Why FDE, Kale’s Goals và Contact.","th":"ได้ปรับโครงสร้างเว็บไซต์และการแสดงผลหลายภาษา โดยเน้นที่ Products, Why FDE, Kale’s Goals และ Contact","hi":"Products, Why FDE, Kale’s Goals और Contact पर केंद्रित साइट संरचना और बहुभाषी प्रस्तुति को बेहतर किया गया है।","ar":"تم تحسين بنية الموقع والعرض متعدد اللغات مع التركيز على Products وWhy FDE وKale’s Goals وContact."}
     }
   ]
 }
