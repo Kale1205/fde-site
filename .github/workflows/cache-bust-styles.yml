@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - '*.html'
+      - 'ja/*.html'
       - '*.js'
       - '*.css'
       - 'scripts/sync_build_version.py'
@@ -29,7 +30,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Generate one build ID for the whole frontend
+      - name: Generate one build ID for both public sites
         run: |
           TZ=Asia/Tokyo date +'%Y%m%d-%H%M%S' > build-version.txt
           echo "Build ID (JST): $(cat build-version.txt)"
@@ -42,7 +43,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add build-version.txt '*.html' contact-config.js i18n-final.js
+          git add build-version.txt '*.html' 'ja/*.html' contact-config.js
           if git diff --cached --quiet; then
             echo "All pages already use the current build version."
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -63,7 +64,7 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/validate_repo.py
-          python -m compileall -q scripts .github/scripts
+          python -m compileall -q scripts
           while IFS= read -r -d '' file; do
             echo "Checking $file"
             node --check "$file"
@@ -82,7 +83,7 @@ jobs:
         run: |
           if [ "$VALIDATION_OUTCOME" = "success" ]; then
             STATE="success"
-            DESCRIPTION="Repository validation passed after build sync"
+            DESCRIPTION="Dual-site repository validation passed after build sync"
           else
             STATE="failure"
             DESCRIPTION="Repository validation failed after build sync"

@@ -30,8 +30,7 @@ jobs:
         run: python scripts/validate_repo.py
 
       - name: Compile Python helper scripts
-        run: |
-          python -m compileall -q scripts .github/scripts
+        run: python -m compileall -q scripts
 
       - name: Check browser JavaScript syntax
         shell: bash

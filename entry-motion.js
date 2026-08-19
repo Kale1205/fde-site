@@ -1,7 +1,8 @@
 (()=>{
-const HOME_RE=/\/(fde-site\/)?(?:index\.html)?$/;
-const isHome=HOME_RE.test(location.pathname);
-if(!isHome)return;
+const path=location.pathname.replace(/index\.html$/,'');
+const isEnglishHome=/\/fde-site\/$/.test(path)||path==='/' ;
+const isJapaneseHome=/\/fde-site\/ja\/$/.test(path);
+if(!isEnglishHome&&!isJapaneseHome)return;
 const SITE_BASE=location.pathname.includes('/fde-site/')?'/fde-site/':'/';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const nav=performance.getEntriesByType?.('navigation')?.[0];
@@ -10,73 +11,19 @@ try{external=!document.referrer||new URL(document.referrer).origin!==location.or
 let seen=false;try{seen=sessionStorage.getItem('fde-entry-seen')==='1'}catch{}
 const force=new URLSearchParams(location.search).get('intro')==='1';
 const shouldIntro=!reduced&&(force||(!seen&&external&&(!nav||nav.type==='navigate')));
-
 function heroIn(delay=40){setTimeout(()=>document.body?.classList.add('fde-hero-enter'),delay)}
 function revealSections(){
- const targets=[
-  '.products-visual-copy','.visual-board','.products-flow-rail article',
-  '#plans .section-head','#plans .flip-shell','.service-table-wrap',
-  '.steps .step','.security-grid article','#demo .demo-box'
- ];
+ const targets=['.products-visual-copy','.visual-board','.products-flow-rail article','#plans .section-head','#plans .ims-model-card','#plans .ja-plan-card','.ims-compare','.steps .step','.security-grid article','#demo .demo-box'];
  const els=[...document.querySelectorAll(targets.join(','))];
  if(reduced||!('IntersectionObserver'in window)){els.forEach(el=>el.classList.add('fde-reveal','is-visible'));return}
  els.forEach(el=>el.classList.add('fde-reveal'));
  const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');io.unobserve(entry.target)}}),{rootMargin:'0px 0px -8% 0px',threshold:.08});
  els.forEach(el=>io.observe(el));
 }
-function finishIntro(overlay){
- if(!overlay||overlay.dataset.done)return;overlay.dataset.done='1';
- overlay.classList.add('is-leaving');document.documentElement.style.overflow='';document.body.style.overflow='';heroIn(110);
- setTimeout(()=>overlay.remove(),640);
- try{sessionStorage.setItem('fde-entry-seen','1')}catch{}
-}
-function circuitSvg(){return `
- <svg class="fde-circuit-svg" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
-  <g class="fde-circuit-lines fde-left">
-   <path d="M0 250 H185 L245 310 H420 L495 385 H650"/>
-   <path d="M0 365 H125 L205 445 H390 L455 510 H635"/>
-   <path d="M0 510 H165 L230 575 H410 L485 650 H625"/>
-   <path d="M70 140 V195 H285 L350 260 H520"/>
-  </g>
-  <g class="fde-circuit-lines fde-right">
-   <path d="M1600 250 H1415 L1355 310 H1180 L1105 385 H950"/>
-   <path d="M1600 365 H1475 L1395 445 H1210 L1145 510 H965"/>
-   <path d="M1600 510 H1435 L1370 575 H1190 L1115 650 H975"/>
-   <path d="M1530 140 V195 H1315 L1250 260 H1080"/>
-  </g>
-  <g class="fde-signal-lines">
-   <path d="M0 250 H185 L245 310 H420 L495 385 H650"/>
-   <path d="M0 365 H125 L205 445 H390 L455 510 H635"/>
-   <path d="M0 510 H165 L230 575 H410 L485 650 H625"/>
-   <path d="M70 140 V195 H285 L350 260 H520"/>
-   <path data-direction="reverse" d="M1600 250 H1415 L1355 310 H1180 L1105 385 H950"/>
-   <path data-direction="reverse" d="M1600 365 H1475 L1395 445 H1210 L1145 510 H965"/>
-   <path data-direction="reverse" d="M1600 510 H1435 L1370 575 H1190 L1115 650 H975"/>
-   <path data-direction="reverse" d="M1530 140 V195 H1315 L1250 260 H1080"/>
-  </g>
-  <g class="fde-circuit-nodes">
-   <circle cx="245" cy="310" r="3.5"/><circle cx="205" cy="445" r="4"/><circle cx="485" cy="650" r="3.5"/><circle cx="350" cy="260" r="3.5"/>
-   <circle cx="1355" cy="310" r="3.5"/><circle cx="1395" cy="445" r="4"/><circle cx="1115" cy="650" r="3.5"/><circle cx="1250" cy="260" r="3.5"/>
-  </g>
- </svg>`}
-function randomizeSignals(overlay){
- const paths=[...overlay.querySelectorAll('.fde-signal-lines path')];
- const shuffled=[...paths].sort(()=>Math.random()-.5);
- const activeCount=5+Math.floor(Math.random()*2);
- const active=new Set(shuffled.slice(0,activeCount));
- paths.forEach(path=>{
-  if(!active.has(path)){path.style.display='none';return}
-  path.style.setProperty('--signal-delay',`${(0.10+Math.random()*.58).toFixed(2)}s`);
-  path.style.setProperty('--signal-duration',`${(1.55+Math.random()*.48).toFixed(2)}s`);
-  path.style.setProperty('--signal-alpha',(0.58+Math.random()*.17).toFixed(2));
- });
-}
-function mountIntro(){
- const overlay=document.createElement('div');overlay.id='fdeEntryIntro';overlay.className='fde-entry-intro';overlay.setAttribute('aria-label','Baked Kale');
- overlay.innerHTML=`${circuitSvg()}<div class="fde-entry-center-glow" aria-hidden="true"></div><div class="fde-entry-stage"><div class="fde-entry-logo-wrap"><img class="fde-entry-logo" src="${SITE_BASE}assets/baked-kale-logo-intro.svg" alt="Baked Kale — FDE / IT Engineering"></div></div>`;
- document.body.prepend(overlay);randomizeSignals(overlay);document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';
- setTimeout(()=>finishIntro(overlay),2300);
-}
+function finishIntro(overlay){if(!overlay||overlay.dataset.done)return;overlay.dataset.done='1';overlay.classList.add('is-leaving');document.documentElement.style.overflow='';document.body.style.overflow='';heroIn(110);setTimeout(()=>overlay.remove(),640);try{sessionStorage.setItem('fde-entry-seen','1')}catch{}}
+function circuitSvg(){return `<svg class="fde-circuit-svg" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true"><g class="fde-circuit-lines fde-left"><path d="M0 250 H185 L245 310 H420 L495 385 H650"/><path d="M0 365 H125 L205 445 H390 L455 510 H635"/><path d="M0 510 H165 L230 575 H410 L485 650 H625"/><path d="M70 140 V195 H285 L350 260 H520"/></g><g class="fde-circuit-lines fde-right"><path d="M1600 250 H1415 L1355 310 H1180 L1105 385 H950"/><path d="M1600 365 H1475 L1395 445 H1210 L1145 510 H965"/><path d="M1600 510 H1435 L1370 575 H1190 L1115 650 H975"/><path d="M1530 140 V195 H1315 L1250 260 H1080"/></g><g class="fde-signal-lines"><path d="M0 250 H185 L245 310 H420 L495 385 H650"/><path d="M0 365 H125 L205 445 H390 L455 510 H635"/><path d="M0 510 H165 L230 575 H410 L485 650 H625"/><path d="M70 140 V195 H285 L350 260 H520"/><path data-direction="reverse" d="M1600 250 H1415 L1355 310 H1180 L1105 385 H950"/><path data-direction="reverse" d="M1600 365 H1475 L1395 445 H1210 L1145 510 H965"/><path data-direction="reverse" d="M1600 510 H1435 L1370 575 H1190 L1115 650 H975"/><path data-direction="reverse" d="M1530 140 V195 H1315 L1250 260 H1080"/></g><g class="fde-circuit-nodes"><circle cx="245" cy="310" r="3.5"/><circle cx="205" cy="445" r="4"/><circle cx="485" cy="650" r="3.5"/><circle cx="350" cy="260" r="3.5"/><circle cx="1355" cy="310" r="3.5"/><circle cx="1395" cy="445" r="4"/><circle cx="1115" cy="650" r="3.5"/><circle cx="1250" cy="260" r="3.5"/></g></svg>`}
+function randomizeSignals(overlay){const paths=[...overlay.querySelectorAll('.fde-signal-lines path')],shuffled=[...paths].sort(()=>Math.random()-.5),active=new Set(shuffled.slice(0,5+Math.floor(Math.random()*2)));paths.forEach(path=>{if(!active.has(path)){path.style.display='none';return}path.style.setProperty('--signal-delay',`${(0.10+Math.random()*.58).toFixed(2)}s`);path.style.setProperty('--signal-duration',`${(1.55+Math.random()*.48).toFixed(2)}s`);path.style.setProperty('--signal-alpha',(0.58+Math.random()*.17).toFixed(2))})}
+function mountIntro(){const overlay=document.createElement('div');overlay.id='fdeEntryIntro';overlay.className='fde-entry-intro';overlay.setAttribute('aria-label','Baked Kale');overlay.innerHTML=`${circuitSvg()}<div class="fde-entry-center-glow" aria-hidden="true"></div><div class="fde-entry-stage"><div class="fde-entry-logo-wrap"><img class="fde-entry-logo" src="${SITE_BASE}assets/baked-kale-logo-intro.svg" alt="Baked Kale — FDE / IT Engineering"></div></div>`;document.body.prepend(overlay);randomizeSignals(overlay);document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';setTimeout(()=>finishIntro(overlay),2300)}
 function init(){revealSections();if(shouldIntro)mountIntro();else heroIn(70)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
