@@ -1,6 +1,8 @@
 from pathlib import Path
+import json
 import re
 import sys
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
@@ -17,77 +19,205 @@ else:
     if not re.fullmatch(r"[0-9A-Za-z._-]+", version):
         fail(f"Invalid build version: {version!r}")
 
-asset_ref = re.compile(r"(?:src|href)=[\"'](?P<path>[^\"']+\.(?:js|css)(?:\?[^\"']*)?)[\"']", re.IGNORECASE)
+EN_PAGES = {"index.html", "why.html", "goals.html", "news.html", "contact.html", "order.html", "license.html"}
+JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
+ROOT_ONLY_PUBLIC = {"customer.html", "demo.html"}
+ALL_PUBLIC = EN_PAGES | JA_PAGES | ROOT_ONLY_PUBLIC
+
+OBSOLETE_FILES = {
+    "contact-mailer.js",
+    "fulfillment-v2.js",
+    "faq-admin-v2.js",
+    "translations.js",
+    "order-language.js",
+    "order-preview-lock.js",
+    "order-preview-stabilize.js",
+    "purchase-currency-clean.js",
+    "purchase-currency-clean.css",
+    "content/pricing-rates.json",
+    "scripts/enable_fixed_localization.py",
+    "scripts/refine_language_selector.py",
+    "CMS_ENGLISH_ONLY_CHECK.md",
+    "MAINTENANCE_ENGLISH_ONLY.md",
+}
+
+OBSOLETE_WORKFLOWS = {
+    ".github/workflows/apply-brand-editorial-redesign.yml",
+    ".github/workflows/apply-cms-public.yml",
+    ".github/workflows/apply-copy-polish.yml",
+    ".github/workflows/apply-fixed-localization.yml",
+    ".github/workflows/apply-green-brand.yml",
+    ".github/workflows/apply-language-selector.yml",
+    ".github/workflows/apply-responsive-news.yml",
+    ".github/workflows/refine-contact-i18n.yml",
+    ".github/workflows/update-pricing-rates.yml",
+}
+
+for rel in sorted(OBSOLETE_FILES | OBSOLETE_WORKFLOWS):
+    if (ROOT / rel).exists():
+        fail(f"obsolete file should be deleted: {rel}")
+
+asset_ref = re.compile(r"(?:src|href)=[\"'](?P<ref>[^\"']+)[\"']", re.IGNORECASE)
 version_param = re.compile(r"(?:\?|&)v=([^&]+)")
-public_pages = {"index.html","why.html","goals.html","news.html","contact.html","order.html","customer.html","demo.html","license.html"}
-legacy_loaders = ("contact-mailer.js", "fulfillment-v2.js")
-obsolete_runtime_names = ("i18n-v2.js","i18n-overrides.js","i18n-polish.js","i18n-brand.js","i18n-final.js","ims-plan-flip.js")
 
-for path in sorted(ROOT.glob("*.html")):
+def resolve_local(html_path: Path, ref: str):
+    if ref.startswith(("http://", "https://", "//", "data:", "mailto:", "tel:", "#", "javascript:")):
+        return None
+    raw = urlsplit(ref).path
+    if not raw:
+        return None
+    if raw.startswith("/fde-site/"):
+        candidate = ROOT / raw[len("/fde-site/"):]
+    elif raw.startswith("/"):
+        return None
+    else:
+        candidate = (html_path.parent / raw).resolve()
+    try:
+        candidate.relative_to(ROOT.resolve())
+    except ValueError:
+        fail(f"{html_path.relative_to(ROOT)}: local reference escapes repository: {ref}")
+        return None
+    return candidate
+
+for rel in sorted(ALL_PUBLIC):
+    path = ROOT / rel
+    if not path.exists():
+        fail(f"missing public page: {rel}")
+        continue
     text = path.read_text(encoding="utf-8")
-    if path.name in public_pages and not re.search(r"<html\s+lang=[\"']en[\"']", text, re.IGNORECASE):
-        fail(f"{path.name}: customer-facing entry point must use lang=en")
-    for legacy in legacy_loaders + obsolete_runtime_names:
-        if legacy in text:
-            fail(f"{path.name}: obsolete runtime must not be referenced: {legacy}")
+    expected = "ja" if rel.startswith("ja/") else "en"
+    if not re.search(rf"<html\s+lang=[\"']{expected}[\"']", text, re.IGNORECASE):
+        fail(f"{rel}: expected html lang={expected}")
+    if re.search(r"id=[\"']lang[\"']|data-i18n=|fde-lang|language-selector", text, re.IGNORECASE):
+        fail(f"{rel}: legacy in-page language switching must not be present")
     for match in asset_ref.finditer(text):
-        ref = match.group("path")
-        if ref.startswith(("http://", "https://", "//", "data:")):
+        ref = match.group("ref")
+        target = resolve_local(path, ref)
+        if target is None:
             continue
-        vm = version_param.search(ref)
-        if not vm:
-            fail(f"{path.name}: local asset is missing ?v= build key: {ref}")
-            continue
-        if version and vm.group(1) != version:
-            fail(f"{path.name}: asset build key {vm.group(1)!r} != {version!r}: {ref}")
+        suffix = target.suffix.lower()
+        if suffix in {".js", ".css", ".html", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".json"} and not target.exists():
+            fail(f"{rel}: local reference does not exist: {ref}")
+        if suffix in {".js", ".css"}:
+            vm = version_param.search(ref)
+            if not vm:
+                fail(f"{rel}: local JS/CSS is missing ?v= build key: {ref}")
+            elif version and vm.group(1) != version:
+                fail(f"{rel}: asset build key {vm.group(1)!r} != {version!r}: {ref}")
 
-contact_config = ROOT / "contact-config.js"
-if not contact_config.exists():
-    fail("contact-config.js is missing")
+for name in sorted(EN_PAGES):
+    if not (ROOT / name).exists() or not (ROOT / "ja" / name).exists():
+        fail(f"paired English/Japanese page missing: {name}")
+
+required_markers = {
+    "index.html": ("class=\"news-strip\"", "id=\"plans\"", "class=\"ims-compare\"", "cms-content.js"),
+    "ja/index.html": ("class=\"news-strip\"", "id=\"plans\"", "class=\"ims-compare\"", "cms-content-ja.js", "ims-compare-ja.js"),
+    "news.html": ("cms-content.js", "id=\"cmsNewsLead\""),
+    "ja/news.html": ("cms-content-ja.js", "id=\"cmsNewsLead\""),
+    "contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
+    "ja/contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
+}
+for rel, markers in required_markers.items():
+    path = ROOT / rel
+    if not path.exists():
+        continue
+    text = path.read_text(encoding="utf-8")
+    for marker in markers:
+        if marker not in text:
+            fail(f"{rel}: required marker/runtime missing: {marker}")
+
+# CMS admin remains Japanese; public CMS data must contain both Japanese and English.
+cms_admin = ROOT / "cms-admin.html"
+if not cms_admin.exists():
+    fail("cms-admin.html is missing")
 else:
-    text = contact_config.read_text(encoding="utf-8")
-    for match in re.finditer(r"[\"'](?P<path>(?!https?://|//)[A-Za-z0-9_./-]+\.(?:js|css))\?v=(?P<version>[0-9A-Za-z._-]+)[\"']", text):
-        if version and match.group("version") != version:
-            fail(f"contact-config.js: dynamic asset build key {match.group('version')!r} != {version!r}: {match.group('path')}")
+    text = cms_admin.read_text(encoding="utf-8")
+    if not re.search(r"<html\s+lang=[\"']ja[\"']", text, re.IGNORECASE):
+        fail("cms-admin.html: admin UI must remain Japanese")
 
-for obsolete in obsolete_runtime_names:
-    if (ROOT / obsolete).exists():
-        fail(f"obsolete runtime file should be deleted: {obsolete}")
+site_content_path = ROOT / "content" / "site-content.json"
+if site_content_path.exists():
+    try:
+        site_content = json.loads(site_content_path.read_text(encoding="utf-8"))
+        for item in site_content.get("news", []):
+            item_id = item.get("id", "<unknown>")
+            for field in ("title", "body"):
+                value = item.get(field, {})
+                if not isinstance(value, dict) or not str(value.get("ja", "")).strip() or not str(value.get("en", "")).strip():
+                    fail(f"content/site-content.json: news {item_id} missing ja/en {field}")
+    except Exception as exc:
+        fail(f"content/site-content.json: invalid JSON: {exc}")
+else:
+    fail("content/site-content.json is missing")
 
+faq_path = ROOT / "content" / "faq-content.json"
+if faq_path.exists():
+    try:
+        faq_data = json.loads(faq_path.read_text(encoding="utf-8"))
+        for item in faq_data.get("faq", []):
+            item_id = item.get("id", "<unknown>")
+            for field in ("question", "answer"):
+                value = item.get(field, {})
+                if not isinstance(value, dict) or not str(value.get("ja", "")).strip() or not str(value.get("en", "")).strip():
+                    fail(f"content/faq-content.json: FAQ {item_id} missing ja/en {field}")
+    except Exception as exc:
+        fail(f"content/faq-content.json: invalid JSON: {exc}")
+else:
+    fail("content/faq-content.json is missing")
+
+# Dynamic local assets must use the same build key.
+for rel in ("contact-config.js",):
+    path = ROOT / rel
+    if not path.exists():
+        fail(f"{rel} is missing")
+        continue
+    text = path.read_text(encoding="utf-8")
+    for match in re.finditer(r"[\"'](?P<path>(?!https?://|//)[A-Za-z0-9_./-]+\.(?:js|css))\?v=(?P<v>[0-9A-Za-z._-]+)[\"']", text):
+        if version and match.group("v") != version:
+            fail(f"{rel}: dynamic asset build key {match.group('v')!r} != {version!r}: {match.group('path')}")
+
+# Worker configuration and import closure.
 wrangler = ROOT / "worker" / "wrangler.toml"
+worker_reachable = set()
 if not wrangler.exists():
     fail("worker/wrangler.toml is missing")
 else:
-    wrangler_text = wrangler.read_text(encoding="utf-8")
-    main_match = re.search(r"^main\s*=\s*[\"']([^\"']+)[\"']", wrangler_text, re.MULTILINE)
-    if not main_match:
+    wt = wrangler.read_text(encoding="utf-8")
+    mm = re.search(r"^main\s*=\s*[\"']([^\"']+)[\"']", wt, re.MULTILINE)
+    if not mm:
         fail("worker/wrangler.toml: main entry is missing")
     else:
-        main_rel = main_match.group(1)
-        if not re.fullmatch(r"src/index-v\d+\.js", main_rel):
-            fail(f"worker/wrangler.toml: Worker entry must use a versioned src/index-vN.js file, got {main_rel}")
-        if not (wrangler.parent / main_rel).exists():
-            fail(f"worker/wrangler.toml: configured entry does not exist: {main_rel}")
-    account_match = re.search(r"^account_id\s*=\s*[\"']([0-9a-fA-F]{32})[\"']", wrangler_text, re.MULTILINE)
-    if not account_match:
-        fail("worker/wrangler.toml: production account_id must be pinned to a 32-character Cloudflare Account ID")
-    if not re.search(r"^keep_vars\s*=\s*true\s*$", wrangler_text, re.MULTILINE):
-        fail("worker/wrangler.toml: keep_vars = true is required to preserve dashboard-managed vars")
-    blocks = re.findall(r"\[\[kv_namespaces\]\](.*?)(?=\n\[|\Z)", wrangler_text, re.DOTALL)
-    order_status = next((b for b in blocks if re.search(r"^\s*binding\s*=\s*[\"']ORDER_STATUS[\"']", b, re.MULTILINE)), None)
-    if order_status is None:
-        fail("worker/wrangler.toml: ORDER_STATUS KV binding is missing")
-    elif not re.search(r"^\s*id\s*=\s*[\"'][0-9a-fA-F]{32}[\"']", order_status, re.MULTILINE):
-        fail("worker/wrangler.toml: ORDER_STATUS must reference an existing 32-character KV namespace ID")
-    required_secret_names = {"BREVO_API_KEY","FROM_EMAIL","ADMIN_FULFILLMENT_KEY","TURNSTILE_SECRET_KEY"}
-    secrets_block = re.search(r"\[secrets\](.*?)(?=\n\[|\Z)", wrangler_text, re.DOTALL)
-    if not secrets_block:
-        fail("worker/wrangler.toml: [secrets] required list is missing")
-    else:
-        names = set(re.findall(r"[\"']([A-Z0-9_]+)[\"']", secrets_block.group(1)))
-        missing = sorted(required_secret_names - names)
-        if missing:
-            fail(f"worker/wrangler.toml: required secrets missing from declaration: {', '.join(missing)}")
+        main = (wrangler.parent / mm.group(1)).resolve()
+        if not main.exists():
+            fail(f"worker/wrangler.toml: configured entry does not exist: {mm.group(1)}")
+        else:
+            stack = [main]
+            while stack:
+                current = stack.pop()
+                if current in worker_reachable:
+                    continue
+                worker_reachable.add(current)
+                text = current.read_text(encoding="utf-8")
+                for imp in re.findall(r"(?:import|export)\s+(?:[^;]*?\s+from\s+)?[\"'](\./[^\"']+)[\"']", text):
+                    dep = (current.parent / imp).resolve()
+                    if not dep.exists():
+                        fail(f"{current.relative_to(ROOT)}: missing Worker import {imp}")
+                    else:
+                        stack.append(dep)
+    if not re.search(r"^account_id\s*=\s*[\"'][0-9a-fA-F]{32}[\"']", wt, re.MULTILINE):
+        fail("worker/wrangler.toml: production account_id must be pinned")
+    if not re.search(r"^keep_vars\s*=\s*true\s*$", wt, re.MULTILINE):
+        fail("worker/wrangler.toml: keep_vars = true is required")
+    required_secret_names = {"BREVO_API_KEY", "FROM_EMAIL", "ADMIN_FULFILLMENT_KEY", "TURNSTILE_SECRET_KEY"}
+    block = re.search(r"\[secrets\](.*?)(?=\n\[|\Z)", wt, re.DOTALL)
+    names = set(re.findall(r"[\"']([A-Z0-9_]+)[\"']", block.group(1))) if block else set()
+    for missing in sorted(required_secret_names - names):
+        fail(f"worker/wrangler.toml: required secret declaration missing: {missing}")
+
+# No historical Worker entry versions may remain unless reachable from the configured entry.
+for path in sorted((ROOT / "worker" / "src").glob("index*.js")):
+    if path not in worker_reachable:
+        fail(f"stale Worker entry should be deleted: {path.relative_to(ROOT)}")
 
 text_extensions = {".html", ".js", ".css", ".py", ".yml", ".yaml", ".toml", ".md", ".txt", ".json"}
 secret_patterns = {
@@ -108,20 +238,6 @@ for path in ROOT.rglob("*"):
     for label, pattern in secret_patterns.items():
         if pattern.search(text):
             fail(f"{rel}: possible {label} detected")
-
-required_runtime = {
-    "contact.html": ("contact-config.js", "contact-direct.js"),
-    "license.html": ("license-page-i18n.js",),
-}
-for filename, required in required_runtime.items():
-    path = ROOT / filename
-    if not path.exists():
-        fail(f"{filename} is missing")
-        continue
-    text = path.read_text(encoding="utf-8")
-    for asset in required:
-        if asset not in text:
-            fail(f"{filename}: required runtime is missing: {asset}")
 
 if errors:
     print("Repository validation failed:\n")
