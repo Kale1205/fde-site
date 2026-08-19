@@ -1,0 +1,5 @@
+(()=>{
+function apply(){const updates=new URLSearchParams(location.search).get('plan')==='monthly';const price=updates?'¥9,800':'¥49,800';const product=updates?'FDE IMS Updates':'FDE IMS License';const model=updates?'Updates':'License';const p=document.querySelector('#quotePrice'),t=document.querySelector('#quoteTotal'),q=document.querySelector('#quoteProduct'),l=document.querySelector('#quoteProductLine'),m=document.querySelector('#quotePlan');if(p&&!p.textContent.includes(price))p.textContent=price+' planned';if(t&&!t.textContent.includes(price))t.textContent=price+' planned';if(q&&q.textContent!==product)q.textContent=product;if(l&&l.textContent!==product)l.textContent=product;if(m&&m.textContent!==model)m.textContent=model}
+function init(){[0,80,250,700,1500,3000].forEach(ms=>setTimeout(apply,ms));document.querySelector('#lang')?.addEventListener('change',()=>[40,300,900].forEach(ms=>setTimeout(apply,ms)))}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
