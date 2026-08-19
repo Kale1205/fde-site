@@ -78,13 +78,42 @@ else:
         if not (wrangler.parent / main_rel).exists():
             fail(f"worker/wrangler.toml: configured entry does not exist: {main_rel}")
 
+    account_match = re.search(r"^account_id\s*=\s*[\"']([0-9a-fA-F]{32})[\"']", wrangler_text, re.MULTILINE)
+    if not account_match:
+        fail("worker/wrangler.toml: production account_id must be pinned to a 32-character Cloudflare Account ID")
+
+    if not re.search(r"^keep_vars\s*=\s*true\s*$", wrangler_text, re.MULTILINE):
+        fail("worker/wrangler.toml: keep_vars = true is required to preserve dashboard-managed vars")
+
+    blocks = re.findall(r"\[\[kv_namespaces\]\](.*?)(?=\n\[|\Z)", wrangler_text, re.DOTALL)
+    order_status = next((b for b in blocks if re.search(r"^\s*binding\s*=\s*[\"']ORDER_STATUS[\"']", b, re.MULTILINE)), None)
+    if order_status is None:
+        fail("worker/wrangler.toml: ORDER_STATUS KV binding is missing")
+    elif not re.search(r"^\s*id\s*=\s*[\"'][0-9a-fA-F]{32}[\"']", order_status, re.MULTILINE):
+        fail("worker/wrangler.toml: ORDER_STATUS must reference an existing 32-character KV namespace ID")
+
+    required_secret_names = {
+        "BREVO_API_KEY",
+        "FROM_EMAIL",
+        "ADMIN_FULFILLMENT_KEY",
+        "TURNSTILE_SECRET_KEY",
+    }
+    secrets_block = re.search(r"\[secrets\](.*?)(?=\n\[|\Z)", wrangler_text, re.DOTALL)
+    if not secrets_block:
+        fail("worker/wrangler.toml: [secrets] required list is missing")
+    else:
+        names = set(re.findall(r"[\"']([A-Z0-9_]+)[\"']", secrets_block.group(1)))
+        missing = sorted(required_secret_names - names)
+        if missing:
+            fail(f"worker/wrangler.toml: required secrets missing from declaration: {', '.join(missing)}")
+
 text_extensions = {".html", ".js", ".css", ".py", ".yml", ".yaml", ".toml", ".md", ".txt", ".json"}
 secret_patterns = {
     "GitHub token": re.compile(r"\b(?:github_pat_[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{20,})\b"),
     "OpenAI-style key": re.compile(r"\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b"),
     "Brevo API key": re.compile(r"\bxkeysib-[A-Za-z0-9_-]{20,}\b"),
     "Private key block": re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
-    "Literal runtime secret assignment": re.compile(r"\b(?:BREVO_API_KEY|ADMIN_FULFILLMENT_KEY|TURNSTILE_SECRET_KEY)\s*=\s*[\"'][^\"']{8,}[\"']"),
+    "Literal runtime secret assignment": re.compile(r"\b(?:BREVO_API_KEY|FROM_EMAIL|ADMIN_FULFILLMENT_KEY|TURNSTILE_SECRET_KEY)\s*=\s*[\"'][^\"']{8,}[\"']"),
 }
 
 for path in ROOT.rglob("*"):

@@ -2,11 +2,16 @@ name = "kales-fde-contact"
 main = "src/index-v14.js"
 compatibility_date = "2026-08-16"
 workers_dev = true
+account_id = "77e0788b9aba13c49053ac0c37c25b67"
+keep_vars = true
 
 [vars]
 ALLOWED_ORIGIN = "https://kale1205.github.io"
 ADMIN_EMAIL = "reyouinjune@gmail.com"
 FROM_NAME = "Kale’s FDE"
+
+[secrets]
+required = ["BREVO_API_KEY", "FROM_EMAIL", "ADMIN_FULFILLMENT_KEY", "TURNSTILE_SECRET_KEY"]
 
 [ai]
 binding = "AI"
@@ -16,3 +21,4 @@ binding = "BROWSER"
 
 [[kv_namespaces]]
 binding = "ORDER_STATUS"
+id = "a634212e677e4e48bd23875a7e42dae9"
