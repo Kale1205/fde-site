@@ -1,0 +1,61 @@
+name: Deploy Cloudflare Worker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'worker/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-worker-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: deploy-worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Production binding safety check
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          path = Path('worker/wrangler.toml')
+          text = path.read_text(encoding='utf-8')
+
+          main = re.search(r'^main\s*=\s*["\']([^"\']+)["\']', text, re.MULTILINE)
+          if not main or not re.fullmatch(r'src/index-v\d+\.js', main.group(1)):
+              sys.exit('Refusing production deploy: invalid versioned Worker entry point.')
+
+          blocks = re.findall(r'\[\[kv_namespaces\]\](.*?)(?=\n\[|\Z)', text, re.DOTALL)
+          order_status = next((b for b in blocks if re.search(r'^\s*binding\s*=\s*["\']ORDER_STATUS["\']', b, re.MULTILINE)), None)
+          if order_status is None:
+              sys.exit('Refusing production deploy: ORDER_STATUS KV binding is missing.')
+
+          namespace_id = re.search(r'^\s*id\s*=\s*["\']([0-9a-fA-F]{32})["\']', order_status, re.MULTILINE)
+          if not namespace_id:
+              sys.exit('Refusing production deploy: ORDER_STATUS must reference the existing 32-character KV namespace ID.')
+
+          print('Production Worker configuration safety check passed.')
+          PY
+
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          wranglerVersion: '4'
+          command: deploy --no-x-provision
