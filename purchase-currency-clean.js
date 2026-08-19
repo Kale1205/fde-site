@@ -1,17 +1,14 @@
 (()=>{
-const LANGS=['en','ja','zh-CN','zh-TW','ko','id','ms','vi','th','hi','ar'];
-const LOCAL={en:'USD',ja:'JPY','zh-CN':'CNY','zh-TW':'TWD',ko:'KRW',id:'IDR',ms:'MYR',vi:'VND',th:'THB',hi:'INR',ar:'AED'};
-const LOCALE={en:'en-US',ja:'ja-JP','zh-CN':'zh-CN','zh-TW':'zh-TW',ko:'ko-KR',id:'id-ID',ms:'ms-MY',vi:'vi-VN',th:'th-TH',hi:'hi-IN',ar:'ar-AE'};
-const RATE={JPY:1,USD:.00627731,CNY:.0423289,TWD:.201015,KRW:8.82247,IDR:111.918,MYR:.0256305,VND:164.052,THB:.206395,INR:.594424,AED:.0230533};
-const LABEL={en:['Payment currency','USD only for English display.'],ja:['支払通貨','日本円またはUSDを選択してください。'],'zh-CN':['支付货币','请选择CNY或USD。'],'zh-TW':['付款貨幣','請選擇TWD或USD。'],ko:['결제 통화','KRW 또는 USD를 선택하세요.'],id:['Mata uang pembayaran','Pilih IDR atau USD.'],ms:['Mata wang pembayaran','Pilih MYR atau USD.'],vi:['Tiền tệ thanh toán','Chọn VND hoặc USD.'],th:['สกุลเงินชำระเงิน','เลือก THB หรือ USD'],hi:['भुगतान मुद्रा','INR या USD चुनें।'],ar:['عملة الدفع','اختر AED أو USD.']};
-let applying=false;
-function lang(){const v=localStorage.getItem('fde-lang')||'en';return LANGS.includes(v)?v:'en'}
-function fmt(jpy,c,l){return new Intl.NumberFormat(LOCALE[l]||'en-US',{style:'currency',currency:c,maximumFractionDigits:0}).format(Math.round(jpy*(RATE[c]||1)))}
-function baseAmount(){return new URLSearchParams(location.search).get('plan')==='monthly'?9800:49800}
-function ensure(){const card=document.querySelector('#orderFormCard');if(!card)return null;let box=document.getElementById('purchaseCurrencyChoice');if(!box){box=document.createElement('div');box.id='purchaseCurrencyChoice';box.className='purchase-currency-clean';box.innerHTML='<label for="purchaseCurrencySelect"></label><select id="purchaseCurrencySelect"></select><small></small>';const form=card.querySelector('form');card.insertBefore(box,form)}return box}
-function applyPrice(select,l){if(!select||applying)return;applying=true;const c=select.value;localStorage.setItem(`fde-payment-currency-${l}`,c);document.documentElement.dataset.paymentCurrency=c;const amount=fmt(baseAmount(),c,l);const price=document.getElementById('quotePrice'),total=document.getElementById('quoteTotal');if(price&&price.textContent!==`${amount} planned`)price.textContent=`${amount} planned`;if(total&&total.textContent!==`${amount} planned`)total.textContent=`${amount} planned`;const rate=document.getElementById('rateInfo');if(rate)rate.textContent=`Display language: ${l} · Payment currency: ${c} · Reference conversion from JPY base pricing.`;applying=false}
-function render(forceLocal=false){const l=lang(),local=LOCAL[l]||'USD',box=ensure();if(!box)return;const select=box.querySelector('select'),label=box.querySelector('label'),note=box.querySelector('small'),copy=LABEL[l]||LABEL.en;label.textContent=copy[0];note.textContent=copy[1];const choices=l==='en'?['USD']:[local,'USD'];select.innerHTML=choices.map(c=>`<option value="${c}">${c}</option>`).join('');const key=`fde-payment-currency-${l}`,saved=localStorage.getItem(key);select.value=forceLocal?local:(choices.includes(saved)?saved:local);if(l==='en')select.value='USD';select.onchange=()=>applyPrice(select,l);applyPrice(select,l)}
-function observePrices(){['quotePrice','quoteTotal'].forEach(id=>{const el=document.getElementById(id);if(!el||el.dataset.currencyObserved)return;el.dataset.currencyObserved='1';new MutationObserver(()=>{if(applying)return;const select=document.getElementById('purchaseCurrencySelect');if(select)applyPrice(select,lang())}).observe(el,{childList:true,characterData:true,subtree:true})})}
-function init(){render();observePrices();document.querySelector('#lang')?.addEventListener('change',()=>{setTimeout(()=>{render(true);observePrices()},0)});window.addEventListener('pageshow',()=>{render();observePrices()})}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+function price(){return new URLSearchParams(location.search).get('plan')==='monthly'?'$62':'$313'}
+function product(){return new URLSearchParams(location.search).get('plan')==='monthly'?'FDE IMS Updates':'FDE IMS License'}
+function model(){return new URLSearchParams(location.search).get('plan')==='monthly'?'Updates':'License'}
+function render(){
+  document.documentElement.lang='en';
+  document.documentElement.dataset.paymentCurrency='USD';
+  const box=document.getElementById('purchaseCurrencyChoice');if(box)box.remove();
+  const p=document.getElementById('quotePrice'),t=document.getElementById('quoteTotal'),q=document.getElementById('quoteProduct'),l=document.getElementById('quoteProductLine'),m=document.getElementById('quotePlan'),r=document.getElementById('rateInfo');
+  if(p)p.textContent=price()+' planned';if(t)t.textContent=price()+' planned';if(q)q.textContent=product();if(l)l.textContent=product();if(m)m.textContent=model();if(r)r.textContent='All public pricing is currently shown in USD. This is a pre-release preview, not a formal quotation or order.';
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render,{once:true});else render();
+window.addEventListener('pageshow',render);
 })();

@@ -1,8 +1,10 @@
 (()=>{
-const NAME={en:'English',ja:'日本語','zh-CN':'简体中文','zh-TW':'繁體中文',ko:'한국어',id:'Bahasa Indonesia',ms:'Bahasa Melayu',vi:'Tiếng Việt',th:'ไทย',hi:'हिन्दी',ar:'العربية'};
-function lang(){const v=localStorage.getItem('fde-lang')||document.querySelector('#lang')?.value||'en';return NAME[v]?v:'en'}
-function ensure(){const grid=document.querySelector('.quote-grid');if(!grid)return;let doc=document.getElementById('quoteDocumentLanguageCell');if(!doc){doc=document.createElement('div');doc.id='quoteDocumentLanguageCell';doc.className='quote-cell';doc.innerHTML='<small>Document language</small><strong>English</strong>';grid.appendChild(doc)}let display=document.getElementById('quoteDisplayLanguageCell');if(!display){display=document.createElement('div');display.id='quoteDisplayLanguageCell';display.className='quote-cell';display.innerHTML='<small>Purchase display language</small><strong id="quoteDisplayLanguage"></strong>';grid.appendChild(display)}let note=document.getElementById('documentLanguageNotice');if(!note){note=document.createElement('div');note.id='documentLanguageNotice';note.className='quote-note';grid.insertAdjacentElement('afterend',note)}}
-function render(){ensure();const l=lang();const el=document.getElementById('quoteDisplayLanguage');if(el)el.textContent=`${NAME[l]} (${l})`;const note=document.getElementById('documentLanguageNotice');if(note)note.textContent=`Official document language: English · Purchase display language: ${NAME[l]} (${l})`;document.body.dataset.orderLanguage=l;document.body.dataset.documentLanguage='en'}
-function init(){render();document.querySelector('#lang')?.addEventListener('change',()=>setTimeout(render,0));window.addEventListener('pageshow',render)}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+function render(){
+  const grid=document.querySelector('.quote-grid');if(!grid)return;
+  let doc=document.getElementById('quoteDocumentLanguageCell');if(!doc){doc=document.createElement('div');doc.id='quoteDocumentLanguageCell';doc.className='quote-cell';doc.innerHTML='<small>Document language</small><strong>English</strong>';grid.appendChild(doc)}
+  const old=document.getElementById('quoteDisplayLanguageCell');if(old)old.remove();
+  const note=document.getElementById('documentLanguageNotice');if(note)note.textContent='Official document language: English.';
+  document.body.dataset.orderLanguage='en';document.body.dataset.documentLanguage='en';
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render,{once:true});else render();
 })();
