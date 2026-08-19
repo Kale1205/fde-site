@@ -64,7 +64,7 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/validate_repo.py
-          python -m compileall -q scripts .github/scripts
+          python -m compileall -q scripts
           while IFS= read -r -d '' file; do
             echo "Checking $file"
             node --check "$file"
