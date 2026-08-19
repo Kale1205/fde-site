@@ -1,0 +1,35 @@
+name: One-time legacy CSS cleanup
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cleanup-legacy-css-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove obsolete language and flip CSS
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('styles.css')
+          s=p.read_text(encoding='utf-8')
+          s,n1=re.subn(r'\.language\{.*?\.language:hover,\.language:focus\{.*?\}', '', s, count=1, flags=re.S)
+          s,n2=re.subn(r'\.plan-grid\{.*?(?=\.service-table-wrap\{)', '', s, count=1, flags=re.S)
+          if n1 != 1 or n2 != 1:
+              raise SystemExit(f'Expected legacy blocks were not found exactly once: language={n1}, plans={n2}')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add styles.css
+          git commit -m "Remove obsolete language and flip styles"
+          git push
