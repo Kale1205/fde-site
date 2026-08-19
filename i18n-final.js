@@ -137,5 +137,5 @@ function initPortal(){
   new MutationObserver(()=>refreshDynamicLabels()).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initPortal,{once:true});else initPortal();
-['pricing-monthly.js?v=20260819-130931','commerce-ui.js?v=20260819-130931'].forEach(src=>{const s=document.createElement('script');s.src=src;s.async=false;document.head.appendChild(s)});
+['pricing-monthly.js?v=20260819-131026','commerce-ui.js?v=20260819-131026'].forEach(src=>{const s=document.createElement('script');s.src=src;s.async=false;document.head.appendChild(s)});
 })();
