@@ -1,6 +1,6 @@
 (()=>{
 if(!document.getElementById('fde-seo-runtime')){const seo=document.createElement('script');seo.id='fde-seo-runtime';seo.src='seo-runtime.js?v=20260818-1925';seo.defer=true;document.head.appendChild(seo)}
-const BASE_JPY=[49800,4980,99800,9800];
+const BASE_JPY=[49800,9800,99800,9800];
 const DEFAULT_RATES={JPY:1,USD:0.00627731,CNY:0.0423289,TWD:0.201015,KRW:8.82247,IDR:111.918,MYR:0.0256305,VND:164.052,THB:0.206395,INR:0.594424,AED:0.0230533};
 const CURRENCY_BY_LANG={ja:'JPY',en:'USD','zh-CN':'CNY','zh-TW':'TWD',ko:'KRW',id:'IDR',ms:'MYR',vi:'VND',th:'THB',hi:'INR',ar:'AED'};
 const LOCALE_BY_LANG={ja:'ja-JP',en:'en-US','zh-CN':'zh-CN','zh-TW':'zh-TW',ko:'ko-KR',id:'id-ID',ms:'ms-MY',vi:'vi-VN',th:'th-TH',hi:'hi-IN',ar:'ar-AE'};
