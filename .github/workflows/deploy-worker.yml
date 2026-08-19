@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Production binding safety check
+      - name: Production configuration safety check
         shell: bash
         run: |
           python - <<'PY'
@@ -39,6 +39,13 @@ jobs:
           if not main or not re.fullmatch(r'src/index-v\d+\.js', main.group(1)):
               sys.exit('Refusing production deploy: invalid versioned Worker entry point.')
 
+          account_id = re.search(r'^account_id\s*=\s*["\']([0-9a-fA-F]{32})["\']', text, re.MULTILINE)
+          if not account_id:
+              sys.exit('Refusing production deploy: Cloudflare account_id is not pinned.')
+
+          if not re.search(r'^keep_vars\s*=\s*true\s*$', text, re.MULTILINE):
+              sys.exit('Refusing production deploy: keep_vars = true is required.')
+
           blocks = re.findall(r'\[\[kv_namespaces\]\](.*?)(?=\n\[|\Z)', text, re.DOTALL)
           order_status = next((b for b in blocks if re.search(r'^\s*binding\s*=\s*["\']ORDER_STATUS["\']', b, re.MULTILINE)), None)
           if order_status is None:
@@ -51,11 +58,20 @@ jobs:
           print('Production Worker configuration safety check passed.')
           PY
 
+      - name: Verify Cloudflare deployment credential exists
+        shell: bash
+        env:
+          TOKEN_PRESENT: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+        run: |
+          if [ "$TOKEN_PRESENT" != "true" ]; then
+            echo "CLOUDFLARE_API_TOKEN is not configured in GitHub Actions Secrets."
+            exit 1
+          fi
+
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: worker
           wranglerVersion: '4'
-          command: deploy --no-x-provision
+          command: deploy --experimental-provision=false --experimental-auto-create=false
