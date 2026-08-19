@@ -3,7 +3,7 @@ import baseWorker from './index-v13.js';
 const LOCALES=['ja','en','zh-CN','zh-TW','ko','id','ms','vi','th','hi','ar'];
 const LOCALE_NAMES={ja:'Japanese',en:'English','zh-CN':'Simplified Chinese','zh-TW':'Traditional Chinese used in Taiwan',ko:'Korean',id:'Bahasa Indonesia',ms:'Bahasa Melayu',vi:'Vietnamese',th:'Thai',hi:'Hindi',ar:'Arabic'};
 const M2M_TARGET={en:'en','zh-CN':'zh',ko:'ko',id:'id',ms:'ms',vi:'vi',th:'th',hi:'hi',ar:'ar'};
-const PROTECTED=['IMS Starter','Business DX Pack','Baked Kale','Kale’s FDE','Kale\'s FDE','FDE','Customer Portal','Cloudflare','Brevo','GitHub'];
+const PROTECTED=['FDE IMS License','FDE IMS Updates','License Agreement','EULA','IMS Starter','Business DX Pack','Baked Kale','Kale’s FDE','Kale\'s FDE','FDE','Customer Portal','Cloudflare','Brevo','GitHub'];
 function clean(v,max=8000){return String(v??'').trim().slice(0,max)}
 function cors(origin,allowedOrigin){const allow=origin&&origin===allowedOrigin?origin:allowedOrigin;return{'Access-Control-Allow-Origin':allow,'Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Vary':'Origin'}}
 function json(data,status,origin,allowedOrigin){return new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8',...cors(origin,allowedOrigin)}})}
