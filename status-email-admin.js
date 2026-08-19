@@ -1,8 +1,0 @@
-(()=>{
-const ENDPOINT=String(window.FDE_CONTACT_API||'').trim();
-function toast(text,type=''){window.FDE_ADMIN_TOAST?.(text,type)}
-function addNote(){const status=document.getElementById('unifiedStatus');if(!status||document.getElementById('statusEmailAutoNote'))return;const note=document.createElement('div');note.id='statusEmailAutoNote';note.className='token-note';note.textContent='注文ステータスを別の状態へ変更して「顧客・注文情報を更新」を押すと、購入者へ注文フロー・現状説明・次に行うことを記載したメールを自動送信します。';status.insertAdjacentElement('afterend',note)}
-function installFetchObserver(){if(window.__FDE_STATUS_EMAIL_FETCH_OBSERVER__)return;window.__FDE_STATUS_EMAIL_FETCH_OBSERVER__=true;const original=window.fetch.bind(window);window.fetch=async(...args)=>{const response=await original(...args);try{const url=typeof args[0]==='string'?args[0]:args[0]?.url||'',opts=args[1]||{};if(ENDPOINT&&url.startsWith(ENDPOINT)&&String(opts.method||'GET').toUpperCase()==='POST'&&typeof opts.body==='string'){const req=JSON.parse(opts.body);if(['admin_order_update','admin_order_cancel','fulfillment','status_update'].includes(req?.type)){const data=await response.clone().json().catch(()=>null);if(data?.statusChanged){setTimeout(()=>{if(data.statusEmailSent)toast('注文ステータスを更新し、購入者へ進捗メールを自動送信しました。','success');else toast('注文ステータスは更新しましたが、購入者への進捗メール送信に失敗しました。Brevo設定またはWorkerログを確認してください。','error')},180)}}}}catch{}return response}}
-function init(){installFetchObserver();addNote();new MutationObserver(addNote).observe(document.body,{childList:true,subtree:true})}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-})();
