@@ -4,8 +4,7 @@ const LOCAL={en:'USD',ja:'JPY','zh-CN':'CNY','zh-TW':'TWD',ko:'KRW',id:'IDR',ms:
 const LOCALE={en:'en-US',ja:'ja-JP','zh-CN':'zh-CN','zh-TW':'zh-TW',ko:'ko-KR',id:'id-ID',ms:'ms-MY',vi:'vi-VN',th:'th-TH',hi:'hi-IN',ar:'ar-AE'};
 const RATE={JPY:1,USD:.00627731,CNY:.0423289,TWD:.201015,KRW:8.82247,IDR:111.918,MYR:.0256305,VND:164.052,THB:.206395,INR:.594424,AED:.0230533};
 function lang(){const v=localStorage.getItem('fde-lang')||document.querySelector('#lang')?.value||'en';return LANGS.includes(v)?v:'en'}
-function allowed(l){return l==='en'?['USD']:[LOCAL[l]||'USD','USD']}
-function currency(l){if(l==='en')return'USD';const saved=localStorage.getItem('fde-payment-currency');return allowed(l).includes(saved)?saved:(LOCAL[l]||'USD')}
+function currency(l){return LOCAL[l]||'USD'}
 function fmt(jpy,c,l){return new Intl.NumberFormat(LOCALE[l]||'en-US',{style:'currency',currency:c,maximumFractionDigits:0}).format(Math.round(jpy*(RATE[c]||1)))}
 function stripAmount(text,amount){const n=amount.toLocaleString('en-US');const patterns=[new RegExp(`JPY\\s*${n}(?:円|日元|日圓)?`,'g'),new RegExp(`${n}(?:円|日元|日圓)`,'g'),new RegExp(`¥\\s*${n}`,'g')];let out=text;patterns.forEach(r=>out=out.replace(r,`__FDE_${amount}__`));return out}
 function localizeText(text,l,c){let out=text;[49800,4900,9800].forEach(a=>out=stripAmount(out,a));[49800,4900,9800].forEach(a=>out=out.replace(new RegExp(`__FDE_${a}__`,'g'),fmt(a,c,l)));return out}
