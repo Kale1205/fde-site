@@ -206,8 +206,12 @@ if not contact_config.exists():
     fail("contact-config.js is missing")
 else:
     text = contact_config.read_text(encoding="utf-8")
-    for match in re.finditer(r"(?P<path>/fde-site/[A-Za-z0-9_./-]+\.(?:js|css))\?v=(?P<v>[0-9A-Za-z._-]+)", text):
-        rel = match.group("path")[len("/fde-site/"):]
+    for match in re.finditer(r"[\"'](?P<path>(?!https?://|//)[A-Za-z0-9_./-]+\.(?:js|css))\?v=(?P<v>[0-9A-Za-z._-]+)[\"']", text):
+        rel = match.group("path")
+        if rel.startswith("/fde-site/"):
+            rel = rel[len("/fde-site/"):]
+        elif rel.startswith("/"):
+            continue
         if not (ROOT / rel).exists():
             fail(f"contact-config.js: dynamic local asset does not exist: {match.group('path')}")
         if version and match.group("v") != version:
