@@ -21,27 +21,16 @@ else:
 
 asset_ref = re.compile(r"(?:src|href)=[\"'](?P<path>[^\"']+\.(?:js|css)(?:\?[^\"']*)?)[\"']", re.IGNORECASE)
 version_param = re.compile(r"(?:\?|&)v=([^&]+)")
-public_pages = {
-    "index.html",
-    "why.html",
-    "goals.html",
-    "news.html",
-    "contact.html",
-    "order.html",
-    "customer.html",
-    "demo.html",
-}
+public_pages = {"index.html","why.html","goals.html","news.html","contact.html","order.html","customer.html","demo.html","license.html"}
 legacy_loaders = ("contact-mailer.js", "fulfillment-v2.js")
 
 for path in sorted(ROOT.glob("*.html")):
     text = path.read_text(encoding="utf-8")
     if path.name in public_pages and not re.search(r"<html\s+lang=[\"']en[\"']", text, re.IGNORECASE):
         fail(f"{path.name}: customer-facing entry point must default to lang=en")
-
     for legacy in legacy_loaders:
         if legacy in text:
             fail(f"{path.name}: legacy loader must not be referenced: {legacy}")
-
     for match in asset_ref.finditer(text):
         ref = match.group("path")
         if ref.startswith(("http://", "https://", "//", "data:")):
@@ -77,27 +66,18 @@ else:
             fail(f"worker/wrangler.toml: Worker entry must use a versioned src/index-vN.js file, got {main_rel}")
         if not (wrangler.parent / main_rel).exists():
             fail(f"worker/wrangler.toml: configured entry does not exist: {main_rel}")
-
     account_match = re.search(r"^account_id\s*=\s*[\"']([0-9a-fA-F]{32})[\"']", wrangler_text, re.MULTILINE)
     if not account_match:
         fail("worker/wrangler.toml: production account_id must be pinned to a 32-character Cloudflare Account ID")
-
     if not re.search(r"^keep_vars\s*=\s*true\s*$", wrangler_text, re.MULTILINE):
         fail("worker/wrangler.toml: keep_vars = true is required to preserve dashboard-managed vars")
-
     blocks = re.findall(r"\[\[kv_namespaces\]\](.*?)(?=\n\[|\Z)", wrangler_text, re.DOTALL)
     order_status = next((b for b in blocks if re.search(r"^\s*binding\s*=\s*[\"']ORDER_STATUS[\"']", b, re.MULTILINE)), None)
     if order_status is None:
         fail("worker/wrangler.toml: ORDER_STATUS KV binding is missing")
     elif not re.search(r"^\s*id\s*=\s*[\"'][0-9a-fA-F]{32}[\"']", order_status, re.MULTILINE):
         fail("worker/wrangler.toml: ORDER_STATUS must reference an existing 32-character KV namespace ID")
-
-    required_secret_names = {
-        "BREVO_API_KEY",
-        "FROM_EMAIL",
-        "ADMIN_FULFILLMENT_KEY",
-        "TURNSTILE_SECRET_KEY",
-    }
+    required_secret_names = {"BREVO_API_KEY","FROM_EMAIL","ADMIN_FULFILLMENT_KEY","TURNSTILE_SECRET_KEY"}
     secrets_block = re.search(r"\[secrets\](.*?)(?=\n\[|\Z)", wrangler_text, re.DOTALL)
     if not secrets_block:
         fail("worker/wrangler.toml: [secrets] required list is missing")
@@ -115,39 +95,31 @@ secret_patterns = {
     "Private key block": re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
     "Literal runtime secret assignment": re.compile(r"\b(?:BREVO_API_KEY|FROM_EMAIL|ADMIN_FULFILLMENT_KEY|TURNSTILE_SECRET_KEY)\s*=\s*[\"'][^\"']{8,}[\"']"),
 }
-
 for path in ROOT.rglob("*"):
-    if not path.is_file() or path.suffix.lower() not in text_extensions:
+    if not path.is_file() or path.suffix.lower() not in text_extensions or ".git" in path.parts:
         continue
-    if ".git" in path.parts:
-        continue
-    try:
-        text = path.read_text(encoding="utf-8")
-    except UnicodeDecodeError:
-        continue
+    try:text = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:continue
     rel = path.relative_to(ROOT).as_posix()
     for label, pattern in secret_patterns.items():
-        if pattern.search(text):
-            fail(f"{rel}: possible {label} detected")
+        if pattern.search(text):fail(f"{rel}: possible {label} detected")
 
-required_contact = {
+required_runtime = {
     "contact.html": ("contact-config.js", "contact-direct.js"),
-    "order.html": ("contact-config.js", "order.js", "order-language.js"),
+    "order.html": ("purchase-currency-clean.js",),
+    "license.html": ("license-page-i18n.js",),
 }
-for filename, required in required_contact.items():
+for filename, required in required_runtime.items():
     path = ROOT / filename
     if not path.exists():
         fail(f"{filename} is missing")
         continue
     text = path.read_text(encoding="utf-8")
     for asset in required:
-        if asset not in text:
-            fail(f"{filename}: required runtime is missing: {asset}")
+        if asset not in text:fail(f"{filename}: required runtime is missing: {asset}")
 
 if errors:
     print("Repository validation failed:\n")
-    for item in errors:
-        print(f"- {item}")
+    for item in errors:print(f"- {item}")
     sys.exit(1)
-
 print(f"Repository validation passed. Build version: {version}")
