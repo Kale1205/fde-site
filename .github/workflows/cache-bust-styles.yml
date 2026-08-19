@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  statuses: write
 
 jobs:
   sync-build-version:
@@ -22,6 +23,11 @@ jobs:
     steps:
       - name: Checkout working branch
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
       - name: Generate one build ID for the whole frontend
         run: |
@@ -32,14 +38,61 @@ jobs:
         run: python scripts/sync_build_version.py
 
       - name: Commit synchronized asset versions to this branch
+        id: commit_sync
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add build-version.txt '*.html' contact-config.js i18n-final.js
           if git diff --cached --quiet; then
             echo "All pages already use the current build version."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           VERSION="$(cat build-version.txt)"
           git commit -m "Sync site asset build ${VERSION}"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Validate synchronized head
+        id: validate_sync
+        if: steps.commit_sync.outputs.changed == 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/validate_repo.py
+          python -m compileall -q scripts .github/scripts
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            node --check "$file"
+          done < <(find . -maxdepth 1 -type f -name '*.js' -print0)
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            node --input-type=module --check < "$file"
+          done < <(find worker/src -type f -name '*.js' -print0)
+
+      - name: Publish validate status for synchronized head
+        if: always() && steps.commit_sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.commit_sync.outputs.head_sha }}
+          VALIDATION_OUTCOME: ${{ steps.validate_sync.outcome }}
+        run: |
+          if [ "$VALIDATION_OUTCOME" = "success" ]; then
+            STATE="success"
+            DESCRIPTION="Repository validation passed after build sync"
+          else
+            STATE="failure"
+            DESCRIPTION="Repository validation failed after build sync"
+          fi
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/statuses/${HEAD_SHA}" \
+            -f state="$STATE" \
+            -f context="validate" \
+            -f description="$DESCRIPTION"
+
+      - name: Fail if synchronized validation failed
+        if: steps.commit_sync.outputs.changed == 'true' && steps.validate_sync.outcome != 'success'
+        run: exit 1
