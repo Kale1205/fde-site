@@ -132,7 +132,7 @@ for path in ROOT.rglob("*"):
 
 required_contact = {
     "contact.html": ("contact-config.js", "contact-direct.js"),
-    "order.html": ("order-lite.js", "payment-currency-v1.js"),
+    "order.html": ("contact-config.js", "order.js", "order-language.js"),
 }
 for filename, required in required_contact.items():
     path = ROOT / filename
