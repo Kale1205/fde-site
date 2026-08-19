@@ -1,27 +1,28 @@
 (()=>{
-const COPY={
- ja:'Updates単独契約を解約した場合、継続アップデートは契約終了時に停止します。解約後のソフトウェア利用継続可否、データ保持、利用可能バージョンは製品仕様確定前のため未確定です。',
- en:'For an Updates-only subscription, ongoing update service ends when the subscription term ends. Whether the software remains usable, how data is retained, and which version remains available after cancellation are not yet finalized because the product specification is still under development.',
- 'zh-CN':'仅订阅Updates的客户取消后，持续更新服务会在订阅期结束时停止。取消后的软件是否可继续使用、数据保留方式以及可用版本因产品规格尚未最终确定，目前仍未确定。',
- 'zh-TW':'僅訂閱Updates的客戶解約後，持續更新服務會於訂閱期結束時停止。解約後軟體是否可繼續使用、資料保留方式及可用版本因產品規格尚未最終確定，目前仍未確定。',
- ko:'Updates 단독 계약을 해지하면 지속 업데이트 서비스는 계약 종료 시 중단됩니다. 해지 후 소프트웨어 계속 사용 가능 여부, 데이터 보존, 이용 가능한 버전은 제품 사양 확정 전이므로 아직 미정입니다.',
- id:'Untuk langganan Updates saja, layanan pembaruan berkelanjutan berakhir saat masa langganan selesai. Apakah perangkat lunak tetap dapat digunakan, bagaimana data disimpan, dan versi apa yang tetap tersedia setelah pembatalan belum ditetapkan.',
- ms:'Bagi langganan Updates sahaja, perkhidmatan kemas kini berterusan tamat apabila tempoh langganan berakhir. Sama ada perisian masih boleh digunakan, bagaimana data disimpan dan versi yang tersedia selepas pembatalan masih belum dimuktamadkan.',
- vi:'Với gói chỉ Updates, dịch vụ cập nhật liên tục kết thúc khi kỳ đăng ký kết thúc. Việc phần mềm có tiếp tục sử dụng được không, dữ liệu được lưu thế nào và phiên bản nào còn khả dụng sau khi hủy vẫn chưa được chốt.',
- th:'สำหรับสัญญา Updates แบบเดี่ยว บริการอัปเดตต่อเนื่องจะสิ้นสุดเมื่อครบระยะสัญญา ส่วนการใช้ซอฟต์แวร์ต่อ การเก็บข้อมูล และเวอร์ชันที่ยังใช้ได้หลังยกเลิกยังไม่สรุป',
- hi:'केवल Updates सदस्यता रद्द करने पर निरंतर अपडेट सेवा सदस्यता अवधि समाप्त होने पर बंद हो जाएगी। उसके बाद सॉफ़्टवेयर उपयोग, डेटा रिटेंशन और उपलब्ध संस्करण अभी तय नहीं हैं।',
- ar:'في اشتراك Updates فقط، تنتهي خدمة التحديثات المستمرة عند انتهاء مدة الاشتراك. أما استمرار استخدام البرنامج والاحتفاظ بالبيانات والإصدار المتاح بعد الإلغاء فلم تُحسم بعد.'
+const C={
+ en:{title:'License / Updates comparison',note:'Compare the current planned differences between the two models.',cells:['Model','License','Updates','Source code','Included','Not provided','License term','Perpetual internal use','To be finalized','Internal customization','Allowed','Not source-code based','Updates / security','Customer-managed','FDE-managed during subscription','Resale / redistribution','Not permitted','Not permitted']},
+ ja:{title:'License / Updates 比較',note:'2つのモデルについて、現在予定している違いを比較できます。',cells:['モデル','License','Updates','ソースコード','提供','提供なし','利用期間','永続的な社内利用','未確定','社内カスタマイズ','可能','ソースコードによる改変なし','Updates / セキュリティ','購入企業が管理','契約期間中はFDEが管理','再販売 / 再配布','不可','不可']},
+ 'zh-CN':{title:'License / Updates 对比',note:'比较两种模式目前规划中的差异。',cells:['模式','License','Updates','源代码','提供','不提供','使用期限','永久内部使用','尚未确定','内部定制','允许','不基于源代码修改','更新 / 安全','客户管理','订阅期间由FDE管理','转售 / 再分发','不允许','不允许']},
+ 'zh-TW':{title:'License / Updates 比較',note:'比較兩種模式目前規劃中的差異。',cells:['模式','License','Updates','原始碼','提供','不提供','使用期間','永久內部使用','尚未確定','內部客製化','允許','非原始碼修改','更新 / 安全','客戶管理','訂閱期間由FDE管理','轉售 / 再散布','不允許','不允許']},
+ ko:{title:'License / Updates 비교',note:'두 모델의 현재 예정 차이를 비교합니다.',cells:['모델','License','Updates','소스 코드','제공','미제공','이용 기간','영구 내부 사용','미정','내부 커스터마이즈','허용','소스 코드 기반 수정 아님','업데이트 / 보안','고객 관리','구독 기간 FDE 관리','재판매 / 재배포','불가','불가']},
+ id:{title:'Perbandingan License / Updates',note:'Bandingkan perbedaan yang saat ini direncanakan untuk kedua model.',cells:['Model','License','Updates','Kode sumber','Disertakan','Tidak diberikan','Masa penggunaan','Penggunaan internal permanen','Belum ditetapkan','Kustomisasi internal','Diizinkan','Bukan berbasis kode sumber','Updates / keamanan','Dikelola pelanggan','Dikelola FDE selama langganan','Penjualan / distribusi ulang','Tidak diizinkan','Tidak diizinkan']},
+ ms:{title:'Perbandingan License / Updates',note:'Bandingkan perbezaan yang kini dirancang bagi kedua-dua model.',cells:['Model','License','Updates','Kod sumber','Disertakan','Tidak diberikan','Tempoh penggunaan','Penggunaan dalaman kekal','Belum dimuktamadkan','Penyesuaian dalaman','Dibenarkan','Bukan berasaskan kod sumber','Updates / keselamatan','Diurus pelanggan','Diurus FDE semasa langganan','Jual semula / pengedaran semula','Tidak dibenarkan','Tidak dibenarkan']},
+ vi:{title:'So sánh License / Updates',note:'So sánh các khác biệt hiện đang được dự kiến giữa hai mô hình.',cells:['Mô hình','License','Updates','Mã nguồn','Có','Không cung cấp','Thời hạn sử dụng','Sử dụng nội bộ vĩnh viễn','Chưa chốt','Tùy chỉnh nội bộ','Cho phép','Không dựa trên mã nguồn','Updates / bảo mật','Khách hàng quản lý','FDE quản lý trong thời hạn đăng ký','Bán lại / phân phối lại','Không cho phép','Không cho phép']},
+ th:{title:'เปรียบเทียบ License / Updates',note:'เปรียบเทียบความแตกต่างที่วางแผนไว้ในปัจจุบันของทั้งสองโมเดล',cells:['โมเดล','License','Updates','ซอร์สโค้ด','มีให้','ไม่มีให้','ระยะเวลาการใช้งาน','ใช้ภายในแบบถาวร','ยังไม่สรุป','ปรับแต่งภายใน','อนุญาต','ไม่ใช่การแก้ผ่านซอร์สโค้ด','Updates / ความปลอดภัย','ลูกค้าดูแล','FDE ดูแลระหว่างสมาชิก','ขายต่อ / แจกจ่ายต่อ','ไม่อนุญาต','ไม่อนุญาต']},
+ hi:{title:'License / Updates तुलना',note:'दोनों मॉडलों के वर्तमान नियोजित अंतर की तुलना करें।',cells:['मॉडल','License','Updates','सोर्स कोड','शामिल','नहीं दिया जाता','उपयोग अवधि','स्थायी आंतरिक उपयोग','अभी तय नहीं','आंतरिक कस्टमाइज़ेशन','अनुमत','सोर्स-कोड आधारित नहीं','Updates / सुरक्षा','ग्राहक प्रबंधित','सदस्यता के दौरान FDE प्रबंधित','पुनर्विक्रय / पुनर्वितरण','अनुमति नहीं','अनुमति नहीं']},
+ ar:{title:'مقارنة License / Updates',note:'مقارنة الفروق المخطط لها حالياً بين النموذجين.',cells:['النموذج','License','Updates','الشفرة المصدرية','متاحة','غير متاحة','مدة الاستخدام','استخدام داخلي دائم','لم تُحسم بعد','التخصيص الداخلي','مسموح','ليس عبر الشفرة المصدرية','Updates / الأمان','بإدارة العميل','بإدارة FDE أثناء الاشتراك','إعادة البيع / التوزيع','غير مسموح','غير مسموح']}
 };
-function lang(){return document.querySelector('#lang')?.value||localStorage.getItem('fde-lang')||document.documentElement.lang||'en'}
-function apply(){
- const copy=COPY[lang()]||COPY.en;
- const cancel=[...document.querySelectorAll('.ims-switch-copy p')].find(el=>/Updates-only|Updates単独|仅订阅Updates|僅訂閱Updates|Updates 단독|Updates sahaja|Updates saja|chỉ Updates|Updates แบบเดี่ยว|केवल Updates|اشتراك Updates فقط/i.test(el.textContent||''));
- if(cancel&&cancel.textContent!==copy)cancel.textContent=copy;
-}
-function init(){
- apply();
- document.querySelector('#lang')?.addEventListener('change',()=>setTimeout(apply,0));
- new MutationObserver(()=>setTimeout(apply,0)).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
-}
+function lang(){const v=document.querySelector('#lang')?.value||localStorage.getItem('fde-lang')||document.documentElement.lang||'en';return C[v]?v:'en'}
+function ensureStyle(){if(document.getElementById('ims-products-ux-patch'))return;const s=document.createElement('style');s.id='ims-products-ux-patch';s.textContent=`
+.ims-flip-card{cursor:pointer}.ims-flip-card:focus-visible{outline:3px solid currentColor;outline-offset:5px}.ims-flip-list,.ims-flip-note,.ims-flip-toggle{display:none!important}.ims-flip-card,.ims-flip-inner{min-height:430px!important}
+@media(max-width:760px){.ims-flip-card,.ims-flip-inner{min-height:470px!important}.ims-compare{display:grid!important;grid-template-columns:150px 190px 210px!important;width:max-content;min-width:100%;overflow:visible!important}.ims-compare-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;padding-bottom:10px}.ims-compare-scroll::-webkit-scrollbar{height:6px}}
+`;document.head.appendChild(s)}
+function simplifyFlip(){const plans=document.querySelector('#plans');if(!plans)return;plans.querySelector('.ims-pre p')?.remove();plans.querySelectorAll('.ims-flip-list,.ims-flip-note,.ims-flip-toggle').forEach(el=>el.remove());const card=plans.querySelector('#imsPlanFlip');if(card){card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label','License / Updates');}}
+function localizeComparison(){const cmp=document.querySelector('.ims-compare');if(!cmp)return;const c=C[lang()]||C.en;const section=cmp.closest('section');const title=section?.querySelector('.section-title');const note=section?.querySelector('.section-copy');if(title)title.textContent=c.title;if(note)note.textContent=c.note;[...cmp.children].forEach((el,i)=>{if(c.cells[i]!=null)el.textContent=c.cells[i]});if(!cmp.parentElement.classList.contains('ims-compare-scroll')){const wrap=document.createElement('div');wrap.className='ims-compare-scroll';cmp.parentNode.insertBefore(wrap,cmp);wrap.appendChild(cmp)}}
+function apply(){ensureStyle();simplifyFlip();localizeComparison()}
+let timer;function later(){clearTimeout(timer);timer=setTimeout(apply,160)}
+document.addEventListener('click',e=>{const card=e.target.closest('#imsPlanFlip');if(!card||e.target.closest('a,button,input,select,textarea'))return;card.classList.toggle('is-flipped')});
+document.addEventListener('keydown',e=>{const card=e.target.closest?.('#imsPlanFlip');if(!card||!(e.key==='Enter'||e.key===' '))return;e.preventDefault();card.classList.toggle('is-flipped')});
+function init(){apply();const plans=document.querySelector('#plans');if(plans)new MutationObserver(later).observe(plans,{childList:true,subtree:true});document.querySelector('#lang')?.addEventListener('change',later);new MutationObserver(later).observe(document.documentElement,{attributes:true,attributeFilter:['lang']})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
