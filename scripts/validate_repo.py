@@ -25,31 +25,18 @@ ROOT_ONLY_PUBLIC = {"customer.html", "demo.html"}
 ALL_PUBLIC = EN_PAGES | JA_PAGES | ROOT_ONLY_PUBLIC
 
 OBSOLETE_FILES = {
-    "contact-mailer.js",
-    "fulfillment-v2.js",
-    "faq-admin-v2.js",
-    "translations.js",
-    "order-language.js",
-    "order-preview-lock.js",
-    "order-preview-stabilize.js",
-    "purchase-currency-clean.js",
-    "purchase-currency-clean.css",
-    "content/pricing-rates.json",
-    "scripts/enable_fixed_localization.py",
-    "scripts/refine_language_selector.py",
-    "CMS_ENGLISH_ONLY_CHECK.md",
-    "MAINTENANCE_ENGLISH_ONLY.md",
-    "products-clean.js",
-    "products-clean.css",
-    "order.js",
-    "commerce-ui.js",
-    "license-spec-patch.js",
-    "license-page-i18n.js",
-    "ims-plan-spec-patch.js",
-    ".github/scripts/apply_brand_editorial.py",
-    ".github/scripts/apply_cms_public.py",
-    ".github/scripts/apply_green_brand.py",
-    ".github/scripts/apply_responsive_news.py",
+    "contact-mailer.js", "fulfillment-v2.js", "faq-admin-v2.js", "translations.js",
+    "order-language.js", "order-preview-lock.js", "order-preview-stabilize.js",
+    "purchase-currency-clean.js", "purchase-currency-clean.css", "content/pricing-rates.json",
+    "scripts/enable_fixed_localization.py", "scripts/refine_language_selector.py",
+    "CMS_ENGLISH_ONLY_CHECK.md", "MAINTENANCE_ENGLISH_ONLY.md",
+    "products-clean.js", "products-clean.css", "order.js", "commerce-ui.js",
+    "license-spec-patch.js", "license-page-i18n.js", "ims-plan-spec-patch.js",
+    "order-status-admin.js", "customer-orders-admin.js", "customer-orders-operations.js",
+    "order-documents-admin.js", "status-email-admin.js", "news-delete-v2.js",
+    ".github/scripts/apply_brand_editorial.py", ".github/scripts/apply_cms_public.py",
+    ".github/scripts/apply_green_brand.py", ".github/scripts/apply_responsive_news.py",
+    ".github/scripts/cms_update.py", ".github/scripts/refresh-news-visual-assets.py",
 }
 
 OBSOLETE_WORKFLOWS = {
@@ -62,6 +49,13 @@ OBSOLETE_WORKFLOWS = {
     ".github/workflows/apply-responsive-news.yml",
     ".github/workflows/refine-contact-i18n.yml",
     ".github/workflows/update-pricing-rates.yml",
+    ".github/workflows/add-google-verification.yml",
+    ".github/workflows/refresh-news-visual-assets.yml",
+    ".github/workflows/cms-news-add.yml",
+    ".github/workflows/cms-news-edit.yml",
+    ".github/workflows/cms-news-delete.yml",
+    ".github/workflows/cms-instagram.yml",
+    ".github/workflows/cms-latest-strip.yml",
 }
 
 for rel in sorted(OBSOLETE_FILES | OBSOLETE_WORKFLOWS):
@@ -138,7 +132,7 @@ for rel, markers in required_markers.items():
         if marker not in text:
             fail(f"{rel}: required marker/runtime missing: {marker}")
 
-# Shared public runtimes must not depend on the retired browser language state.
+# Shared public runtimes must not depend on retired browser language state.
 for rel in ("site.js", "faq-cms.js", "contact-direct.js", "cms-content.js", "cms-content-ja.js"):
     path = ROOT / rel
     if not path.exists():
@@ -149,7 +143,7 @@ for rel in ("site.js", "faq-cms.js", "contact-direct.js", "cms-content.js", "cms
         if legacy in text:
             fail(f"{rel}: retired browser language-state dependency found: {legacy}")
 
-# CMS admin remains Japanese; public CMS data must contain both Japanese and English.
+# CMS admin has one News/Media core and one FAQ runtime. Dead order/fulfillment UI is forbidden.
 cms_admin = ROOT / "cms-admin.html"
 if not cms_admin.exists():
     fail("cms-admin.html is missing")
@@ -157,6 +151,21 @@ else:
     text = cms_admin.read_text(encoding="utf-8")
     if not re.search(r"<html\s+lang=[\"']ja[\"']", text, re.IGNORECASE):
         fail("cms-admin.html: admin UI must remain Japanese")
+    for required in ("cms-admin.js", "news-translation-hook.js", "faq-admin-v3.js"):
+        if required not in text:
+            fail(f"cms-admin.html: required CMS runtime missing: {required}")
+    for forbidden in ("fulfillmentPanel", 'data-admin-tab="fulfillment"', "order-status-admin.js", "news-delete-v2.js"):
+        if forbidden in text:
+            fail(f"cms-admin.html: obsolete CMS surface/runtime found: {forbidden}")
+
+cms_core = ROOT / "cms-admin.js"
+if not cms_core.exists():
+    fail("cms-admin.js is missing")
+else:
+    text = cms_core.read_text(encoding="utf-8")
+    for forbidden in ("cms.faq", "faqCreateQEn", "faqEditQEn", "sendFulfillment", "fulfillOrderId"):
+        if forbidden in text:
+            fail(f"cms-admin.js: obsolete FAQ/fulfillment implementation found: {forbidden}")
 
 site_content_path = ROOT / "content" / "site-content.json"
 if site_content_path.exists():
@@ -177,6 +186,9 @@ faq_path = ROOT / "content" / "faq-content.json"
 if faq_path.exists():
     try:
         faq_data = json.loads(faq_path.read_text(encoding="utf-8"))
+        locales = faq_data.get("locales", [])
+        if locales != ["ja", "en"]:
+            fail(f"content/faq-content.json: locales must be exactly ['ja', 'en'], got {locales!r}")
         for item in faq_data.get("faq", []):
             item_id = item.get("id", "<unknown>")
             for field in ("question", "answer"):
@@ -188,16 +200,18 @@ if faq_path.exists():
 else:
     fail("content/faq-content.json is missing")
 
-# Dynamic local assets must use the same build key.
-for rel in ("contact-config.js",):
-    path = ROOT / rel
-    if not path.exists():
-        fail(f"{rel} is missing")
-        continue
-    text = path.read_text(encoding="utf-8")
-    for match in re.finditer(r"[\"'](?P<path>(?!https?://|//)[A-Za-z0-9_./-]+\.(?:js|css))\?v=(?P<v>[0-9A-Za-z._-]+)[\"']", text):
+# Dynamic local assets must exist and use the same build key.
+contact_config = ROOT / "contact-config.js"
+if not contact_config.exists():
+    fail("contact-config.js is missing")
+else:
+    text = contact_config.read_text(encoding="utf-8")
+    for match in re.finditer(r"(?P<path>/fde-site/[A-Za-z0-9_./-]+\.(?:js|css))\?v=(?P<v>[0-9A-Za-z._-]+)", text):
+        rel = match.group("path")[len("/fde-site/"):]
+        if not (ROOT / rel).exists():
+            fail(f"contact-config.js: dynamic local asset does not exist: {match.group('path')}")
         if version and match.group("v") != version:
-            fail(f"{rel}: dynamic asset build key {match.group('v')!r} != {version!r}: {match.group('path')}")
+            fail(f"contact-config.js: dynamic asset build key {match.group('v')!r} != {version!r}: {match.group('path')}")
 
 # Worker configuration and import closure.
 wrangler = ROOT / "worker" / "wrangler.toml"
@@ -237,7 +251,6 @@ else:
     for missing in sorted(required_secret_names - names):
         fail(f"worker/wrangler.toml: required secret declaration missing: {missing}")
 
-# No historical Worker entry versions may remain unless reachable from the configured entry.
 for path in sorted((ROOT / "worker" / "src").glob("index*.js")):
     if path not in worker_reachable:
         fail(f"stale Worker entry should be deleted: {path.relative_to(ROOT)}")
