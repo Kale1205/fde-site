@@ -1,28 +1,46 @@
 (()=>{
-const OWNER='Kale1205',REPO='fde-site',BRANCH='main';
-const API=`https://api.github.com/repos/${OWNER}/${REPO}`;
-const PATH='content/site-content.json';
 const ENDPOINT=String(window.FDE_CONTACT_API||'').trim();
 const $=s=>document.querySelector(s);
-let pending=null;
 const replay=new WeakSet();
-const decode=b64=>new TextDecoder().decode(Uint8Array.from(atob(String(b64).replace(/\n/g,'')),c=>c.charCodeAt(0)));
-const encode=text=>{const bytes=new TextEncoder().encode(text);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin)};
-function token(){return ($('#token')?.value||'').trim()}
-function headers(){return{'Accept':'application/vnd.github+json','Authorization':`Bearer ${token()}`,'X-GitHub-Api-Version':'2022-11-28'}}
-function adminKey(){return window.FDE_ADMIN_KEY?.get?.()||($('#ordersAdminKey')?.value||$('#faqAdminKey')?.value||$('#fulfillmentKey')?.value||'').trim()}
 function toast(msg,type=''){if(window.FDE_ADMIN_TOAST)window.FDE_ADMIN_TOAST(msg,type);else{const el=$('#adminStatus');if(el){el.textContent=msg;el.className=`status ${type}`.trim();el.hidden=false}}}
-async function readCms(){const r=await fetch(`${API}/contents/${PATH}?ref=${encodeURIComponent(BRANCH)}&t=${Date.now()}`,{headers:headers(),cache:'no-store'});if(!r.ok)throw new Error(`GitHub ${r.status}`);const f=await r.json();return{sha:f.sha,data:JSON.parse(decode(f.content))}}
-async function writeCms(data,sha,message){const r=await fetch(`${API}/contents/${PATH}`,{method:'PUT',headers:{...headers(),'Content-Type':'application/json'},body:JSON.stringify({message,content:encode(JSON.stringify(data,null,2)+'\n'),sha,branch:BRANCH})});if(!r.ok)throw new Error(`GitHub ${r.status}`);return r.json()}
-async function translate(title,body){const key=adminKey();if(!key)throw new Error('ADMIN_KEY_REQUIRED');window.FDE_ADMIN_KEY?.set?.(key);const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({type:'admin_translate_fields',adminKey:key,fields:{title,body}})});const data=await r.json().catch(()=>({}));if(!r.ok||data.ok===false){const err=new Error(data.error||`HTTP_${r.status}`);err.detail=data.detail||'';throw err}const en=data.translations?.en;if(!en?.title||!en?.body)throw new Error('ENGLISH_TRANSLATION_INCOMPLETE');return en}
-function errorText(error){const code=error?.message||String(error);const map={ADMIN_KEY_REQUIRED:'英語版を生成するため、Admin fulfillment keyを入力してください。',ADMIN_AUTH_FAILED:'Admin fulfillment keyが一致しません。',AI_NOT_CONFIGURED:'Cloudflare Workers AI bindingが本番Workerへ反映されていません。',CONTENT_TRANSLATION_FAILED:'英語版Newsの生成に失敗しました。保存は開始していません。',ENGLISH_TRANSLATION_INCOMPLETE:'英語タイトルまたは本文が生成されませんでした。保存は開始していません。'};return map[code]||`${code}${error?.detail?` (${error.detail})`:''}`}
-function notifyNewsUpdated(){try{if('BroadcastChannel'in window){const ch=new BroadcastChannel('fde-cms-updates');ch.postMessage({type:'news-updated',ts:Date.now()});ch.close()}}catch{}}
-function resyncCms(){const btn=$('#connectBtn');if(btn&&token())setTimeout(()=>btn.click(),300)}
-async function prepareAndReplay(btn,mode){if(!token()){toast('先にGitHubへ接続してください。','error');return}if(!ENDPOINT){toast('Cloudflare WorkerのURLが設定されていません。','error');return}const title=mode==='create'?($('#createTitleJa')?.value||'').trim():($('#editTitleJa')?.value||'').trim();const body=mode==='create'?($('#createBodyJa')?.value||'').trim():($('#editBodyJa')?.value||'').trim();if(!title||!body){toast('Newsの日本語タイトルと本文を入力してください。','error');return}const original=btn.textContent;btn.disabled=true;btn.textContent='英語版を生成中…';toast('日本語原稿から英語版Newsを生成しています…');try{const en=await translate(title,body);if(mode==='create'){if($('#createTitleEn'))$('#createTitleEn').value=en.title;if($('#createBodyEn'))$('#createBodyEn').value=en.body}else{if($('#editTitleEn'))$('#editTitleEn').value=en.title;if($('#editBodyEn'))$('#editBodyEn').value=en.body}pending={mode,id:mode==='save'?$('#editNewsTarget')?.value||'':'',title,en};replay.add(btn);btn.disabled=false;btn.textContent=original;btn.click()}catch(e){btn.disabled=false;btn.textContent=original;toast(`英語版Newsの生成に失敗しました: ${errorText(e)}`,'error')}}
-async function patchSavedNews(){const job=pending;if(!job)return;pending=null;try{const {sha,data}=await readCms();data.news=Array.isArray(data.news)?data.news:[];const item=job.mode==='save'?data.news.find(n=>n.id===job.id):[...data.news].reverse().find(n=>n.title?.ja===job.title);if(!item)throw new Error('保存されたNewsが見つかりません。');item.title=item.title||{};item.body=item.body||{};item.title.en=job.en.title;item.body.en=job.en.body;item.translationStatus='ja-en';await writeCms(data,sha,`CMS: generate English News ${job.title}`);notifyNewsUpdated();toast(`News「${job.title}」を日本語版・英語版へ反映しました。`,'success');resyncCms()}catch(e){toast(`日本語Newsは保存されましたが、英語データの反映に失敗しました: ${e.message}`,'error')}}
-function capture(e){const btn=e.target.closest('button');if(!btn||!['createNewsBtn','saveNewsBtn'].includes(btn.id))return;if(replay.has(btn)){replay.delete(btn);return}e.preventDefault();e.stopImmediatePropagation();prepareAndReplay(btn,btn.id==='createNewsBtn'?'create':'save')}
-function watchStatus(){const el=$('#adminStatus');if(!el)return;new MutationObserver(()=>{if(!pending)return;const text=el.textContent||'';if(text.includes('投稿しました')||text.includes('更新しました'))patchSavedNews();else if(text.includes('失敗しました'))pending=null}).observe(el,{childList:true,subtree:true})}
-function prepareUi(){['createTitleEn','createBodyEn','editTitleEn','editBodyEn'].forEach(id=>{const el=$('#'+id);if(!el)return;const field=el.closest('.field');if(field)field.hidden=true});const create=$('#newsCreateCard>p');if(create)create.textContent='タイトルと本文は日本語で入力してください。投稿時に英語版を自動生成し、日本語サイトと英語サイトへ同時反映します。画像は任意です。';const manage=$('#newsManageCard>p');if(manage)manage.textContent='日本語タイトル・本文・カテゴリ・日付・Top News指定・画像を編集できます。保存時に英語版を再生成し、両サイトへ反映します。'}
-function init(){prepareUi();document.addEventListener('click',capture,true);watchStatus()}
+function adminKey(){return window.FDE_ADMIN_KEY?.get?.()||($('#adminKey')?.value||$('#faqAdminKey')?.value||'').trim()}
+async function translate(title,body){
+ const key=adminKey();if(!key)throw new Error('ADMIN_KEY_REQUIRED');window.FDE_ADMIN_KEY?.set?.(key);
+ if(!ENDPOINT)throw new Error('TRANSLATION_ENDPOINT_NOT_CONFIGURED');
+ const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({type:'admin_translate_fields',adminKey:key,fields:{title,body}})});
+ const data=await r.json().catch(()=>({}));
+ if(!r.ok||data.ok===false){const err=new Error(data.error||`HTTP_${r.status}`);err.detail=data.detail||'';throw err}
+ const en=data.translations?.en;if(!en?.title||!en?.body)throw new Error('ENGLISH_TRANSLATION_INCOMPLETE');
+ return en;
+}
+function errorText(error){
+ const code=error?.message||String(error);
+ const map={ADMIN_KEY_REQUIRED:'Admin fulfillment keyを入力してください。',ADMIN_AUTH_FAILED:'Admin fulfillment keyが一致しません。',ADMIN_FULFILLMENT_NOT_CONFIGURED:'Cloudflare WorkerにADMIN_FULFILLMENT_KEYが設定されていません。',AI_NOT_CONFIGURED:'Cloudflare Workers AI bindingが本番Workerへ反映されていません。',CONTENT_TRANSLATION_FAILED:'英語版Newsの生成に失敗しました。保存は開始していません。',ENGLISH_TRANSLATION_INCOMPLETE:'英語タイトルまたは本文が生成されませんでした。保存は開始していません。',TRANSLATION_ENDPOINT_NOT_CONFIGURED:'Cloudflare WorkerのURLが設定されていません。'};
+ return map[code]||`${code}${error?.detail?` (${error.detail})`:''}`;
+}
+async function prepareAndReplay(btn,mode){
+ const title=mode==='create'?($('#createTitleJa')?.value||'').trim():($('#editTitleJa')?.value||'').trim();
+ const body=mode==='create'?($('#createBodyJa')?.value||'').trim():($('#editBodyJa')?.value||'').trim();
+ if(!title||!body){toast('Newsの日本語タイトルと本文を入力してください。','error');return}
+ const original=btn.textContent;btn.disabled=true;btn.textContent='英語版を生成中…';toast('日本語原稿から英語版Newsを生成しています…');
+ try{
+  const en=await translate(title,body);
+  if(mode==='create'){
+   if($('#createTitleEn'))$('#createTitleEn').value=en.title;
+   if($('#createBodyEn'))$('#createBodyEn').value=en.body;
+  }else{
+   if($('#editTitleEn'))$('#editTitleEn').value=en.title;
+   if($('#editBodyEn'))$('#editBodyEn').value=en.body;
+  }
+  replay.add(btn);btn.disabled=false;btn.textContent=original;btn.click();
+ }catch(e){btn.disabled=false;btn.textContent=original;toast(`英語版Newsの生成に失敗しました: ${errorText(e)}`,'error')}
+}
+function capture(e){
+ const btn=e.target.closest('button');
+ if(!btn||!['createNewsBtn','saveNewsBtn'].includes(btn.id))return;
+ if(replay.has(btn)){replay.delete(btn);return}
+ e.preventDefault();e.stopImmediatePropagation();prepareAndReplay(btn,btn.id==='createNewsBtn'?'create':'save');
+}
+function init(){document.addEventListener('click',capture,true)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
