@@ -2,6 +2,7 @@
 const HOME_RE=/\/(fde-site\/)?(?:index\.html)?$/;
 const isHome=HOME_RE.test(location.pathname);
 if(!isHome)return;
+const SITE_BASE=location.pathname.includes('/fde-site/')?'/fde-site/':'/';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const nav=performance.getEntriesByType?.('navigation')?.[0];
 let external=true;
@@ -72,7 +73,7 @@ function randomizeSignals(overlay){
 }
 function mountIntro(){
  const overlay=document.createElement('div');overlay.id='fdeEntryIntro';overlay.className='fde-entry-intro';overlay.setAttribute('aria-label','Baked Kale');
- overlay.innerHTML=`${circuitSvg()}<div class="fde-entry-center-glow" aria-hidden="true"></div><div class="fde-entry-stage"><div class="fde-entry-logo-wrap"><img class="fde-entry-logo" src="assets/baked-kale-logo-intro.svg" alt="Baked Kale — FDE / IT Engineering"></div></div>`;
+ overlay.innerHTML=`${circuitSvg()}<div class="fde-entry-center-glow" aria-hidden="true"></div><div class="fde-entry-stage"><div class="fde-entry-logo-wrap"><img class="fde-entry-logo" src="${SITE_BASE}assets/baked-kale-logo-intro.svg" alt="Baked Kale — FDE / IT Engineering"></div></div>`;
  document.body.prepend(overlay);randomizeSignals(overlay);document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';
  setTimeout(()=>finishIntro(overlay),2300);
 }
