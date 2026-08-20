@@ -1,16 +1,14 @@
 (()=>{
+const LOADER_SRC=document.currentScript?.src||'';
+const BUILD_KEY=(()=>{try{return new URL(LOADER_SRC,location.href).searchParams.get('v')||''}catch{return''}})();
 const manifest=()=>{
   const el=document.getElementById('cmsRuntimeManifest');
   if(!el)return[];
   try{return JSON.parse(el.textContent||'[]')}catch{return[]}
 };
-const buildKey=()=>{
-  const src=document.currentScript?.src||'';
-  try{return new URL(src,location.href).searchParams.get('v')||''}catch{return''}
-};
-const loadScript=(path,version)=>new Promise((resolve,reject)=>{
+const loadScript=(path)=>new Promise((resolve,reject)=>{
   const script=document.createElement('script');
-  script.src=version?`${path}?v=${encodeURIComponent(version)}`:path;
+  script.src=BUILD_KEY?`${path}?v=${encodeURIComponent(BUILD_KEY)}`:path;
   script.async=false;
   script.onload=resolve;
   script.onerror=()=>reject(new Error(`CMS_RUNTIME_LOAD_FAILED:${path}`));
@@ -26,8 +24,7 @@ async function init(){
     showStagingLock();
     return;
   }
-  const version=buildKey();
-  for(const path of manifest())await loadScript(path,version);
+  for(const path of manifest())await loadScript(path);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>init().catch(error=>console.error(error)),{once:true});else init().catch(error=>console.error(error));
 })();
