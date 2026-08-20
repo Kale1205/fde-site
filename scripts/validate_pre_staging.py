@@ -48,7 +48,7 @@ for legacy in ("querySelector('#lang')", 'querySelector("#lang")'):
 if "document.documentElement.lang" not in turnstile:
     fail("turnstile-protection.js must derive language from html lang")
 
-# Staging and production must use separate backends.
+# Staging and production must use separate backends and Turnstile widgets.
 config = text("contact-config.js")
 for marker in (
     "location.hostname.endsWith('.pages.dev')",
@@ -60,6 +60,20 @@ for marker in (
 ):
     if marker not in config:
         fail(f"contact-config.js missing staging isolation marker: {marker}")
+
+site_key_match = re.search(
+    r"window\.FDE_TURNSTILE_SITE_KEY\s*=\s*FDE_IS_STAGING\s*\?\s*'([^']+)'\s*:\s*'([^']+)'",
+    config,
+    re.S,
+)
+if not site_key_match:
+    fail("contact-config.js must select Turnstile site keys by environment")
+else:
+    staging_site_key, production_site_key = site_key_match.groups()
+    if staging_site_key == production_site_key:
+        fail("staging and production must not share the same Turnstile site key")
+    if not staging_site_key.startswith("0x4") or not production_site_key.startswith("0x4"):
+        fail("Turnstile site keys do not look valid")
 
 contact_direct = text("contact-direct.js")
 if "formsubmit.co" in contact_direct.lower() or "FORM_SUBMIT_ENDPOINT" in contact_direct:
