@@ -1,0 +1,148 @@
+name: Deploy staging environment
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-environment-deploy
+  cancel-in-progress: true
+
+env:
+  CLOUDFLARE_ACCOUNT_ID: 77e0788b9aba13c49053ac0c37c25b67
+  STAGING_KV_TITLE: kales-fde-contact-order-status-staging
+  STAGING_PAGES_PROJECT: kales-fde-staging
+  STAGING_ORIGIN: https://kales-fde-staging.pages.dev
+  STAGING_WORKER_NAME: kales-fde-contact-staging
+
+jobs:
+  deploy-staging:
+    name: deploy-staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v6
+
+      - name: Verify deployment credential
+        shell: bash
+        run: |
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "CLOUDFLARE_API_TOKEN is not configured."
+            exit 1
+          fi
+
+      - name: Validate repository before staging deploy
+        run: |
+          python scripts/validate_repo.py
+          python scripts/validate_pre_staging.py
+
+      - name: Resolve or create staging KV namespace
+        id: kv
+        shell: bash
+        run: |
+          set -euo pipefail
+          API="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
+          AUTH="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
+          LIST="$(curl -fsS "${API}/storage/kv/namespaces?per_page=100" -H "$AUTH")"
+          KV_ID="$(printf '%s' "$LIST" | jq -r --arg title "$STAGING_KV_TITLE" '.result[]? | select(.title==$title) | .id' | head -n1)"
+          if [ -z "$KV_ID" ]; then
+            CREATE="$(curl -fsS -X POST "${API}/storage/kv/namespaces" -H "$AUTH" -H 'Content-Type: application/json' --data "{\"title\":\"${STAGING_KV_TITLE}\"}")"
+            KV_ID="$(printf '%s' "$CREATE" | jq -r '.result.id // empty')"
+          fi
+          if ! printf '%s' "$KV_ID" | grep -Eq '^[0-9a-fA-F]{32}$'; then
+            echo "Could not resolve a valid staging KV namespace ID."
+            exit 1
+          fi
+          echo "kv_id=$KV_ID" >> "$GITHUB_OUTPUT"
+          echo "Staging KV namespace is ready."
+
+      - name: Resolve or create Cloudflare Pages project
+        shell: bash
+        run: |
+          set -euo pipefail
+          API="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
+          AUTH="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
+          STATUS="$(curl -sS -o /tmp/pages-project.json -w '%{http_code}' "${API}/pages/projects/${STAGING_PAGES_PROJECT}" -H "$AUTH")"
+          if [ "$STATUS" = "404" ]; then
+            curl -fsS -X POST "${API}/pages/projects" -H "$AUTH" -H 'Content-Type: application/json' --data "{\"name\":\"${STAGING_PAGES_PROJECT}\",\"production_branch\":\"develop\"}" >/tmp/pages-project-create.json
+          elif [ "$STATUS" != "200" ]; then
+            cat /tmp/pages-project.json
+            echo "Could not resolve staging Pages project."
+            exit 1
+          fi
+          echo "Staging Pages project is ready."
+
+      - name: Generate staging Worker configuration
+        shell: bash
+        env:
+          STAGING_KV_ID: ${{ steps.kv.outputs.kv_id }}
+        run: |
+          cat > worker/wrangler.staging.generated.toml <<EOF
+          name = "${STAGING_WORKER_NAME}"
+          main = "src/staging-worker.js"
+          compatibility_date = "2026-08-16"
+          workers_dev = true
+          account_id = "${CLOUDFLARE_ACCOUNT_ID}"
+          keep_vars = true
+
+          [vars]
+          ALLOWED_ORIGIN = "${STAGING_ORIGIN}"
+          TURNSTILE_EXPECTED_HOSTNAME = "kales-fde-staging.pages.dev"
+          STAGING_MODE = "true"
+          FROM_NAME = "Kale’s FDE [STAGING]"
+
+          [ai]
+          binding = "AI"
+
+          [[kv_namespaces]]
+          binding = "ORDER_STATUS"
+          id = "${STAGING_KV_ID}"
+          EOF
+          grep -q 'name = "kales-fde-contact-staging"' worker/wrangler.staging.generated.toml
+          grep -Eq 'id = "[0-9a-fA-F]{32}"' worker/wrangler.staging.generated.toml
+
+      - name: Deploy dry-run staging Worker
+        shell: bash
+        run: |
+          npx --yes wrangler@4 deploy --config worker/wrangler.staging.generated.toml --experimental-provision=false --experimental-auto-create=false
+
+      - name: Build staging static site
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          mkdir -p dist/fde-site
+          for file in ./*.html ./*.css ./*.js ./robots.txt ./sitemap.xml; do
+            if [ -f "$file" ]; then cp "$file" dist/fde-site/; fi
+          done
+          for dir in assets content ja; do
+            if [ -d "$dir" ]; then cp -R "$dir" dist/fde-site/; fi
+          done
+          cat > dist/index.html <<'EOF'
+          <!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta http-equiv="refresh" content="0;url=/fde-site/"><title>Kale's FDE staging</title><a href="/fde-site/">Open staging site</a>
+          EOF
+          cat > dist/_headers <<'EOF'
+          /*
+            X-Robots-Tag: noindex, nofollow, noarchive
+            Cache-Control: no-cache
+          EOF
+
+      - name: Deploy Cloudflare Pages staging site
+        shell: bash
+        run: |
+          npx --yes wrangler@4 pages deploy dist --project-name "$STAGING_PAGES_PROJECT" --branch develop
+
+      - name: Staging summary
+        run: |
+          echo "Staging site: ${STAGING_ORIGIN}/fde-site/"
+          echo "Staging Worker: https://${STAGING_WORKER_NAME}.reyouinjune.workers.dev"
+          echo "Mail delivery is disabled by the staging Worker entry."
+          echo "Turnstile remains fail-closed until TURNSTILE_SECRET_KEY is added to the staging Worker and the staging hostname is allowed on the widget."

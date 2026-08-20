@@ -13,7 +13,7 @@ def fail(message):
 def text(path):
     p = ROOT / path
     if not p.exists():
-        fail(f"missing pre-staging file: {path}")
+        fail(f"missing staging integrity file: {path}")
         return ""
     return p.read_text(encoding="utf-8")
 
@@ -48,11 +48,52 @@ for legacy in ("querySelector('#lang')", 'querySelector("#lang")'):
 if "document.documentElement.lang" not in turnstile:
     fail("turnstile-protection.js must derive language from html lang")
 
-# Staging must fail closed until P1-5 supplies dedicated resources.
+# Staging and production must use separate backends.
 config = text("contact-config.js")
-for marker in ("location.hostname.endsWith('.pages.dev')", "FDE_RUNTIME_ENV", "FDE_CMS_BRANCH", "FDE_IS_STAGING ? ''", "window.FDE_CONTACT_API"):
+for marker in (
+    "location.hostname.endsWith('.pages.dev')",
+    "FDE_RUNTIME_ENV",
+    "FDE_CMS_BRANCH",
+    "kales-fde-contact-staging.reyouinjune.workers.dev",
+    "kales-fde-contact.reyouinjune.workers.dev",
+    "window.FDE_CONTACT_API",
+):
     if marker not in config:
-        fail(f"contact-config.js missing staging safety marker: {marker}")
+        fail(f"contact-config.js missing staging isolation marker: {marker}")
+
+contact_direct = text("contact-direct.js")
+if "formsubmit.co" in contact_direct.lower() or "FORM_SUBMIT_ENDPOINT" in contact_direct:
+    fail("contact-direct.js must not retain the legacy FormSubmit fallback")
+if "CONTACT_ENDPOINT_NOT_CONFIGURED" not in contact_direct:
+    fail("contact-direct.js must fail closed when no Worker endpoint is configured")
+
+staging_worker = text("worker/src/staging-worker.js")
+for marker in (
+    "TURNSTILE_NOT_CONFIGURED",
+    "TURNSTILE_EXPECTED_HOSTNAME",
+    "staging:submission:",
+    "mailSent:false",
+    "STAGING_OPERATION_DISABLED",
+):
+    if marker not in staging_worker:
+        fail(f"staging Worker missing safety marker: {marker}")
+if "BREVO" in staging_worker or "FROM_EMAIL" in staging_worker:
+    fail("staging Worker must not contain outbound mail configuration")
+
+staging_workflow = text(".github/workflows/deploy-staging.yml")
+for marker in (
+    "branches:\n      - develop",
+    "kales-fde-contact-order-status-staging",
+    "kales-fde-staging",
+    "kales-fde-contact-staging",
+    'main = "src/staging-worker.js"',
+    "wrangler@4 pages deploy",
+    "X-Robots-Tag: noindex, nofollow, noarchive",
+):
+    if marker not in staging_workflow:
+        fail(f"staging deployment workflow missing marker: {marker}")
+if "a634212e677e4e48bd23875a7e42dae9" in staging_workflow:
+    fail("staging workflow must never bind the production ORDER_STATUS namespace")
 
 cms_html = text("cms-admin.html")
 cms_loader = text("cms-admin-loader.js")
@@ -62,7 +103,7 @@ for required in ("cms-admin.js", "news-translation-hook.js", "faq-admin-v3.js"):
     if required not in cms_html:
         fail(f"CMS runtime manifest missing: {required}")
 if "FDE_RUNTIME_ENV==='staging'" not in cms_loader or "showStagingLock" not in cms_loader:
-    fail("cms-admin-loader.js must block production CMS runtimes on staging")
+    fail("cms-admin-loader.js must keep CMS write runtimes locked on staging until dedicated staging CMS activation")
 
 # The repository policy must document the staging isolation contract.
 dev = text("DEVELOPMENT.md")
@@ -71,9 +112,9 @@ for marker in ("## Staging baseline", "dedicated staging Worker", "dedicated sta
         fail(f"DEVELOPMENT.md missing staging policy: {marker}")
 
 if errors:
-    print("Pre-staging validation failed:\n")
+    print("Staging integrity validation failed:\n")
     for item in errors:
         print(f"- {item}")
     sys.exit(1)
 
-print("Pre-staging integrity checks passed.")
+print("Staging integrity checks passed.")
