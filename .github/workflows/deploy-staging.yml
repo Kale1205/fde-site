@@ -87,7 +87,7 @@ jobs:
         run: |
           cat > worker/wrangler.staging.generated.toml <<EOF
           name = "${STAGING_WORKER_NAME}"
-          main = "src/index-staging.js"
+          main = "src/staging-worker.js"
           compatibility_date = "2026-08-16"
           workers_dev = true
           account_id = "${CLOUDFLARE_ACCOUNT_ID}"
