@@ -55,3 +55,7 @@ html[lang="ja"] .display,html[lang="ja"] .section-title{line-break:strict;word-b
   .demo-preview-player{min-height:400px}.preview-kpis small{font-size:8px!important}.preview-kpis b{font-size:16px!important}.preview-live{font-size:8px!important}
   .news-strip a{width:calc(100% - 22px)}
 }
+
+@media(max-width:360px){
+  html[lang="ja"] .display{font-size:clamp(32px,9.5vw,36px)}
+}
