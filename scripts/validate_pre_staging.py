@@ -80,7 +80,10 @@ if "formsubmit.co" in contact_direct.lower() or "FORM_SUBMIT_ENDPOINT" in contac
     fail("contact-direct.js must not retain the legacy FormSubmit fallback")
 if "CONTACT_ENDPOINT_NOT_CONFIGURED" not in contact_direct:
     fail("contact-direct.js must fail closed when no Worker endpoint is configured")
+if "STAGING_RESPONSE_MISMATCH" not in contact_direct or "kales-fde-contact-staging." not in contact_direct:
+    fail("contact-direct.js must verify the staging endpoint and dry-run response")
 
+# The staging Worker must be physically isolated: no production Worker import and no mail runtime.
 staging_worker = text("worker/src/staging-worker.js")
 for marker in (
     "TURNSTILE_NOT_CONFIGURED",
@@ -88,11 +91,27 @@ for marker in (
     "staging:submission:",
     "mailSent:false",
     "STAGING_OPERATION_DISABLED",
+    "productionImported:false",
+    "kvConfigured",
+    "turnstileConfigured",
+    "X-FDE-Environment",
 ):
     if marker not in staging_worker:
         fail(f"staging Worker missing safety marker: {marker}")
-if "BREVO" in staging_worker or "FROM_EMAIL" in staging_worker:
-    fail("staging Worker must not contain outbound mail configuration")
+for forbidden in (
+    "productionWorker",
+    "baseWorker",
+    "index-v14.js",
+    "index-v13.js",
+    "index-v12.js",
+    "BREVO",
+    "FROM_EMAIL",
+    "FROM_NAME",
+):
+    if forbidden in staging_worker:
+        fail(f"staging Worker must not reference production/mail runtime: {forbidden}")
+if re.search(r"^\s*import\s+.+from\s+['\"]\./index-v\d+\.js['\"]", staging_worker, re.M):
+    fail("staging Worker must never import a versioned production Worker entry")
 
 staging_workflow = text(".github/workflows/deploy-staging.yml")
 for marker in (
@@ -101,6 +120,12 @@ for marker in (
     "kales-fde-staging",
     "kales-fde-contact-staging",
     'main = "src/staging-worker.js"',
+    "Deploy hard-isolated staging Worker",
+    "Smoke test staging Worker identity and safety",
+    "productionImported == false",
+    "kvConfigured == true",
+    "turnstileConfigured == true",
+    "TURNSTILE_TOKEN_REQUIRED",
     "wrangler@4 pages deploy",
     "X-Robots-Tag: noindex, nofollow, noarchive",
 ):
@@ -108,6 +133,20 @@ for marker in (
         fail(f"staging deployment workflow missing marker: {marker}")
 if "a634212e677e4e48bd23875a7e42dae9" in staging_workflow:
     fail("staging workflow must never bind the production ORDER_STATUS namespace")
+
+# Inspect only the generated Wrangler heredoc, not guard strings elsewhere in the workflow.
+wrangler_block_match = re.search(
+    r"cat > worker/wrangler\.staging\.generated\.toml <<EOF\n(?P<body>.*?)\n\s*EOF",
+    staging_workflow,
+    re.S,
+)
+if not wrangler_block_match:
+    fail("staging workflow must generate an explicit staging Wrangler configuration")
+else:
+    wrangler_block = wrangler_block_match.group("body")
+    for forbidden in ('[ai]', 'binding = "AI"', 'FROM_NAME =', 'BREVO_API_KEY', 'FROM_EMAIL'):
+        if forbidden in wrangler_block:
+            fail(f"generated staging Wrangler config must not provision production/mail capability: {forbidden}")
 
 cms_html = text("cms-admin.html")
 cms_loader = text("cms-admin-loader.js")
