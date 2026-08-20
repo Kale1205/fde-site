@@ -13,6 +13,8 @@ There is no browser language selector, persisted language state, or runtime tran
 
 For every page that exists in both sites, structure and functionality must remain paired. Copy may differ naturally by language, and prices may differ by currency, but navigation, CMS behavior, product-plan structure, comparison behavior, and core interaction patterns must stay aligned.
 
+The IMS development preview is a paired public feature: `demo.html` is English and `ja/demo.html` is Japanese. The Customer Portal remains a root-only operational utility until the formal sales/customer-portal language policy is finalized.
+
 ## CMS invariant
 
 CMS administration is performed in Japanese. Editors enter Japanese source content. The CMS stores both Japanese and English public fields:
@@ -22,6 +24,8 @@ CMS administration is performed in Japanese. Editors enter Japanese source conte
 - A CMS save is not complete if required English output was not generated.
 
 Do not add a browser-side translation layer to compensate for missing CMS translations.
+
+Production CMS writes remain production-only. Until P1-5 creates a dedicated staging CMS data path and staging Worker, `*.pages.dev` must not execute the production CMS write runtimes. The environment-aware CMS loader therefore fails closed on staging instead of allowing a staging page to write to `main`.
 
 ## Standard flow
 
@@ -33,6 +37,21 @@ Do not add a browser-side translation layer to compensate for missing CMS transl
 6. Wait for `PR checks / validate` to pass.
 7. Review the diff and perform any requested browser checks.
 8. Merge only after validation and review are complete.
+
+## Staging baseline
+
+`develop` is reserved as the staging baseline and must be synchronized from the latest accepted `main` before P1-5 staging deployment is configured. Do not use an old divergent `develop` branch as the staging source.
+
+P1-5 will use a fully separated staging boundary:
+
+- frontend: Cloudflare Pages staging project;
+- source baseline: `develop`;
+- Worker: dedicated staging Worker, not `kales-fde-contact` production;
+- KV: dedicated staging namespace, not production `ORDER_STATUS`;
+- Contact/Order email: staging-safe destination or dry-run behavior;
+- CMS: no production writes from staging; a dedicated staging data path must be introduced before CMS writes are enabled there.
+
+`contact-config.js` treats `*.pages.dev` as staging. Before the dedicated staging Worker exists, the staging Contact API is intentionally blank so the staging site cannot silently send requests to production.
 
 ## Required validation
 
@@ -49,6 +68,8 @@ Repository validation must cover both public sites, not only root HTML. It check
 - obvious committed secret patterns;
 - Python and JavaScript syntax.
 
+Pre-staging validation additionally checks that the Japanese IMS preview exists, Turnstile uses only source-language `en`/`ja`, the staging Contact API fails closed, and the CMS staging lock remains active until a dedicated staging CMS is implemented.
+
 ## File-removal policy
 
 Do not preserve obsolete behavior by disabling it, converting it to a no-op, or leaving an unused compatibility file behind. Once a runtime, workflow, or migration helper is superseded and no active dependency remains, remove its references and delete the file.
@@ -62,6 +83,8 @@ Historical source is available from Git history; it does not need to remain in t
 ## Cloudflare Worker policy
 
 `worker/wrangler.toml` defines the production Worker entry. Every imported Worker module must exist. Historical Worker entry files that are no longer reachable from the configured entry should be deleted rather than retained as dormant versions.
+
+Production and staging Worker resources must not share mutable customer/order state. P1-5 must use a distinct Worker name, KV namespace and staging-specific secret set.
 
 ## Secrets
 
