@@ -1,14 +1,13 @@
-import productionWorker from './index-v14.js';
-
 const VERIFY_URL='https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const ALLOWED_STAGING_TYPES=new Set(['inquiry','order']);
-const SAFE_ADMIN_TYPES=new Set(['admin_faq_enrich','admin_translate_fields']);
 
 const clean=(v,max=5000)=>String(v??'').trim().slice(0,max);
 const cors=(origin,allowed)=>({
   'Access-Control-Allow-Origin':origin&&origin===allowed?origin:allowed,
   'Access-Control-Allow-Methods':'POST, OPTIONS',
   'Access-Control-Allow-Headers':'Content-Type',
+  'Access-Control-Expose-Headers':'X-FDE-Environment',
+  'X-FDE-Environment':'staging',
   'Vary':'Origin'
 });
 const json=(data,status,origin,allowed)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8',...cors(origin,allowed)}});
@@ -48,6 +47,7 @@ async function storeDryRun(env,raw,request){
   const record={
     staging:true,
     dryRun:true,
+    mailSent:false,
     receivedAt:new Date().toISOString(),
     type:clean(raw?.type,40),
     lang:clean(raw?.lang,10),
@@ -64,13 +64,21 @@ async function storeDryRun(env,raw,request){
 }
 
 export default{
-  async fetch(request,env,ctx){
+  async fetch(request,env){
     const origin=request.headers.get('Origin')||'';
     const allowedOrigin=env.ALLOWED_ORIGIN||'';
 
     if(request.method==='GET'){
       const url=new URL(request.url);
-      if(url.pathname==='/__staging/health')return json({ok:true,staging:true,dryRun:true,mailDisabled:true},200,origin,allowedOrigin);
+      if(url.pathname==='/__staging/health')return json({
+        ok:true,
+        staging:true,
+        dryRun:true,
+        mailDisabled:true,
+        productionImported:false,
+        kvConfigured:Boolean(env.ORDER_STATUS?.put),
+        turnstileConfigured:Boolean(clean(env.TURNSTILE_SECRET_KEY,1000))
+      },200,origin,allowedOrigin);
       return json({ok:false,error:'STAGING_ROUTE_NOT_FOUND'},404,origin,allowedOrigin);
     }
 
@@ -85,8 +93,6 @@ export default{
     let raw=null;
     try{raw=await request.clone().json()}catch{return json({ok:false,error:'INVALID_JSON'},400,origin,allowedOrigin)}
     const type=clean(raw?.type,40);
-
-    if(SAFE_ADMIN_TYPES.has(type))return productionWorker.fetch(request,env,ctx);
     if(!ALLOWED_STAGING_TYPES.has(type))return json({ok:false,error:'STAGING_OPERATION_DISABLED'},403,origin,allowedOrigin);
 
     const verified=await verifyTurnstile(request,env,raw);
