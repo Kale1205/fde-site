@@ -15,6 +15,24 @@ For every page that exists in both sites, structure and functionality must remai
 
 The IMS development preview is a paired public feature: `demo.html` is English and `ja/demo.html` is Japanese. The Customer Portal remains a root-only operational utility until the formal sales/customer-portal language policy is finalized.
 
+## Public visual system
+
+The shared public-site visual direction is **Art × UI / Editorial C**. It applies equally to the English and Japanese sites and must be implemented through shared assets and shared CSS wherever practical.
+
+Core design rules:
+
+- warm ivory/paper background rather than a cold SaaS-white surface;
+- charcoal/ink typography with deep kale green as the primary accent;
+- serif display typography paired with a restrained sans-serif UI/body layer;
+- generous editorial spacing and thin rules instead of dense rounded-card layouts;
+- original brush/botanical motifs used as supporting decoration, never as a replacement for product information;
+- square or near-square controls/cards with minimal shadows;
+- product screenshots, CMS imagery and diagrams remain readable and functional;
+- motion stays restrained: reveal, slight lift and gentle transitions only;
+- mobile layouts must preserve the editorial hierarchy without clipping, hidden content or decorative obstruction.
+
+`brand-green.css` is the shared public brand layer, `product-plans.css` is the paired product-card presentation, and `assets/art-ui-brush.svg` is the shared decorative motif. Do not create separate English/Japanese copies of these design primitives unless a true language-specific rendering requirement exists.
+
 ## CMS invariant
 
 CMS administration is performed in Japanese. Editors enter Japanese source content. The CMS stores both Japanese and English public fields:

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Baked Kale Art UI brush motif</title>
+  <desc id="desc">Abstract charcoal and green brush strokes with a restrained botanical line drawing.</desc>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M920 185C1100 120 1315 135 1515 240C1340 238 1175 280 1018 352C880 416 774 460 655 482" stroke="#17211d" stroke-width="86" opacity=".88"/>
+    <path d="M995 300C1155 255 1325 280 1490 365C1328 362 1166 405 1028 466C925 510 828 540 730 554" stroke="#627c67" stroke-width="42" opacity=".72"/>
+    <path d="M865 520C1040 470 1240 480 1455 590C1250 568 1068 610 900 690" stroke="#d5cec0" stroke-width="74" opacity=".78"/>
+    <path d="M1135 120C1085 228 1090 336 1110 447C1127 540 1114 650 1068 780" stroke="#28362f" stroke-width="5" opacity=".58"/>
+    <path d="M1106 330C1052 282 1000 255 934 240M1115 410C1175 356 1232 330 1304 318M1095 525C1045 488 996 469 944 461M1090 606C1147 567 1205 548 1270 548" stroke="#28362f" stroke-width="4" opacity=".52"/>
+    <path d="M934 240c-26-34-62-48-92-27 26 35 56 46 92 27zm370 78c23-34 58-51 92-31-22 35-53 49-92 31zm-360 143c-26-29-57-39-85-19 23 29 53 38 85 19zm326 87c28-29 62-38 91-16-26 29-57 36-91 16z" stroke="#45634f" stroke-width="3" opacity=".52"/>
+    <path d="M1460 130c18 15 32 34 39 58M1498 118c14 10 24 24 30 40M1410 165c15 8 27 20 34 35" stroke="#1b2621" stroke-width="3" opacity=".32"/>
+  </g>
+</svg>
