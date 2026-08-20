@@ -8,7 +8,9 @@ window.FDE_CMS_BRANCH = FDE_IS_STAGING ? 'develop' : 'main';
 window.FDE_CONTACT_API = FDE_IS_STAGING
   ? 'https://kales-fde-contact-staging.reyouinjune.workers.dev'
   : 'https://kales-fde-contact.reyouinjune.workers.dev';
-window.FDE_TURNSTILE_SITE_KEY = '0x4AAAAAAEUE-c6Y6_E5XBLP';
+window.FDE_TURNSTILE_SITE_KEY = FDE_IS_STAGING
+  ? '0x4AAAAAAEWuRQJQHyURJntK'
+  : '0x4AAAAAAEUE-c6Y6_E5XBLP';
 
 const FDE_SITE_BASE = location.pathname.includes('/fde-site/') ? '/fde-site/' : '/';
 const TURNSTILE_RUNTIME = 'turnstile-protection.js?v=20260820-205255';
