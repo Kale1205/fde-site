@@ -67,7 +67,7 @@ if "formsubmit.co" in contact_direct.lower() or "FORM_SUBMIT_ENDPOINT" in contac
 if "CONTACT_ENDPOINT_NOT_CONFIGURED" not in contact_direct:
     fail("contact-direct.js must fail closed when no Worker endpoint is configured")
 
-staging_worker = text("worker/src/index-staging.js")
+staging_worker = text("worker/src/staging-worker.js")
 for marker in (
     "TURNSTILE_NOT_CONFIGURED",
     "TURNSTILE_EXPECTED_HOSTNAME",
@@ -86,6 +86,7 @@ for marker in (
     "kales-fde-contact-order-status-staging",
     "kales-fde-staging",
     "kales-fde-contact-staging",
+    'main = "src/staging-worker.js"',
     "wrangler@4 pages deploy",
     "X-Robots-Tag: noindex, nofollow, noarchive",
 ):
