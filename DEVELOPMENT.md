@@ -25,13 +25,16 @@ Core design rules:
 - charcoal/ink typography with deep kale green as the primary accent;
 - serif display typography paired with a restrained sans-serif UI/body layer;
 - generous editorial spacing and thin rules instead of dense rounded-card layouts;
-- original brush/botanical motifs used as supporting decoration, never as a replacement for product information;
+- original brush, botanical line-art and annotation motifs used as supporting editorial marks, never as a replacement for product information;
+- deliberately restrained asymmetry: slight offsets, staggered blocks, registration marks and paper-like framing may be used to avoid a uniform SaaS-grid feel;
+- product plans and comparisons should read like designed information plates or technical-journal spreads rather than generic application cards;
+- News, Why FDE and Kale’s Goals should preserve a publication/editorial reading rhythm, with diagrams and imagery treated as figures rather than decorative cards;
 - square or near-square controls/cards with minimal shadows;
 - product screenshots, CMS imagery and diagrams remain readable and functional;
 - motion stays restrained: reveal, slight lift and gentle transitions only;
-- mobile layouts must preserve the editorial hierarchy without clipping, hidden content or decorative obstruction.
+- mobile layouts must preserve the editorial hierarchy without clipping, hidden content, forced ornamental asymmetry or decorative obstruction.
 
-`brand-green.css` is the shared public brand layer, `product-plans.css` is the paired product-card presentation, and `assets/art-ui-brush.svg` is the shared decorative motif. Do not create separate English/Japanese copies of these design primitives unless a true language-specific rendering requirement exists.
+`brand-green.css` is the shared public brand layer, `product-plans.css` is the paired product-card presentation, `visual-story.css` controls shared diagram/editorial storytelling, and `cms.css` controls the shared public CMS presentation. `assets/art-ui-brush.svg` provides the broad brush/botanical field and `assets/art-ui-annotation.svg` provides the restrained hand-drawn annotation/registration motif. Do not create separate English/Japanese copies of these design primitives unless a true language-specific rendering requirement exists.
 
 ## CMS invariant
 
