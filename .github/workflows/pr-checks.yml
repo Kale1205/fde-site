@@ -29,6 +29,9 @@ jobs:
       - name: Repository consistency checks
         run: python scripts/validate_repo.py
 
+      - name: Pre-staging integrity checks
+        run: python scripts/validate_pre_staging.py
+
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts
 
