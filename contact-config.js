@@ -9,7 +9,7 @@ window.FDE_CONTACT_API = FDE_IS_STAGING ? '' : 'https://kales-fde-contact.reyoui
 window.FDE_TURNSTILE_SITE_KEY = '0x4AAAAAAEUE-c6Y6_E5XBLP';
 
 const FDE_SITE_BASE = location.pathname.includes('/fde-site/') ? '/fde-site/' : '/';
-const TURNSTILE_RUNTIME = 'turnstile-protection.js?v=20260820-182602';
+const TURNSTILE_RUNTIME = 'turnstile-protection.js?v=20260820-182653';
 
 if(window.FDE_CONTACT_API && /(?:^|\/)(?:contact|order)\.html$/.test(location.pathname) && !window.__FDE_TURNSTILE_LOADER_ADDED__){
   window.__FDE_TURNSTILE_LOADER_ADDED__=true;
