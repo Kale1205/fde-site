@@ -64,6 +64,7 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/validate_repo.py
+          python scripts/validate_pre_staging.py
           python -m compileall -q scripts
           while IFS= read -r -d '' file; do
             echo "Checking $file"
@@ -83,7 +84,7 @@ jobs:
         run: |
           if [ "$VALIDATION_OUTCOME" = "success" ]; then
             STATE="success"
-            DESCRIPTION="Dual-site repository validation passed after build sync"
+            DESCRIPTION="Dual-site and pre-staging validation passed after build sync"
           else
             STATE="failure"
             DESCRIPTION="Repository validation failed after build sync"
