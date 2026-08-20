@@ -97,10 +97,6 @@ jobs:
           ALLOWED_ORIGIN = "${STAGING_ORIGIN}"
           TURNSTILE_EXPECTED_HOSTNAME = "kales-fde-staging.pages.dev"
           STAGING_MODE = "true"
-          FROM_NAME = "Kale’s FDE [STAGING]"
-
-          [ai]
-          binding = "AI"
 
           [[kv_namespaces]]
           binding = "ORDER_STATUS"
@@ -108,11 +104,42 @@ jobs:
           EOF
           grep -q 'name = "kales-fde-contact-staging"' worker/wrangler.staging.generated.toml
           grep -Eq 'id = "[0-9a-fA-F]{32}"' worker/wrangler.staging.generated.toml
+          ! grep -Eq 'BREVO|FROM_EMAIL|FROM_NAME|\[ai\]|binding = "AI"' worker/wrangler.staging.generated.toml
 
-      - name: Deploy dry-run staging Worker
+      - name: Deploy hard-isolated staging Worker
         shell: bash
         run: |
           npx --yes wrangler@4 deploy --config worker/wrangler.staging.generated.toml --experimental-provision=false --experimental-auto-create=false
+
+      - name: Smoke test staging Worker identity and safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORKER_URL="https://${STAGING_WORKER_NAME}.reyouinjune.workers.dev"
+
+          HEALTH="$(curl -fsS "${WORKER_URL}/__staging/health")"
+          printf '%s' "$HEALTH" | jq -e '
+            .ok == true and
+            .staging == true and
+            .dryRun == true and
+            .mailDisabled == true and
+            .productionImported == false and
+            .kvConfigured == true and
+            .turnstileConfigured == true
+          ' >/dev/null
+
+          GUARD_FILE="$(mktemp)"
+          GUARD_STATUS="$(curl -sS -o "$GUARD_FILE" -w '%{http_code}' -X POST "$WORKER_URL" \
+            -H "Origin: ${STAGING_ORIGIN}" \
+            -H 'Content-Type: application/json' \
+            --data '{"type":"inquiry","lang":"en"}')"
+          if [ "$GUARD_STATUS" != "403" ]; then
+            cat "$GUARD_FILE"
+            echo "Staging guard probe returned HTTP ${GUARD_STATUS}; expected 403."
+            exit 1
+          fi
+          jq -e '.ok == false and .error == "TURNSTILE_TOKEN_REQUIRED"' "$GUARD_FILE" >/dev/null
+          echo "Staging Worker identity, KV binding, Turnstile secret, and fail-closed guard are verified."
 
       - name: Build staging static site
         shell: bash
@@ -144,5 +171,5 @@ jobs:
         run: |
           echo "Staging site: ${STAGING_ORIGIN}/fde-site/"
           echo "Staging Worker: https://${STAGING_WORKER_NAME}.reyouinjune.workers.dev"
-          echo "Mail delivery is disabled by the staging Worker entry."
-          echo "Turnstile remains fail-closed until TURNSTILE_SECRET_KEY is added to the staging Worker and the staging hostname is allowed on the widget."
+          echo "The staging Worker is physically isolated from production Worker code."
+          echo "Mail delivery is disabled; inquiries can only be stored in the staging KV after Turnstile verification."
