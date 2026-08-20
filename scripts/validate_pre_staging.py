@@ -133,9 +133,20 @@ for marker in (
         fail(f"staging deployment workflow missing marker: {marker}")
 if "a634212e677e4e48bd23875a7e42dae9" in staging_workflow:
     fail("staging workflow must never bind the production ORDER_STATUS namespace")
-for forbidden in ('[ai]', 'binding = "AI"', 'FROM_NAME =', 'BREVO_API_KEY', 'FROM_EMAIL'):
-    if forbidden in staging_workflow:
-        fail(f"staging workflow must not provision production/mail capability: {forbidden}")
+
+# Inspect only the generated Wrangler heredoc, not guard strings elsewhere in the workflow.
+wrangler_block_match = re.search(
+    r"cat > worker/wrangler\.staging\.generated\.toml <<EOF\n(?P<body>.*?)\n\s*EOF",
+    staging_workflow,
+    re.S,
+)
+if not wrangler_block_match:
+    fail("staging workflow must generate an explicit staging Wrangler configuration")
+else:
+    wrangler_block = wrangler_block_match.group("body")
+    for forbidden in ('[ai]', 'binding = "AI"', 'FROM_NAME =', 'BREVO_API_KEY', 'FROM_EMAIL'):
+        if forbidden in wrangler_block:
+            fail(f"generated staging Wrangler config must not provision production/mail capability: {forbidden}")
 
 cms_html = text("cms-admin.html")
 cms_loader = text("cms-admin-loader.js")
