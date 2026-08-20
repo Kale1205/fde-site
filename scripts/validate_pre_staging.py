@@ -34,9 +34,17 @@ if "../demo.html" in site_js:
 
 # Turnstile must follow the source language of the independent EN/JA sites.
 turnstile = text("turnstile-protection.js")
-for legacy in ("zh-CN", "zh-TW", "ko:", "id:", "ms:", "vi:", "th:", "hi:", "ar:", "querySelector('#lang')", 'querySelector("#lang")'):
+retired_locale_patterns = (
+    r"['\"]zh-CN['\"]\s*:",
+    r"['\"]zh-TW['\"]\s*:",
+    r"(?:^|[,{])\s*(?:ko|id|ms|vi|th|hi|ar)\s*:\s*\{\s*title\s*:",
+)
+for pattern in retired_locale_patterns:
+    if re.search(pattern, turnstile, re.M):
+        fail(f"turnstile-protection.js contains a retired locale dictionary entry: {pattern}")
+for legacy in ("querySelector('#lang')", 'querySelector("#lang")'):
     if legacy in turnstile:
-        fail(f"turnstile-protection.js contains retired multilingual state: {legacy}")
+        fail(f"turnstile-protection.js contains retired browser language state: {legacy}")
 if "document.documentElement.lang" not in turnstile:
     fail("turnstile-protection.js must derive language from html lang")
 
