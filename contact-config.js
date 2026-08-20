@@ -13,7 +13,7 @@ window.FDE_TURNSTILE_SITE_KEY = FDE_IS_STAGING
   : '0x4AAAAAAEUE-c6Y6_E5XBLP';
 
 const FDE_SITE_BASE = location.pathname.includes('/fde-site/') ? '/fde-site/' : '/';
-const TURNSTILE_RUNTIME = 'turnstile-protection.js?v=20260821-082843';
+const TURNSTILE_RUNTIME = 'turnstile-protection.js?v=20260821-083902';
 
 if(window.FDE_CONTACT_API && /(?:^|\/)(?:contact|order)\.html$/.test(location.pathname) && !window.__FDE_TURNSTILE_LOADER_ADDED__){
   window.__FDE_TURNSTILE_LOADER_ADDED__=true;
