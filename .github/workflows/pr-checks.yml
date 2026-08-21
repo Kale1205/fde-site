@@ -32,6 +32,9 @@ jobs:
       - name: Pre-staging integrity checks
         run: python scripts/validate_pre_staging.py
 
+      - name: Slack notification integrity checks
+        run: python scripts/validate_notifications.py
+
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts
 
