@@ -38,6 +38,9 @@ jobs:
       - name: P2 quote policy tests
         run: node scripts/test_p2_quote_policy.mjs
 
+      - name: P2 audit log tests
+        run: node scripts/test_p2_audit_log.mjs
+
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts
 
