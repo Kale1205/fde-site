@@ -1,4 +1,5 @@
 import { QUOTE_VALIDITY_DAYS, createQuoteWindow } from './staging-quote-policy.js';
+import { appendAuditEvent } from './staging-audit-log.js';
 
 const VERIFY_URL='https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const ALLOWED_STAGING_TYPES=new Set(['inquiry','order']);
@@ -67,13 +68,41 @@ async function storeDryRun(env,raw,request){
     message:clean(raw?.message,6000),
     cfRay:clean(request.headers.get('CF-Ray'),100),
     ...(isOrder?{
+      stagingOrderId:id,
       orderStatus:'order_received',
       ...quote,
       autoCancelEnabled:false
     }:{})
   };
-  await env.ORDER_STATUS.put(key,JSON.stringify(record),{expirationTtl:isOrder?STAGING_ORDER_TTL:CONTACT_DRY_RUN_TTL});
-  return{id,key,quote};
+
+  if(!isOrder){
+    await env.ORDER_STATUS.put(key,JSON.stringify(record),{expirationTtl:CONTACT_DRY_RUN_TTL});
+    return{id,key,quote:null,auditEventId:null};
+  }
+
+  await env.ORDER_STATUS.put(key,JSON.stringify(record),{expirationTtl:STAGING_ORDER_TTL});
+  try{
+    const audit=await appendAuditEvent(env,{
+      orderId:id,
+      actor:'system:staging-worker',
+      action:'quote_issued',
+      fromStatus:null,
+      toStatus:'order_received',
+      reason:'staging_order_created',
+      source:'order_submission',
+      occurredAt:receivedAt,
+      metadata:{
+        quoteIssuedAt:quote.quoteIssuedAt,
+        quoteExpiresAt:quote.quoteExpiresAt,
+        quoteValidityDays:quote.quoteValidityDays
+      }
+    },{expirationTtl:STAGING_ORDER_TTL});
+    return{id,key,quote,auditEventId:audit.event.eventId};
+  }catch(error){
+    console.error('Staging audit write failed',error);
+    try{await env.ORDER_STATUS.delete?.(key)}catch(cleanupError){console.error('Staging order rollback failed',cleanupError)}
+    throw new Error('STAGING_AUDIT_WRITE_FAILED');
+  }
 }
 
 export default{
@@ -94,6 +123,7 @@ export default{
         p2:{
           quoteExpiryEnabled:true,
           quoteValidityDays:QUOTE_VALIDITY_DAYS,
+          auditLogEnabled:true,
           autoCancelEnabled:false
         }
       },200,origin,allowedOrigin);
@@ -124,7 +154,11 @@ export default{
         dryRun:true,
         submissionId:saved.id,
         mailSent:false,
-        ...(saved.quote?{quote:saved.quote,autoCancelEnabled:false}:{})
+        ...(saved.quote?{
+          quote:saved.quote,
+          auditEventId:saved.auditEventId,
+          autoCancelEnabled:false
+        }:{})
       },200,origin,allowedOrigin);
     }catch(error){
       console.error('Staging submission storage failed',error);
