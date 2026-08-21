@@ -134,6 +134,13 @@ for marker in (
 if "a634212e677e4e48bd23875a7e42dae9" in staging_workflow:
     fail("staging workflow must never bind the production ORDER_STATUS namespace")
 
+# Staging-only Worker modules must not trigger a production Worker deployment.
+production_workflow = text(".github/workflows/deploy-worker.yml")
+if "- 'worker/**'" not in production_workflow:
+    fail("production Worker workflow must include worker/**")
+if "- '!worker/src/staging-*.js'" not in production_workflow:
+    fail("production Worker workflow must exclude staging-only Worker modules")
+
 # Inspect only the generated Wrangler heredoc, not guard strings elsewhere in the workflow.
 wrangler_block_match = re.search(
     r"cat > worker/wrangler\.staging\.generated\.toml <<EOF\n(?P<body>.*?)\n\s*EOF",
