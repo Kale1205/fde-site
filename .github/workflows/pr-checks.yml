@@ -35,6 +35,9 @@ jobs:
       - name: Slack notification integrity checks
         run: python scripts/validate_notifications.py
 
+      - name: P2 quote policy tests
+        run: node scripts/test_p2_quote_policy.mjs
+
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts
 

@@ -43,6 +43,7 @@ jobs:
         run: |
           python scripts/validate_repo.py
           python scripts/validate_pre_staging.py
+          node scripts/test_p2_quote_policy.mjs
 
       - name: Resolve or create staging KV namespace
         id: kv
@@ -129,7 +130,10 @@ jobs:
             .mailDisabled == true and
             .productionImported == false and
             .kvConfigured == true and
-            .turnstileConfigured == true
+            .turnstileConfigured == true and
+            .p2.quoteExpiryEnabled == true and
+            .p2.quoteValidityDays == 7 and
+            .p2.autoCancelEnabled == false
           ' >/dev/null; then
             echo "Staging health check failed. Non-sensitive health response:"
             printf '%s' "$HEALTH" | jq .
@@ -147,7 +151,7 @@ jobs:
             exit 1
           fi
           jq -e '.ok == false and .error == "TURNSTILE_TOKEN_REQUIRED"' "$GUARD_FILE" >/dev/null
-          echo "Staging Worker identity, KV binding, Turnstile secret, and fail-closed guard are verified."
+          echo "Staging Worker identity, KV binding, Turnstile secret, P2 quote policy, and fail-closed guard are verified."
 
       - name: Build staging static site
         shell: bash
@@ -181,3 +185,4 @@ jobs:
           echo "Staging Worker: https://${STAGING_WORKER_NAME}.reyouinjune.workers.dev"
           echo "The staging Worker is physically isolated from production Worker code."
           echo "Mail delivery is disabled; inquiries can only be stored in the staging KV after Turnstile verification."
+          echo "P2-1 quote validity is 7 days; auto-cancellation remains disabled until the Cron phase."

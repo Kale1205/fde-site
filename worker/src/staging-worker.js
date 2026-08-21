@@ -1,5 +1,9 @@
+import { QUOTE_VALIDITY_DAYS, createQuoteWindow } from './staging-quote-policy.js';
+
 const VERIFY_URL='https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const ALLOWED_STAGING_TYPES=new Set(['inquiry','order']);
+const CONTACT_DRY_RUN_TTL=7*24*60*60;
+const STAGING_ORDER_TTL=30*24*60*60;
 
 const clean=(v,max=5000)=>String(v??'').trim().slice(0,max);
 const cors=(origin,allowed)=>({
@@ -43,13 +47,17 @@ async function verifyTurnstile(request,env,raw){
 async function storeDryRun(env,raw,request){
   if(!env.ORDER_STATUS?.put)throw new Error('STAGING_KV_NOT_CONFIGURED');
   const id=crypto.randomUUID();
-  const key=`staging:submission:${Date.now()}:${id}`;
+  const type=clean(raw?.type,40);
+  const receivedAt=new Date();
+  const isOrder=type==='order';
+  const quote=isOrder?createQuoteWindow(receivedAt):null;
+  const key=isOrder?`staging:order:${Date.now()}:${id}`:`staging:submission:${Date.now()}:${id}`;
   const record={
     staging:true,
     dryRun:true,
     mailSent:false,
-    receivedAt:new Date().toISOString(),
-    type:clean(raw?.type,40),
+    receivedAt:receivedAt.toISOString(),
+    type,
     lang:clean(raw?.lang,10),
     name:clean(raw?.name,300),
     company:clean(raw?.company,300),
@@ -57,10 +65,15 @@ async function storeDryRun(env,raw,request){
     email:clean(raw?.email,500),
     product:clean(raw?.product,300),
     message:clean(raw?.message,6000),
-    cfRay:clean(request.headers.get('CF-Ray'),100)
+    cfRay:clean(request.headers.get('CF-Ray'),100),
+    ...(isOrder?{
+      orderStatus:'order_received',
+      ...quote,
+      autoCancelEnabled:false
+    }:{})
   };
-  await env.ORDER_STATUS.put(key,JSON.stringify(record),{expirationTtl:604800});
-  return{id,key};
+  await env.ORDER_STATUS.put(key,JSON.stringify(record),{expirationTtl:isOrder?STAGING_ORDER_TTL:CONTACT_DRY_RUN_TTL});
+  return{id,key,quote};
 }
 
 export default{
@@ -77,7 +90,12 @@ export default{
         mailDisabled:true,
         productionImported:false,
         kvConfigured:Boolean(env.ORDER_STATUS?.put),
-        turnstileConfigured:Boolean(clean(env.TURNSTILE_SECRET_KEY,1000))
+        turnstileConfigured:Boolean(clean(env.TURNSTILE_SECRET_KEY,1000)),
+        p2:{
+          quoteExpiryEnabled:true,
+          quoteValidityDays:QUOTE_VALIDITY_DAYS,
+          autoCancelEnabled:false
+        }
       },200,origin,allowedOrigin);
       return json({ok:false,error:'STAGING_ROUTE_NOT_FOUND'},404,origin,allowedOrigin);
     }
@@ -100,7 +118,14 @@ export default{
 
     try{
       const saved=await storeDryRun(env,raw,request);
-      return json({ok:true,staging:true,dryRun:true,submissionId:saved.id,mailSent:false},200,origin,allowedOrigin);
+      return json({
+        ok:true,
+        staging:true,
+        dryRun:true,
+        submissionId:saved.id,
+        mailSent:false,
+        ...(saved.quote?{quote:saved.quote,autoCancelEnabled:false}:{})
+      },200,origin,allowedOrigin);
     }catch(error){
       console.error('Staging submission storage failed',error);
       return json({ok:false,error:String(error?.message||error)},503,origin,allowedOrigin);
