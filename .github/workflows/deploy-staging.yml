@@ -98,12 +98,16 @@ jobs:
           TURNSTILE_EXPECTED_HOSTNAME = "kales-fde-staging.pages.dev"
           STAGING_MODE = "true"
 
+          [secrets]
+          required = [ "TURNSTILE_SECRET_KEY" ]
+
           [[kv_namespaces]]
           binding = "ORDER_STATUS"
           id = "${STAGING_KV_ID}"
           EOF
           grep -q 'name = "kales-fde-contact-staging"' worker/wrangler.staging.generated.toml
           grep -Eq 'id = "[0-9a-fA-F]{32}"' worker/wrangler.staging.generated.toml
+          grep -Fq 'required = [ "TURNSTILE_SECRET_KEY" ]' worker/wrangler.staging.generated.toml
           ! grep -Eq 'BREVO|FROM_EMAIL|FROM_NAME|\[ai\]|binding = "AI"' worker/wrangler.staging.generated.toml
 
       - name: Deploy hard-isolated staging Worker
@@ -118,7 +122,7 @@ jobs:
           WORKER_URL="https://${STAGING_WORKER_NAME}.reyouinjune.workers.dev"
 
           HEALTH="$(curl -fsS "${WORKER_URL}/__staging/health")"
-          printf '%s' "$HEALTH" | jq -e '
+          if ! printf '%s' "$HEALTH" | jq -e '
             .ok == true and
             .staging == true and
             .dryRun == true and
@@ -126,7 +130,11 @@ jobs:
             .productionImported == false and
             .kvConfigured == true and
             .turnstileConfigured == true
-          ' >/dev/null
+          ' >/dev/null; then
+            echo "Staging health check failed. Non-sensitive health response:"
+            printf '%s' "$HEALTH" | jq .
+            exit 1
+          fi
 
           GUARD_FILE="$(mktemp)"
           GUARD_STATUS="$(curl -sS -o "$GUARD_FILE" -w '%{http_code}' -X POST "$WORKER_URL" \
