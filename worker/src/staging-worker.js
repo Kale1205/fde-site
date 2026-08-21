@@ -1,10 +1,10 @@
 import { QUOTE_VALIDITY_DAYS, createQuoteWindow } from './staging-quote-policy.js';
 import { appendAuditEvent } from './staging-audit-log.js';
+import { EXPIRY_CRON, STAGING_ORDER_TTL, runExpirySweep } from './staging-expiry-cron.js';
 
 const VERIFY_URL='https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const ALLOWED_STAGING_TYPES=new Set(['inquiry','order']);
 const CONTACT_DRY_RUN_TTL=7*24*60*60;
-const STAGING_ORDER_TTL=30*24*60*60;
 
 const clean=(v,max=5000)=>String(v??'').trim().slice(0,max);
 const cors=(origin,allowed)=>({
@@ -71,7 +71,7 @@ async function storeDryRun(env,raw,request){
       stagingOrderId:id,
       orderStatus:'order_received',
       ...quote,
-      autoCancelEnabled:false
+      autoCancelEnabled:true
     }:{})
   };
 
@@ -124,7 +124,8 @@ export default{
           quoteExpiryEnabled:true,
           quoteValidityDays:QUOTE_VALIDITY_DAYS,
           auditLogEnabled:true,
-          autoCancelEnabled:false
+          autoCancelEnabled:true,
+          expiryCron:EXPIRY_CRON
         }
       },200,origin,allowedOrigin);
       return json({ok:false,error:'STAGING_ROUTE_NOT_FOUND'},404,origin,allowedOrigin);
@@ -157,12 +158,18 @@ export default{
         ...(saved.quote?{
           quote:saved.quote,
           auditEventId:saved.auditEventId,
-          autoCancelEnabled:false
+          autoCancelEnabled:true
         }:{})
       },200,origin,allowedOrigin);
     }catch(error){
       console.error('Staging submission storage failed',error);
       return json({ok:false,error:String(error?.message||error)},503,origin,allowedOrigin);
     }
+  },
+
+  async scheduled(controller,env){
+    const scheduledAt=new Date(controller?.scheduledTime??Date.now());
+    const summary=await runExpirySweep(env,scheduledAt);
+    console.log('P2-3 staging quote expiry sweep',JSON.stringify({scheduledAt:scheduledAt.toISOString(),...summary}));
   }
 };
