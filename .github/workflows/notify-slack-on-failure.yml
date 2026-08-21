@@ -1,0 +1,92 @@
+name: Notify Slack on workflow failure
+
+on:
+  workflow_run:
+    workflows:
+      - PR checks
+      - Deploy Cloudflare Worker
+      - Deploy staging environment
+      - Sync site build version
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: slack-failure-notification-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    name: notify-fde-work-agents
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'failure' ||
+      github.event.workflow_run.conclusion == 'timed_out' ||
+      github.event.workflow_run.conclusion == 'action_required'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FDE_WORK_AGENTS_WEBHOOK_URL }}
+    steps:
+      - name: Verify Slack webhook secret
+        shell: bash
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
+            echo "SLACK_FDE_WORK_AGENTS_WEBHOOK_URL is not configured in GitHub Actions Secrets."
+            exit 1
+          fi
+
+      - name: Build Slack alert payload
+        id: payload
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SOURCE_WORKFLOW: ${{ github.event.workflow_run.name }}
+          SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          SOURCE_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+          SOURCE_ACTOR: ${{ github.event.workflow_run.actor.login }}
+          SOURCE_EVENT: ${{ github.event.workflow_run.event }}
+          SOURCE_RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            WORKFLOW_NAME="P1-6 Slack notification test"
+            CONCLUSION="test"
+            BRANCH="${GITHUB_REF_NAME}"
+            SHA="${GITHUB_SHA}"
+            ACTOR="${GITHUB_ACTOR}"
+            TRIGGER="workflow_dispatch"
+            RUN_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            ICON=":test_tube:"
+            TITLE="GitHub Actions test notification"
+          else
+            WORKFLOW_NAME="${SOURCE_WORKFLOW:-unknown}"
+            CONCLUSION="${SOURCE_CONCLUSION:-unknown}"
+            BRANCH="${SOURCE_BRANCH:-unknown}"
+            SHA="${SOURCE_SHA:-unknown}"
+            ACTOR="${SOURCE_ACTOR:-unknown}"
+            TRIGGER="${SOURCE_EVENT:-unknown}"
+            RUN_URL="${SOURCE_RUN_URL:-https://github.com/${GITHUB_REPOSITORY}/actions}"
+            ICON=":rotating_light:"
+            TITLE="GitHub Actions failure alert"
+          fi
+
+          SHORT_SHA="${SHA:0:7}"
+          TEXT="${ICON} *${TITLE}*\n*Repository:* ${GITHUB_REPOSITORY}\n*Workflow:* ${WORKFLOW_NAME}\n*Conclusion:* ${CONCLUSION}\n*Branch:* ${BRANCH}\n*Commit:* ${SHORT_SHA}\n*Trigger:* ${TRIGGER}\n*Actor:* ${ACTOR}\n<${RUN_URL}|Open workflow run>"
+          jq -n --arg text "$TEXT" '{text:$text}' > /tmp/slack-payload.json
+
+      - name: Send alert to fde-work-agents
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H 'Content-Type: application/json' \
+            --data @/tmp/slack-payload.json \
+            "$SLACK_WEBHOOK_URL"
+          echo "Slack alert sent."
