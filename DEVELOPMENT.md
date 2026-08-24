@@ -115,6 +115,8 @@ Stripe-hosted Checkout is the only accepted initial payment surface. Payment ses
 
 Japan domestic and eligible cross-border transactions have different merchant and tax boundaries. Live payment acceptance remains disabled until the launch gates in the decision record are complete. Payment confirmation and product delivery are separate state transitions.
 
+P2-5 adds only the hard-isolated staging webhook boundary at `/__staging/stripe/webhook`. It verifies the raw request body with the staging signing secret, rejects replayed signatures outside the five-minute tolerance, validates the server-stored order expectation, deduplicates provider event IDs, and appends an audit event before updating the order. The endpoint remains fail-closed until `STRIPE_WEBHOOK_SECRET` is present in the staging Worker. `STRIPE_SECRET_KEY` is reserved for the later server-side Checkout Session step; P2-5 does not call Stripe's API, add a browser Checkout button, send mail, deliver an installer, or enable production payments.
+
 ## Secrets
 
 Never commit secret values to GitHub. Secret values belong in Cloudflare Secrets or GitHub Actions Secrets. Public identifiers such as a Turnstile Site Key may be committed when required by the client application.

@@ -1,6 +1,7 @@
 import { QUOTE_VALIDITY_DAYS, createQuoteWindow } from './staging-quote-policy.js';
 import { appendAuditEvent } from './staging-audit-log.js';
 import { EXPIRY_CRON, STAGING_ORDER_TTL, runExpirySweep } from './staging-expiry-cron.js';
+import { STRIPE_WEBHOOK_PATH, handleStripeWebhook, stagingOrderIndexKey } from './staging-stripe-webhook.js';
 
 const VERIFY_URL='https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const ALLOWED_STAGING_TYPES=new Set(['inquiry','order']);
@@ -81,6 +82,7 @@ async function storeDryRun(env,raw,request){
   }
 
   await env.ORDER_STATUS.put(key,JSON.stringify(record),{expirationTtl:STAGING_ORDER_TTL});
+  await env.ORDER_STATUS.put(stagingOrderIndexKey(id),key,{expirationTtl:STAGING_ORDER_TTL});
   try{
     const audit=await appendAuditEvent(env,{
       orderId:id,
@@ -100,18 +102,22 @@ async function storeDryRun(env,raw,request){
     return{id,key,quote,auditEventId:audit.event.eventId};
   }catch(error){
     console.error('Staging audit write failed',error);
-    try{await env.ORDER_STATUS.delete?.(key)}catch(cleanupError){console.error('Staging order rollback failed',cleanupError)}
+    try{
+      await env.ORDER_STATUS.delete?.(key);
+      await env.ORDER_STATUS.delete?.(stagingOrderIndexKey(id));
+    }catch(cleanupError){console.error('Staging order rollback failed',cleanupError)}
     throw new Error('STAGING_AUDIT_WRITE_FAILED');
   }
 }
 
 export default{
   async fetch(request,env){
+    const url=new URL(request.url);
+    if(url.pathname===STRIPE_WEBHOOK_PATH)return handleStripeWebhook(request,env);
     const origin=request.headers.get('Origin')||'';
     const allowedOrigin=env.ALLOWED_ORIGIN||'';
 
     if(request.method==='GET'){
-      const url=new URL(request.url);
       if(url.pathname==='/__staging/health')return json({
         ok:true,
         staging:true,
@@ -125,7 +131,10 @@ export default{
           quoteValidityDays:QUOTE_VALIDITY_DAYS,
           auditLogEnabled:true,
           autoCancelEnabled:true,
-          expiryCron:EXPIRY_CRON
+          expiryCron:EXPIRY_CRON,
+          stripeWebhookBoundaryEnabled:true,
+          stripeWebhookConfigured:Boolean(clean(env.STRIPE_WEBHOOK_SECRET,1000)),
+          livePaymentsEnabled:false
         }
       },200,origin,allowedOrigin);
       return json({ok:false,error:'STAGING_ROUTE_NOT_FOUND'},404,origin,allowedOrigin);
