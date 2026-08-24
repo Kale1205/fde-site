@@ -128,25 +128,39 @@ jobs:
           set -euo pipefail
           WORKER_URL="https://${STAGING_WORKER_NAME}.reyouinjune.workers.dev"
 
-          HEALTH="$(curl -fsS "${WORKER_URL}/__staging/health")"
-          if ! printf '%s' "$HEALTH" | jq -e '
-            .ok == true and
-            .staging == true and
-            .dryRun == true and
-            .mailDisabled == true and
-            .productionImported == false and
-            .kvConfigured == true and
-            .turnstileConfigured == true and
-            .p2.quoteExpiryEnabled == true and
-            .p2.quoteValidityDays == 7 and
-            .p2.auditLogEnabled == true and
-            .p2.autoCancelEnabled == true and
-            .p2.expiryCron == "0 * * * *"
-          ' >/dev/null; then
-            echo "Staging health check failed. Non-sensitive health response:"
-            printf '%s' "$HEALTH" | jq .
-            exit 1
-          fi
+          HEALTH=""
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if HEALTH="$(curl -fsS --max-time 10 "${WORKER_URL}/__staging/health")" && printf '%s' "$HEALTH" | jq -e '
+              .ok == true and
+              .staging == true and
+              .dryRun == true and
+              .mailDisabled == true and
+              .productionImported == false and
+              .kvConfigured == true and
+              .turnstileConfigured == true and
+              .p2.quoteExpiryEnabled == true and
+              .p2.quoteValidityDays == 7 and
+              .p2.auditLogEnabled == true and
+              .p2.autoCancelEnabled == true and
+              .p2.expiryCron == "0 * * * *"
+            ' >/dev/null; then
+              echo "Staging Worker reached the expected deployed version on attempt ${attempt}."
+              break
+            fi
+
+            if [ "$attempt" = "10" ]; then
+              echo "Staging health check failed after 10 attempts. Last non-sensitive response:"
+              if printf '%s' "$HEALTH" | jq . >/dev/null 2>&1; then
+                printf '%s' "$HEALTH" | jq .
+              else
+                printf '%s\n' "$HEALTH"
+              fi
+              exit 1
+            fi
+
+            echo "Staging Worker has not reached the expected deployed version (attempt ${attempt}/10); retrying in 2 seconds."
+            sleep 2
+          done
 
           GUARD_FILE="$(mktemp)"
           GUARD_STATUS="$(curl -sS -o "$GUARD_FILE" -w '%{http_code}' -X POST "$WORKER_URL" \
