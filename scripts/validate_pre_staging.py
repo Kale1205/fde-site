@@ -94,6 +94,8 @@ for marker in (
     "productionImported:false",
     "kvConfigured",
     "turnstileConfigured",
+    "stripeWebhookBoundaryEnabled:true",
+    "livePaymentsEnabled:false",
     "X-FDE-Environment",
 ):
     if marker not in staging_worker:
@@ -129,6 +131,8 @@ for marker in (
     "kvConfigured == true",
     "turnstileConfigured == true",
     "TURNSTILE_TOKEN_REQUIRED",
+    ".p2.stripeWebhookBoundaryEnabled == true",
+    ".p2.livePaymentsEnabled == false",
     "wrangler@4 pages deploy",
     "X-Robots-Tag: noindex, nofollow, noarchive",
 ):

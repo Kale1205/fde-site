@@ -47,6 +47,9 @@ jobs:
       - name: P2 expiry Cron tests
         run: node scripts/test_p2_expiry_cron.mjs
 
+      - name: P2 Stripe webhook tests
+        run: node scripts/test_p2_stripe_webhook.mjs
+
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts
 

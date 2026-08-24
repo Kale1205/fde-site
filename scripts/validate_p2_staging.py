@@ -19,10 +19,12 @@ def read(rel):
 
 
 cron = read("worker/src/staging-expiry-cron.js")
+stripe = read("worker/src/staging-stripe-webhook.js")
 staging_worker = read("worker/src/staging-worker.js")
 staging_deploy = read(".github/workflows/deploy-staging.yml")
 production_deploy = read(".github/workflows/deploy-worker.yml")
 production_wrangler = read("worker/wrangler.toml")
+gitignore = read(".gitignore")
 
 for marker in (
     "EXPIRY_CRON = '0 * * * *'",
@@ -53,6 +55,42 @@ for marker in (
     if marker not in staging_worker:
         fail(f"staging Worker missing P2-3 marker: {marker}")
 
+for marker in (
+    "STRIPE_WEBHOOK_PATH = '/__staging/stripe/webhook'",
+    "STRIPE_SIGNATURE_TOLERANCE_SECONDS = 5 * 60",
+    "checkout.session.completed",
+    "checkout.session.async_payment_succeeded",
+    "invoice.paid",
+    "crypto.subtle.verify('HMAC'",
+    "STRIPE_SIGNATURE_TIMESTAMP_OUTSIDE_TOLERANCE",
+    "staging:stripe-event:",
+    "STRIPE_AMOUNT_MISMATCH",
+    "STRIPE_CURRENCY_MISMATCH",
+    "STRIPE_ORDER_STATE_NOT_ELIGIBLE",
+    "source: 'stripe_webhook'",
+    "toStatus: 'payment_confirmed'",
+):
+    if marker not in stripe:
+        fail(f"staging Stripe webhook missing P2-5 safety marker: {marker}")
+
+for forbidden in ("sk_live_", "whsec_", "STRIPE_SECRET_KEY =", "STRIPE_WEBHOOK_SECRET ="):
+    if forbidden in stripe:
+        fail(f"staging Stripe webhook contains forbidden secret marker: {forbidden}")
+
+for marker in (".dev.vars", ".env", ".wrangler/"):
+    if marker not in gitignore:
+        fail(f".gitignore must exclude local Worker secret state: {marker}")
+
+for marker in (
+    "handleStripeWebhook",
+    "stagingOrderIndexKey",
+    "stripeWebhookBoundaryEnabled:true",
+    "stripeWebhookConfigured:Boolean",
+    "livePaymentsEnabled:false",
+):
+    if marker not in staging_worker:
+        fail(f"staging Worker missing P2-5 marker: {marker}")
+
 if '[triggers]' not in staging_deploy or 'crons = [ "0 * * * *" ]' not in staging_deploy:
     fail("staging deploy must configure the hourly expiry Cron")
 for marker in (
@@ -60,6 +98,9 @@ for marker in (
     '.p2.autoCancelEnabled == true',
     '.p2.expiryCron == "0 * * * *"',
     'node scripts/test_p2_expiry_cron.mjs',
+    'node scripts/test_p2_stripe_webhook.mjs',
+    '.p2.stripeWebhookBoundaryEnabled == true',
+    '.p2.livePaymentsEnabled == false',
 ):
     if marker not in staging_deploy:
         fail(f"staging deploy missing P2-3 verification: {marker}")
@@ -71,8 +112,8 @@ if re.search(r"\bcrons\s*=", production_wrangler):
 
 for path in sorted((ROOT / "worker" / "src").glob("index-v*.js")):
     text = path.read_text(encoding="utf-8")
-    if "staging-expiry-cron" in text or "runExpirySweep" in text:
-        fail(f"production Worker imports staging expiry Cron: {path.relative_to(ROOT)}")
+    if "staging-expiry-cron" in text or "runExpirySweep" in text or "staging-stripe-webhook" in text:
+        fail(f"production Worker imports a staging-only P2 module: {path.relative_to(ROOT)}")
 
 if errors:
     print("P2 staging validation failed:\n")
