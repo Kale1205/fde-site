@@ -115,7 +115,11 @@ Stripe-hosted Checkout is the only accepted initial payment surface. Payment ses
 
 Japan domestic and eligible cross-border transactions have different merchant and tax boundaries. Live payment acceptance remains disabled until the launch gates in the decision record are complete. Payment confirmation and product delivery are separate state transitions.
 
-P2-5 adds only the hard-isolated staging webhook boundary at `/__staging/stripe/webhook`. It verifies the raw request body with the staging signing secret, rejects replayed signatures outside the five-minute tolerance, validates the server-stored order expectation, deduplicates provider event IDs, and appends an audit event before updating the order. The endpoint remains fail-closed until `STRIPE_WEBHOOK_SECRET` is present in the staging Worker. `STRIPE_SECRET_KEY` is reserved for the later server-side Checkout Session step; P2-5 does not call Stripe's API, add a browser Checkout button, send mail, deliver an installer, or enable production payments.
+P2-5 adds the hard-isolated staging webhook boundary at `/__staging/stripe/webhook`. It verifies the raw request body with the staging signing secret, rejects replayed signatures outside the five-minute tolerance, validates the server-stored order expectation, deduplicates provider event IDs, and appends an audit event before updating the order.
+
+P2-6 adds an operator-only staging Checkout Session boundary at `/__staging/stripe/checkout-session`. It calls Stripe only when `STAGING_CHECKOUT_ENABLED=true`, a constant-time-verified `X-FDE-Staging-Checkout-Key` is supplied, an unexpired staging order includes versioned EULA acceptance, and the requested product/currency exists in the fixed server-side catalog. The Worker accepts only Stripe Sandbox Session responses, records the exact expected product, Price, amount, currency and mode, and appends an audit event before moving the order to `awaiting_payment`.
+
+The P2-6 boundary remains fail-closed until its Stripe Sandbox key, operator key, four Price IDs, and two staging return URLs are present. Setup is documented in [docs/setup/stripe-staging-setup-ja.md](docs/setup/stripe-staging-setup-ja.md). P2-6 does not add a public Checkout button, send mail, deliver an installer, or enable production payments.
 
 ## Secrets
 

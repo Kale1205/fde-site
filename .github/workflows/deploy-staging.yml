@@ -47,6 +47,7 @@ jobs:
           node scripts/test_p2_audit_log.mjs
           node scripts/test_p2_expiry_cron.mjs
           node scripts/test_p2_stripe_webhook.mjs
+          node scripts/test_p2_stripe_checkout.mjs
 
       - name: Resolve or create staging KV namespace
         id: kv
@@ -148,6 +149,9 @@ jobs:
               .p2.expiryCron == "0 * * * *" and
               .p2.stripeWebhookBoundaryEnabled == true and
               (.p2.stripeWebhookConfigured | type) == "boolean" and
+              .p2.stripeCheckoutBoundaryEnabled == true and
+              (.p2.stripeCheckoutConfigured | type) == "boolean" and
+              (.p2.stripeCheckoutActivationEnabled | type) == "boolean" and
               .p2.livePaymentsEnabled == false
             ' >/dev/null; then
               echo "Staging Worker reached the expected deployed version on attempt ${attempt}."
@@ -179,7 +183,7 @@ jobs:
             exit 1
           fi
           jq -e '.ok == false and .error == "TURNSTILE_TOKEN_REQUIRED"' "$GUARD_FILE" >/dev/null
-          echo "Staging Worker identity, KV, Turnstile, quote policy, audit log, hourly expiry Cron, Stripe webhook boundary, and fail-closed guards are verified."
+          echo "Staging Worker identity, KV, Turnstile, quote policy, audit log, hourly expiry Cron, Stripe webhook and Checkout boundaries, and fail-closed guards are verified."
 
       - name: Build staging static site
         shell: bash
@@ -214,4 +218,4 @@ jobs:
           echo "The staging Worker is physically isolated from production Worker code."
           echo "Mail delivery is disabled; inquiries can only be stored in the staging KV after Turnstile verification."
           echo "P2 quote validity is 7 days; expired unpaid staging orders are scanned hourly and auto-cancelled with an audit event."
-          echo "P2-5 Stripe webhook verification is deployed fail-closed; live payments and browser Checkout remain disabled."
+          echo "P2-6 Stripe sandbox Checkout Session creation is deployed fail-closed; live payments and public browser Checkout remain disabled."

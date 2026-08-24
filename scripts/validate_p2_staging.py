@@ -20,6 +20,7 @@ def read(rel):
 
 cron = read("worker/src/staging-expiry-cron.js")
 stripe = read("worker/src/staging-stripe-webhook.js")
+checkout = read("worker/src/staging-stripe-checkout.js")
 staging_worker = read("worker/src/staging-worker.js")
 staging_deploy = read(".github/workflows/deploy-staging.yml")
 production_deploy = read(".github/workflows/deploy-worker.yml")
@@ -77,6 +78,35 @@ for forbidden in ("sk_live_", "whsec_", "STRIPE_SECRET_KEY =", "STRIPE_WEBHOOK_S
     if forbidden in stripe:
         fail(f"staging Stripe webhook contains forbidden secret marker: {forbidden}")
 
+for marker in (
+    "STRIPE_CHECKOUT_PATH = '/__staging/stripe/checkout-session'",
+    "https://api.stripe.com/v1/checkout/sessions",
+    "X-FDE-Staging-Checkout-Key",
+    "STAGING_CHECKOUT_ENABLED",
+    "STAGING_CHECKOUT_SETUP_KEY",
+    "STRIPE_SECRET_KEY",
+    "STRIPE_PRICE_LICENSE_USD",
+    "STRIPE_PRICE_LICENSE_JPY",
+    "STRIPE_PRICE_UPDATES_USD",
+    "STRIPE_PRICE_UPDATES_JPY",
+    "fde-ims-license:usd",
+    "amountTotal: 31300",
+    "amountTotal: 49800",
+    "amountTotal: 6200",
+    "amountTotal: 9800",
+    "Idempotency-Key",
+    "checkout_session_created",
+    "CHECKOUT_EULA_ACCEPTANCE_REQUIRED",
+    "session?.livemode !== false",
+    "toStatus: 'awaiting_payment'",
+):
+    if marker not in checkout:
+        fail(f"staging Stripe Checkout missing P2-6 safety marker: {marker}")
+
+for forbidden in ("sk_live_", "sk_test_", "rk_live_", "rk_test_", "whsec_"):
+    if forbidden in checkout:
+        fail(f"staging Stripe Checkout contains a key-like secret marker: {forbidden}")
+
 for marker in (".dev.vars", ".env", ".wrangler/"):
     if marker not in gitignore:
         fail(f".gitignore must exclude local Worker secret state: {marker}")
@@ -86,6 +116,10 @@ for marker in (
     "stagingOrderIndexKey",
     "stripeWebhookBoundaryEnabled:true",
     "stripeWebhookConfigured:Boolean",
+    "handleStripeCheckout",
+    "stripeCheckoutBoundaryEnabled:true",
+    "stripeCheckoutConfigured:stripeCheckoutConfiguration(env)",
+    "stripeCheckoutActivationEnabled:",
     "livePaymentsEnabled:false",
 ):
     if marker not in staging_worker:
@@ -99,7 +133,11 @@ for marker in (
     '.p2.expiryCron == "0 * * * *"',
     'node scripts/test_p2_expiry_cron.mjs',
     'node scripts/test_p2_stripe_webhook.mjs',
+    'node scripts/test_p2_stripe_checkout.mjs',
     '.p2.stripeWebhookBoundaryEnabled == true',
+    '.p2.stripeCheckoutBoundaryEnabled == true',
+    '(.p2.stripeCheckoutConfigured | type) == "boolean"',
+    '(.p2.stripeCheckoutActivationEnabled | type) == "boolean"',
     '.p2.livePaymentsEnabled == false',
 ):
     if marker not in staging_deploy:
@@ -112,7 +150,7 @@ if re.search(r"\bcrons\s*=", production_wrangler):
 
 for path in sorted((ROOT / "worker" / "src").glob("index-v*.js")):
     text = path.read_text(encoding="utf-8")
-    if "staging-expiry-cron" in text or "runExpirySweep" in text or "staging-stripe-webhook" in text:
+    if "staging-expiry-cron" in text or "runExpirySweep" in text or "staging-stripe-webhook" in text or "staging-stripe-checkout" in text:
         fail(f"production Worker imports a staging-only P2 module: {path.relative_to(ROOT)}")
 
 if errors:
