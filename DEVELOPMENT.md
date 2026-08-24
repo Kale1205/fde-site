@@ -107,6 +107,14 @@ Historical source is available from Git history; it does not need to remain in t
 
 Production and staging Worker resources must not share mutable customer/order state. P1-5 must use a distinct Worker name, KV namespace and staging-specific secret set.
 
+## Payment architecture
+
+The P2-4 payment provider and merchant-of-record baseline is defined in [docs/architecture/payment-service-decision.md](docs/architecture/payment-service-decision.md).
+
+Stripe-hosted Checkout is the only accepted initial payment surface. Payment sessions must be created by a Cloudflare Worker from an allowlisted server-side price catalog. Browser redirects are never proof of payment; only a signature-verified, idempotent webhook can move an order to `payment_confirmed`.
+
+Japan domestic and eligible cross-border transactions have different merchant and tax boundaries. Live payment acceptance remains disabled until the launch gates in the decision record are complete. Payment confirmation and product delivery are separate state transitions.
+
 ## Secrets
 
 Never commit secret values to GitHub. Secret values belong in Cloudflare Secrets or GitHub Actions Secrets. Public identifiers such as a Turnstile Site Key may be committed when required by the client application.
