@@ -103,7 +103,9 @@ jobs:
           STAGING_MODE = "true"
 
           [secrets]
-          required = [ "TURNSTILE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPE_SECRET_KEY" ]
+          # Stripe secrets stay optional until the test account is connected.
+          # The webhook endpoint fails closed with 503 while its signing secret is absent.
+          required = [ "TURNSTILE_SECRET_KEY" ]
 
           [triggers]
           crons = [ "0 * * * *" ]
@@ -114,7 +116,7 @@ jobs:
           EOF
           grep -q 'name = "kales-fde-contact-staging"' worker/wrangler.staging.generated.toml
           grep -Eq 'id = "[0-9a-fA-F]{32}"' worker/wrangler.staging.generated.toml
-          grep -Fq 'required = [ "TURNSTILE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPE_SECRET_KEY" ]' worker/wrangler.staging.generated.toml
+          grep -Fq 'required = [ "TURNSTILE_SECRET_KEY" ]' worker/wrangler.staging.generated.toml
           grep -Fq 'crons = [ "0 * * * *" ]' worker/wrangler.staging.generated.toml
           ! grep -Eq 'BREVO|FROM_EMAIL|FROM_NAME|\[ai\]|binding = "AI"' worker/wrangler.staging.generated.toml
 
