@@ -197,4 +197,4 @@ Fees alone do not decide the architecture. Tax liability, invoice ownership, dis
 
 ## Next implementation step
 
-P2-5 must build the Stripe webhook boundary in staging only. It must begin with deterministic signature, replay, idempotency, amount/currency, order-state, and audit tests. No live Checkout button or production secret is added in P2-5.
+P2-7 must add the staging order-preparation boundary that records the License Agreement / EULA version and acceptance timestamp before the P2-6 Checkout Session boundary can be exercised end to end. No live Checkout button or production secret is added in P2-7.

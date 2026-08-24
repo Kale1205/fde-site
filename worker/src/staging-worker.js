@@ -2,6 +2,11 @@ import { QUOTE_VALIDITY_DAYS, createQuoteWindow } from './staging-quote-policy.j
 import { appendAuditEvent } from './staging-audit-log.js';
 import { EXPIRY_CRON, STAGING_ORDER_TTL, runExpirySweep } from './staging-expiry-cron.js';
 import { STRIPE_WEBHOOK_PATH, handleStripeWebhook, stagingOrderIndexKey } from './staging-stripe-webhook.js';
+import {
+  STRIPE_CHECKOUT_PATH,
+  handleStripeCheckout,
+  stripeCheckoutConfiguration
+} from './staging-stripe-checkout.js';
 
 const VERIFY_URL='https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const ALLOWED_STAGING_TYPES=new Set(['inquiry','order']);
@@ -114,6 +119,7 @@ export default{
   async fetch(request,env){
     const url=new URL(request.url);
     if(url.pathname===STRIPE_WEBHOOK_PATH)return handleStripeWebhook(request,env);
+    if(url.pathname===STRIPE_CHECKOUT_PATH)return handleStripeCheckout(request,env);
     const origin=request.headers.get('Origin')||'';
     const allowedOrigin=env.ALLOWED_ORIGIN||'';
 
@@ -134,6 +140,9 @@ export default{
           expiryCron:EXPIRY_CRON,
           stripeWebhookBoundaryEnabled:true,
           stripeWebhookConfigured:Boolean(clean(env.STRIPE_WEBHOOK_SECRET,1000)),
+          stripeCheckoutBoundaryEnabled:true,
+          stripeCheckoutConfigured:stripeCheckoutConfiguration(env),
+          stripeCheckoutActivationEnabled:clean(env.STAGING_CHECKOUT_ENABLED,20).toLowerCase()==='true',
           livePaymentsEnabled:false
         }
       },200,origin,allowedOrigin);

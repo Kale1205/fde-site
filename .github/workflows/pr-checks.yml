@@ -50,6 +50,9 @@ jobs:
       - name: P2 Stripe webhook tests
         run: node scripts/test_p2_stripe_webhook.mjs
 
+      - name: P2 Stripe Checkout tests
+        run: node scripts/test_p2_stripe_checkout.mjs
+
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts
 
