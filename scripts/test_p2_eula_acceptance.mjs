@@ -40,7 +40,11 @@ async function json(response) {
   const response = await handleP27Qa(new Request(`${origin}${P2_7_QA_PATH}`), env, { now: fixedNow });
   assert.equal(response.status, 200);
   assert.match(response.headers.get('Content-Type') || '', /text\/html/);
-  assert.match(await response.text(), /P2-7 Stripe Sandbox QA/);
+  const html = await response.text();
+  assert.match(html, /P2-7 Stripe Sandbox QA/);
+  assert.match(html, /既存Order IDを貼り付けても確認できます/);
+  assert.doesNotMatch(html, /id="orderId" readonly/);
+  assert.match(html, /\$\('orderId'\)\.oninput=syncOrderControls/);
 }
 
 {
