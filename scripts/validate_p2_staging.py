@@ -21,6 +21,7 @@ def read(rel):
 cron = read("worker/src/staging-expiry-cron.js")
 stripe = read("worker/src/staging-stripe-webhook.js")
 checkout = read("worker/src/staging-stripe-checkout.js")
+p27 = read("worker/src/staging-p2-7-qa.js")
 staging_worker = read("worker/src/staging-worker.js")
 staging_deploy = read(".github/workflows/deploy-staging.yml")
 production_deploy = read(".github/workflows/deploy-worker.yml")
@@ -107,6 +108,28 @@ for forbidden in ("sk_live_", "sk_test_", "rk_live_", "rk_test_", "whsec_"):
     if forbidden in checkout:
         fail(f"staging Stripe Checkout contains a key-like secret marker: {forbidden}")
 
+for marker in (
+    "P2_7_QA_PATH = '/__staging/p2-7'",
+    "P2_7_ORDER_PATH = '/__staging/p2-7/order'",
+    "P2_7_EULA_PATH = '/__staging/p2-7/eula'",
+    "P2_7_STATUS_PATH = '/__staging/p2-7/status'",
+    "P2_7_EULA_VERSION = 'FDE-IMS-STAGING-EULA-2026-08-27'",
+    "X-FDE-Staging-Checkout-Key",
+    "STAGING_CHECKOUT_SETUP_KEY",
+    "staging_test_only",
+    "action: 'eula_accepted'",
+    "source: 'p2_7_qa'",
+    "getQuoteState(order.quoteExpiresAt, now)",
+    "webhookConfirmed",
+    "Content-Security-Policy",
+):
+    if marker not in p27:
+        fail(f"staging P2-7 EULA QA missing safety marker: {marker}")
+
+for forbidden in ("sk_live_", "sk_test_", "rk_live_", "rk_test_", "whsec_"):
+    if forbidden in p27:
+        fail(f"staging P2-7 EULA QA contains a key-like secret marker: {forbidden}")
+
 for marker in (".dev.vars", ".env", ".wrangler/"):
     if marker not in gitignore:
         fail(f".gitignore must exclude local Worker secret state: {marker}")
@@ -120,10 +143,14 @@ for marker in (
     "stripeCheckoutBoundaryEnabled:true",
     "stripeCheckoutConfigured:stripeCheckoutConfiguration(env)",
     "stripeCheckoutActivationEnabled:",
+    "handleP27Qa",
+    "eulaAcceptanceBoundaryEnabled:true",
+    "eulaVersion:P2_7_EULA_VERSION",
+    "p27QaEnabled:true",
     "livePaymentsEnabled:false",
 ):
     if marker not in staging_worker:
-        fail(f"staging Worker missing P2-5 marker: {marker}")
+        fail(f"staging Worker missing P2 safety marker: {marker}")
 
 if '[triggers]' not in staging_deploy or 'crons = [ "0 * * * *" ]' not in staging_deploy:
     fail("staging deploy must configure the hourly expiry Cron")
@@ -134,14 +161,18 @@ for marker in (
     'node scripts/test_p2_expiry_cron.mjs',
     'node scripts/test_p2_stripe_webhook.mjs',
     'node scripts/test_p2_stripe_checkout.mjs',
+    'node scripts/test_p2_eula_acceptance.mjs',
     '.p2.stripeWebhookBoundaryEnabled == true',
     '.p2.stripeCheckoutBoundaryEnabled == true',
     '(.p2.stripeCheckoutConfigured | type) == "boolean"',
     '(.p2.stripeCheckoutActivationEnabled | type) == "boolean"',
+    '.p2.eulaAcceptanceBoundaryEnabled == true',
+    '.p2.eulaVersion == "FDE-IMS-STAGING-EULA-2026-08-27"',
+    '.p2.p27QaEnabled == true',
     '.p2.livePaymentsEnabled == false',
 ):
     if marker not in staging_deploy:
-        fail(f"staging deploy missing P2-3 verification: {marker}")
+        fail(f"staging deploy missing P2 verification: {marker}")
 
 if "- '!worker/src/staging-*.js'" not in production_deploy:
     fail("production deploy must exclude staging-only Worker modules")
@@ -150,7 +181,13 @@ if re.search(r"\bcrons\s*=", production_wrangler):
 
 for path in sorted((ROOT / "worker" / "src").glob("index-v*.js")):
     text = path.read_text(encoding="utf-8")
-    if "staging-expiry-cron" in text or "runExpirySweep" in text or "staging-stripe-webhook" in text or "staging-stripe-checkout" in text:
+    if (
+        "staging-expiry-cron" in text or
+        "runExpirySweep" in text or
+        "staging-stripe-webhook" in text or
+        "staging-stripe-checkout" in text or
+        "staging-p2-7-qa" in text
+    ):
         fail(f"production Worker imports a staging-only P2 module: {path.relative_to(ROOT)}")
 
 if errors:
@@ -159,4 +196,4 @@ if errors:
         print(f"- {item}")
     sys.exit(1)
 
-print("P2 staging validation passed: hourly expiry Cron is staging-only.")
+print("P2 staging validation passed: expiry, Stripe, and P2-7 EULA QA remain staging-only.")
