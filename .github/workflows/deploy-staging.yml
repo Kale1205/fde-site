@@ -49,6 +49,7 @@ jobs:
           node scripts/test_p2_stripe_webhook.mjs
           node scripts/test_p2_stripe_checkout.mjs
           node scripts/test_p2_eula_acceptance.mjs
+          node scripts/test_p2_fulfillment.mjs
 
       - name: Resolve or create staging KV namespace
         id: kv
@@ -156,6 +157,12 @@ jobs:
               .p2.eulaAcceptanceBoundaryEnabled == true and
               .p2.eulaVersion == "FDE-IMS-STAGING-EULA-2026-08-27" and
               .p2.p27QaEnabled == true and
+              .p2.fulfillmentBoundaryEnabled == true and
+              .p2.p28QaEnabled == true and
+              .p2.deliverySimulationOnly == true and
+              .p2.productionDeliveryEnabled == false and
+              .p2.customerFulfillmentMailEnabled == false and
+              .p2.installerDeliveryEnabled == false and
               .p2.livePaymentsEnabled == false
             ' >/dev/null; then
               echo "Staging Worker reached the expected deployed version on attempt ${attempt}."
@@ -176,9 +183,13 @@ jobs:
             sleep 2
           done
 
-          QA_PAGE="$(curl -fsS --max-time 10 "${WORKER_URL}/__staging/p2-7")"
-          printf '%s' "$QA_PAGE" | grep -Fq 'P2-7 Stripe Sandbox QA'
-          printf '%s' "$QA_PAGE" | grep -Fq 'staging専用です。'
+          P27_QA_PAGE="$(curl -fsS --max-time 10 "${WORKER_URL}/__staging/p2-7")"
+          printf '%s' "$P27_QA_PAGE" | grep -Fq 'P2-7 Stripe Sandbox QA'
+          printf '%s' "$P27_QA_PAGE" | grep -Fq 'staging専用です。'
+
+          P28_QA_PAGE="$(curl -fsS --max-time 10 "${WORKER_URL}/__staging/p2-8")"
+          printf '%s' "$P28_QA_PAGE" | grep -Fq 'P2-8 Fulfillment QA'
+          printf '%s' "$P28_QA_PAGE" | grep -Fq 'staging専用の納品シミュレーションです。'
 
           GUARD_FILE="$(mktemp)"
           GUARD_STATUS="$(curl -sS -o "$GUARD_FILE" -w '%{http_code}' -X POST "$WORKER_URL" \
@@ -191,7 +202,7 @@ jobs:
             exit 1
           fi
           jq -e '.ok == false and .error == "TURNSTILE_TOKEN_REQUIRED"' "$GUARD_FILE" >/dev/null
-          echo "Staging Worker identity, KV, Turnstile, quote policy, audit log, hourly expiry Cron, Stripe webhook/Checkout boundaries, P2-7 EULA QA, and fail-closed guards are verified."
+          echo "Staging Worker identity, KV, Turnstile, quote policy, audit log, hourly expiry Cron, Stripe webhook/Checkout boundaries, P2-7 EULA QA, P2-8 fulfillment QA, and fail-closed guards are verified."
 
       - name: Build staging static site
         shell: bash
@@ -224,8 +235,10 @@ jobs:
           echo "Staging site: ${STAGING_ORIGIN}/fde-site/"
           echo "Staging Worker: https://${STAGING_WORKER_NAME}.reyouinjune.workers.dev"
           echo "P2-7 QA: https://${STAGING_WORKER_NAME}.reyouinjune.workers.dev/__staging/p2-7"
+          echo "P2-8 QA: https://${STAGING_WORKER_NAME}.reyouinjune.workers.dev/__staging/p2-8"
           echo "The staging Worker is physically isolated from production Worker code."
           echo "Mail delivery is disabled; inquiries can only be stored in the staging KV after Turnstile verification."
           echo "P2 quote validity is 7 days; expired unpaid staging orders are scanned hourly and auto-cancelled with an audit event."
           echo "P2-7 stores staging-test EULA version/acceptance time before sandbox Checkout and exposes a protected status check for webhook confirmation."
+          echo "P2-8 validates payment_confirmed -> preparing_delivery -> delivered as a staging-only simulation; no customer mail or installer is released."
           echo "Live payments and public browser Checkout remain disabled."

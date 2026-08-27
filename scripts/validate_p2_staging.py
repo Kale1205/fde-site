@@ -22,6 +22,7 @@ cron = read("worker/src/staging-expiry-cron.js")
 stripe = read("worker/src/staging-stripe-webhook.js")
 checkout = read("worker/src/staging-stripe-checkout.js")
 p27 = read("worker/src/staging-p2-7-qa.js")
+p28 = read("worker/src/staging-p2-8-fulfillment.js")
 staging_worker = read("worker/src/staging-worker.js")
 staging_deploy = read(".github/workflows/deploy-staging.yml")
 production_deploy = read(".github/workflows/deploy-worker.yml")
@@ -130,6 +131,33 @@ for forbidden in ("sk_live_", "sk_test_", "rk_live_", "rk_test_", "whsec_"):
     if forbidden in p27:
         fail(f"staging P2-7 EULA QA contains a key-like secret marker: {forbidden}")
 
+for marker in (
+    "P2_8_QA_PATH = '/__staging/p2-8'",
+    "P2_8_PREPARE_PATH = '/__staging/p2-8/prepare'",
+    "P2_8_SIMULATE_DELIVERY_PATH = '/__staging/p2-8/simulate-delivery'",
+    "P2_8_STATUS_PATH = '/__staging/p2-8/status'",
+    "payment_confirmed",
+    "preparing_delivery",
+    "delivered",
+    "X-FDE-Staging-Checkout-Key",
+    "STAGING_CHECKOUT_SETUP_KEY",
+    "action: 'fulfillment_preparation_started'",
+    "action: 'delivery_simulated'",
+    "source: 'p2_8_qa'",
+    "staging_simulation_only",
+    "withheld_product_not_released",
+    "customerMailSent: false",
+    "installerReleased: false",
+    "productionDeliveryEnabled: false",
+    "Content-Security-Policy",
+):
+    if marker not in p28:
+        fail(f"staging P2-8 fulfillment QA missing safety marker: {marker}")
+
+for forbidden in ("sk_live_", "sk_test_", "rk_live_", "rk_test_", "whsec_"):
+    if forbidden in p28:
+        fail(f"staging P2-8 fulfillment QA contains a key-like secret marker: {forbidden}")
+
 for marker in (".dev.vars", ".env", ".wrangler/"):
     if marker not in gitignore:
         fail(f".gitignore must exclude local Worker secret state: {marker}")
@@ -147,6 +175,13 @@ for marker in (
     "eulaAcceptanceBoundaryEnabled:true",
     "eulaVersion:P2_7_EULA_VERSION",
     "p27QaEnabled:true",
+    "handleP28Qa",
+    "fulfillmentBoundaryEnabled:true",
+    "p28QaEnabled:true",
+    "deliverySimulationOnly:true",
+    "productionDeliveryEnabled:false",
+    "customerFulfillmentMailEnabled:false",
+    "installerDeliveryEnabled:false",
     "livePaymentsEnabled:false",
 ):
     if marker not in staging_worker:
@@ -162,6 +197,7 @@ for marker in (
     'node scripts/test_p2_stripe_webhook.mjs',
     'node scripts/test_p2_stripe_checkout.mjs',
     'node scripts/test_p2_eula_acceptance.mjs',
+    'node scripts/test_p2_fulfillment.mjs',
     '.p2.stripeWebhookBoundaryEnabled == true',
     '.p2.stripeCheckoutBoundaryEnabled == true',
     '(.p2.stripeCheckoutConfigured | type) == "boolean"',
@@ -169,6 +205,12 @@ for marker in (
     '.p2.eulaAcceptanceBoundaryEnabled == true',
     '.p2.eulaVersion == "FDE-IMS-STAGING-EULA-2026-08-27"',
     '.p2.p27QaEnabled == true',
+    '.p2.fulfillmentBoundaryEnabled == true',
+    '.p2.p28QaEnabled == true',
+    '.p2.deliverySimulationOnly == true',
+    '.p2.productionDeliveryEnabled == false',
+    '.p2.customerFulfillmentMailEnabled == false',
+    '.p2.installerDeliveryEnabled == false',
     '.p2.livePaymentsEnabled == false',
 ):
     if marker not in staging_deploy:
@@ -186,7 +228,8 @@ for path in sorted((ROOT / "worker" / "src").glob("index-v*.js")):
         "runExpirySweep" in text or
         "staging-stripe-webhook" in text or
         "staging-stripe-checkout" in text or
-        "staging-p2-7-qa" in text
+        "staging-p2-7-qa" in text or
+        "staging-p2-8-fulfillment" in text
     ):
         fail(f"production Worker imports a staging-only P2 module: {path.relative_to(ROOT)}")
 
@@ -196,4 +239,4 @@ if errors:
         print(f"- {item}")
     sys.exit(1)
 
-print("P2 staging validation passed: expiry, Stripe, and P2-7 EULA QA remain staging-only.")
+print("P2 staging validation passed: expiry, Stripe, EULA, and P2-8 fulfillment QA remain staging-only.")

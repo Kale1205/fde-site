@@ -56,6 +56,9 @@ jobs:
       - name: P2 EULA acceptance QA tests
         run: node scripts/test_p2_eula_acceptance.mjs
 
+      - name: P2 fulfillment boundary tests
+        run: node scripts/test_p2_fulfillment.mjs
+
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts
 
