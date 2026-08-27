@@ -15,6 +15,13 @@ import {
   P2_7_EULA_VERSION,
   handleP27Qa
 } from './staging-p2-7-qa.js';
+import {
+  P2_8_QA_PATH,
+  P2_8_PREPARE_PATH,
+  P2_8_SIMULATE_DELIVERY_PATH,
+  P2_8_STATUS_PATH,
+  handleP28Qa
+} from './staging-p2-8-fulfillment.js';
 
 const VERIFY_URL='https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const ALLOWED_STAGING_TYPES=new Set(['inquiry','order']);
@@ -129,6 +136,7 @@ export default{
     if(url.pathname===STRIPE_WEBHOOK_PATH)return handleStripeWebhook(request,env);
     if(url.pathname===STRIPE_CHECKOUT_PATH)return handleStripeCheckout(request,env);
     if([P2_7_QA_PATH,P2_7_ORDER_PATH,P2_7_EULA_PATH,P2_7_STATUS_PATH].includes(url.pathname))return handleP27Qa(request,env);
+    if([P2_8_QA_PATH,P2_8_PREPARE_PATH,P2_8_SIMULATE_DELIVERY_PATH,P2_8_STATUS_PATH].includes(url.pathname))return handleP28Qa(request,env);
     const origin=request.headers.get('Origin')||'';
     const allowedOrigin=env.ALLOWED_ORIGIN||'';
 
@@ -155,6 +163,12 @@ export default{
           eulaAcceptanceBoundaryEnabled:true,
           eulaVersion:P2_7_EULA_VERSION,
           p27QaEnabled:true,
+          fulfillmentBoundaryEnabled:true,
+          p28QaEnabled:true,
+          deliverySimulationOnly:true,
+          productionDeliveryEnabled:false,
+          customerFulfillmentMailEnabled:false,
+          installerDeliveryEnabled:false,
           livePaymentsEnabled:false
         }
       },200,origin,allowedOrigin);
