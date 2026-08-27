@@ -1,5 +1,6 @@
 (()=>{
 const nativeFetch=window.fetch.bind(window);
+const policyBase=location.pathname.includes('/ja/')?'../':'';
 window.fetch=async(input,init)=>{
  const url=typeof input==='string'?input:input?.url||'';
  if(!String(url).includes('content/faq-content.json'))return nativeFetch(input,init);
@@ -7,7 +8,7 @@ window.fetch=async(input,init)=>{
  if(!baseRes.ok)return baseRes;
  try{
   const base=await baseRes.clone().json();
-  const extraRes=await nativeFetch(`content/faq-policy-additions.json?v=${Date.now()}`,{cache:'no-store'});
+  const extraRes=await nativeFetch(`${policyBase}content/faq-policy-additions.json?v=${Date.now()}`,{cache:'no-store'});
   if(!extraRes.ok)return baseRes;
   const extra=await extraRes.json();
   const ids=new Set((base.faq||[]).map(x=>x.id));
