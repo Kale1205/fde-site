@@ -7,6 +7,7 @@ on:
       - Deploy Cloudflare Worker
       - Deploy staging environment
       - Sync site build version
+      - Auto Security audit
     types:
       - completed
   workflow_dispatch:
