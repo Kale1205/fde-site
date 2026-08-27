@@ -35,6 +35,9 @@ jobs:
       - name: Slack notification integrity checks
         run: python scripts/validate_notifications.py
 
+      - name: P3 Auto Security contract checks
+        run: python scripts/validate_p3_security.py
+
       - name: P3 Auto Security critical gate
         run: python scripts/security_audit.py
 
