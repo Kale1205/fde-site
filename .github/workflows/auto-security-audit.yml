@@ -26,6 +26,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Validate Auto Security contract
+        run: python scripts/validate_p3_security.py
+
       - name: Run repository security audit
         id: audit
         continue-on-error: true
