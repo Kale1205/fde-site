@@ -7,6 +7,14 @@ import {
   handleStripeCheckout,
   stripeCheckoutConfiguration
 } from './staging-stripe-checkout.js';
+import {
+  P2_7_QA_PATH,
+  P2_7_ORDER_PATH,
+  P2_7_EULA_PATH,
+  P2_7_STATUS_PATH,
+  P2_7_EULA_VERSION,
+  handleP27Qa
+} from './staging-p2-7-qa.js';
 
 const VERIFY_URL='https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const ALLOWED_STAGING_TYPES=new Set(['inquiry','order']);
@@ -120,6 +128,7 @@ export default{
     const url=new URL(request.url);
     if(url.pathname===STRIPE_WEBHOOK_PATH)return handleStripeWebhook(request,env);
     if(url.pathname===STRIPE_CHECKOUT_PATH)return handleStripeCheckout(request,env);
+    if([P2_7_QA_PATH,P2_7_ORDER_PATH,P2_7_EULA_PATH,P2_7_STATUS_PATH].includes(url.pathname))return handleP27Qa(request,env);
     const origin=request.headers.get('Origin')||'';
     const allowedOrigin=env.ALLOWED_ORIGIN||'';
 
@@ -143,6 +152,9 @@ export default{
           stripeCheckoutBoundaryEnabled:true,
           stripeCheckoutConfigured:stripeCheckoutConfiguration(env),
           stripeCheckoutActivationEnabled:clean(env.STAGING_CHECKOUT_ENABLED,20).toLowerCase()==='true',
+          eulaAcceptanceBoundaryEnabled:true,
+          eulaVersion:P2_7_EULA_VERSION,
+          p27QaEnabled:true,
           livePaymentsEnabled:false
         }
       },200,origin,allowedOrigin);
