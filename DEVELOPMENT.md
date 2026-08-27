@@ -4,14 +4,14 @@ Kale’s FDE uses `main` as the production source of truth.
 
 ## Public-site architecture
 
-The public website is intentionally split into two independent static sites that share assets, CMS data, and backend services:
+The public website is one multilingual product site with a shared codebase, shared assets, CMS data, and backend services. Searchable language-specific URLs remain explicit:
 
-- English: `/` — authoritative English presentation, USD pricing.
-- Japanese: `/ja/` — Japanese presentation, JPY pricing.
+- English: `/` — English presentation and USD pricing.
+- Japanese: `/ja/` — Japanese presentation and JPY pricing.
 
-There is no browser language selector, persisted language state, or runtime translation layer between the two sites.
+Each paired page must provide a visible direct link to its counterpart and static `hreflang` metadata. There is no automatic language redirect, persisted language state, cookie, or runtime translation layer. A visitor's explicit language choice is always respected.
 
-For every page that exists in both sites, structure and functionality must remain paired. Copy may differ naturally by language, and prices may differ by currency, but navigation, CMS behavior, product-plan structure, comparison behavior, and core interaction patterns must stay aligned.
+For every page that exists in both languages, structure and functionality must remain paired. Copy may differ naturally by language, and prices may differ by currency, but navigation, CMS behavior, product-plan structure, comparison behavior, and core interaction patterns must stay aligned. Shared CSS and JavaScript are the default; separate language-specific presentation code requires a documented reason.
 
 The IMS development preview is a paired public feature: `demo.html` is English and `ja/demo.html` is Japanese. The Customer Portal remains a root-only operational utility until the formal sales/customer-portal language policy is finalized.
 
@@ -34,7 +34,7 @@ Core design rules:
 - motion stays restrained: reveal, slight lift and gentle transitions only;
 - mobile layouts must preserve the editorial hierarchy without clipping, hidden content, forced ornamental asymmetry or decorative obstruction.
 
-`brand-green.css` is the shared public brand layer, `product-plans.css` is the paired product-card presentation, `visual-story.css` controls shared diagram/editorial storytelling, and `cms.css` controls the shared public CMS presentation. `assets/art-ui-brush.svg` provides the broad brush/botanical field and `assets/art-ui-annotation.svg` provides the restrained hand-drawn annotation/registration motif. Do not create separate English/Japanese copies of these design primitives unless a true language-specific rendering requirement exists.
+`gallery-ui.css` and `gallery-ui.js` are the shared Gallery UI × Warehouse Art homepage layer. The existing shared layers continue to serve the remaining paired pages while they are migrated. `brand-green.css` is the established public brand layer, `product-plans.css` is the paired product-card presentation, `visual-story.css` controls shared diagram/editorial storytelling, and `cms.css` controls the shared public CMS presentation. Do not create separate English/Japanese copies of design primitives unless a true language-specific rendering requirement exists.
 
 ## CMS invariant
 
@@ -82,7 +82,8 @@ Repository validation must cover both public sites, not only root HTML. It check
 - `lang=en` for English pages and `lang=ja` for Japanese pages;
 - local JS/CSS/image/HTML references resolving to existing files;
 - one shared build-version cache key across both sites;
-- required CMS and comparison runtimes on each site;
+- required CMS and shared Gallery UI runtimes on each language homepage;
+- reciprocal static language links, self-canonical URLs, and `en` / `ja` / `x-default` alternates;
 - Japanese CMS administration and Japanese/English CMS data completeness;
 - absence of obsolete localization, pricing, commerce, and migration artifacts;
 - Cloudflare Worker entry/import consistency;
