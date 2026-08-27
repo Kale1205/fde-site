@@ -1,0 +1,68 @@
+name: Auto Security audit
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: auto-security-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: read-only-security-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate Auto Security contract
+        run: python scripts/validate_p3_security.py
+
+      - name: Run repository security audit
+        id: audit
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/security_audit.py \
+            --json-out security-audit.json \
+            --markdown-out security-audit.md
+
+      - name: Publish audit summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f security-audit.md ]; then
+            cat security-audit.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '# Baked Kale Auto Security audit' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Audit report was not produced.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-security-audit-${{ github.run_id }}
+          path: |
+            security-audit.json
+            security-audit.md
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Enforce critical finding gate
+        if: steps.audit.outcome == 'failure'
+        run: |
+          echo 'Critical security finding detected. Review the audit artifact before any production change.'
+          exit 1
