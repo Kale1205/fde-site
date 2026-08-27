@@ -115,8 +115,8 @@ for name in sorted(EN_PAGES):
         fail(f"paired English/Japanese page missing: {name}")
 
 required_markers = {
-    "index.html": ("class=\"news-strip\"", "id=\"plans\"", "class=\"ims-compare\"", "cms-content.js", "ims-compare-en.js"),
-    "ja/index.html": ("class=\"news-strip\"", "id=\"plans\"", "class=\"ims-compare\"", "cms-content-ja.js", "ims-compare-ja.js"),
+    "index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content.js", "data-demo-open"),
+    "ja/index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content-ja.js", "data-demo-open"),
     "news.html": ("cms-content.js", "id=\"cmsNewsLead\""),
     "ja/news.html": ("cms-content-ja.js", "id=\"cmsNewsLead\""),
     "contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
@@ -133,7 +133,7 @@ for rel, markers in required_markers.items():
             fail(f"{rel}: required marker/runtime missing: {marker}")
 
 # Shared public runtimes must not depend on retired browser language state.
-for rel in ("site.js", "faq-cms.js", "contact-direct.js", "cms-content.js", "cms-content-ja.js"):
+for rel in ("site.js", "gallery-ui.js", "faq-cms.js", "contact-direct.js", "cms-content.js", "cms-content-ja.js"):
     path = ROOT / rel
     if not path.exists():
         fail(f"{rel} is missing")
@@ -142,6 +142,50 @@ for rel in ("site.js", "faq-cms.js", "contact-direct.js", "cms-content.js", "cms
     for legacy in ("fde-lang", "querySelector('#lang')", 'querySelector("#lang")', "getElementById('lang')", 'getElementById("lang")'):
         if legacy in text:
             fail(f"{rel}: retired browser language-state dependency found: {legacy}")
+
+# The multilingual homepage uses separate crawlable URLs and reciprocal static links.
+home_seo = {
+    "index.html": {
+        "canonical": "https://kale1205.github.io/fde-site/",
+        "locale_href": "ja/",
+        "locale_hreflang": "ja",
+    },
+    "ja/index.html": {
+        "canonical": "https://kale1205.github.io/fde-site/ja/",
+        "locale_href": "../",
+        "locale_hreflang": "en",
+    },
+}
+for rel, expected in home_seo.items():
+    path = ROOT / rel
+    if not path.exists():
+        continue
+    text = path.read_text(encoding="utf-8")
+    link_tags = re.findall(r"<link\b[^>]*>", text, re.IGNORECASE)
+    links = []
+    for tag in link_tags:
+        attrs = dict((key.lower(), value) for key, _, value in re.findall(r"([:\w-]+)\s*=\s*([\"'])(.*?)\2", tag))
+        links.append(attrs)
+    canonical = [item for item in links if item.get("rel", "").lower() == "canonical"]
+    if not canonical or canonical[0].get("href") != expected["canonical"]:
+        fail(f"{rel}: canonical must be {expected['canonical']}")
+    alternates = {(item.get("hreflang"), item.get("href")) for item in links if item.get("rel", "").lower() == "alternate"}
+    required_alternates = {
+        ("en", "https://kale1205.github.io/fde-site/"),
+        ("ja", "https://kale1205.github.io/fde-site/ja/"),
+        ("x-default", "https://kale1205.github.io/fde-site/"),
+    }
+    for alternate in sorted(required_alternates - alternates):
+        fail(f"{rel}: missing hreflang alternate {alternate}")
+    locale_tags = re.findall(r"<a\b[^>]*data-locale-link[^>]*>", text, re.IGNORECASE)
+    locale_ok = False
+    for tag in locale_tags:
+        attrs = dict((key.lower(), value) for key, _, value in re.findall(r"([:\w-]+)\s*=\s*([\"'])(.*?)\2", tag))
+        if attrs.get("href") == expected["locale_href"] and attrs.get("hreflang") == expected["locale_hreflang"]:
+            locale_ok = True
+            break
+    if not locale_ok:
+        fail(f"{rel}: reciprocal static language link is missing or incorrect")
 
 # CMS admin has one News/Media core and one FAQ runtime. Dead order/fulfillment UI is forbidden.
 cms_admin = ROOT / "cms-admin.html"
