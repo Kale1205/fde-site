@@ -17,7 +17,7 @@ The IMS development preview is a paired public feature: `demo.html` is English a
 
 ## Public visual system
 
-The shared public-site visual direction is **Art × UI / Editorial C**. It applies equally to the English and Japanese sites and must be implemented through shared assets and shared CSS wherever practical.
+The shared public-site visual direction is **Gallery UI × Warehouse Art**. It applies equally to the English and Japanese sites and must be implemented through shared assets and shared CSS wherever practical.
 
 Core design rules:
 
@@ -25,16 +25,16 @@ Core design rules:
 - charcoal/ink typography with deep kale green as the primary accent;
 - serif display typography paired with a restrained sans-serif UI/body layer;
 - generous editorial spacing and thin rules instead of dense rounded-card layouts;
-- original brush, botanical line-art and annotation motifs used as supporting editorial marks, never as a replacement for product information;
+- warehouse imagery, paper texture, operational ledgers, and restrained annotation marks used as supporting editorial elements, never as a replacement for product information;
 - deliberately restrained asymmetry: slight offsets, staggered blocks, registration marks and paper-like framing may be used to avoid a uniform SaaS-grid feel;
 - product plans and comparisons should read like designed information plates or technical-journal spreads rather than generic application cards;
-- News, Why FDE and Kale’s Goals should preserve a publication/editorial reading rhythm, with diagrams and imagery treated as figures rather than decorative cards;
+- News, Why FDE and Kale’s Goals preserve a publication/editorial reading rhythm, using semantic ledgers and CMS imagery instead of repeating the same proposition or process in multiple diagrams;
 - square or near-square controls/cards with minimal shadows;
 - product screenshots, CMS imagery and diagrams remain readable and functional;
 - motion stays restrained: reveal, slight lift and gentle transitions only;
 - mobile layouts must preserve the editorial hierarchy without clipping, hidden content, forced ornamental asymmetry or decorative obstruction.
 
-`gallery-ui.css` and `gallery-ui.js` are the shared Gallery UI × Warehouse Art homepage layer. The existing shared layers continue to serve the remaining paired pages while they are migrated. `brand-green.css` is the established public brand layer, `product-plans.css` is the paired product-card presentation, `visual-story.css` controls shared diagram/editorial storytelling, and `cms.css` controls the shared public CMS presentation. Do not create separate English/Japanese copies of design primitives unless a true language-specific rendering requirement exists.
+`gallery-ui.css` provides the shared visual tokens, header, navigation, product presentation, footer, and responsive foundations. `gallery-pages.css` extends that system across Why FDE, Kale’s Goals, News, Contact, License, and Demo. `gallery-ui.js` owns shared navigation and product-preview behavior; the locale-specific CMS readers render the same structured News data in each language. Contact, License, and Demo retain only the page-specific runtimes needed for their real interactions. The order and customer utilities remain outside this editorial migration until their release policy is finalized. Do not create separate English/Japanese copies of design primitives unless a true language-specific rendering requirement exists.
 
 ## CMS invariant
 
@@ -82,7 +82,8 @@ Repository validation must cover both public sites, not only root HTML. It check
 - `lang=en` for English pages and `lang=ja` for Japanese pages;
 - local JS/CSS/image/HTML references resolving to existing files;
 - one shared build-version cache key across both sites;
-- required CMS and shared Gallery UI runtimes on each language homepage;
+- required CMS and shared Gallery UI layers across paired editorial pages;
+- shared Product / Why FDE / Kale’s Goals / News navigation and five-link editorial footers;
 - reciprocal static language links, self-canonical URLs, and `en` / `ja` / `x-default` alternates;
 - Japanese CMS administration and Japanese/English CMS data completeness;
 - absence of obsolete localization, pricing, commerce, and migration artifacts;

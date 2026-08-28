@@ -2,6 +2,7 @@ from pathlib import Path
 import json
 import re
 import sys
+import xml.etree.ElementTree as ET
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,10 +20,15 @@ else:
     if not re.fullmatch(r"[0-9A-Za-z._-]+", version):
         fail(f"Invalid build version: {version!r}")
 
-EN_PAGES = {"index.html", "why.html", "goals.html", "news.html", "contact.html", "order.html", "license.html"}
+EN_PAGES = {"index.html", "why.html", "goals.html", "news.html", "contact.html", "order.html", "license.html", "demo.html"}
 JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
-ROOT_ONLY_PUBLIC = {"customer.html", "demo.html"}
+ROOT_ONLY_PUBLIC = {"customer.html"}
 ALL_PUBLIC = EN_PAGES | JA_PAGES | ROOT_ONLY_PUBLIC
+
+GALLERY_INNER_PAGE_NAMES = {"why.html", "goals.html", "news.html", "contact.html", "license.html", "demo.html"}
+GALLERY_INNER_PAGES = GALLERY_INNER_PAGE_NAMES | {f"ja/{name}" for name in GALLERY_INNER_PAGE_NAMES}
+COMMON_NAV_NAMES = ("index.html", "why.html", "goals.html", "news.html")
+FOOTER_NAV_NAMES = ("why.html", "goals.html", "news.html", "license.html", "contact.html")
 
 OBSOLETE_FILES = {
     "contact-mailer.js", "fulfillment-v2.js", "faq-admin-v2.js", "translations.js",
@@ -37,6 +43,9 @@ OBSOLETE_FILES = {
     ".github/scripts/apply_brand_editorial.py", ".github/scripts/apply_cms_public.py",
     ".github/scripts/apply_green_brand.py", ".github/scripts/apply_responsive_news.py",
     ".github/scripts/cms_update.py", ".github/scripts/refresh-news-visual-assets.py",
+    "license-page-en.js", "cms-fallback.js", "cms.css", "news-reuters.css",
+    "visual-story.css", "entry-motion.css", "entry-motion.js",
+    "assets/why-fde-flow.svg", "assets/goals-business-model.svg",
 }
 
 OBSOLETE_WORKFLOWS = {
@@ -117,11 +126,14 @@ for name in sorted(EN_PAGES):
 required_markers = {
     "index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content.js", "data-demo-open"),
     "ja/index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content-ja.js", "data-demo-open"),
-    "news.html": ("cms-content.js", "id=\"cmsNewsLead\""),
-    "ja/news.html": ("cms-content-ja.js", "id=\"cmsNewsLead\""),
+    "why.html": ("visual-story-poster", "visual-story-stages", "assets/why-fde-editorial-collage.webp"),
+    "ja/why.html": ("visual-story-poster", "visual-story-stages", "../assets/why-fde-editorial-collage.webp"),
+    "goals.html": ("visual-story-poster", "visual-story-stages", "assets/kales-goals-editorial-collage-v2.webp"),
+    "ja/goals.html": ("visual-story-poster", "visual-story-stages", "../assets/kales-goals-editorial-collage-v2.webp"),
+    "news.html": ("cms-content.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
+    "ja/news.html": ("cms-content-ja.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
     "contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
     "ja/contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
-    "license.html": ("license-page-en.js",),
 }
 for rel, markers in required_markers.items():
     path = ROOT / rel
@@ -131,6 +143,93 @@ for rel, markers in required_markers.items():
     for marker in markers:
         if marker not in text:
             fail(f"{rel}: required marker/runtime missing: {marker}")
+
+for rel in ("why.html", "ja/why.html", "goals.html", "ja/goals.html"):
+    path = ROOT / rel
+    if not path.exists():
+        continue
+    text = path.read_text(encoding="utf-8")
+    for retired in ("page-card-grid", "concept-ledger", "principle-ledger"):
+        if retired in text:
+            fail(f"{rel}: retired text-heavy story layout found: {retired}")
+
+# Gallery UI inner pages share one visual system and one crawlable navigation model.
+def attrs_from_tag(tag):
+    return dict((key.lower(), value) for key, _, value in re.findall(r"([:\w-]+)\s*=\s*([\"'])(.*?)\2", tag))
+
+
+def local_target_rel(html_path, href):
+    target = resolve_local(html_path, href)
+    if target is None:
+        return None
+    raw_path = urlsplit(href).path
+    if raw_path.endswith("/") or target.is_dir():
+        target = target / "index.html"
+    try:
+        return target.relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return None
+
+
+def anchor_targets(html_path, fragment):
+    result = []
+    for tag in re.findall(r"<a\b[^>]*>", fragment, re.IGNORECASE):
+        attrs = attrs_from_tag(tag)
+        href = attrs.get("href", "")
+        result.append((attrs, local_target_rel(html_path, href)))
+    return result
+
+
+for rel in sorted(GALLERY_INNER_PAGES):
+    path = ROOT / rel
+    if not path.exists():
+        continue
+    text = path.read_text(encoding="utf-8")
+    for marker in ("gallery-ui.css", "gallery-pages.css"):
+        if marker not in text:
+            fail(f"{rel}: Gallery UI stylesheet missing: {marker}")
+
+    prefix = "ja/" if rel.startswith("ja/") else ""
+    expected_common = {f"{prefix}{name}" for name in COMMON_NAV_NAMES}
+    expected_footer = {f"{prefix}{name}" for name in FOOTER_NAV_NAMES}
+    nav_blocks = re.findall(r"<nav\b(?P<attrs>[^>]*)>(?P<body>.*?)</nav>", text, re.IGNORECASE | re.DOTALL)
+    desktop = [body for attrs, body in nav_blocks if "desktop-nav" in attrs_from_tag(f"<nav {attrs}>").get("class", "").split()]
+    mobile = [body for attrs, body in nav_blocks if attrs_from_tag(f"<nav {attrs}>").get("id") == "mobile-nav"]
+    if not desktop:
+        fail(f"{rel}: shared desktop navigation is missing")
+    if not mobile:
+        fail(f"{rel}: shared mobile navigation is missing")
+    for label, blocks in (("desktop", desktop), ("mobile", mobile)):
+        targets = {target for block in blocks for _, target in anchor_targets(path, block) if target}
+        for missing in sorted(expected_common - targets):
+            fail(f"{rel}: {label} navigation link missing: {missing}")
+
+    footer_match = re.search(r"<footer\b[^>]*>(.*?)</footer>", text, re.IGNORECASE | re.DOTALL)
+    if not footer_match:
+        fail(f"{rel}: shared footer is missing")
+    else:
+        footer_targets = {target for _, target in anchor_targets(path, footer_match.group(1)) if target}
+        for missing in sorted(expected_footer - footer_targets):
+            fail(f"{rel}: footer navigation link missing: {missing}")
+
+    page_name = Path(rel).name
+    if page_name in {"why.html", "goals.html", "news.html"}:
+        for label, blocks in (("desktop", desktop), ("mobile", mobile)):
+            active_ok = any(
+                target == rel and attrs.get("aria-current", "").lower() == "page"
+                for block in blocks
+                for attrs, target in anchor_targets(path, block)
+            )
+            if not active_ok:
+                fail(f"{rel}: active {label} navigation link must use aria-current=page")
+    elif page_name == "contact.html":
+        header_match = re.search(r"<header\b[^>]*>(.*?)</header>", text, re.IGNORECASE | re.DOTALL)
+        active_ok = bool(header_match) and any(
+            target == rel and attrs.get("aria-current", "").lower() == "page"
+            for attrs, target in anchor_targets(path, header_match.group(1))
+        )
+        if not active_ok:
+            fail(f"{rel}: active header Contact link must use aria-current=page")
 
 # Shared public runtimes must not depend on retired browser language state.
 for rel in ("site.js", "gallery-ui.js", "faq-cms.js", "contact-direct.js", "cms-content.js", "cms-content-ja.js"):
@@ -143,20 +242,42 @@ for rel in ("site.js", "gallery-ui.js", "faq-cms.js", "contact-direct.js", "cms-
         if legacy in text:
             fail(f"{rel}: retired browser language-state dependency found: {legacy}")
 
-# The multilingual homepage uses separate crawlable URLs and reciprocal static links.
-home_seo = {
+# The multilingual site uses paired crawlable URLs and reciprocal static links.
+paired_seo = {
     "index.html": {
         "canonical": "https://kale1205.github.io/fde-site/",
+        "en_url": "https://kale1205.github.io/fde-site/",
+        "ja_url": "https://kale1205.github.io/fde-site/ja/",
         "locale_href": "ja/",
         "locale_hreflang": "ja",
     },
     "ja/index.html": {
         "canonical": "https://kale1205.github.io/fde-site/ja/",
+        "en_url": "https://kale1205.github.io/fde-site/",
+        "ja_url": "https://kale1205.github.io/fde-site/ja/",
         "locale_href": "../",
         "locale_hreflang": "en",
     },
 }
-for rel, expected in home_seo.items():
+for name in sorted(GALLERY_INNER_PAGE_NAMES):
+    en_url = f"https://kale1205.github.io/fde-site/{name}"
+    ja_url = f"https://kale1205.github.io/fde-site/ja/{name}"
+    paired_seo[name] = {
+        "canonical": en_url,
+        "en_url": en_url,
+        "ja_url": ja_url,
+        "locale_href": f"ja/{name}",
+        "locale_hreflang": "ja",
+    }
+    paired_seo[f"ja/{name}"] = {
+        "canonical": ja_url,
+        "en_url": en_url,
+        "ja_url": ja_url,
+        "locale_href": f"../{name}",
+        "locale_hreflang": "en",
+    }
+
+for rel, expected in paired_seo.items():
     path = ROOT / rel
     if not path.exists():
         continue
@@ -171,9 +292,9 @@ for rel, expected in home_seo.items():
         fail(f"{rel}: canonical must be {expected['canonical']}")
     alternates = {(item.get("hreflang"), item.get("href")) for item in links if item.get("rel", "").lower() == "alternate"}
     required_alternates = {
-        ("en", "https://kale1205.github.io/fde-site/"),
-        ("ja", "https://kale1205.github.io/fde-site/ja/"),
-        ("x-default", "https://kale1205.github.io/fde-site/"),
+        ("en", expected["en_url"]),
+        ("ja", expected["ja_url"]),
+        ("x-default", expected["en_url"]),
     }
     for alternate in sorted(required_alternates - alternates):
         fail(f"{rel}: missing hreflang alternate {alternate}")
@@ -186,6 +307,61 @@ for rel, expected in home_seo.items():
             break
     if not locale_ok:
         fail(f"{rel}: reciprocal static language link is missing or incorrect")
+
+# Sitemap mirrors the public Gallery UI pairs and their exact language alternates.
+sitemap_path = ROOT / "sitemap.xml"
+sitemap_names = ("license.html", "demo.html", "why.html", "goals.html", "contact.html", "news.html")
+sitemap_pairs = [
+    (
+        "https://kale1205.github.io/fde-site/",
+        "https://kale1205.github.io/fde-site/ja/",
+    )
+] + [
+    (
+        f"https://kale1205.github.io/fde-site/{name}",
+        f"https://kale1205.github.io/fde-site/ja/{name}",
+    )
+    for name in sitemap_names
+]
+expected_sitemap_urls = {url for pair in sitemap_pairs for url in pair}
+if not sitemap_path.exists():
+    fail("sitemap.xml is missing")
+else:
+    try:
+        sitemap_root = ET.parse(sitemap_path).getroot()
+        ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9", "xhtml": "http://www.w3.org/1999/xhtml"}
+        sitemap_entries = {}
+        for item in sitemap_root.findall("sm:url", ns):
+            loc = item.findtext("sm:loc", default="", namespaces=ns).strip()
+            if not loc:
+                fail("sitemap.xml: url entry is missing loc")
+                continue
+            if loc in sitemap_entries:
+                fail(f"sitemap.xml: duplicate loc: {loc}")
+            sitemap_entries[loc] = item
+        actual_sitemap_urls = set(sitemap_entries)
+        for missing in sorted(expected_sitemap_urls - actual_sitemap_urls):
+            fail(f"sitemap.xml: expected URL missing: {missing}")
+        for unexpected in sorted(actual_sitemap_urls - expected_sitemap_urls):
+            fail(f"sitemap.xml: unexpected URL: {unexpected}")
+        for en_url, ja_url in sitemap_pairs:
+            required = {("en", en_url), ("ja", ja_url), ("x-default", en_url)}
+            for loc in (en_url, ja_url):
+                item = sitemap_entries.get(loc)
+                if item is None:
+                    continue
+                lastmod = item.findtext("sm:lastmod", default="", namespaces=ns).strip()
+                if lastmod != "2026-08-28":
+                    fail(f"sitemap.xml: {loc} lastmod must be 2026-08-28")
+                alternates = {
+                    (link.get("hreflang"), link.get("href"))
+                    for link in item.findall("xhtml:link", ns)
+                    if link.get("rel") == "alternate"
+                }
+                for alternate in sorted(required - alternates):
+                    fail(f"sitemap.xml: {loc} missing hreflang alternate {alternate}")
+    except ET.ParseError as exc:
+        fail(f"sitemap.xml: invalid XML: {exc}")
 
 # CMS admin has one News/Media core and one FAQ runtime. Dead order/fulfillment UI is forbidden.
 cms_admin = ROOT / "cms-admin.html"
