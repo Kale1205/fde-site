@@ -35,6 +35,12 @@ jobs:
       - name: Slack notification integrity checks
         run: python scripts/validate_notifications.py
 
+      - name: P3 Kale Sentinel read-only contract checks
+        run: python scripts/validate_p3_sentinel.py
+
+      - name: P3 Kale Sentinel deterministic rule tests
+        run: python scripts/test_p3_sentinel_rules.py
+
       - name: P3 Auto Security contract checks
         run: python scripts/validate_p3_security.py
 
