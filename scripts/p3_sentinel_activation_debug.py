@@ -3,10 +3,12 @@ from pathlib import Path
 import json
 import sys
 
-from kale_sentinel_probe import run_live
+import kale_sentinel_probe as probe
+from kale_sentinel_live import install_http_identity
 
 OUT = Path('sentinel-debug-report')
-code = run_live(OUT)
+install_http_identity()
+code = probe.run_live(OUT)
 report_path = OUT / 'kale-sentinel-report.json'
 if report_path.exists():
     report = json.loads(report_path.read_text(encoding='utf-8'))
