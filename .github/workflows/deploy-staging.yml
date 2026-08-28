@@ -104,6 +104,7 @@ jobs:
           ALLOWED_ORIGIN = "${STAGING_ORIGIN}"
           TURNSTILE_EXPECTED_HOSTNAME = "kales-fde-staging.pages.dev"
           STAGING_MODE = "true"
+          STAGING_CHECKOUT_ENABLED = "false"
 
           [secrets]
           # Stripe secrets stay optional until the test account is connected.
@@ -120,6 +121,7 @@ jobs:
           grep -q 'name = "kales-fde-contact-staging"' worker/wrangler.staging.generated.toml
           grep -Eq 'id = "[0-9a-fA-F]{32}"' worker/wrangler.staging.generated.toml
           grep -Fq 'required = [ "TURNSTILE_SECRET_KEY" ]' worker/wrangler.staging.generated.toml
+          grep -Fq 'STAGING_CHECKOUT_ENABLED = "false"' worker/wrangler.staging.generated.toml
           grep -Fq 'crons = [ "0 * * * *" ]' worker/wrangler.staging.generated.toml
           ! grep -Eq 'BREVO|FROM_EMAIL|FROM_NAME|\[ai\]|binding = "AI"' worker/wrangler.staging.generated.toml
 
@@ -153,7 +155,7 @@ jobs:
               (.p2.stripeWebhookConfigured | type) == "boolean" and
               .p2.stripeCheckoutBoundaryEnabled == true and
               (.p2.stripeCheckoutConfigured | type) == "boolean" and
-              (.p2.stripeCheckoutActivationEnabled | type) == "boolean" and
+              .p2.stripeCheckoutActivationEnabled == false and
               .p2.eulaAcceptanceBoundaryEnabled == true and
               .p2.eulaVersion == "FDE-IMS-STAGING-EULA-2026-08-27" and
               .p2.p27QaEnabled == true and

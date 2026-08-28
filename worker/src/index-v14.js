@@ -1,6 +1,10 @@
 import baseWorker from './index-v13.js';
 
-const PROTECTED=['FDE IMS License','FDE IMS Updates','License Agreement','EULA','IMS Starter','Business DX Pack','Baked Kale','Kale’s FDE','Kale\'s FDE','FDE','Customer Portal','Cloudflare','Brevo','GitHub'];
+const PROTECTED=['FDE IMS License Plus','FDE IMS License','FDE IMS Updates','License Agreement','EULA','IMS Starter','Business DX Pack','Baked Kale','Kale’s FDE','Kale\'s FDE','FDE','Customer Portal','Cloudflare','Brevo','GitHub'];
+// The inherited commerce handlers still implement the retired two-plan catalog.
+// Keep every public or mutating commerce route fail-closed until a reviewed
+// three-plan backend, EULA, payment, and fulfillment migration replaces them.
+const PRE_RELEASE_COMMERCE_TYPES=new Set(['order','status_lookup','status_update','admin_orders_list','admin_order_update','admin_order_cancel','admin_pdf','fulfillment']);
 function clean(v,max=8000){return String(v??'').trim().slice(0,max)}
 function cors(origin,allowedOrigin){const allow=origin&&origin===allowedOrigin?origin:allowedOrigin;return{'Access-Control-Allow-Origin':allow,'Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Vary':'Origin'}}
 function json(data,status,origin,allowedOrigin){return new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8',...cors(origin,allowedOrigin)}})}
@@ -43,6 +47,7 @@ export default{
   const origin=request.headers.get('Origin')||'',allowedOrigin=env.ALLOWED_ORIGIN||'https://kale1205.github.io';
   let raw=null;try{raw=await request.clone().json()}catch{}
   const type=clean(raw?.type,60);
+  if(PRE_RELEASE_COMMERCE_TYPES.has(type))return json({ok:false,error:'FDE_COMMERCE_DISABLED_PRE_RELEASE'},503,origin,allowedOrigin);
   if(type!=='admin_faq_enrich'&&type!=='admin_translate_fields')return baseWorker.fetch(request,env,ctx);
   const auth=authorize(raw,env,origin,allowedOrigin);if(auth)return auth;
   try{

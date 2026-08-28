@@ -8,7 +8,7 @@
     received: isJapanese ? "1点を入庫しました" : "Received one unit",
     shipped: isJapanese ? "1点を出庫しました" : "Shipped one unit",
     ok: isJapanese ? "正常" : "OK",
-    low: isJapanese ? "在庫不足" : "Low stock",
+    low: isJapanese ? "要補充" : "Low stock",
     tools: isJapanese
       ? ["在庫一覧", "商品", "記録", "出荷", "設定"]
       : ["Inventory", "Products", "Records", "Shipping", "Settings"],
@@ -124,4 +124,3 @@
 
   updateSummary();
 })();
-

@@ -5,7 +5,7 @@ function updateDemo(){
  const values=qsa('[data-stock-value]').map(el=>parseInt(el.textContent,10)||0),isJa=document.documentElement.lang==='ja';
  const total=qs('#kpiItems'),low=qs('#kpiLow');
  if(total)total.textContent=qsa('#inventoryBody tr').length;if(low)low.textContent=values.filter(v=>v<30).length;
- qsa('#inventoryBody tr').forEach(r=>{const cell=qs('[data-stock-value]',r),status=qs('[data-stock-status]',r);if(cell&&status)status.textContent=(parseInt(cell.textContent,10)||0)<30?(isJa?'少ない':'Low'):(isJa?'適正':'Healthy')});
+ qsa('#inventoryBody tr').forEach(r=>{const cell=qs('[data-stock-value]',r),status=qs('[data-stock-status]',r);if(cell&&status)status.textContent=(parseInt(cell.textContent,10)||0)<30?(isJa?'要補充':'Low'):(isJa?'適正':'Healthy')});
 }
 function init(){
  const mt=qs('.mobile-toggle'),nav=qs('.main-nav'),header=qs('.site-header');if(mt&&nav&&header){mt.addEventListener('click',e=>{e.stopPropagation();nav.classList.toggle('open');mt.setAttribute('aria-expanded',nav.classList.contains('open')?'true':'false')});document.addEventListener('click',e=>{if(nav.classList.contains('open')&&!header.contains(e.target)){nav.classList.remove('open');mt.setAttribute('aria-expanded','false')}})}

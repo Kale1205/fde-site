@@ -1,6 +1,18 @@
-# Stripe Sandbox / Cloudflare staging 設定手順（P2-6）
+# 旧2プラン Stripe Sandbox / Cloudflare staging 参照記録（実行禁止）
 
-この手順は `kales-fde-contact-staging` Worker 専用です。実売上は発生しません。公開サイトの購入ボタンと本番決済は、別途リリース承認されるまで無効のままです。
+この文書が記録していた2プラン用設定は、現在の3プラン構成と一致しません。以下の既存Worker、Price ID、テストデータは移行時の参照専用です。現在の設定手順として実行しないでください。
+
+公開サイトの基準は次のとおりです。
+
+| プラン | 日本語サイト | 英語サイト | 備考 |
+|---|---:|---:|---|
+| License | 49,800円・買い切り | $313 one-time | 購入後3か月のUpdatesを含む |
+| License Plus | 89,800円・買い切り | $565 one-time | ソースコードと社内改変権を含む。Updates特典なし |
+| Updates | 月額12,000円 | $75/month | 契約期間中のみ利用可能 |
+
+License購入者が4〜9か月目にUpdatesを任意継続する場合は、月額6,000円 / $38です。10か月目以降は通常価格となり、無料・割引期間から有料契約へ自動移行しません。
+
+3プラン対応のStripe移行では、License Plusの追加、Updates価格の変更、License購入者向けUpdates特典、日英それぞれの固定通貨、サーバー側allowlist、EULA、Webhook、解約、fulfillment境界を一体で再検証する必要があります。移行とSandbox検証が完了するまで、Checkout、本番決済、納品、顧客ポータルは無効のままです。
 
 ## 先に守ること
 
@@ -15,18 +27,18 @@
 2. Sandboxを新規作成するか、Baked Kaleのstaging専用Sandboxを開く。
 3. 以後、画面上でSandbox名が表示されていることを毎回確認する。
 
-## 2. ProductとPriceを作る
+## 2. 旧ProductとPrice（参照専用）
 
-Stripeの `Product catalog` で次の2商品、合計4つのPriceを作成する。Price作成後に表示される `price_...` をメモする。これは公開識別子でありSecretではないが、stagingとproductionを混ぜないこと。
+次の表は、旧2プランのSandbox検証で使った値です。現在の3プラン用Priceとして作成・再利用しないでください。
 
 | Stripe Product | Price種別 | 通貨 | 金額 | Cloudflare変数名 |
 |---|---:|---:|---:|---|
 | FDE IMS License | One time | USD | 313.00 | `STRIPE_PRICE_LICENSE_USD` |
 | FDE IMS License | One time | JPY | 49,800 | `STRIPE_PRICE_LICENSE_JPY` |
-| FDE IMS Updates | Recurring / Monthly | USD | 62.00 | `STRIPE_PRICE_UPDATES_USD` |
-| FDE IMS Updates | Recurring / Monthly | JPY | 9,800 | `STRIPE_PRICE_UPDATES_JPY` |
+| FDE IMS Updates（旧） | Recurring / Monthly | USD | 62.00 | `STRIPE_PRICE_UPDATES_USD` |
+| FDE IMS Updates（旧） | Recurring / Monthly | JPY | 9,800 | `STRIPE_PRICE_UPDATES_JPY` |
 
-最初の1年間だけ月額4,900円にするルールは、商用ルールを再確認するまでStripeへ作成しない。
+この旧Updates価格と旧割引ルールは廃止済みです。
 
 ## 3. Stripe APIキーを作る
 
@@ -57,9 +69,9 @@ openssl rand -base64 32
 
 この値はCheckoutの手動疎通確認時だけ `X-FDE-Staging-Checkout-Key` ヘッダーへ入れる。
 
-## 5. Price IDと戻り先URLをCloudflareへ登録する
+## 5. 旧Price IDと戻り先URL（参照専用）
 
-Cloudflareの `kales-fde-contact-staging` → `Settings` → `Variables and Secrets` で、次をすべてType `Text` として追加する。
+次の変数は旧2プランWorkerが参照する値です。3プラン移行前に追加・更新してCheckoutを有効化しないでください。
 
 | Variable name | Value |
 |---|---|
@@ -115,11 +127,11 @@ P2-6がstagingへ反映された後に実施する。
 
 `stripeCheckoutConfigured` が `false` の場合は、手順3〜5の8項目のどれかが未登録である。Secretの値はhealth responseには表示されない。
 
-## 8. Sandbox Checkoutを有効化するタイミング
+## 8. Sandbox Checkoutは無効のまま維持する
 
-EULAの版と同意日時をstaging注文へ保存する次工程が完了し、テスト担当者が疎通確認する直前にだけ、Cloudflareの `STAGING_CHECKOUT_ENABLED` を `true` へ変更してDeployする。
+現在の旧2プラン構成では、Cloudflareの `STAGING_CHECKOUT_ENABLED` を `true` に変更しないでください。stagingデプロイとhealth checkは `false` を必須条件として扱います。
 
-このスイッチをtrueにしても、Stripe Sandbox Sessionしか受理せず、公開サイトに購入ボタンは出ず、本番決済も有効にならない。疎通確認後、継続利用しない場合は `false` に戻す。
+3プラン対応、EULA、サーバー側allowlist、Webhook、解約、fulfillment境界、日英固定通貨の移行とレビューが完了した後、新しいSandbox QA手順を作成します。それまではCheckout疎通確認を再開しません。
 
 ## トラブル時に共有してよい情報
 

@@ -77,6 +77,9 @@ jobs:
       - name: P2 fulfillment boundary tests
         run: node scripts/test_p2_fulfillment.mjs
 
+      - name: Production pre-release commerce gate tests
+        run: node scripts/test_production_commerce_gate.mjs
+
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts
 
