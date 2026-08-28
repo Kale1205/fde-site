@@ -126,6 +126,10 @@ for name in sorted(EN_PAGES):
 required_markers = {
     "index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content.js", "data-demo-open"),
     "ja/index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content-ja.js", "data-demo-open"),
+    "why.html": ("visual-story-poster", "visual-story-stages", "assets/why-fde-editorial-collage.webp"),
+    "ja/why.html": ("visual-story-poster", "visual-story-stages", "../assets/why-fde-editorial-collage.webp"),
+    "goals.html": ("visual-story-poster", "visual-story-stages", "assets/kales-goals-editorial-collage.webp"),
+    "ja/goals.html": ("visual-story-poster", "visual-story-stages", "../assets/kales-goals-editorial-collage.webp"),
     "news.html": ("cms-content.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
     "ja/news.html": ("cms-content-ja.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
     "contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
@@ -139,6 +143,15 @@ for rel, markers in required_markers.items():
     for marker in markers:
         if marker not in text:
             fail(f"{rel}: required marker/runtime missing: {marker}")
+
+for rel in ("why.html", "ja/why.html", "goals.html", "ja/goals.html"):
+    path = ROOT / rel
+    if not path.exists():
+        continue
+    text = path.read_text(encoding="utf-8")
+    for retired in ("page-card-grid", "concept-ledger", "principle-ledger"):
+        if retired in text:
+            fail(f"{rel}: retired text-heavy story layout found: {retired}")
 
 # Gallery UI inner pages share one visual system and one crawlable navigation model.
 def attrs_from_tag(tag):

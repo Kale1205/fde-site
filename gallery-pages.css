@@ -127,6 +127,172 @@
 .language-ja .principle-ledger h3 { font-family: var(--jp); font-size: clamp(27px, 2.7vw, 37px); font-weight: 720; }
 .principle-ledger p { max-width: 720px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.75; }
 
+/* Why FDE + Kale's Goals: low-copy editorial story pages. */
+.why-page .gallery-news-strip,
+.goals-page .gallery-news-strip { display: none; }
+
+.visual-story {
+  padding-top: 28px;
+  padding-bottom: 34px;
+}
+
+.visual-story-header { margin-bottom: 10px; }
+
+.visual-story-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.32fr);
+  align-items: end;
+  gap: 48px;
+}
+
+.visual-story-heading h1 {
+  display: grid;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(64px, 6.6vw, 102px);
+  font-weight: 480;
+  letter-spacing: -0.067em;
+  line-height: 0.88;
+}
+
+.visual-story-heading h1 .accent-line { color: var(--orange); }
+
+.visual-story-heading > p {
+  max-width: 360px;
+  margin: 0 0 8px;
+  color: var(--body);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.language-ja .visual-story-heading h1 {
+  font-family: var(--jp);
+  font-size: clamp(45px, 5.2vw, 76px);
+  font-weight: 780;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+
+.visual-story-poster {
+  position: relative;
+  margin: 0;
+  border-top: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+  background: var(--paper-deep);
+  overflow: hidden;
+}
+
+.visual-story-poster > img {
+  width: 100%;
+  height: clamp(520px, 41vw, 590px);
+  object-fit: cover;
+}
+
+.visual-story-poster figcaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.visual-story-stages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid rgba(13, 30, 23, 0.42);
+  padding: 0;
+  list-style: none;
+}
+
+.visual-story-stages li {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 15px;
+  min-height: 168px;
+  padding: 22px 24px 24px;
+  color: var(--ink);
+  background: rgba(250, 248, 244, 0.9);
+  backdrop-filter: blur(5px);
+}
+
+.visual-story-stages li:not(:last-child) { border-right: 1px solid rgba(13, 30, 23, 0.35); }
+
+.visual-story-stages .stage-focus {
+  color: white;
+  background: rgba(184, 58, 8, 0.91);
+}
+
+.visual-story-stages li > span {
+  display: grid;
+  place-items: center;
+  align-self: start;
+  width: 31px;
+  height: 31px;
+  color: white;
+  background: var(--forest);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.visual-story-stages .stage-focus > span { color: var(--orange); background: var(--paper); }
+
+.visual-story-stages h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(35px, 3.5vw, 54px);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+.language-ja .visual-story-stages h2 {
+  font-family: var(--jp);
+  font-size: clamp(28px, 2.8vw, 40px);
+  font-weight: 760;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.visual-story-stages p {
+  margin: 13px 0 0;
+  color: var(--body);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.visual-story-stages .stage-focus p { color: rgba(255, 255, 255, 0.8); }
+
+.visual-story-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 36px;
+  min-height: 88px;
+  border-bottom: 1px solid var(--line);
+}
+
+.visual-story-path {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 650px;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 720;
+  letter-spacing: 0.18em;
+  text-align: center;
+}
+
+.visual-story-path span { padding: 10px 18px; border-right: 1px solid var(--line); }
+.visual-story-path span:first-child { border-left: 1px solid var(--line); }
+.visual-story-path span:nth-child(2) { color: var(--orange); }
+
+.visual-story-footer .button { min-width: 190px; color: white; background: var(--forest); }
+.visual-story-footer .button:hover { background: var(--ink); transform: translateY(-1px); }
+.visual-story-footer .button:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+
 .inner-hero {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(420px, 0.68fr);
@@ -678,6 +844,10 @@
   .business-profile-item:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
   .news-latest-track { grid-auto-columns: minmax(310px, 46%); }
   .editorial-cta, .page-cta { grid-template-columns: 1fr; }
+  .visual-story-heading { grid-template-columns: 1fr; gap: 20px; }
+  .visual-story-heading > p { max-width: 610px; margin-bottom: 0; }
+  .visual-story-poster > img { height: auto; }
+  .visual-story-stages li { grid-template-columns: 34px minmax(0, 1fr); gap: 10px; padding-inline: 18px; }
 }
 
 @media (max-width: 760px) {
@@ -696,6 +866,24 @@
   .language-ja .subpage-hero h1 { font-size: clamp(34px, 10.5vw, 43px); line-height: 1.15; }
   .subpage-lead { font-size: 15px; }
   .subpage-index { display: none; }
+  .visual-story { padding-top: 42px; padding-bottom: 34px; }
+  .visual-story-header { margin-bottom: 20px; }
+  .visual-story-heading { gap: 17px; }
+  .visual-story-heading h1 { font-size: clamp(43px, 13.5vw, 56px); line-height: 0.95; }
+  .language-ja .visual-story-heading h1 { font-size: clamp(34px, 10.5vw, 44px); line-height: 1.13; }
+  .visual-story-heading > p { font-size: 14px; }
+  .visual-story-poster > img { aspect-ratio: auto; }
+  .visual-story-poster figcaption { position: static; }
+  .visual-story-stages { grid-template-columns: 1fr; }
+  .visual-story-stages li { grid-template-columns: 40px minmax(0, 1fr); min-height: 0; padding: 20px; backdrop-filter: none; }
+  .visual-story-stages li:not(:last-child) { border-right: 0; border-bottom: 1px solid rgba(13, 30, 23, 0.35); }
+  .visual-story-stages h2 { font-size: 35px; }
+  .language-ja .visual-story-stages h2 { font-size: 29px; }
+  .visual-story-stages p { margin-top: 8px; }
+  .visual-story-footer { grid-template-columns: 1fr; gap: 20px; padding: 24px 0 0; }
+  .visual-story-path { width: 100%; font-size: 9px; letter-spacing: 0.11em; }
+  .visual-story-path span { padding-inline: 8px; }
+  .visual-story-footer .button { width: 100%; margin-bottom: 24px; }
   .display,
   .inner-hero h1,
   .page-hero h1,
