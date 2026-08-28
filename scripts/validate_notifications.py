@@ -26,6 +26,7 @@ required_markers = (
     "- Sync site build version",
     "- Auto Security audit",
     "- Kale Sentinel operational check",
+    "- Kale Desk foundation check",
     "github.event.workflow_run.conclusion == 'failure'",
     "github.event.workflow_run.conclusion == 'timed_out'",
     "github.event.workflow_run.conclusion == 'action_required'",

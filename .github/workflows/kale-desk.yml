@@ -1,0 +1,43 @@
+name: Kale Desk foundation check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kale-desk-foundation-check
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: inbound-only-no-send-foundation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate Kale Desk authority boundary
+        run: python scripts/validate_p3_desk.py
+
+      - name: Run deterministic Kale Desk rule tests
+        run: python scripts/test_p3_desk_rules.py
+
+      - name: Generate synthetic support evidence
+        run: python scripts/kale_desk_dry_run.py --output desk-report
+
+      - name: Upload foundation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kale-desk-foundation-report
+          path: desk-report/
+          if-no-files-found: ignore
+          retention-days: 14
