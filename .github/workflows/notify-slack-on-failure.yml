@@ -8,6 +8,7 @@ on:
       - Deploy staging environment
       - Sync site build version
       - Auto Security audit
+      - Kale Sentinel operational check
     types:
       - completed
   workflow_dispatch:
