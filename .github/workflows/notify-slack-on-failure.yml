@@ -10,6 +10,7 @@ on:
       - Auto Security audit
       - Kale Sentinel operational check
       - Kale Desk foundation check
+      - Kale’s Office foundation check
     types:
       - completed
   workflow_dispatch:
