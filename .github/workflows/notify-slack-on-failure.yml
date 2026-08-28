@@ -9,6 +9,7 @@ on:
       - Sync site build version
       - Auto Security audit
       - Kale Sentinel operational check
+      - Kale Desk foundation check
     types:
       - completed
   workflow_dispatch:
