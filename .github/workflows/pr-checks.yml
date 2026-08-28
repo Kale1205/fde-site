@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: pr-checks-${{ github.workflow }}-${{ github.ref }}
@@ -40,6 +41,13 @@ jobs:
 
       - name: P3 Kale Sentinel deterministic rule tests
         run: python scripts/test_p3_sentinel_rules.py
+
+      - name: P3-4 one-time live Sentinel activation probe
+        if: github.event_name == 'pull_request' && github.event.pull_request.number == 48
+        env:
+          CLOUDFLARE_SENTINEL_TOKEN: ${{ secrets.CLOUDFLARE_SENTINEL_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/kale_sentinel_probe.py --live --output sentinel-report
 
       - name: P3 Auto Security contract checks
         run: python scripts/validate_p3_security.py
