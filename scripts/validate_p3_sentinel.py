@@ -6,6 +6,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "kale-sentinel.yml"
 PROBE = ROOT / "scripts" / "kale_sentinel_probe.py"
+LIVE_RUNNER = ROOT / "scripts" / "kale_sentinel_live.py"
 TESTS = ROOT / "scripts" / "test_p3_sentinel_rules.py"
 DOC = ROOT / "docs" / "operations" / "KALE_SENTINEL.md"
 NOTIFIER = ROOT / ".github" / "workflows" / "notify-slack-on-failure.yml"
@@ -26,6 +27,7 @@ def read(path):
 
 workflow = read(WORKFLOW)
 probe = read(PROBE)
+live_runner = read(LIVE_RUNNER)
 tests = read(TESTS)
 doc = read(DOC)
 notifier = read(NOTIFIER)
@@ -38,7 +40,7 @@ workflow_required = (
     "contents: read",
     "actions: read",
     "CLOUDFLARE_SENTINEL_TOKEN",
-    "python scripts/kale_sentinel_probe.py --live --output sentinel-report",
+    "python scripts/kale_sentinel_live.py --output sentinel-report",
     "actions/upload-artifact@v4",
     "retention-days: 14",
 )
@@ -67,6 +69,26 @@ for forbidden in (
 ):
     if forbidden in workflow:
         fail(f"Kale Sentinel workflow violates read-only contract: {forbidden}")
+
+for marker in (
+    "baked-kale-sentinel/1.0",
+    "urllib.request.install_opener",
+    "probe.run_live",
+):
+    if marker not in live_runner:
+        fail(f"Kale Sentinel live runner missing HTTP identity marker: {marker}")
+
+for forbidden in (
+    "CLOUDFLARE_API_TOKEN",
+    'method="POST"',
+    'method="PUT"',
+    'method="PATCH"',
+    'method="DELETE"',
+    "wrangler",
+    "git push",
+):
+    if forbidden in live_runner:
+        fail(f"Kale Sentinel live runner violates read-only contract: {forbidden}")
 
 probe_required = (
     "CLOUDFLARE_SENTINEL_TOKEN",
