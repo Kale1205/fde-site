@@ -39,7 +39,7 @@ jobs:
           echo "Dedicated Sentinel credential is configured."
 
       - name: Run Kale Sentinel read-only probe
-        run: python scripts/kale_sentinel_probe.py --live --output sentinel-report
+        run: python scripts/kale_sentinel_live.py --output sentinel-report
 
       - name: Upload operational evidence
         if: always()
