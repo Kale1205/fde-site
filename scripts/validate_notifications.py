@@ -27,6 +27,7 @@ required_markers = (
     "- Auto Security audit",
     "- Kale Sentinel operational check",
     "- Kale Desk foundation check",
+    "- Kale’s Office foundation check",
     "github.event.workflow_run.conclusion == 'failure'",
     "github.event.workflow_run.conclusion == 'timed_out'",
     "github.event.workflow_run.conclusion == 'action_required'",
