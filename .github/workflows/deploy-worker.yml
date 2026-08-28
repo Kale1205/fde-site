@@ -47,6 +47,9 @@ jobs:
           if not re.search(r'^keep_vars\s*=\s*true\s*$', text, re.MULTILINE):
               sys.exit('Refusing production deploy: keep_vars = true is required.')
 
+          if not re.search(r'^PRODUCTION_COMMERCE_ENABLED\s*=\s*["\']false["\']\s*$', text, re.MULTILINE):
+              sys.exit('Refusing production deploy: legacy production commerce must remain explicitly disabled.')
+
           blocks = re.findall(r'\[\[kv_namespaces\]\](.*?)(?=\n\[|\Z)', text, re.DOTALL)
           order_status = next((b for b in blocks if re.search(r'^\s*binding\s*=\s*["\']ORDER_STATUS["\']', b, re.MULTILINE)), None)
           if order_status is None:
@@ -58,6 +61,9 @@ jobs:
 
           print('Production Worker configuration safety check passed.')
           PY
+
+      - name: Verify production commerce remains disabled
+        run: node scripts/test_production_commerce_gate.mjs
 
       - name: Verify Cloudflare deployment credential exists
         shell: bash

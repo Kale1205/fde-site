@@ -5,7 +5,14 @@
 - Decision date: 2026-08-25
 - Provider: Stripe
 - Primary UI: Stripe-hosted Checkout
-- Scope: FDE IMS License (one-time) and FDE IMS Updates (monthly)
+- Recorded scope: legacy staging FDE IMS License (one-time) and FDE IMS Updates (monthly)
+- Catalog status: legacy two-plan test catalog; Checkout activation and live payments are off
+
+## Three-plan migration status
+
+This document records the payment architecture and the two-plan catalog currently deployed for staging tests. That deployed catalog predates the public three-plan offer and is not an implementation of it. The current public offer is License, License Plus, and Updates; production payments remain blocked.
+
+A separate reviewed Stripe migration is required before another end-to-end payment test or any activation decision. It must add License Plus and its environment-specific Price IDs, update License entitlements, replace the Updates price, update the server allowlist and test fixtures, and re-run EULA, Checkout, webhook, cancellation, and fulfillment-boundary verification. Until that work is complete, no public purchase action may use the legacy staging catalog.
 
 ## Decision
 
@@ -23,13 +30,13 @@ This is a provider decision, not permission to accept live payments. The public 
 
 ## Why Stripe
 
-### One platform for the two product models
+### One platform for one-time and recurring product models
 
 Stripe Checkout supports one-time purchases and subscriptions. Billing supports recurring payments, and Stripe Invoicing supports one-time or recurring invoice workflows.
 
-- License: one-time Checkout Session in `payment` mode.
+- License and License Plus: one-time Checkout Sessions in `payment` mode.
 - Updates: Checkout Session in `subscription` mode with Stripe Billing.
-- Both models use the same order ID, webhook boundary, audit model, and Customer Portal status flow.
+- All models use the same order ID, webhook boundary, audit model, and Customer Portal status flow after the three-plan migration is complete.
 
 ### Fit for Japan and international digital software sales
 
@@ -41,7 +48,9 @@ Managed Payments handles indirect-tax compliance for supported cross-border digi
 
 Stripe-hosted Checkout keeps card data out of the Baked Kale frontend and Cloudflare Worker. The site creates a Checkout Session server-side and redirects the buyer to Stripe. The Baked Kale Worker stores only provider identifiers, order references, payment state, amount, currency, timestamps, and non-sensitive audit metadata.
 
-## Product mapping
+## Legacy deployed staging product mapping
+
+The mappings below document the disabled two-plan staging implementation only. They are retained for migration and audit context and must not be presented as the current public offer.
 
 ### FDE IMS License
 
@@ -139,7 +148,7 @@ Live payment acceptance remains blocked until every gate is complete:
 
 - Stripe Japan account is activated and the legal business identity is verified.
 - Managed Payments eligibility is confirmed for Baked Kale and for each enabled product.
-- License and Updates tax codes are reviewed.
+- License, License Plus, and Updates tax codes are reviewed.
 - Japanese domestic consumption-tax and invoice handling is documented.
 - Cross-border tax coverage or an explicit disabled-country policy is documented.
 - License Agreement / EULA acceptance is stored with version and timestamp.
@@ -195,6 +204,6 @@ Fees alone do not decide the architecture. Tax liability, invoice ownership, dis
 - [Stripe Checkout Session API](https://docs.stripe.com/api/checkout/sessions/create)
 - [Paddle pricing](https://www.paddle.com/pricing)
 
-## Next implementation step
+## Required next payment work
 
-P2-7 must add the staging order-preparation boundary that records the License Agreement / EULA version and acceptance timestamp before the P2-6 Checkout Session boundary can be exercised end to end. No live Checkout button or production secret is added in P2-7.
+The next payment task is the separately reviewed three-plan Stripe migration described above. It must preserve the existing fail-closed boundaries and keep Checkout activation, live payments, production fulfillment, installer release, and customer fulfillment email disabled throughout migration and Sandbox verification.

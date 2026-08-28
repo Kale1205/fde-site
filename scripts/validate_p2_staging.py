@@ -27,7 +27,19 @@ staging_worker = read("worker/src/staging-worker.js")
 staging_deploy = read(".github/workflows/deploy-staging.yml")
 production_deploy = read(".github/workflows/deploy-worker.yml")
 production_wrangler = read("worker/wrangler.toml")
+p27_qa_doc = read("docs/setup/p2-7-sandbox-qa-ja.md")
+stripe_setup_doc = read("docs/setup/stripe-staging-setup-ja.md")
 gitignore = read(".gitignore")
+
+for rel, text in (
+    ("docs/setup/p2-7-sandbox-qa-ja.md", p27_qa_doc),
+    ("docs/setup/stripe-staging-setup-ja.md", stripe_setup_doc),
+):
+    for marker in ("実行禁止", "STAGING_CHECKOUT_ENABLED", "false"):
+        if marker not in text:
+            fail(f"{rel}: legacy Checkout instructions must remain explicitly disabled: {marker}")
+    if re.search(r"STAGING_CHECKOUT_ENABLED[^\n]*`true`\s*に変更してDeploy", text):
+        fail(f"{rel}: must not instruct operators to enable the legacy two-plan Checkout")
 
 for marker in (
     "EXPIRY_CRON = '0 * * * *'",
@@ -201,7 +213,8 @@ for marker in (
     '.p2.stripeWebhookBoundaryEnabled == true',
     '.p2.stripeCheckoutBoundaryEnabled == true',
     '(.p2.stripeCheckoutConfigured | type) == "boolean"',
-    '(.p2.stripeCheckoutActivationEnabled | type) == "boolean"',
+    'STAGING_CHECKOUT_ENABLED = "false"',
+    '.p2.stripeCheckoutActivationEnabled == false',
     '.p2.eulaAcceptanceBoundaryEnabled == true',
     '.p2.eulaVersion == "FDE-IMS-STAGING-EULA-2026-08-27"',
     '.p2.p27QaEnabled == true',

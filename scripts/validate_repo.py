@@ -1,4 +1,5 @@
 from pathlib import Path
+from html.parser import HTMLParser
 import json
 import re
 import sys
@@ -7,6 +8,80 @@ from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
+
+
+class PublicHtmlTextParser(HTMLParser):
+    """Collect visible text and complete heading text from a public HTML page."""
+
+    HIDDEN = {"script", "style", "template"}
+    HEADING = {f"h{level}" for level in range(1, 7)}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.hidden_depth = 0
+        self.text_parts = []
+        self.heading_stack = []
+        self.headings = []
+
+    def handle_starttag(self, tag, attrs):
+        tag = tag.lower()
+        if tag in self.HIDDEN:
+            self.hidden_depth += 1
+            return
+        if not self.hidden_depth and tag in self.HEADING:
+            self.heading_stack.append([tag, []])
+
+    def handle_endtag(self, tag):
+        tag = tag.lower()
+        if tag in self.HIDDEN:
+            self.hidden_depth = max(0, self.hidden_depth - 1)
+            return
+        if not self.hidden_depth and self.heading_stack and self.heading_stack[-1][0] == tag:
+            heading_tag, parts = self.heading_stack.pop()
+            visible = re.sub(r"\s+", " ", "".join(parts)).strip()
+            self.headings.append((heading_tag, visible))
+
+    def handle_data(self, data):
+        if self.hidden_depth:
+            return
+        self.text_parts.append(data)
+        for _, parts in self.heading_stack:
+            parts.append(data)
+
+    def visible_text(self):
+        return re.sub(r"\s+", " ", " ".join(self.text_parts)).strip()
+
+
+def localized_text(value, locale):
+    """Flatten one active locale without pulling text from inactive translations."""
+
+    parts = []
+
+    def flatten(node):
+        if isinstance(node, str):
+            parts.append(node)
+        elif isinstance(node, list):
+            for child in node:
+                flatten(child)
+        elif isinstance(node, dict):
+            for child in node.values():
+                flatten(child)
+
+    def visit(node):
+        if isinstance(node, dict):
+            if locale in node:
+                flatten(node[locale])
+            else:
+                for child in node.values():
+                    visit(child)
+        elif isinstance(node, list):
+            for child in node:
+                visit(child)
+        elif isinstance(node, str):
+            parts.append(node)
+
+    visit(value)
+    return re.sub(r"\s+", " ", " ".join(parts)).strip()
 
 def fail(message):
     errors.append(message)
@@ -45,6 +120,7 @@ OBSOLETE_FILES = {
     ".github/scripts/cms_update.py", ".github/scripts/refresh-news-visual-assets.py",
     "license-page-en.js", "cms-fallback.js", "cms.css", "news-reuters.css",
     "visual-story.css", "entry-motion.css", "entry-motion.js",
+    "ims-compare-en.js", "ims-compare-ja.js",
     "assets/why-fde-flow.svg", "assets/goals-business-model.svg",
 }
 
@@ -73,6 +149,9 @@ for rel in sorted(OBSOLETE_FILES | OBSOLETE_WORKFLOWS):
 
 asset_ref = re.compile(r"(?:src|href)=[\"'](?P<ref>[^\"']+)[\"']", re.IGNORECASE)
 version_param = re.compile(r"(?:\?|&)v=([^&]+)")
+public_visible_text = {}
+public_heading_text = {}
+public_source_text = {}
 
 def resolve_local(html_path: Path, ref: str):
     if ref.startswith(("http://", "https://", "//", "data:", "mailto:", "tel:", "#", "javascript:")):
@@ -99,6 +178,12 @@ for rel in sorted(ALL_PUBLIC):
         fail(f"missing public page: {rel}")
         continue
     text = path.read_text(encoding="utf-8")
+    parser = PublicHtmlTextParser()
+    parser.feed(text)
+    parser.close()
+    public_visible_text[rel] = parser.visible_text()
+    public_heading_text[rel] = parser.headings
+    public_source_text[rel] = text
     expected = "ja" if rel.startswith("ja/") else "en"
     if not re.search(rf"<html\s+lang=[\"']{expected}[\"']", text, re.IGNORECASE):
         fail(f"{rel}: expected html lang={expected}")
@@ -123,6 +208,134 @@ for name in sorted(EN_PAGES):
     if not (ROOT / name).exists() or not (ROOT / "ja" / name).exists():
         fail(f"paired English/Japanese page missing: {name}")
 
+# Japanese editorial headings are short labels, not prose sentences.
+for rel in sorted(JA_PAGES):
+    for tag, heading in public_heading_text.get(rel, []):
+        if heading.endswith("。"):
+            fail(f"{rel}: visible {tag} must not end in Japanese full stop: {heading!r}")
+
+# Only the active public commerce surfaces are held to the current three-plan
+# catalog. The disabled staging/payment backend is intentionally outside this
+# check until its separately reviewed Stripe migration is complete.
+PUBLIC_PLAN_PAGES = (
+    "index.html", "license.html", "order.html", "contact.html",
+    "ja/index.html", "ja/license.html", "ja/order.html", "ja/contact.html",
+)
+PUBLIC_PRICE_PAGES = (
+    "index.html", "license.html", "order.html",
+    "ja/index.html", "ja/license.html", "ja/order.html",
+)
+CONTENT_PLAN_NAME_PATTERNS = {
+    "License": re.compile(r"(?<![A-Za-z0-9])License(?![A-Za-z0-9]|\s+Plus)"),
+    "License Plus": re.compile(r"(?<![A-Za-z0-9])License Plus(?![A-Za-z0-9])"),
+    "Updates": re.compile(r"(?<![A-Za-z0-9])Updates(?![A-Za-z0-9])"),
+}
+
+for rel in PUBLIC_PLAN_PAGES:
+    visible = public_visible_text.get(rel, "")
+    for plan, pattern in CONTENT_PLAN_NAME_PATTERNS.items():
+        if not pattern.search(visible):
+            fail(f"{rel}: active public plan name missing: {plan}")
+
+public_plan_text = {
+    "en": " ".join(public_visible_text.get(rel, "") for rel in PUBLIC_PRICE_PAGES if not rel.startswith("ja/")),
+    "ja": " ".join(public_visible_text.get(rel, "") for rel in PUBLIC_PRICE_PAGES if rel.startswith("ja/")),
+}
+canonical_public_prices = {
+    "en": ("$313", "$565", "$75", "$38", "$252"),
+    "ja": ("49,800円", "89,800円", "12,000円", "6,000円", "40,000円"),
+}
+for locale, prices in canonical_public_prices.items():
+    active_text = public_plan_text[locale]
+    for price in prices:
+        if price not in active_text:
+            fail(f"active public {locale} plan content missing canonical price: {price}")
+
+# Each active plan page must be complete on its own, rather than passing only
+# because a price happens to appear on a different page.
+for rel in PUBLIC_PRICE_PAGES:
+    locale = "ja" if rel.startswith("ja/") else "en"
+    visible = public_visible_text.get(rel, "")
+    for price in canonical_public_prices[locale]:
+        if price not in visible:
+            fail(f"{rel}: canonical {locale} plan price missing from page: {price}")
+
+# Bind the primary homepage cards to their actual prices and responsibilities.
+homepage_plan_facts = {
+    "index.html": {
+        "<h3>FDE IMS License</h3>": ("$313", "First 3 months of Updates included", "Source code and source-level modification are not included", "No automatic paid conversion"),
+        "<h3>FDE IMS License Plus</h3>": ("$565", "Source code included", "Purchaser manages updates and security", "No included Updates entitlement"),
+        "<h3>FDE IMS Updates</h3>": ("$75", "Use rights are tied to the contract term", "Source code is not provided"),
+    },
+    "ja/index.html": {
+        "<h3>FDE IMS License</h3>": ("49,800円", "購入後3か月はUpdatesを含む", "ソースコードとソースレベルの改変権は含まない", "有料契約へ自動移行しない"),
+        "<h3>FDE IMS License Plus</h3>": ("89,800円", "ソースコード付き", "更新・セキュリティは購入者が管理", "Updates特典は含まない"),
+        "<h3>FDE IMS Updates</h3>": ("12,000円", "利用権は契約期間に紐づく", "ソースコード提供なし"),
+    },
+}
+for rel, plans in homepage_plan_facts.items():
+    source = public_source_text.get(rel, "")
+    plans_start = source.find('id="plans"')
+    plans_end = source.find('id="compare"', plans_start + 1)
+    plan_section = source[plans_start:plans_end] if plans_start >= 0 and plans_end > plans_start else ""
+    markers = list(plans)
+    for index, marker in enumerate(markers):
+        start = plan_section.find(marker)
+        end = plan_section.find(markers[index + 1], start + len(marker)) if index + 1 < len(markers) else len(plan_section)
+        segment = plan_section[start:end] if start >= 0 and end > start else ""
+        for fact in plans[marker]:
+            if fact not in segment:
+                fail(f"{rel}: plan card {marker} is missing bound fact: {fact}")
+
+retired_price_patterns = {
+    "en": (("$62", re.compile(r"\$\s*62(?!\d)")), ("$31", re.compile(r"\$\s*31(?!\d)"))),
+    "ja": (
+        ("¥9,800 / 9,800円", re.compile(r"(?:[¥￥]\s*9,?800(?!\d)|(?<![\d,])9,?800\s*円)")),
+        ("¥4,900 / 4,900円", re.compile(r"(?:[¥￥]\s*4,?900(?!\d)|(?<![\d,])4,?900\s*円)")),
+    ),
+}
+for locale, patterns in retired_price_patterns.items():
+    active_text = public_plan_text[locale]
+    for label, pattern in patterns:
+        if pattern.search(active_text):
+            fail(f"active public {locale} plan content contains retired price: {label}")
+
+if re.search(r"\bJPY\b|Japanese\s+yen|[¥￥]|\d[\d,]*\s*円", public_plan_text["en"], re.IGNORECASE):
+    fail("active English plan pages must use the USD price book, not JPY/yen")
+if re.search(r"\bUSD\b|U\.S\.\s*dollars?|US\s*dollars?|\$\s*\d", public_plan_text["ja"], re.IGNORECASE):
+    fail("active Japanese plan pages must use the JPY price book, not USD/dollars")
+
+english_plan_source = " ".join(public_source_text.get(rel, "") for rel in PUBLIC_PRICE_PAGES if not rel.startswith("ja/"))
+japanese_plan_source = " ".join(public_source_text.get(rel, "") for rel in PUBLIC_PRICE_PAGES if rel.startswith("ja/"))
+if re.search(r"\bJPY\b|Japanese\s+yen|[¥￥]|\d[\d,]*\s*円", english_plan_source, re.IGNORECASE):
+    fail("active English plan source/metadata must not contain JPY/yen pricing")
+if re.search(r"\bUSD\b|U\.S\.\s*dollars?|US\s*dollars?|\$\s*\d", japanese_plan_source, re.IGNORECASE):
+    fail("active Japanese plan source/metadata must not contain USD/dollar pricing")
+
+allowed_money_values = {
+    "en": {"313", "565", "75", "38", "252"},
+    "ja": {"49,800", "89,800", "12,000", "6,000", "40,000"},
+}
+for rel in PUBLIC_PRICE_PAGES:
+    locale = "ja" if rel.startswith("ja/") else "en"
+    source = public_source_text.get(rel, "")
+    found = set(re.findall(r"\$\s*([\d,]+)", source)) if locale == "en" else set(re.findall(r"([\d,]+)\s*円", source))
+    unexpected = found - allowed_money_values[locale]
+    if unexpected:
+        fail(f"{rel}: unexpected {locale} monetary value(s): {', '.join(sorted(unexpected))}")
+
+currency_disclosure_markers = {
+    "index.html": "USD",
+    "license.html": "USD",
+    "order.html": "USD",
+    "ja/index.html": "日本円",
+    "ja/license.html": "日本円",
+    "ja/order.html": "JPY",
+}
+for rel, marker in currency_disclosure_markers.items():
+    if marker not in public_source_text.get(rel, ""):
+        fail(f"{rel}: explicit public price-book currency is missing: {marker}")
+
 required_markers = {
     "index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content.js", "data-demo-open"),
     "ja/index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content-ja.js", "data-demo-open"),
@@ -143,6 +356,42 @@ for rel, markers in required_markers.items():
     for marker in markers:
         if marker not in text:
             fail(f"{rel}: required marker/runtime missing: {marker}")
+
+# The customer portal must remain a non-interactive pre-release notice until
+# the three-plan payment catalog and fulfillment flow have been reviewed.
+customer_portal = ROOT / "customer.html"
+if not customer_portal.exists():
+    fail("customer.html is missing")
+else:
+    customer_text = customer_portal.read_text(encoding="utf-8")
+    for retired in ('customer.js', 'contact-config.js', 'id="statusForm"'):
+        if retired in customer_text:
+            fail(f"customer.html: pre-release portal must not load active lookup/payment runtime: {retired}")
+    for marker in ("Customer portal / PRE-RELEASE", "customer portal is not available yet", "payment confirmation", "disabled"):
+        if marker.lower() not in customer_text.lower():
+            fail(f"customer.html: pre-release portal notice missing: {marker}")
+
+pre_release_sales_pages = {
+    "order.html": ("noindex", "not yet available for purchase", "Orders cannot be completed yet"),
+    "ja/order.html": ("noindex", "現在は購入できません", "注文・決済はできません"),
+}
+for rel, markers in pre_release_sales_pages.items():
+    source = public_source_text.get(rel, "")
+    for marker in markers:
+        if marker.lower() not in source.lower():
+            fail(f"{rel}: pre-release sales marker missing: {marker}")
+    for forbidden in ("<form", "stripe.com", "__staging/stripe", "customer.js"):
+        if forbidden.lower() in source.lower():
+            fail(f"{rel}: active sales/checkout surface must remain disabled: {forbidden}")
+
+for rel, markers in {
+    "index.html": ("IN DEVELOPMENT", "purchasing is not available"),
+    "ja/index.html": ("開発中", "購入機能はまだ利用できません"),
+}.items():
+    visible = public_visible_text.get(rel, "")
+    for marker in markers:
+        if marker.lower() not in visible.lower():
+            fail(f"{rel}: public pre-release notice missing: {marker}")
 
 for rel in ("why.html", "ja/why.html", "goals.html", "ja/goals.html"):
     path = ROOT / rel
@@ -387,6 +636,7 @@ else:
         if forbidden in text:
             fail(f"cms-admin.js: obsolete FAQ/fulfillment implementation found: {forbidden}")
 
+site_content = {}
 site_content_path = ROOT / "content" / "site-content.json"
 if site_content_path.exists():
     try:
@@ -397,11 +647,15 @@ if site_content_path.exists():
                 value = item.get(field, {})
                 if not isinstance(value, dict) or not str(value.get("ja", "")).strip() or not str(value.get("en", "")).strip():
                     fail(f"content/site-content.json: news {item_id} missing ja/en {field}")
+            ja_title = str(item.get("title", {}).get("ja", "")).strip()
+            if ja_title.endswith("。"):
+                fail(f"content/site-content.json: Japanese news heading must not end in full stop: {item_id}")
     except Exception as exc:
         fail(f"content/site-content.json: invalid JSON: {exc}")
 else:
     fail("content/site-content.json is missing")
 
+faq_data = {}
 faq_path = ROOT / "content" / "faq-content.json"
 if faq_path.exists():
     try:
@@ -419,6 +673,77 @@ if faq_path.exists():
         fail(f"content/faq-content.json: invalid JSON: {exc}")
 else:
     fail("content/faq-content.json is missing")
+
+faq_policy_data = {}
+faq_policy_path = ROOT / "content" / "faq-policy-additions.json"
+if faq_policy_path.exists():
+    try:
+        faq_policy_data = json.loads(faq_policy_path.read_text(encoding="utf-8"))
+        for item in faq_policy_data.get("faq", []):
+            item_id = item.get("id", "<unknown>")
+            for field in ("question", "answer"):
+                value = item.get(field, {})
+                if not isinstance(value, dict) or not str(value.get("ja", "")).strip() or not str(value.get("en", "")).strip():
+                    fail(f"content/faq-policy-additions.json: FAQ {item_id} missing ja/en {field}")
+    except Exception as exc:
+        fail(f"content/faq-policy-additions.json: invalid JSON: {exc}")
+else:
+    fail("content/faq-policy-additions.json is missing")
+
+# Validate only the active Japanese and English fields consumed by the public
+# CMS runtimes. Dormant historical translations and the disabled staging
+# checkout catalog are deliberately excluded from this public-content gate.
+localized_public_data = {
+    "content/faq-content.json": {
+        locale: localized_text(faq_data, locale) for locale in ("ja", "en")
+    },
+    "content/faq-policy-additions.json": {
+        locale: localized_text(faq_policy_data, locale) for locale in ("ja", "en")
+    },
+    "content/site-content.json": {
+        locale: localized_text(site_content, locale) for locale in ("ja", "en")
+    },
+}
+
+for source, localized in localized_public_data.items():
+    for locale, active_text in localized.items():
+        if source != "content/faq-policy-additions.json":
+            for plan, pattern in CONTENT_PLAN_NAME_PATTERNS.items():
+                if not pattern.search(active_text):
+                    fail(f"{source}: active {locale} content missing plan name: {plan}")
+        for label, pattern in retired_price_patterns[locale]:
+            if pattern.search(active_text):
+                fail(f"{source}: active {locale} content contains retired price: {label}")
+
+for source in ("content/faq-content.json", "content/site-content.json"):
+    for locale, base_prices in {
+        "en": ("$313", "$565", "$75"),
+        "ja": ("49,800円", "89,800円", "12,000円"),
+    }.items():
+        active_text = localized_public_data[source][locale]
+        for price in base_prices:
+            if price not in active_text:
+                fail(f"{source}: active {locale} content missing canonical plan price: {price}")
+
+for locale, transition_prices in {
+    "en": ("$38", "$75"),
+    "ja": ("6,000円", "12,000円"),
+}.items():
+    active_text = localized_public_data["content/faq-policy-additions.json"][locale]
+    for price in transition_prices:
+        if price not in active_text:
+            fail(f"content/faq-policy-additions.json: active {locale} content missing transition price: {price}")
+
+for source in ("content/faq-content.json", "content/faq-policy-additions.json"):
+    english_faq = localized_public_data[source]["en"]
+    if re.search(r"\bJPY\b|\d[\d,]*\s*yen\b|\d[\d,]*\s*円", english_faq, re.IGNORECASE):
+        fail(f"{source}: active English FAQ content must not use JPY/yen pricing")
+
+for source, localized in localized_public_data.items():
+    if re.search(r"\bJPY\b|\d[\d,]*\s*円", localized["en"], re.IGNORECASE):
+        fail(f"{source}: active English content must use the USD price book")
+    if re.search(r"\bUSD\b|\$\s*\d", localized["ja"], re.IGNORECASE):
+        fail(f"{source}: active Japanese content must use the JPY price book")
 
 # Dynamic local assets must exist and use the same build key.
 contact_config = ROOT / "contact-config.js"
@@ -444,6 +769,7 @@ if not wrangler.exists():
     fail("worker/wrangler.toml is missing")
 else:
     wt = wrangler.read_text(encoding="utf-8")
+    main = None
     mm = re.search(r"^main\s*=\s*[\"']([^\"']+)[\"']", wt, re.MULTILINE)
     if not mm:
         fail("worker/wrangler.toml: main entry is missing")
@@ -469,11 +795,30 @@ else:
         fail("worker/wrangler.toml: production account_id must be pinned")
     if not re.search(r"^keep_vars\s*=\s*true\s*$", wt, re.MULTILINE):
         fail("worker/wrangler.toml: keep_vars = true is required")
+    if not re.search(r'^PRODUCTION_COMMERCE_ENABLED\s*=\s*["\']false["\']\s*$', wt, re.MULTILINE):
+        fail("worker/wrangler.toml: legacy production commerce must remain explicitly disabled")
     required_secret_names = {"BREVO_API_KEY", "FROM_EMAIL", "ADMIN_FULFILLMENT_KEY", "TURNSTILE_SECRET_KEY"}
     block = re.search(r"\[secrets\](.*?)(?=\n\[|\Z)", wt, re.DOTALL)
     names = set(re.findall(r"[\"']([A-Z0-9_]+)[\"']", block.group(1))) if block else set()
     for missing in sorted(required_secret_names - names):
         fail(f"worker/wrangler.toml: required secret declaration missing: {missing}")
+
+    production_entry = ROOT / "worker" / "src" / "index-v14.js"
+    if main != production_entry.resolve():
+        fail("worker/wrangler.toml: production entry must retain the reviewed pre-release commerce gate")
+    else:
+        entry_text = production_entry.read_text(encoding="utf-8")
+        required_blocked_types = {
+            "order", "status_lookup", "status_update", "admin_orders_list",
+            "admin_order_update", "admin_order_cancel", "admin_pdf", "fulfillment",
+        }
+        gate_match = re.search(r"PRE_RELEASE_COMMERCE_TYPES\s*=\s*new Set\(\[([^\]]+)\]\)", entry_text)
+        gated_types = set(re.findall(r"['\"]([a-z_]+)['\"]", gate_match.group(1))) if gate_match else set()
+        if gated_types != required_blocked_types:
+            fail("worker/src/index-v14.js: pre-release commerce gate must block the complete legacy route set")
+        for marker in ("FDE_COMMERCE_DISABLED_PRE_RELEASE", "PRE_RELEASE_COMMERCE_TYPES.has(type)"):
+            if marker not in entry_text:
+                fail(f"worker/src/index-v14.js: production commerce gate marker missing: {marker}")
 
 for path in sorted((ROOT / "worker" / "src").glob("index*.js")):
     if path not in worker_reachable:

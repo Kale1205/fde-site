@@ -34,7 +34,29 @@ Core design rules:
 - motion stays restrained: reveal, slight lift and gentle transitions only;
 - mobile layouts must preserve the editorial hierarchy without clipping, hidden content, forced ornamental asymmetry or decorative obstruction.
 
-`gallery-ui.css` provides the shared visual tokens, header, navigation, product presentation, footer, and responsive foundations. `gallery-pages.css` extends that system across Why FDE, Kale’s Goals, News, Contact, License, and Demo. `gallery-ui.js` owns shared navigation and product-preview behavior; the locale-specific CMS readers render the same structured News data in each language. Contact, License, and Demo retain only the page-specific runtimes needed for their real interactions. The order and customer utilities remain outside this editorial migration until their release policy is finalized. Do not create separate English/Japanese copies of design primitives unless a true language-specific rendering requirement exists.
+`gallery-ui.css` provides the shared visual tokens, header, navigation, product presentation, footer, and responsive foundations. `gallery-pages.css` extends that system across Why FDE, Kale’s Goals, News, Contact, License, and Demo. `gallery-ui.js` owns shared navigation and product-preview behavior; the locale-specific CMS readers render the same structured News data in each language. Contact, License, and Demo retain only the page-specific runtimes needed for their real interactions. Order and Customer Portal remain non-interactive pre-release information surfaces until their release policy is finalized. Do not create separate English/Japanese copies of design primitives unless a true language-specific rendering requirement exists.
+
+## Public product-plan source of truth
+
+The public site uses three planned FDE IMS plans. These values and entitlements must stay synchronized across Product, comparison, License, FAQ, News, Contact, Order preview, and SEO copy.
+
+| Plan | Japanese price | English price | Term | Source code | Update entitlement |
+| --- | ---: | ---: | --- | --- | --- |
+| License | JPY 49,800 one-time | USD 313 one-time | Perpetual internal use | Not provided | Months 1-3 included; months 4-9 optional at JPY 6,000 / USD 38 monthly; month 10 onward uses the standard Updates price |
+| License Plus | JPY 89,800 one-time | USD 565 one-time | Perpetual internal use | Included for permitted internal modification | Not included |
+| Updates | JPY 12,000 monthly | USD 75 monthly | Active contract term | Not provided | Functionality, security, and compatibility updates provided by FDE during the active term |
+
+The planned License-to-License Plus upgrade is JPY 40,000 / USD 252. License update entitlement never converts automatically into a paid subscription. Ending an optional Updates subscription never extinguishes a previously acquired perpetual License or License Plus right. An Updates-only subscription does not become perpetual after cancellation.
+
+All prices remain planned prices while FDE IMS is in development. Deployment, hosting, backup, support-SLA, refund, tax, delivery, and final EULA terms must remain explicitly unfinalized until separately approved. Production payments, fulfillment, installer release, and customer fulfillment email remain disabled.
+
+### Payment catalog migration boundary
+
+The currently deployed staging Stripe/Checkout catalog is a legacy two-plan test implementation. It still represents `fde-ims-license` and `fde-ims-updates` with the earlier price and entitlement assumptions. Checkout activation remains off, live payments remain off, and this legacy catalog must not be treated as an implementation of the public three-plan offer.
+
+A separate reviewed migration must add the License Plus product and Price IDs, replace the Updates price, reconcile License entitlements, update the staging allowlist and automated payment tests, and repeat end-to-end Sandbox verification. Until that migration is complete, no public purchase action may route into the legacy staging catalog and no production payment capability may be enabled.
+
+Japanese public copy must be written as natural Japanese rather than as a line-by-line translation of English. Visible Japanese headings, buttons, labels, and short art annotations do not end in `。`; normal sentences and explanatory body copy do.
 
 ## CMS invariant
 
@@ -86,6 +108,8 @@ Repository validation must cover both public sites, not only root HTML. It check
 - shared Product / Why FDE / Kale’s Goals / News navigation and five-link editorial footers;
 - reciprocal static language links, self-canonical URLs, and `en` / `ja` / `x-default` alternates;
 - Japanese CMS administration and Japanese/English CMS data completeness;
+- active public three-plan names, locale-specific price books, retired-price exclusion, and Japanese heading punctuation;
+- Japanese/English completeness and active-locale pricing checks for both base FAQ data and policy additions;
 - absence of obsolete localization, pricing, commerce, and migration artifacts;
 - Cloudflare Worker entry/import consistency;
 - obvious committed secret patterns;
