@@ -25,6 +25,7 @@ required_markers = (
     "- Deploy staging environment",
     "- Sync site build version",
     "- Auto Security audit",
+    "- Kale Sentinel operational check",
     "github.event.workflow_run.conclusion == 'failure'",
     "github.event.workflow_run.conclusion == 'timed_out'",
     "github.event.workflow_run.conclusion == 'action_required'",
