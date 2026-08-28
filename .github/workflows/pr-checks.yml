@@ -35,6 +35,12 @@ jobs:
       - name: Slack notification integrity checks
         run: python scripts/validate_notifications.py
 
+      - name: P3 Kale Outreach outbound-growth/draft-only contract checks
+        run: python scripts/validate_p3_outreach.py
+
+      - name: P3 Kale Outreach deterministic rule tests
+        run: python scripts/test_p3_outreach_rules.py
+
       - name: P3 Kale’s Office public-editorial/draft-only contract checks
         run: python scripts/validate_p3_office.py
 
