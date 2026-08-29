@@ -48,11 +48,11 @@ for marker in workflow_required:
     if marker not in workflow:
         fail(f"Kale Sentinel workflow missing marker: {marker}")
 
-# Activation is deliberately manual-only until the dedicated read-only token is
-# configured and a manual live observation succeeds.
+# P3-4 is complete as a manual read-only foundation. Hourly activation is a
+# separate reviewed change and must remain disabled unless explicitly approved.
 for forbidden_schedule in ("schedule:", "cron:"):
     if forbidden_schedule in workflow:
-        fail(f"Kale Sentinel schedule must remain disabled before activation gate: {forbidden_schedule}")
+        fail(f"Kale Sentinel schedule must remain disabled in the accepted P3 foundation: {forbidden_schedule}")
 
 for forbidden in (
     "CLOUDFLARE_API_TOKEN",
@@ -140,10 +140,15 @@ for marker in (
     "Workers KV Storage → Read",
     "must not",
     "Live payments: OFF",
-    "schedule is enabled only after the manual live run succeeds",
+    "P3-4 foundation is complete",
+    "hourly schedule remains **OFF**",
+    "separate reviewed change",
 ):
     if marker not in doc:
         fail(f"Kale Sentinel governance document missing marker: {marker}")
+
+if "not considered fully active until" in doc:
+    fail("Kale Sentinel governance document contains obsolete schedule-dependent activation wording")
 
 if "- Kale Sentinel operational check" not in notifier:
     fail("Existing Slack failure notifier does not monitor Kale Sentinel")

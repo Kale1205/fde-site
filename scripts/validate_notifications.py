@@ -29,6 +29,7 @@ required_markers = (
     "- Kale Desk foundation check",
     "- Kale’s Office foundation check",
     "- Kale Outreach foundation check",
+    "- P3 Agent Governance acceptance check",
     "github.event.workflow_run.conclusion == 'failure'",
     "github.event.workflow_run.conclusion == 'timed_out'",
     "github.event.workflow_run.conclusion == 'action_required'",

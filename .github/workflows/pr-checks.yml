@@ -35,6 +35,12 @@ jobs:
       - name: Slack notification integrity checks
         run: python scripts/validate_notifications.py
 
+      - name: P3 Agent Governance cross-agent contract checks
+        run: python scripts/validate_p3_governance.py
+
+      - name: P3 Agent Governance deterministic rule tests
+        run: python scripts/test_p3_governance.py
+
       - name: P3 Kale Outreach outbound-growth/draft-only contract checks
         run: python scripts/validate_p3_outreach.py
 

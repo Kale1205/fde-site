@@ -1,0 +1,43 @@
+name: P3 Agent Governance acceptance check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p3-agent-governance-acceptance
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: cross-agent-governance-acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate cross-agent governance
+        run: python scripts/validate_p3_governance.py
+
+      - name: Run deterministic governance rule tests
+        run: python scripts/test_p3_governance.py
+
+      - name: Generate synthetic governance evidence
+        run: python scripts/p3_governance_dry_run.py --output governance-report
+
+      - name: Upload governance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p3-agent-governance-acceptance-report
+          path: governance-report/
+          if-no-files-found: ignore
+          retention-days: 14
