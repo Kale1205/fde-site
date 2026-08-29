@@ -1540,6 +1540,29 @@
           "license terms"
         ]
       }
+    },
+    {
+      "id": "inventory-adoption-migration-fit",
+      "highFrequency": true,
+      "category": "product",
+      "subcategory": "adoption",
+      "translationStatus": "seeded",
+      "question": {
+        "ja": "紙・Excel・既存システムからFDE IMSへ移行できますか？",
+        "en": "Can FDE IMS replace paper, spreadsheets, or an existing inventory system?"
+      },
+      "answer": {
+        "ja": "FDE IMSは、紙やExcelでの在庫管理を分かりやすい仕組みへ移したい場合や、既存システムを見直したい小規模企業向けに開発しています。製品が自社に合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。",
+        "en": "FDE IMS is being designed for small businesses moving from paper or spreadsheets, or reviewing an existing inventory system. Product fit can be discussed now, but data-import formats, migration services, and final deployment support are not yet confirmed."
+      },
+      "keywords": {
+        "ja": ["在庫管理", "紙", "Excel", "既存システム", "移行", "データ取り込み"],
+        "en": ["inventory management", "paper", "spreadsheets", "existing system", "migration", "data import"]
+      },
+      "synonyms": {
+        "ja": ["在庫管理を変えたい", "Excelから移したい", "システム入れ替え"],
+        "en": ["replace inventory system", "move from Excel", "inventory software adoption"]
+      }
     }
   ]
 }

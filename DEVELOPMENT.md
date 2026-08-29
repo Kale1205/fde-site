@@ -58,6 +58,16 @@ A separate reviewed migration must add the License Plus product and Price IDs, r
 
 Japanese public copy must be written as natural Japanese rather than as a line-by-line translation of English. Visible Japanese headings, buttons, labels, and short art annotations do not end in `。`; normal sentences and explanatory body copy do.
 
+## Search and AI discovery contract
+
+Public search intent starts with the customer problem, not the delivery role. `Baked Kale` is the provider and site entity, `FDE IMS` is the inventory-management product, and `FDE` / Forward Deployed Engineering describes how the product is shaped and maintained alongside real work. Do not use FDE as the primary keyword for people comparing inventory software.
+
+The English and Japanese homepages must visibly support small-business searches about moving from paper records, spreadsheets / Excel, or an existing inventory system. They must also state that data import, migration services, supported file formats, deployment assistance, and final multi-site scope are not yet confirmed. Search copy, FAQ content, and structured data may describe only visible, current facts; planned architecture must remain labeled as in development.
+
+Each homepage publishes one JSON-LD `@graph` containing `Organization`, `WebSite`, locale-specific `WebPage`, `SoftwareApplication`, and `FAQPage` entities. The five structured FAQ answers must match the five visible homepage answers. Do not add `Offer`, price, availability-for-sale, review, rating, customer count, delivery record, or released-feature claims while commerce is disabled and international pricing is unapproved. Do not add `llms.txt` as a substitute for accessible HTML, accurate metadata, crawlable links, or supported structured data.
+
+This repository is served as the GitHub Pages project path `/fde-site/`. A file at `/fde-site/robots.txt` does not control crawling for the `kale1205.github.io` origin; only the origin-root `/robots.txt` does. The current missing origin-root file implies no explicit crawler block, but future crawler directives or a robots-advertised sitemap require control of the root Pages site or a custom domain. Keep the project sitemap discoverable through normal links and search-console submission.
+
 ## CMS invariant
 
 CMS administration is performed in Japanese. Editors enter Japanese source content. The CMS stores both Japanese and English public fields:

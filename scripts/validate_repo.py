@@ -208,6 +208,99 @@ for name in sorted(EN_PAGES):
     if not (ROOT / name).exists() or not (ROOT / "ja" / name).exists():
         fail(f"paired English/Japanese page missing: {name}")
 
+# Search and AI discovery must be grounded in visible, bilingual product facts.
+search_markers = {
+    "index.html": (
+        "Moving from paper, spreadsheets, or an existing inventory system?",
+        "Paper records", "Spreadsheets", "Existing systems",
+        "Data import, migration services, supported file formats, and final deployment scope are not yet confirmed.",
+        "FDE IMS is the inventory product from Baked Kale.",
+        "FDE describes how the product is shaped and maintained alongside real work.",
+    ),
+    "ja/index.html": (
+        "紙・Excel・いまの在庫管理から、次の仕組みへ",
+        "紙で管理している", "Excelで管理している", "既存システムを見直したい",
+        "データ移行の対応範囲、対応ファイル形式、導入支援の条件は現在検討中です。",
+        "FDE IMSはBaked Kaleが提供する在庫管理ソフトです。",
+        "FDEは、現場を理解しながら製品をつくり、保守する方法を指します。",
+    ),
+}
+for rel, markers in search_markers.items():
+    visible = public_visible_text.get(rel, "")
+    for marker in markers:
+        if marker not in visible:
+            fail(f"{rel}: inventory adoption / entity marker missing: {marker}")
+
+seo_page_markers = {
+    "contact.html": ("Inventory Software Adoption & Migration Questions", "Ask about adopting or moving to FDE IMS"),
+    "ja/contact.html": ("在庫管理ソフトの導入・移行相談", "FDE IMSの導入・移行を相談する"),
+    "demo.html": ("Inventory Management Software Demo", "Inventory management software demo"),
+    "ja/demo.html": ("在庫管理ソフトの操作デモ",),
+    "license.html": ("One-Time, Source-Code & Self-Hosted Inventory Plans",),
+    "ja/license.html": ("買い切り・ソースコード・自社サーバー運用を比較",),
+}
+for rel, markers in seo_page_markers.items():
+    source = public_source_text.get(rel, "")
+    for marker in markers:
+        if marker not in source:
+            fail(f"{rel}: page-specific inventory search marker missing: {marker}")
+
+for rel in ("index.html", "ja/index.html", "why.html", "ja/why.html", "goals.html", "ja/goals.html"):
+    if '<meta property="og:site_name" content="Baked Kale">' not in public_source_text.get(rel, ""):
+        fail(f"{rel}: og:site_name must identify the provider as Baked Kale")
+
+for rel in ("overview.html", "products.html"):
+    source = (ROOT / rel).read_text(encoding="utf-8") if (ROOT / rel).exists() else ""
+    if 'content="noindex,follow"' not in source:
+        fail(f"{rel}: redirect-only duplicate must be noindex,follow")
+
+if (ROOT / "llms.txt").exists():
+    fail("llms.txt must not substitute for visible HTML and supported structured data")
+
+structured_faq_pairs = {
+    "index.html": (
+        ("Can I purchase FDE IMS now?", "No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available."),
+        ("Can I try the product workflow?", "Yes. The development preview uses sample data and lets you search inventory and record temporary receive or ship actions."),
+        ("Where can I review detailed terms or ask a question?", "Review the License page for the current planned terms, use the comparison above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."),
+        ("Is FDE IMS intended for teams using paper or spreadsheets?", "Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."),
+        ("Can Baked Kale migrate or import data from an existing system?", "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."),
+    ),
+    "ja/index.html": (
+        ("FDE IMSは今すぐ購入できますか？", "いいえ。FDE IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。"),
+        ("製品の操作を試せますか？", "はい。開発プレビューではサンプルデータを使い、在庫検索と一時的な入庫・出庫操作を試せます。"),
+        ("詳しい条件の確認や質問はどこでできますか？", "現在の予定条件はLicenseページ、責任分担は上の比較表で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。"),
+        ("紙やExcelで在庫管理している会社にも向いていますか？", "はい。紙やExcelから、入庫・在庫確認・出庫をひとつの分かりやすい記録へ移したい小規模企業向けに開発しています。"),
+        ("既存システムのデータを移行・取り込みできますか？", "現在は未確定です。対応するファイル形式、データ移行、導入支援の範囲は、正式販売前にご案内します。"),
+    ),
+}
+for rel, expected_pairs in structured_faq_pairs.items():
+    source = public_source_text.get(rel, "")
+    scripts = re.findall(r'<script\s+type="application/ld\+json">\s*(.*?)\s*</script>', source, re.DOTALL | re.IGNORECASE)
+    if len(scripts) != 1:
+        fail(f"{rel}: expected exactly one JSON-LD graph, found {len(scripts)}")
+        continue
+    try:
+        graph_document = json.loads(scripts[0])
+    except Exception as exc:
+        fail(f"{rel}: invalid JSON-LD: {exc}")
+        continue
+    graph = graph_document.get("@graph", [])
+    types = {item.get("@type") for item in graph if isinstance(item, dict)}
+    for required_type in ("Organization", "WebSite", "WebPage", "SoftwareApplication", "FAQPage"):
+        if required_type not in types:
+            fail(f"{rel}: JSON-LD graph missing {required_type}")
+    if "Offer" in json.dumps(graph_document, ensure_ascii=False):
+        fail(f"{rel}: JSON-LD must not claim an Offer while commerce and USD pricing are unapproved")
+    faq_nodes = [item for item in graph if isinstance(item, dict) and item.get("@type") == "FAQPage"]
+    entities = faq_nodes[0].get("mainEntity", []) if len(faq_nodes) == 1 else []
+    actual_pairs = tuple((item.get("name"), item.get("acceptedAnswer", {}).get("text")) for item in entities)
+    if actual_pairs != expected_pairs:
+        fail(f"{rel}: JSON-LD FAQ must match the five visible FAQ answers exactly")
+    visible = public_visible_text.get(rel, "")
+    for question, answer in expected_pairs:
+        if question not in visible or answer not in visible:
+            fail(f"{rel}: structured FAQ is not mirrored in visible HTML: {question}")
+
 # Japanese editorial headings are short labels, not prose sentences.
 for rel in sorted(JA_PAGES):
     for tag, heading in public_heading_text.get(rel, []):
@@ -608,8 +701,8 @@ else:
                 if item is None:
                     continue
                 lastmod = item.findtext("sm:lastmod", default="", namespaces=ns).strip()
-                if lastmod != "2026-08-28":
-                    fail(f"sitemap.xml: {loc} lastmod must be 2026-08-28")
+                if lastmod != "2026-08-29":
+                    fail(f"sitemap.xml: {loc} lastmod must be 2026-08-29")
                 alternates = {
                     (link.get("hreflang"), link.get("href"))
                     for link in item.findall("xhtml:link", ns)
@@ -712,6 +805,24 @@ localized_public_data = {
         locale: localized_text(site_content, locale) for locale in ("ja", "en")
     },
 }
+
+for source, items in (
+    ("content/faq-content.json", faq_data.get("faq", [])),
+    ("content/faq-policy-additions.json", faq_policy_data.get("faq", [])),
+    ("content/site-content.json", site_content.get("news", [])),
+):
+    for item in items:
+        item_id = item.get("id", "<unknown>")
+        english = " ".join(
+            str(item.get(field, {}).get("en", ""))
+            for field in ("answer", "body")
+            if isinstance(item.get(field), dict)
+        )
+        if "$" in english and not ("candidate" in english.lower() and "unapproved" in english.lower()):
+            fail(f"{source}: English price-bearing item {item_id} must identify USD amounts as unapproved candidates")
+
+if not any(item.get("id") == "inventory-adoption-migration-fit" for item in faq_data.get("faq", [])):
+    fail("content/faq-content.json: inventory adoption / migration FAQ is missing")
 
 for source, localized in localized_public_data.items():
     for locale, active_text in localized.items():

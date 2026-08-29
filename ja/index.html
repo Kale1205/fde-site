@@ -12,7 +12,7 @@
 <link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/">
 <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Baked Kale FDE">
+<meta property="og:site_name" content="Baked Kale">
 <meta property="og:title" content="小規模企業向け在庫管理ソフト | FDE IMS by Baked Kale">
 <meta property="og:description" content="紙・Excel・いまの在庫管理を見直したい小規模企業向け。買い切り、ソースコード一式・自社サーバー運用、継続更新の3プランを開発中です。">
 <meta property="og:url" content="https://kale1205.github.io/fde-site/ja/">
@@ -24,6 +24,60 @@
 <script defer src="../gallery-ui.js?v=20260828-221553">
 </script>
 <script defer src="../cms-content-ja.js?v=20260828-221553">
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://kale1205.github.io/fde-site/#organization",
+      "name": "Baked Kale",
+      "url": "https://kale1205.github.io/fde-site/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://kale1205.github.io/fde-site/#website",
+      "name": "Baked Kale",
+      "url": "https://kale1205.github.io/fde-site/",
+      "publisher": {"@id": "https://kale1205.github.io/fde-site/#organization"}
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://kale1205.github.io/fde-site/#webpage-ja",
+      "name": "小規模企業向け在庫管理ソフト | FDE IMS by Baked Kale",
+      "url": "https://kale1205.github.io/fde-site/ja/",
+      "inLanguage": "ja",
+      "isPartOf": {"@id": "https://kale1205.github.io/fde-site/#website"},
+      "about": {"@id": "https://kale1205.github.io/fde-site/#fde-ims"}
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://kale1205.github.io/fde-site/#fde-ims",
+      "name": "FDE IMS",
+      "url": "https://kale1205.github.io/fde-site/ja/",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "在庫管理ソフト",
+      "operatingSystem": "デスクトップ・モバイル環境（開発中）",
+      "description": "紙・Excel・既存システムからの見直しを考える小規模企業向けに開発中の在庫管理ソフトです。",
+      "featureList": ["在庫一覧と検索", "入庫記録", "出庫記録", "在庫不足の表示"],
+      "softwareRequirements": "開発中。動作要件とデータ移行の範囲は未確定です。",
+      "audience": {"@type": "BusinessAudience", "audienceType": "小規模企業"},
+      "provider": {"@id": "https://kale1205.github.io/fde-site/#organization"}
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://kale1205.github.io/fde-site/#faq-ja",
+      "mainEntity": [
+        {"@type": "Question", "name": "FDE IMSは今すぐ購入できますか？", "acceptedAnswer": {"@type": "Answer", "text": "いいえ。FDE IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。"}},
+        {"@type": "Question", "name": "製品の操作を試せますか？", "acceptedAnswer": {"@type": "Answer", "text": "はい。開発プレビューではサンプルデータを使い、在庫検索と一時的な入庫・出庫操作を試せます。"}},
+        {"@type": "Question", "name": "詳しい条件の確認や質問はどこでできますか？", "acceptedAnswer": {"@type": "Answer", "text": "現在の予定条件はLicenseページ、責任分担は上の比較表で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。"}},
+        {"@type": "Question", "name": "紙やExcelで在庫管理している会社にも向いていますか？", "acceptedAnswer": {"@type": "Answer", "text": "はい。紙やExcelから、入庫・在庫確認・出庫をひとつの分かりやすい記録へ移したい小規模企業向けに開発しています。"}},
+        {"@type": "Question", "name": "既存システムのデータを移行・取り込みできますか？", "acceptedAnswer": {"@type": "Answer", "text": "現在は未確定です。対応するファイル形式、データ移行、導入支援の範囲は、正式販売前にご案内します。"}}
+      ]
+    }
+  ]
+}
 </script>
 </head>
 <body class="gallery-page">
@@ -497,9 +551,9 @@
 </nav>
 <section class="story-section section-frame" id="story">
 <div class="section-intro">
-<p>01 / 製品ストーリー</p>
-<h2>大がかりな仕組みなしで、在庫をひと目で把握</h2>
-<span>FDE IMSは、小規模なチームでも無理なく使え、正確な在庫情報を保てるよう設計しています。</span>
+<p>01 / 導入のきっかけ</p>
+<h2>紙・Excel・いまの在庫管理から、次の仕組みへ</h2>
+<span>FDE IMSは、在庫管理をもっと分かりやすくしたい小規模企業向けに開発しています。</span>
 </div>
 <div class="story-art">
 <img alt="倉庫の棚、荷物、在庫確認用スキャナー" src="../assets/warehouse-operations.webp">
@@ -507,20 +561,22 @@
 <div class="story-points" id="workflow-story">
 <article>
 <span>01</span>
-<h3>把握</h3>
-<p>今の在庫数と、確認が必要な商品がひと目で分かります。</p>
+<h3>紙で管理している</h3>
+<p>繰り返し書いている在庫記録を、検索できるひとつの情報へまとめます。</p>
 </article>
 <article>
 <span>02</span>
-<h3>記録</h3>
-<p>入庫・出庫を、ひとつの画面から記録します。</p>
+<h3>Excelで管理している</h3>
+<p>点在するファイルや手作業の照合を、共通の流れへ整理します。</p>
 </article>
 <article>
 <span>03</span>
-<h3>判断</h3>
-<p>最新の在庫情報を、次の担当者へそのまま引き継げます。</p>
+<h3>既存システムを見直したい</h3>
+<p>よりシンプルな在庫管理が自社に合うかを確認できます。</p>
 </article>
 </div>
+<p class="development-note">データ移行の対応範囲、対応ファイル形式、導入支援の条件は現在検討中です。</p>
+<p class="development-note">FDE IMSはBaked Kaleが提供する在庫管理ソフトです。FDEは、現場を理解しながら製品をつくり、保守する方法を指します。</p>
 </section>
 <section class="compare-section section-frame" id="compare">
 <div class="section-intro compare-intro">
@@ -683,6 +739,22 @@
 </svg>
 </summary>
 <p>現在の予定条件はLicenseページ、責任分担は上の比較表で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。</p>
+</details>
+<details>
+<summary>
+<span>04</span>
+<strong>紙やExcelで在庫管理している会社にも向いていますか？</strong>
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
+</summary>
+<p>はい。紙やExcelから、入庫・在庫確認・出庫をひとつの分かりやすい記録へ移したい小規模企業向けに開発しています。</p>
+</details>
+<details>
+<summary>
+<span>05</span>
+<strong>既存システムのデータを移行・取り込みできますか？</strong>
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
+</summary>
+<p>現在は未確定です。対応するファイル形式、データ移行、導入支援の範囲は、正式販売前にご案内します。</p>
 </details>
 </div>
 </section>

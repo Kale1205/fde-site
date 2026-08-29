@@ -12,7 +12,7 @@
 <link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/">
 <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Baked Kale FDE">
+<meta property="og:site_name" content="Baked Kale">
 <meta property="og:title" content="Small Business Inventory Management Software | FDE IMS by Baked Kale">
 <meta property="og:description" content="Inventory software for small businesses reviewing paper, spreadsheets, or an existing system, with one-time, source-code/self-hosted, and managed-update options in development.">
 <meta property="og:url" content="https://kale1205.github.io/fde-site/">
@@ -24,6 +24,60 @@
 <script defer src="gallery-ui.js?v=20260828-221553">
 </script>
 <script defer src="cms-content.js?v=20260828-221553">
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://kale1205.github.io/fde-site/#organization",
+      "name": "Baked Kale",
+      "url": "https://kale1205.github.io/fde-site/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://kale1205.github.io/fde-site/#website",
+      "name": "Baked Kale",
+      "url": "https://kale1205.github.io/fde-site/",
+      "publisher": {"@id": "https://kale1205.github.io/fde-site/#organization"}
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://kale1205.github.io/fde-site/#webpage-en",
+      "name": "Small Business Inventory Management Software | FDE IMS by Baked Kale",
+      "url": "https://kale1205.github.io/fde-site/",
+      "inLanguage": "en",
+      "isPartOf": {"@id": "https://kale1205.github.io/fde-site/#website"},
+      "about": {"@id": "https://kale1205.github.io/fde-site/#fde-ims"}
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://kale1205.github.io/fde-site/#fde-ims",
+      "name": "FDE IMS",
+      "url": "https://kale1205.github.io/fde-site/",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "Inventory management software",
+      "operatingSystem": "Desktop and mobile environments (planned)",
+      "description": "Inventory management software in development for small businesses moving from paper, spreadsheets, or an existing system.",
+      "featureList": ["Inventory list and search", "Receive stock", "Ship stock", "Low-stock status"],
+      "softwareRequirements": "In development; final requirements and migration scope are not confirmed.",
+      "audience": {"@type": "BusinessAudience", "audienceType": "Small businesses"},
+      "provider": {"@id": "https://kale1205.github.io/fde-site/#organization"}
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://kale1205.github.io/fde-site/#faq-en",
+      "mainEntity": [
+        {"@type": "Question", "name": "Can I purchase FDE IMS now?", "acceptedAnswer": {"@type": "Answer", "text": "No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available."}},
+        {"@type": "Question", "name": "Can I try the product workflow?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The development preview uses sample data and lets you search inventory and record temporary receive or ship actions."}},
+        {"@type": "Question", "name": "Where can I review detailed terms or ask a question?", "acceptedAnswer": {"@type": "Answer", "text": "Review the License page for the current planned terms, use the comparison above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."}},
+        {"@type": "Question", "name": "Is FDE IMS intended for teams using paper or spreadsheets?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."}},
+        {"@type": "Question", "name": "Can Baked Kale migrate or import data from an existing system?", "acceptedAnswer": {"@type": "Answer", "text": "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."}}
+      ]
+    }
+  ]
+}
 </script>
 </head>
 <body class="gallery-page">
@@ -108,7 +162,7 @@
 </svg>
 </a>
 </div>
-<small class="development-note">In development. Prices are estimates in USD; purchasing is not available.</small>
+<small class="development-note">In development. USD prices are unapproved candidates pending final international pricing; purchasing is not available.</small>
 <div class="workflow-mini" id="workflows">
 <article>
 <div class="workflow-icon">
@@ -493,9 +547,9 @@
 </nav>
 <section class="story-section section-frame" id="story">
 <div class="section-intro">
-<p>01 / PRODUCT STORY</p>
-<h2>Inventory control without heavyweight systems.</h2>
-<span>FDE IMS is being designed for small teams that need a dependable stock record without adding unnecessary operational complexity.</span>
+<p>01 / ADOPTION PATH</p>
+<h2>Moving from paper, spreadsheets, or an existing inventory system?</h2>
+<span>FDE IMS is being designed for small businesses that want a clearer stock record and a practical path into inventory software.</span>
 </div>
 <div class="story-art">
 <img alt="Warehouse shelves, packages, and inventory scanner" src="assets/warehouse-operations.webp">
@@ -503,20 +557,22 @@
 <div class="story-points" id="workflow-story">
 <article>
 <span>01</span>
-<h3>Know</h3>
-<p>See current quantities and the items that need attention.</p>
+<h3>Paper records</h3>
+<p>Move repeated stock notes into one searchable record.</p>
 </article>
 <article>
 <span>02</span>
-<h3>Move</h3>
-<p>Record incoming and outgoing stock from one clear view.</p>
+<h3>Spreadsheets</h3>
+<p>Replace scattered files and manual reconciliation with a shared workflow.</p>
 </article>
 <article>
 <span>03</span>
-<h3>Decide</h3>
-<p>Give the next person a current record instead of another spreadsheet to reconcile.</p>
+<h3>Existing systems</h3>
+<p>Review whether a simpler inventory workflow may fit your operation.</p>
 </article>
 </div>
+<p class="development-note">Data import, migration services, supported file formats, and final deployment scope are not yet confirmed.</p>
+<p class="development-note">FDE IMS is the inventory product from Baked Kale. FDE describes how the product is shaped and maintained alongside real work.</p>
 </section>
 <section class="compare-section section-frame" id="compare">
 <div class="section-intro compare-intro">
@@ -656,7 +712,7 @@
 </path>
 </svg>
 </summary>
-<p>No. FDE IMS is still in development. The prices shown are estimates in USD, and purchasing is not yet available.</p>
+<p>No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available.</p>
 </details>
 <details>
 <summary>
@@ -679,6 +735,22 @@
 </svg>
 </summary>
 <p>Review the License page for the current planned terms, use the comparison above for the responsibility split, or open Contact for the searchable FAQ and inquiry form.</p>
+</details>
+<details>
+<summary>
+<span>04</span>
+<strong>Is FDE IMS intended for teams using paper or spreadsheets?</strong>
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
+</summary>
+<p>Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record.</p>
+</details>
+<details>
+<summary>
+<span>05</span>
+<strong>Can Baked Kale migrate or import data from an existing system?</strong>
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
+</summary>
+<p>Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales.</p>
 </details>
 </div>
 </section>
