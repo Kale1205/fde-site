@@ -208,6 +208,99 @@ for name in sorted(EN_PAGES):
     if not (ROOT / name).exists() or not (ROOT / "ja" / name).exists():
         fail(f"paired English/Japanese page missing: {name}")
 
+# Search and AI discovery must be grounded in visible, bilingual product facts.
+search_markers = {
+    "index.html": (
+        "Moving from paper, spreadsheets, or an existing inventory system?",
+        "Paper records", "Spreadsheets", "Existing systems",
+        "Data import, migration services, supported file formats, and final deployment scope are not yet confirmed.",
+        "FDE IMS is the inventory product from Baked Kale.",
+        "FDE describes how the product is shaped and maintained alongside real work.",
+    ),
+    "ja/index.html": (
+        "紙・Excel・いまの在庫管理から、次の仕組みへ",
+        "紙で管理している", "Excelで管理している", "既存システムを見直したい",
+        "データ移行の対応範囲、対応ファイル形式、導入支援の条件は現在検討中です。",
+        "FDE IMSはBaked Kaleが提供する在庫管理ソフトです。",
+        "FDEは、現場を理解しながら製品をつくり、保守する方法を指します。",
+    ),
+}
+for rel, markers in search_markers.items():
+    visible = public_visible_text.get(rel, "")
+    for marker in markers:
+        if marker not in visible:
+            fail(f"{rel}: inventory adoption / entity marker missing: {marker}")
+
+seo_page_markers = {
+    "contact.html": ("Inventory Software Adoption & Migration Questions", "Ask about adopting or moving to FDE IMS"),
+    "ja/contact.html": ("在庫管理ソフトの導入・移行相談", "FDE IMSの導入・移行を相談する"),
+    "demo.html": ("Inventory Management Software Demo", "Inventory management software demo"),
+    "ja/demo.html": ("在庫管理ソフトの操作デモ",),
+    "license.html": ("One-Time, Source-Code & Self-Hosted Inventory Plans",),
+    "ja/license.html": ("買い切り・ソースコード・自社サーバー運用を比較",),
+}
+for rel, markers in seo_page_markers.items():
+    source = public_source_text.get(rel, "")
+    for marker in markers:
+        if marker not in source:
+            fail(f"{rel}: page-specific inventory search marker missing: {marker}")
+
+for rel in ("index.html", "ja/index.html", "why.html", "ja/why.html", "goals.html", "ja/goals.html"):
+    if '<meta property="og:site_name" content="Baked Kale">' not in public_source_text.get(rel, ""):
+        fail(f"{rel}: og:site_name must identify the provider as Baked Kale")
+
+for rel in ("overview.html", "products.html"):
+    source = (ROOT / rel).read_text(encoding="utf-8") if (ROOT / rel).exists() else ""
+    if 'content="noindex,follow"' not in source:
+        fail(f"{rel}: redirect-only duplicate must be noindex,follow")
+
+if (ROOT / "llms.txt").exists():
+    fail("llms.txt must not substitute for visible HTML and supported structured data")
+
+structured_faq_pairs = {
+    "index.html": (
+        ("Can I purchase FDE IMS now?", "No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available."),
+        ("Can I try the product workflow?", "Yes. The development preview uses sample data and lets you search inventory and record temporary receive or ship actions."),
+        ("Where can I review detailed terms or ask a question?", "Review the License page for the current planned terms, use the comparison above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."),
+        ("Is FDE IMS intended for teams using paper or spreadsheets?", "Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."),
+        ("Can Baked Kale migrate or import data from an existing system?", "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."),
+    ),
+    "ja/index.html": (
+        ("FDE IMSは今すぐ購入できますか？", "いいえ。FDE IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。"),
+        ("製品の操作を試せますか？", "はい。開発プレビューではサンプルデータを使い、在庫検索と一時的な入庫・出庫操作を試せます。"),
+        ("詳しい条件の確認や質問はどこでできますか？", "現在の予定条件はLicenseページ、責任分担は上の比較表で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。"),
+        ("紙やExcelで在庫管理している会社にも向いていますか？", "はい。紙やExcelから、入庫・在庫確認・出庫をひとつの分かりやすい記録へ移したい小規模企業向けに開発しています。"),
+        ("既存システムのデータを移行・取り込みできますか？", "現在は未確定です。対応するファイル形式、データ移行、導入支援の範囲は、正式販売前にご案内します。"),
+    ),
+}
+for rel, expected_pairs in structured_faq_pairs.items():
+    source = public_source_text.get(rel, "")
+    scripts = re.findall(r'<script\s+type="application/ld\+json">\s*(.*?)\s*</script>', source, re.DOTALL | re.IGNORECASE)
+    if len(scripts) != 1:
+        fail(f"{rel}: expected exactly one JSON-LD graph, found {len(scripts)}")
+        continue
+    try:
+        graph_document = json.loads(scripts[0])
+    except Exception as exc:
+        fail(f"{rel}: invalid JSON-LD: {exc}")
+        continue
+    graph = graph_document.get("@graph", [])
+    types = {item.get("@type") for item in graph if isinstance(item, dict)}
+    for required_type in ("Organization", "WebSite", "WebPage", "SoftwareApplication", "FAQPage"):
+        if required_type not in types:
+            fail(f"{rel}: JSON-LD graph missing {required_type}")
+    if "Offer" in json.dumps(graph_document, ensure_ascii=False):
+        fail(f"{rel}: JSON-LD must not claim an Offer while commerce and USD pricing are unapproved")
+    faq_nodes = [item for item in graph if isinstance(item, dict) and item.get("@type") == "FAQPage"]
+    entities = faq_nodes[0].get("mainEntity", []) if len(faq_nodes) == 1 else []
+    actual_pairs = tuple((item.get("name"), item.get("acceptedAnswer", {}).get("text")) for item in entities)
+    if actual_pairs != expected_pairs:
+        fail(f"{rel}: JSON-LD FAQ must match the five visible FAQ answers exactly")
+    visible = public_visible_text.get(rel, "")
+    for question, answer in expected_pairs:
+        if question not in visible or answer not in visible:
+            fail(f"{rel}: structured FAQ is not mirrored in visible HTML: {question}")
+
 # Japanese editorial headings are short labels, not prose sentences.
 for rel in sorted(JA_PAGES):
     for tag, heading in public_heading_text.get(rel, []):
@@ -242,8 +335,8 @@ public_plan_text = {
     "ja": " ".join(public_visible_text.get(rel, "") for rel in PUBLIC_PRICE_PAGES if rel.startswith("ja/")),
 }
 canonical_public_prices = {
-    "en": ("$313", "$565", "$75", "$38", "$252"),
-    "ja": ("49,800円", "89,800円", "12,000円", "6,000円", "40,000円"),
+    "en": ("$349", "$699", "$79", "$350"),
+    "ja": ("49,800円", "99,800円", "12,000円", "50,000円"),
 }
 for locale, prices in canonical_public_prices.items():
     active_text = public_plan_text[locale]
@@ -263,14 +356,14 @@ for rel in PUBLIC_PRICE_PAGES:
 # Bind the primary homepage cards to their actual prices and responsibilities.
 homepage_plan_facts = {
     "index.html": {
-        "<h3>FDE IMS License</h3>": ("$313", "First 3 months of Updates included", "Source code and source-level modification are not included", "No automatic paid conversion"),
-        "<h3>FDE IMS License Plus</h3>": ("$565", "Source code included", "Purchaser manages updates and security", "No included Updates entitlement"),
-        "<h3>FDE IMS Updates</h3>": ("$75", "Use rights are tied to the contract term", "Source code is not provided"),
+        "<h3>FDE IMS License</h3>": ("$349", "First 3 months of Updates included", "Source code and source-level modification are not included", "No automatic paid conversion"),
+        "<h3>FDE IMS License Plus</h3>": ("$699", "Full source code included", "Customer-server/self-hosted operation planned", "documentation planned", "Purchaser manages updates and security", "No included Updates entitlement"),
+        "<h3>FDE IMS Updates</h3>": ("$79", "bug fixes", "Use rights are tied to the contract term", "Source code is not provided"),
     },
     "ja/index.html": {
         "<h3>FDE IMS License</h3>": ("49,800円", "購入後3か月はUpdatesを含む", "ソースコードとソースレベルの改変権は含まない", "有料契約へ自動移行しない"),
-        "<h3>FDE IMS License Plus</h3>": ("89,800円", "ソースコード付き", "更新・セキュリティは購入者が管理", "Updates特典は含まない"),
-        "<h3>FDE IMS Updates</h3>": ("12,000円", "利用権は契約期間に紐づく", "ソースコード提供なし"),
+        "<h3>FDE IMS License Plus</h3>": ("99,800円", "ソースコード一式", "顧客管理サーバーでの自社運用を予定", "資料を提供予定", "更新・セキュリティは購入者が管理", "Updates特典は含まない"),
+        "<h3>FDE IMS Updates</h3>": ("12,000円", "不具合修正", "利用権は契約期間に紐づく", "ソースコード提供なし"),
     },
 }
 for rel, plans in homepage_plan_facts.items():
@@ -288,10 +381,18 @@ for rel, plans in homepage_plan_facts.items():
                 fail(f"{rel}: plan card {marker} is missing bound fact: {fact}")
 
 retired_price_patterns = {
-    "en": (("$62", re.compile(r"\$\s*62(?!\d)")), ("$31", re.compile(r"\$\s*31(?!\d)"))),
+    "en": (
+        ("$62", re.compile(r"\$\s*62(?!\d)")), ("$31", re.compile(r"\$\s*31(?!\d)")),
+        ("$313", re.compile(r"\$\s*313(?!\d)")), ("$565", re.compile(r"\$\s*565(?!\d)")),
+        ("$75", re.compile(r"\$\s*75(?!\d)")), ("$38", re.compile(r"\$\s*38(?!\d)")),
+        ("$252", re.compile(r"\$\s*252(?!\d)")),
+    ),
     "ja": (
         ("¥9,800 / 9,800円", re.compile(r"(?:[¥￥]\s*9,?800(?!\d)|(?<![\d,])9,?800\s*円)")),
         ("¥4,900 / 4,900円", re.compile(r"(?:[¥￥]\s*4,?900(?!\d)|(?<![\d,])4,?900\s*円)")),
+        ("89,800円", re.compile(r"(?<![\d,])89,?800\s*円")),
+        ("6,000円", re.compile(r"(?<![\d,])6,?000\s*円")),
+        ("40,000円", re.compile(r"(?<![\d,])40,?000\s*円")),
     ),
 }
 for locale, patterns in retired_price_patterns.items():
@@ -313,8 +414,8 @@ if re.search(r"\bUSD\b|U\.S\.\s*dollars?|US\s*dollars?|\$\s*\d", japanese_plan_s
     fail("active Japanese plan source/metadata must not contain USD/dollar pricing")
 
 allowed_money_values = {
-    "en": {"313", "565", "75", "38", "252"},
-    "ja": {"49,800", "89,800", "12,000", "6,000", "40,000"},
+    "en": {"349", "699", "79", "350"},
+    "ja": {"49,800", "99,800", "12,000", "50,000"},
 }
 for rel in PUBLIC_PRICE_PAGES:
     locale = "ja" if rel.startswith("ja/") else "en"
@@ -325,9 +426,9 @@ for rel in PUBLIC_PRICE_PAGES:
         fail(f"{rel}: unexpected {locale} monetary value(s): {', '.join(sorted(unexpected))}")
 
 currency_disclosure_markers = {
-    "index.html": "USD",
-    "license.html": "USD",
-    "order.html": "USD",
+    "index.html": "UNAPPROVED USD CANDIDATE",
+    "license.html": "unapproved candidate",
+    "order.html": "unapproved candidates",
     "ja/index.html": "日本円",
     "ja/license.html": "日本円",
     "ja/order.html": "JPY",
@@ -600,8 +701,8 @@ else:
                 if item is None:
                     continue
                 lastmod = item.findtext("sm:lastmod", default="", namespaces=ns).strip()
-                if lastmod != "2026-08-28":
-                    fail(f"sitemap.xml: {loc} lastmod must be 2026-08-28")
+                if lastmod != "2026-08-29":
+                    fail(f"sitemap.xml: {loc} lastmod must be 2026-08-29")
                 alternates = {
                     (link.get("hreflang"), link.get("href"))
                     for link in item.findall("xhtml:link", ns)
@@ -705,6 +806,24 @@ localized_public_data = {
     },
 }
 
+for source, items in (
+    ("content/faq-content.json", faq_data.get("faq", [])),
+    ("content/faq-policy-additions.json", faq_policy_data.get("faq", [])),
+    ("content/site-content.json", site_content.get("news", [])),
+):
+    for item in items:
+        item_id = item.get("id", "<unknown>")
+        english = " ".join(
+            str(item.get(field, {}).get("en", ""))
+            for field in ("answer", "body")
+            if isinstance(item.get(field), dict)
+        )
+        if "$" in english and not ("candidate" in english.lower() and "unapproved" in english.lower()):
+            fail(f"{source}: English price-bearing item {item_id} must identify USD amounts as unapproved candidates")
+
+if not any(item.get("id") == "inventory-adoption-migration-fit" for item in faq_data.get("faq", [])):
+    fail("content/faq-content.json: inventory adoption / migration FAQ is missing")
+
 for source, localized in localized_public_data.items():
     for locale, active_text in localized.items():
         if source != "content/faq-policy-additions.json":
@@ -717,22 +836,18 @@ for source, localized in localized_public_data.items():
 
 for source in ("content/faq-content.json", "content/site-content.json"):
     for locale, base_prices in {
-        "en": ("$313", "$565", "$75"),
-        "ja": ("49,800円", "89,800円", "12,000円"),
+        "en": ("$349", "$699", "$79"),
+        "ja": ("49,800円", "99,800円", "12,000円"),
     }.items():
         active_text = localized_public_data[source][locale]
         for price in base_prices:
             if price not in active_text:
                 fail(f"{source}: active {locale} content missing canonical plan price: {price}")
 
-for locale, transition_prices in {
-    "en": ("$38", "$75"),
-    "ja": ("6,000円", "12,000円"),
-}.items():
+for locale, continuation_price in {"en": "$79", "ja": "12,000円"}.items():
     active_text = localized_public_data["content/faq-policy-additions.json"][locale]
-    for price in transition_prices:
-        if price not in active_text:
-            fail(f"content/faq-policy-additions.json: active {locale} content missing transition price: {price}")
+    if continuation_price not in active_text:
+        fail(f"content/faq-policy-additions.json: active {locale} content missing standard continuation price: {continuation_price}")
 
 for source in ("content/faq-content.json", "content/faq-policy-additions.json"):
     english_faq = localized_public_data[source]["en"]

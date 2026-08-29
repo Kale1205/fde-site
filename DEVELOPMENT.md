@@ -42,13 +42,13 @@ The public site uses three planned FDE IMS plans. These values and entitlements 
 
 | Plan | Japanese price | English price | Term | Source code | Update entitlement |
 | --- | ---: | ---: | --- | --- | --- |
-| License | JPY 49,800 one-time | USD 313 one-time | Perpetual internal use | Not provided | Months 1-3 included; months 4-9 optional at JPY 6,000 / USD 38 monthly; month 10 onward uses the standard Updates price |
-| License Plus | JPY 89,800 one-time | USD 565 one-time | Perpetual internal use | Included for permitted internal modification | Not included |
-| Updates | JPY 12,000 monthly | USD 75 monthly | Active contract term | Not provided | Functionality, security, and compatibility updates provided by FDE during the active term |
+| License | JPY 49,800 one-time | USD 349 candidate | Perpetual internal use | Not provided | Months 1–3 included; continuation after month 3 is optional at the standard Updates price |
+| License Plus | JPY 99,800 one-time | USD 699 candidate | Perpetual internal use | Full source code for permitted internal modification | Not included; customer-managed operation |
+| Updates | JPY 12,000 monthly | USD 79 monthly candidate | Active contract term | Not provided | Functionality, security, compatibility, and bug-fix updates provided by FDE during the active term |
 
-The planned License-to-License Plus upgrade is JPY 40,000 / USD 252. License update entitlement never converts automatically into a paid subscription. Ending an optional Updates subscription never extinguishes a previously acquired perpetual License or License Plus right. An Updates-only subscription does not become perpetual after cancellation.
+The proposed License-to-License Plus upgrade is JPY 50,000 / USD 350 candidate. License includes three months of Updates-equivalent service; after that, continuing at the standard Updates price requires an active choice and never begins automatically. Ending optional Updates never extinguishes a previously acquired perpetual License or License Plus right. An Updates-only subscription does not become perpetual after cancellation.
 
-All prices remain planned prices while FDE IMS is in development. Deployment, hosting, backup, support-SLA, refund, tax, delivery, and final EULA terms must remain explicitly unfinalized until separately approved. Production payments, fulfillment, installer release, and customer fulfillment email remain disabled.
+All prices remain planned while FDE IMS is in development. Japanese prices are the current Product Plan v2 proposal; every USD figure is an unapproved candidate pending final international pricing. License Plus is planned to include full source, internal customization rights, technical documentation, and customer-server/self-hosted operation. Local/LAN mode, customer-server mode, multiple-location registration, and multi-site synchronization remain architecture plans under development and must never be described as released features. Deployment, hosting, backup, support-SLA, refund, tax, delivery, and final EULA terms remain unfinalized until separately approved. Production payments, fulfillment, installer release, and customer fulfillment email remain disabled.
 
 ### Payment catalog migration boundary
 
@@ -57,6 +57,16 @@ The currently deployed staging Stripe/Checkout catalog is a legacy two-plan test
 A separate reviewed migration must add the License Plus product and Price IDs, replace the Updates price, reconcile License entitlements, update the staging allowlist and automated payment tests, and repeat end-to-end Sandbox verification. Until that migration is complete, no public purchase action may route into the legacy staging catalog and no production payment capability may be enabled.
 
 Japanese public copy must be written as natural Japanese rather than as a line-by-line translation of English. Visible Japanese headings, buttons, labels, and short art annotations do not end in `。`; normal sentences and explanatory body copy do.
+
+## Search and AI discovery contract
+
+Public search intent starts with the customer problem, not the delivery role. `Baked Kale` is the provider and site entity, `FDE IMS` is the inventory-management product, and `FDE` / Forward Deployed Engineering describes how the product is shaped and maintained alongside real work. Do not use FDE as the primary keyword for people comparing inventory software.
+
+The English and Japanese homepages must visibly support small-business searches about moving from paper records, spreadsheets / Excel, or an existing inventory system. They must also state that data import, migration services, supported file formats, deployment assistance, and final multi-site scope are not yet confirmed. Search copy, FAQ content, and structured data may describe only visible, current facts; planned architecture must remain labeled as in development.
+
+Each homepage publishes one JSON-LD `@graph` containing `Organization`, `WebSite`, locale-specific `WebPage`, `SoftwareApplication`, and `FAQPage` entities. The five structured FAQ answers must match the five visible homepage answers. Do not add `Offer`, price, availability-for-sale, review, rating, customer count, delivery record, or released-feature claims while commerce is disabled and international pricing is unapproved. Do not add `llms.txt` as a substitute for accessible HTML, accurate metadata, crawlable links, or supported structured data.
+
+This repository is served as the GitHub Pages project path `/fde-site/`. A file at `/fde-site/robots.txt` does not control crawling for the `kale1205.github.io` origin; only the origin-root `/robots.txt` does. The current missing origin-root file implies no explicit crawler block, but future crawler directives or a robots-advertised sitemap require control of the root Pages site or a custom domain. Keep the project sitemap discoverable through normal links and search-console submission.
 
 ## CMS invariant
 
