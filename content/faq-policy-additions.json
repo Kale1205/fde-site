@@ -11,16 +11,16 @@
         "en": "How does Updates pricing work after purchasing License?"
       },
       "answer": {
-        "ja": "Licenseには購入後3か月のUpdatesが含まれます。4〜9か月目は月額6,000円で任意に継続でき、10か月目以降は通常料金の月額12,000円です。Licenseの永続利用権はそのまま残ります。有料のUpdatesへ自動移行することはありません。継続する場合は、別途申し込みが必要です。",
-        "en": "License includes the first three months of Updates. Customers may optionally continue during months 4–9 for $38/month; the standard price from month 10 is $75/month. The perpetual License remains valid. There is no automatic conversion into paid Updates, and the customer must actively choose to continue."
+        "ja": "Licenseには購入後3か月のUpdates相当が含まれます。終了後も、その時点のバージョンを期限なく利用できます。継続更新を希望する場合は、通常料金の月額12,000円でUpdatesへ別途申し込みが必要です。有料契約へ自動移行することはありません。",
+        "en": "License includes the first three months of Updates-equivalent service. After that, the customer may keep using the current version perpetually. Continuing Updates requires a separate choice at the standard candidate price of $79/month; it never starts automatically. USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
-        "ja": ["License", "Updates", "購入後3か月分込み", "6,000円", "12,000円", "自動課金なし"],
-        "en": ["License", "Updates", "three months included", "$38", "$75", "no automatic conversion"]
+        "ja": ["License", "Updates", "購入後3か月分込み", "12,000円", "自動課金なし"],
+        "en": ["License", "Updates", "three months included", "$79 candidate", "no automatic conversion"]
       },
       "synonyms": {
-        "ja": ["購入後の更新", "Updates特典", "割引期間", "有料へ自動移行"],
-        "en": ["post-purchase Updates", "Updates entitlement", "discount period", "automatic paid subscription"]
+        "ja": ["購入後の更新", "Updates特典", "通常料金", "有料へ自動移行"],
+        "en": ["post-purchase Updates", "Updates entitlement", "standard price", "automatic paid subscription"]
       }
     },
     {

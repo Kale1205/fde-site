@@ -333,7 +333,7 @@
       },
       "answer": {
         "ja": "Licenseの予定価格は49,800円（買い切り）です。ソースコードは含みません。購入法人内で期限なく利用でき、購入後3か月はUpdatesを追加料金なしで利用できます。有料のUpdatesへ自動移行することはありません。FDE IMSは正式販売前のため、現時点では予定価格です。",
-        "en": "The planned price is $313 as a one-time purchase. Source code is not included. The plan permits perpetual internal use and includes the first three months of Updates at no additional charge. It does not automatically convert into a paid Updates subscription. FDE IMS is not yet formally on sale, so this is a planned price."
+        "en": "The planned one-time price is a $349 USD candidate. Source code is not included. The plan permits perpetual internal use and includes the first three months of Updates-equivalent service at no additional charge. It does not automatically convert into paid Updates. FDE IMS is not yet formally on sale, and all USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
         "ja": [
@@ -346,7 +346,7 @@
         "en": [
           "License",
           "price",
-          "$313",
+          "$349 candidate",
           "cost",
           "one-time"
         ]
@@ -375,12 +375,12 @@
         "en": "What are the planned price and included rights for License Plus?"
       },
       "answer": {
-        "ja": "License Plusの予定価格は89,800円（買い切り）です。購入法人内で期限なく利用でき、ソースコードと社内改変権が含まれます。Updatesの無料・割引特典は付属せず、更新・セキュリティは購入者が管理します。FDE IMSは正式販売前のため、現時点では予定価格です。",
-        "en": "The planned price is $565 as a one-time purchase. It includes perpetual internal use, source code, and internal-modification rights for the purchasing legal entity. It does not include a free or discounted Updates entitlement; the purchaser manages updates and security. FDE IMS is not yet formally on sale, so this is a planned price."
+        "ja": "License Plusの予定価格は99,800円（買い切り）です。購入法人内で期限なく利用でき、ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。Updates特典はなく、更新・セキュリティは購入者が管理します。FDE IMSは正式販売前です。",
+        "en": "The planned one-time price is a $699 USD candidate. It is planned to include perpetual internal use, full source, internal-modification rights, technical documentation, and customer-server/self-hosted operation for the purchasing legal entity. It has no Updates entitlement; the purchaser manages updates and security. FDE IMS is not yet formally on sale, and all USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
-        "ja": ["License Plus", "89,800円", "ソースコード", "社内改変", "買い切り"],
-        "en": ["License Plus", "$565", "source code", "internal modification", "one-time purchase"]
+        "ja": ["License Plus", "99,800円", "ソースコード一式", "社内改変", "自社サーバー", "買い切り"],
+        "en": ["License Plus", "$699 candidate", "full source", "self-hosted", "internal modification", "one-time purchase"]
       },
       "synonyms": {
         "ja": ["Plusの価格", "コード付きプラン", "改変できるプラン"],
@@ -398,12 +398,12 @@
         "en": "Can License be upgraded to License Plus?"
       },
       "answer": {
-        "ja": "はい。License購入者は40,000円でLicense Plusへアップグレードできる予定です。アップグレード後はソースコードと社内改変権が付与されます。License PlusにはUpdates特典がなく、更新・セキュリティは購入者が管理します。有料契約へ自動移行することはありません。",
-        "en": "Yes. License customers are planned to be able to upgrade to License Plus for $252. The upgrade adds source code and internal-modification rights. License Plus has no Updates entitlement, and the purchaser manages updates and security. The upgrade does not automatically start a paid subscription."
+        "ja": "はい。License購入者は差額50,000円でLicense Plusへアップグレードできる案です。ソースコード一式、技術資料、社内改変権、顧客管理サーバーでの自社運用権を追加する予定です。License PlusにUpdates特典はなく、更新・セキュリティは購入者が管理します。有料契約へ自動移行することはありません。",
+        "en": "Yes. A proposed $350 one-time USD candidate upgrade would add the planned License Plus full source, technical documentation, internal-modification rights, and customer-server/self-hosted rights. License Plus has no Updates entitlement, and the purchaser manages updates and security. All USD figures are unapproved candidates pending final international pricing; the upgrade does not start a paid subscription automatically."
       },
       "keywords": {
-        "ja": ["License Plus", "アップグレード", "40,000円", "差額", "ソースコード"],
-        "en": ["License Plus", "upgrade", "$252", "price difference", "source code"]
+        "ja": ["License Plus", "アップグレード", "50,000円", "差額", "ソースコード一式", "自社サーバー"],
+        "en": ["License Plus", "upgrade", "$350 candidate", "price difference", "full source", "self-hosted"]
       },
       "synonyms": {
         "ja": ["Plusへ変更", "コード付きへ変更", "上位プラン"],
@@ -462,8 +462,8 @@
         "en": "Does License include source code?"
       },
       "answer": {
-        "ja": "いいえ。49,800円のLicenseにソースコードは含まれません。ソースコードと社内改変権は、89,800円のLicense Plusに含まれます。どちらも購入法人内で期限なく利用できます。",
-        "en": "No. The $313 License does not include source code. Customers that need source code and internal-modification rights should choose the $565 License Plus. Both plans permit perpetual internal use by the purchasing legal entity."
+        "ja": "いいえ。49,800円のLicenseにソースコードは含まれません。ソースコード一式と社内改変権は、99,800円のLicense Plusに含む予定です。どちらも購入法人内で期限なく利用できます。",
+        "en": "No. The License has a $349 USD candidate price and does not include source code. Customers that need full source, technical documentation, self-hosted operation, and internal-modification rights should choose License Plus at the $699 USD candidate price. Both plans permit perpetual internal use by the purchasing legal entity. All USD figures are unapproved candidates."
       },
       "keywords": {
         "ja": [
@@ -716,8 +716,8 @@
         "en": "Can headquarters and branches of the same legal entity use one License?"
       },
       "answer": {
-        "ja": "はい。LicenseとLicense Plusは、同一法人内の本社・支店・営業所・従業員が社内業務に使えます。別法人で利用する場合は、原則として別途購入が必要です。",
-        "en": "Yes. License and License Plus are both planned to permit internal use by headquarters, branches, offices, and employees within the same legal entity. Separate legal entities generally require separate purchases."
+        "ja": "はい。同一法人内での利用を予定しています。LicenseではLocal / LAN構成で複数の倉庫・Location情報を管理する案、License Plusでは顧客管理サーバーを正本とする複数拠点・複数端末の常時同期を本格対応する案を開発中です。対応範囲は正式販売前に確定し、別法人での利用は原則として別途購入が必要です。",
+        "en": "Yes, internal use within one legal entity is planned. License is being designed around a local/LAN model that can manage multiple warehouse or location records. License Plus is planned for customer-server authoritative data and fuller multi-site, multi-PC, and multi-mobile synchronization. These capabilities remain in development; final scope will be defined before sales. Separate legal entities generally require separate purchases."
       },
       "keywords": {
         "ja": [
@@ -759,8 +759,8 @@
         "en": "Who manages updates and security for License?"
       },
       "answer": {
-        "ja": "Licenseには購入後3か月のUpdatesが含まれ、その期間はFDEが機能・セキュリティ・互換性の更新を提供します。4〜9か月目は月額6,000円で任意継続でき、10か月目以降は通常価格の月額12,000円です。Updatesを利用しない期間は、購入者が利用中のバージョンの更新・セキュリティを管理します。有料契約へ自動移行することはありません。License PlusにはUpdates特典がなく、更新・セキュリティは購入者管理です。",
-        "en": "License includes the first three months of Updates, during which FDE provides functionality, security, and compatibility updates. Months 4–9 are optional at $38/month, and the standard price from month 10 is $75/month. When Updates is not active, the customer manages updates and security for the version it uses. There is no automatic conversion into a paid subscription. License Plus has no Updates entitlement, so updates and security are customer-managed."
+        "ja": "Licenseには購入後3か月のUpdates相当が含まれ、その期間はFDEが機能・セキュリティ・互換性の更新と不具合修正を提供します。終了後も、その時点のバージョンを使い続けられます。継続更新を希望する場合は通常料金の月額12,000円で別途申し込みが必要です。Updatesを利用しない期間は購入者が更新・セキュリティを管理し、有料契約へ自動移行しません。License PlusにもUpdates特典はありません。",
+        "en": "License includes three months of Updates-equivalent service, during which FDE provides functionality, security, compatibility, and bug-fix updates. After that, the customer may keep using the current version perpetually. Continuing Updates requires a separate choice at the standard $79/month USD candidate price. When Updates is inactive, the customer manages updates and security. There is no automatic paid conversion, and License Plus has no Updates entitlement. All USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
         "ja": [
@@ -1134,22 +1134,20 @@
         "en": "What is the planned price of FDE IMS Updates?"
       },
       "answer": {
-        "ja": "通常料金の予定は月額12,000円です。License購入者は購入後3か月まで追加料金なし、4〜9か月目は月額6,000円で任意継続でき、10か月目以降は通常料金になります。License Plusに無料・割引特典はありません。有料契約へ自動移行することはありません。FDE IMSは正式販売前のため、現時点では予定価格です。",
-        "en": "The standard planned price is $75/month. License customers receive the first three months at no additional charge and may optionally continue during months 4–9 for $38/month; the standard price applies from month 10. License Plus has no free or discounted Updates entitlement. There is no automatic conversion into a paid subscription. FDE IMS is not yet formally on sale, so these are planned prices."
+        "ja": "通常料金の予定は月額12,000円です。License購入者は購入後3か月まで追加料金なしでUpdates相当を利用でき、終了後もその時点のバージョンを使い続けられます。継続更新には通常料金での別途申し込みが必要です。License PlusにUpdates特典はなく、有料契約へ自動移行しません。FDE IMSは正式販売前です。",
+        "en": "The standard planned price is a $79/month USD candidate. License includes three months of Updates-equivalent service at no additional charge; afterward, the current version remains available and continuing Updates requires a separate choice at the standard price. License Plus has no Updates entitlement, and no paid subscription starts automatically. FDE IMS is not yet formally on sale, and all USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
         "ja": [
           "Updates",
           "12000円",
-          "6000円",
           "月額",
           "価格",
           "料金"
         ],
         "en": [
           "Updates",
-          "$75",
-          "$38",
+          "$79 candidate",
           "monthly",
           "price",
           "subscription"

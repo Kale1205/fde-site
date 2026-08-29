@@ -242,8 +242,8 @@ public_plan_text = {
     "ja": " ".join(public_visible_text.get(rel, "") for rel in PUBLIC_PRICE_PAGES if rel.startswith("ja/")),
 }
 canonical_public_prices = {
-    "en": ("$313", "$565", "$75", "$38", "$252"),
-    "ja": ("49,800円", "89,800円", "12,000円", "6,000円", "40,000円"),
+    "en": ("$349", "$699", "$79", "$350"),
+    "ja": ("49,800円", "99,800円", "12,000円", "50,000円"),
 }
 for locale, prices in canonical_public_prices.items():
     active_text = public_plan_text[locale]
@@ -263,14 +263,14 @@ for rel in PUBLIC_PRICE_PAGES:
 # Bind the primary homepage cards to their actual prices and responsibilities.
 homepage_plan_facts = {
     "index.html": {
-        "<h3>FDE IMS License</h3>": ("$313", "First 3 months of Updates included", "Source code and source-level modification are not included", "No automatic paid conversion"),
-        "<h3>FDE IMS License Plus</h3>": ("$565", "Source code included", "Purchaser manages updates and security", "No included Updates entitlement"),
-        "<h3>FDE IMS Updates</h3>": ("$75", "Use rights are tied to the contract term", "Source code is not provided"),
+        "<h3>FDE IMS License</h3>": ("$349", "First 3 months of Updates included", "Source code and source-level modification are not included", "No automatic paid conversion"),
+        "<h3>FDE IMS License Plus</h3>": ("$699", "Full source code included", "Customer-server/self-hosted operation planned", "documentation planned", "Purchaser manages updates and security", "No included Updates entitlement"),
+        "<h3>FDE IMS Updates</h3>": ("$79", "bug fixes", "Use rights are tied to the contract term", "Source code is not provided"),
     },
     "ja/index.html": {
         "<h3>FDE IMS License</h3>": ("49,800円", "購入後3か月はUpdatesを含む", "ソースコードとソースレベルの改変権は含まない", "有料契約へ自動移行しない"),
-        "<h3>FDE IMS License Plus</h3>": ("89,800円", "ソースコード付き", "更新・セキュリティは購入者が管理", "Updates特典は含まない"),
-        "<h3>FDE IMS Updates</h3>": ("12,000円", "利用権は契約期間に紐づく", "ソースコード提供なし"),
+        "<h3>FDE IMS License Plus</h3>": ("99,800円", "ソースコード一式", "顧客管理サーバーでの自社運用を予定", "資料を提供予定", "更新・セキュリティは購入者が管理", "Updates特典は含まない"),
+        "<h3>FDE IMS Updates</h3>": ("12,000円", "不具合修正", "利用権は契約期間に紐づく", "ソースコード提供なし"),
     },
 }
 for rel, plans in homepage_plan_facts.items():
@@ -288,10 +288,18 @@ for rel, plans in homepage_plan_facts.items():
                 fail(f"{rel}: plan card {marker} is missing bound fact: {fact}")
 
 retired_price_patterns = {
-    "en": (("$62", re.compile(r"\$\s*62(?!\d)")), ("$31", re.compile(r"\$\s*31(?!\d)"))),
+    "en": (
+        ("$62", re.compile(r"\$\s*62(?!\d)")), ("$31", re.compile(r"\$\s*31(?!\d)")),
+        ("$313", re.compile(r"\$\s*313(?!\d)")), ("$565", re.compile(r"\$\s*565(?!\d)")),
+        ("$75", re.compile(r"\$\s*75(?!\d)")), ("$38", re.compile(r"\$\s*38(?!\d)")),
+        ("$252", re.compile(r"\$\s*252(?!\d)")),
+    ),
     "ja": (
         ("¥9,800 / 9,800円", re.compile(r"(?:[¥￥]\s*9,?800(?!\d)|(?<![\d,])9,?800\s*円)")),
         ("¥4,900 / 4,900円", re.compile(r"(?:[¥￥]\s*4,?900(?!\d)|(?<![\d,])4,?900\s*円)")),
+        ("89,800円", re.compile(r"(?<![\d,])89,?800\s*円")),
+        ("6,000円", re.compile(r"(?<![\d,])6,?000\s*円")),
+        ("40,000円", re.compile(r"(?<![\d,])40,?000\s*円")),
     ),
 }
 for locale, patterns in retired_price_patterns.items():
@@ -313,8 +321,8 @@ if re.search(r"\bUSD\b|U\.S\.\s*dollars?|US\s*dollars?|\$\s*\d", japanese_plan_s
     fail("active Japanese plan source/metadata must not contain USD/dollar pricing")
 
 allowed_money_values = {
-    "en": {"313", "565", "75", "38", "252"},
-    "ja": {"49,800", "89,800", "12,000", "6,000", "40,000"},
+    "en": {"349", "699", "79", "350"},
+    "ja": {"49,800", "99,800", "12,000", "50,000"},
 }
 for rel in PUBLIC_PRICE_PAGES:
     locale = "ja" if rel.startswith("ja/") else "en"
@@ -325,9 +333,9 @@ for rel in PUBLIC_PRICE_PAGES:
         fail(f"{rel}: unexpected {locale} monetary value(s): {', '.join(sorted(unexpected))}")
 
 currency_disclosure_markers = {
-    "index.html": "USD",
-    "license.html": "USD",
-    "order.html": "USD",
+    "index.html": "UNAPPROVED USD CANDIDATE",
+    "license.html": "unapproved candidate",
+    "order.html": "unapproved candidates",
     "ja/index.html": "日本円",
     "ja/license.html": "日本円",
     "ja/order.html": "JPY",
@@ -717,22 +725,18 @@ for source, localized in localized_public_data.items():
 
 for source in ("content/faq-content.json", "content/site-content.json"):
     for locale, base_prices in {
-        "en": ("$313", "$565", "$75"),
-        "ja": ("49,800円", "89,800円", "12,000円"),
+        "en": ("$349", "$699", "$79"),
+        "ja": ("49,800円", "99,800円", "12,000円"),
     }.items():
         active_text = localized_public_data[source][locale]
         for price in base_prices:
             if price not in active_text:
                 fail(f"{source}: active {locale} content missing canonical plan price: {price}")
 
-for locale, transition_prices in {
-    "en": ("$38", "$75"),
-    "ja": ("6,000円", "12,000円"),
-}.items():
+for locale, continuation_price in {"en": "$79", "ja": "12,000円"}.items():
     active_text = localized_public_data["content/faq-policy-additions.json"][locale]
-    for price in transition_prices:
-        if price not in active_text:
-            fail(f"content/faq-policy-additions.json: active {locale} content missing transition price: {price}")
+    if continuation_price not in active_text:
+        fail(f"content/faq-policy-additions.json: active {locale} content missing standard continuation price: {continuation_price}")
 
 for source in ("content/faq-content.json", "content/faq-policy-additions.json"):
     english_faq = localized_public_data[source]["en"]

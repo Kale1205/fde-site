@@ -42,13 +42,13 @@ The public site uses three planned FDE IMS plans. These values and entitlements 
 
 | Plan | Japanese price | English price | Term | Source code | Update entitlement |
 | --- | ---: | ---: | --- | --- | --- |
-| License | JPY 49,800 one-time | USD 313 one-time | Perpetual internal use | Not provided | Months 1-3 included; months 4-9 optional at JPY 6,000 / USD 38 monthly; month 10 onward uses the standard Updates price |
-| License Plus | JPY 89,800 one-time | USD 565 one-time | Perpetual internal use | Included for permitted internal modification | Not included |
-| Updates | JPY 12,000 monthly | USD 75 monthly | Active contract term | Not provided | Functionality, security, and compatibility updates provided by FDE during the active term |
+| License | JPY 49,800 one-time | USD 349 candidate | Perpetual internal use | Not provided | Months 1–3 included; continuation after month 3 is optional at the standard Updates price |
+| License Plus | JPY 99,800 one-time | USD 699 candidate | Perpetual internal use | Full source code for permitted internal modification | Not included; customer-managed operation |
+| Updates | JPY 12,000 monthly | USD 79 monthly candidate | Active contract term | Not provided | Functionality, security, compatibility, and bug-fix updates provided by FDE during the active term |
 
-The planned License-to-License Plus upgrade is JPY 40,000 / USD 252. License update entitlement never converts automatically into a paid subscription. Ending an optional Updates subscription never extinguishes a previously acquired perpetual License or License Plus right. An Updates-only subscription does not become perpetual after cancellation.
+The proposed License-to-License Plus upgrade is JPY 50,000 / USD 350 candidate. License includes three months of Updates-equivalent service; after that, continuing at the standard Updates price requires an active choice and never begins automatically. Ending optional Updates never extinguishes a previously acquired perpetual License or License Plus right. An Updates-only subscription does not become perpetual after cancellation.
 
-All prices remain planned prices while FDE IMS is in development. Deployment, hosting, backup, support-SLA, refund, tax, delivery, and final EULA terms must remain explicitly unfinalized until separately approved. Production payments, fulfillment, installer release, and customer fulfillment email remain disabled.
+All prices remain planned while FDE IMS is in development. Japanese prices are the current Product Plan v2 proposal; every USD figure is an unapproved candidate pending final international pricing. License Plus is planned to include full source, internal customization rights, technical documentation, and customer-server/self-hosted operation. Local/LAN mode, customer-server mode, multiple-location registration, and multi-site synchronization remain architecture plans under development and must never be described as released features. Deployment, hosting, backup, support-SLA, refund, tax, delivery, and final EULA terms remain unfinalized until separately approved. Production payments, fulfillment, installer release, and customer fulfillment email remain disabled.
 
 ### Payment catalog migration boundary
 

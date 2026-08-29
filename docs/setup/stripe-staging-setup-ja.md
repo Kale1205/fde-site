@@ -6,13 +6,13 @@
 
 | プラン | 日本語サイト | 英語サイト | 備考 |
 |---|---:|---:|---|
-| License | 49,800円・買い切り | $313 one-time | 購入後3か月のUpdatesを含む |
-| License Plus | 89,800円・買い切り | $565 one-time | ソースコードと社内改変権を含む。Updates特典なし |
-| Updates | 月額12,000円 | $75/month | 契約期間中のみ利用可能 |
+| License | 49,800円・買い切り | $349候補・one-time | 購入後3か月のUpdates相当を含む |
+| License Plus | 99,800円・買い切り | $699候補・one-time | Full source、社内改変権、技術資料、Customer Server / Self-hosted運用を予定。Updates特典なし |
+| Updates | 月額12,000円 | $79/month候補 | 契約中の機能・Security・互換性Update・Bug Fix。永続利用権なし |
 
-License購入者が4〜9か月目にUpdatesを任意継続する場合は、月額6,000円 / $38です。10か月目以降は通常価格となり、無料・割引期間から有料契約へ自動移行しません。
+License購入後3か月が終了しても、その時点のVersionは永続利用できます。Updatesを続ける場合は通常の月額12,000円（英語版は$79候補）へ別途申し込みが必要で、有料契約へ自動移行しません。LicenseからPlusへのUpgradeは差額50,000円（英語版は$350候補）案です。USDは未承認候補で、最終価格ではありません。
 
-3プラン対応のStripe移行では、License Plusの追加、Updates価格の変更、License購入者向けUpdates特典、日英それぞれの固定通貨、サーバー側allowlist、EULA、Webhook、解約、fulfillment境界を一体で再検証する必要があります。移行とSandbox検証が完了するまで、Checkout、本番決済、納品、顧客ポータルは無効のままです。
+3プラン対応のStripe移行では、License Plusの追加、Updates価格の変更、License購入者向け3か月特典、日英それぞれの固定通貨、サーバー側allowlist、EULA、Webhook、解約、fulfillment境界を一体で再検証する必要があります。上記候補価格をStripeへ登録してはいけません。移行とSandbox検証が完了するまで、Checkout、本番決済、納品、顧客ポータルは無効のままです。
 
 ## 先に守ること
 
