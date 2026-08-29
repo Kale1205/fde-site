@@ -14,7 +14,9 @@ PR_CHECKS = ROOT / ".github" / "workflows" / "pr-checks.yml"
 errors = []
 
 
-def fail(message): errors.append(message)
+def fail(message):
+    errors.append(message)
+
 
 def read(path):
     if not path.exists():
@@ -22,42 +24,153 @@ def read(path):
         return ""
     return path.read_text(encoding="utf-8")
 
-workflow = read(WORKFLOW); probe = read(PROBE); live_runner = read(LIVE_RUNNER); tests = read(TESTS); doc = read(DOC); notifier = read(NOTIFIER); pr_checks = read(PR_CHECKS)
 
-for marker in ("name: Kale Sentinel operational check", "workflow_dispatch:", "permissions:", "contents: read", "actions: read", "CLOUDFLARE_SENTINEL_TOKEN", "python scripts/kale_sentinel_live.py --output sentinel-report", "actions/upload-artifact@v4", "retention-days: 14"):
-    if marker not in workflow: fail(f"Kale Sentinel workflow missing marker: {marker}")
+workflow = read(WORKFLOW)
+probe = read(PROBE)
+live_runner = read(LIVE_RUNNER)
+tests = read(TESTS)
+doc = read(DOC)
+notifier = read(NOTIFIER)
+pr_checks = read(PR_CHECKS)
 
-# P3-4 is complete as a manual read-only foundation. Hourly activation is a separate reviewed change.
+workflow_required = (
+    "name: Kale Sentinel operational check",
+    "workflow_dispatch:",
+    "permissions:",
+    "contents: read",
+    "actions: read",
+    "CLOUDFLARE_SENTINEL_TOKEN",
+    "python scripts/kale_sentinel_live.py --output sentinel-report",
+    "actions/upload-artifact@v4",
+    "retention-days: 14",
+)
+for marker in workflow_required:
+    if marker not in workflow:
+        fail(f"Kale Sentinel workflow missing marker: {marker}")
+
+# P3-4 is complete as a manual read-only foundation. Hourly activation is a
+# separate reviewed change and must remain disabled unless explicitly approved.
 for forbidden_schedule in ("schedule:", "cron:"):
-    if forbidden_schedule in workflow: fail(f"Kale Sentinel schedule must remain disabled in the accepted P3 foundation: {forbidden_schedule}")
+    if forbidden_schedule in workflow:
+        fail(f"Kale Sentinel schedule must remain disabled in the accepted P3 foundation: {forbidden_schedule}")
 
-for forbidden in ("CLOUDFLARE_API_TOKEN", "wrangler deploy", "wrangler pages deploy", "git push", "gh pr merge", "contents: write", "actions: write", "pull-requests: write", "deployments: write", "packages: write", "id-token: write"):
-    if forbidden in workflow: fail(f"Kale Sentinel workflow violates read-only contract: {forbidden}")
+for forbidden in (
+    "CLOUDFLARE_API_TOKEN",
+    "wrangler deploy",
+    "wrangler pages deploy",
+    "git push",
+    "gh pr merge",
+    "contents: write",
+    "actions: write",
+    "pull-requests: write",
+    "deployments: write",
+    "packages: write",
+    "id-token: write",
+):
+    if forbidden in workflow:
+        fail(f"Kale Sentinel workflow violates read-only contract: {forbidden}")
 
-for marker in ("baked-kale-sentinel/1.0", "urllib.request.install_opener", "probe.run_live"):
-    if marker not in live_runner: fail(f"Kale Sentinel live runner missing HTTP identity marker: {marker}")
-for forbidden in ("CLOUDFLARE_API_TOKEN", 'method="POST"', 'method="PUT"', 'method="PATCH"', 'method="DELETE"', "wrangler", "git push"):
-    if forbidden in live_runner: fail(f"Kale Sentinel live runner violates read-only contract: {forbidden}")
+for marker in (
+    "baked-kale-sentinel/1.0",
+    "urllib.request.install_opener",
+    "probe.run_live",
+):
+    if marker not in live_runner:
+        fail(f"Kale Sentinel live runner missing HTTP identity marker: {marker}")
 
-for marker in ("CLOUDFLARE_SENTINEL_TOKEN", "cloudflare_api_json", 'method="GET"', "ORDER_QUOTE_EXPIRY_STUCK", "ORDER_AUDIT_PENDING_STUCK", "STRIPE_EVENT_PROCESSING_STUCK", "FULFILLMENT_SAFETY_FLAG_VIOLATION", "AUTO_SECURITY_STALE", "write_report", "evidence_only_no_remediation_authority"):
-    if marker not in probe: fail(f"Kale Sentinel probe missing contract marker: {marker}")
-for forbidden in ('method="POST"', 'method="PUT"', 'method="PATCH"', 'method="DELETE"', "CLOUDFLARE_API_TOKEN", "ORDER_STATUS.put", "wrangler", "git push", "hooks.slack.com/services/"):
-    if forbidden in probe: fail(f"Kale Sentinel probe contains forbidden mutation/credential marker: {forbidden}")
-if "def fingerprint(" not in probe or "order_ref={ref}" not in probe: fail("Kale Sentinel probe must use redacted record fingerprints")
+for forbidden in (
+    "CLOUDFLARE_API_TOKEN",
+    'method="POST"',
+    'method="PUT"',
+    'method="PATCH"',
+    'method="DELETE"',
+    "wrangler",
+    "git push",
+):
+    if forbidden in live_runner:
+        fail(f"Kale Sentinel live runner violates read-only contract: {forbidden}")
 
-for marker in ("P3-4 Kale Sentinel deterministic rule tests passed.", "ORDER_QUOTE_EXPIRY_STUCK", "ORDER_PAYMENT_EVIDENCE_MISSING", "STRIPE_EVENT_PROCESSING_STUCK", "FULFILLMENT_SAFETY_FLAG_VIOLATION"):
-    if marker not in tests: fail(f"P3-4 deterministic rule test coverage missing marker: {marker}")
-for marker in ("Kale Sentinel — Operational Monitoring Foundation", "CLOUDFLARE_SENTINEL_TOKEN", "Workers KV Storage → Read", "must not", "Live payments: OFF", "P3-4 foundation is complete", "hourly schedule remains **OFF**", "separate reviewed change"):
-    if marker not in doc: fail(f"Kale Sentinel governance document missing marker: {marker}")
-if "not considered fully active until" in doc: fail("Kale Sentinel governance document contains obsolete schedule-dependent activation wording")
-if "- Kale Sentinel operational check" not in notifier: fail("Existing Slack failure notifier does not monitor Kale Sentinel")
-for marker in ("python scripts/validate_p3_sentinel.py", "python scripts/test_p3_sentinel_rules.py"):
-    if marker not in pr_checks: fail(f"PR checks do not enforce P3-4 contract: {marker}")
+probe_required = (
+    "CLOUDFLARE_SENTINEL_TOKEN",
+    "cloudflare_api_json",
+    'method="GET"',
+    "ORDER_QUOTE_EXPIRY_STUCK",
+    "ORDER_AUDIT_PENDING_STUCK",
+    "STRIPE_EVENT_PROCESSING_STUCK",
+    "FULFILLMENT_SAFETY_FLAG_VIOLATION",
+    "AUTO_SECURITY_STALE",
+    "write_report",
+    "evidence_only_no_remediation_authority",
+)
+for marker in probe_required:
+    if marker not in probe:
+        fail(f"Kale Sentinel probe missing contract marker: {marker}")
 
-write_permission = re.compile(r"^\s*(contents|actions|pull-requests|id-token|checks|deployments|packages|statuses):\s*write\s*$", re.MULTILINE)
-if write_permission.search(workflow): fail("Kale Sentinel workflow contains a write-capable GitHub permission")
+for forbidden in (
+    'method="POST"',
+    'method="PUT"',
+    'method="PATCH"',
+    'method="DELETE"',
+    "CLOUDFLARE_API_TOKEN",
+    "ORDER_STATUS.put",
+    "wrangler",
+    "git push",
+    "hooks.slack.com/services/",
+):
+    if forbidden in probe:
+        fail(f"Kale Sentinel probe contains forbidden mutation/credential marker: {forbidden}")
+
+# The report must use fingerprints for record-level evidence, not raw order IDs.
+if "def fingerprint(" not in probe or "order_ref={ref}" not in probe:
+    fail("Kale Sentinel probe must use redacted record fingerprints")
+
+for marker in (
+    "P3-4 Kale Sentinel deterministic rule tests passed.",
+    "ORDER_QUOTE_EXPIRY_STUCK",
+    "ORDER_PAYMENT_EVIDENCE_MISSING",
+    "STRIPE_EVENT_PROCESSING_STUCK",
+    "FULFILLMENT_SAFETY_FLAG_VIOLATION",
+):
+    if marker not in tests:
+        fail(f"P3-4 deterministic rule test coverage missing marker: {marker}")
+
+for marker in (
+    "Kale Sentinel — Operational Monitoring Foundation",
+    "CLOUDFLARE_SENTINEL_TOKEN",
+    "Workers KV Storage → Read",
+    "must not",
+    "Live payments: OFF",
+    "P3-4 foundation is complete",
+    "hourly schedule remains **OFF**",
+    "separate reviewed change",
+):
+    if marker not in doc:
+        fail(f"Kale Sentinel governance document missing marker: {marker}")
+
+if "not considered fully active until" in doc:
+    fail("Kale Sentinel governance document contains obsolete schedule-dependent activation wording")
+
+if "- Kale Sentinel operational check" not in notifier:
+    fail("Existing Slack failure notifier does not monitor Kale Sentinel")
+
+for marker in (
+    "python scripts/validate_p3_sentinel.py",
+    "python scripts/test_p3_sentinel_rules.py",
+):
+    if marker not in pr_checks:
+        fail(f"PR checks do not enforce P3-4 contract: {marker}")
+
+write_permission = re.compile(
+    r"^\s*(contents|actions|pull-requests|id-token|checks|deployments|packages|statuses):\s*write\s*$",
+    re.MULTILINE,
+)
+if write_permission.search(workflow):
+    fail("Kale Sentinel workflow contains a write-capable GitHub permission")
+
 if errors:
     print("P3-4 Kale Sentinel validation failed:\n")
-    for item in errors: print(f"- {item}")
+    for item in errors:
+        print(f"- {item}")
     sys.exit(1)
+
 print("P3-4 Kale Sentinel read-only contract validation passed.")

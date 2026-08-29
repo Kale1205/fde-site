@@ -41,7 +41,12 @@ for marker in required_markers:
     if marker not in text:
         fail(f"Slack notification workflow missing marker: {marker}")
 
-for forbidden in ("hooks.slack.com/services/", "hooks.slack-gov.com/services/", "xoxb-", "xapp-"):
+for forbidden in (
+    "hooks.slack.com/services/",
+    "hooks.slack-gov.com/services/",
+    "xoxb-",
+    "xapp-",
+):
     if forbidden in text:
         fail(f"Slack notification workflow contains a literal secret/token marker: {forbidden}")
 
