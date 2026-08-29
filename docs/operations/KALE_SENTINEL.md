@@ -126,14 +126,15 @@ A Sentinel verdict is evidence only. It does not authorize remediation.
 
 The existing Slack failure notifier remains the only alert-sending component in this phase. Kale Sentinel does not hold a Slack webhook secret directly.
 
-## Activation gate
+## Activation state
 
-P3-4 is not considered fully active until all of the following are confirmed:
-1. `CLOUDFLARE_SENTINEL_TOKEN` is configured as a GitHub Actions secret with read-only KV permission.
-2. Sentinel contract / fixture tests pass in PR checks.
-3. A manual live Sentinel run succeeds with the dedicated token.
-4. Hourly schedule is enabled only after the manual live run succeeds.
-5. Sentinel workflow failures are included in the existing Slack failure notification workflow.
+P3-4 foundation is complete. The dedicated read-only `CLOUDFLARE_SENTINEL_TOKEN` was configured and an official manual live observation succeeded before P3-4 acceptance.
+
+The current workflow intentionally remains manual-only. The hourly schedule remains **OFF**.
+
+Enabling hourly Sentinel execution is a separate reviewed change. It is not required for P3-4 completion, and P3-8 must not silently enable it.
+
+Any later schedule change must preserve the same read-only credential boundary, failure routing, and no-remediation authority.
 
 ## Hard safety gates — unchanged
 

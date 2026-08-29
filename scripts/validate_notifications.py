@@ -29,6 +29,7 @@ required_markers = (
     "- Kale Desk foundation check",
     "- Kale’s Office foundation check",
     "- Kale Outreach foundation check",
+    "- P3 Agent Governance acceptance check",
     "github.event.workflow_run.conclusion == 'failure'",
     "github.event.workflow_run.conclusion == 'timed_out'",
     "github.event.workflow_run.conclusion == 'action_required'",
@@ -40,12 +41,7 @@ for marker in required_markers:
     if marker not in text:
         fail(f"Slack notification workflow missing marker: {marker}")
 
-for forbidden in (
-    "hooks.slack.com/services/",
-    "hooks.slack-gov.com/services/",
-    "xoxb-",
-    "xapp-",
-):
+for forbidden in ("hooks.slack.com/services/", "hooks.slack-gov.com/services/", "xoxb-", "xapp-"):
     if forbidden in text:
         fail(f"Slack notification workflow contains a literal secret/token marker: {forbidden}")
 
