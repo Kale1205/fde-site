@@ -36,7 +36,9 @@ Use these routes:
 - **Mirror release → Product News**
 - **Guard improvement → Development News**
 - **Kale Outreach approved GTM brief → LinkedIn / Instagram / YouTube / SEO-AEO public-content draft**
-- **Social content when Administrator explicitly requests it or approves the GTM content scope**
+- **Social content only when Administrator explicitly requests it**
+
+An Administrator-approved GTM content scope counts as an explicit request for the bounded public-content drafting scope.
 
 Social content must use facts already public or explicitly approved for public use.
 
@@ -99,7 +101,7 @@ Do not create a separate CMS writer or translation publisher.
 
 ## Marketing separation
 
-Kale’s Office is **not the outbound sales execution agent**.
+Kale’s Office is **not a sales campaign** agent and is not the outbound sales execution agent.
 
 Do not perform real prospect-list creation, outbound email/DM send, campaign delivery, or unsolicited follow-up. Those belong to Kale Outreach under the separate sales-execution governance extension and Administrator approval gates.
 
