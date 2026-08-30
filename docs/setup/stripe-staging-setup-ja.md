@@ -1,18 +1,17 @@
-# 旧2プラン Stripe Sandbox / Cloudflare staging 参照記録（実行禁止）
+# 2商品 Stripe Sandbox / Cloudflare staging 設定計画（Checkout実行禁止）
 
-この文書が記録していた2プラン用設定は、現在の3プラン構成と一致しません。以下の既存Worker、Price ID、テストデータは移行時の参照専用です。現在の設定手順として実行しないでください。
+現在の商品構成はLicenseとLicense Plusの2商品です。UpdatesはLicense専用の任意Add-onであり、単独商品ではありません。コード上のallowlistは2商品へ更新済みですが、Price IDの本設定やCheckoutの有効化はまだ行いません。
 
 公開サイトの基準は次のとおりです。
 
-| プラン | 日本語サイト | 英語サイト | 備考 |
+| 商品 | 日本語サイト | 英語サイト | 備考 |
 |---|---:|---:|---|
 | License | 49,800円・買い切り | $349候補・one-time | 購入後3か月のUpdates相当を含む |
 | License Plus | 99,800円・買い切り | $699候補・one-time | Full source、社内改変権、技術資料、Customer Server / Self-hosted運用を予定。Updates特典なし |
-| Updates | 月額12,000円 | $79/month候補 | 契約中の機能・Security・互換性Update・Bug Fix。永続利用権なし |
 
-License購入後3か月が終了しても、その時点のVersionは永続利用できます。Updatesを続ける場合は通常の月額12,000円（英語版は$79候補）へ別途申し込みが必要で、有料契約へ自動移行しません。LicenseからPlusへのUpgradeは差額50,000円（英語版は$350候補）案です。USDは未承認候補で、最終価格ではありません。
+License購入後3か月が終了しても、その時点のVersionは永続利用できます。Updates Add-onは4〜6か月目が月額4,900円（$31候補）、7か月目以降が月額9,800円（$62候補）で、明示的な申込みが必要です。有料契約へ自動移行しません。License Plusは別商品で、差額UpgradeとUpdates Add-onの対象外です。USDは未承認候補で、最終価格ではありません。
 
-3プラン対応のStripe移行では、License Plusの追加、Updates価格の変更、License購入者向け3か月特典、日英それぞれの固定通貨、サーバー側allowlist、EULA、Webhook、解約、fulfillment境界を一体で再検証する必要があります。上記候補価格をStripeへ登録してはいけません。移行とSandbox検証が完了するまで、Checkout、本番決済、納品、顧客ポータルは無効のままです。
+Stripe設定では、2商品のPrice ID、日英それぞれの固定通貨、サーバー側allowlist、EULA、Webhook、解約、fulfillment境界を一体で再検証する必要があります。Updates Add-onは購入日による対象期間と継続権利の実装・レビューが終わるまでCheckoutへ追加しません。上記候補価格をStripeへ登録せず、Sandbox検証が完了するまでCheckout、本番決済、納品、顧客ポータルは無効のままです。
 
 ## 先に守ること
 
@@ -27,18 +26,18 @@ License購入後3か月が終了しても、その時点のVersionは永続利�
 2. Sandboxを新規作成するか、Baked Kaleのstaging専用Sandboxを開く。
 3. 以後、画面上でSandbox名が表示されていることを毎回確認する。
 
-## 2. 旧ProductとPrice（参照専用）
+## 2. ProductとPrice（設定前レビュー用）
 
-次の表は、旧2プランのSandbox検証で使った値です。現在の3プラン用Priceとして作成・再利用しないでください。
+次の値を基準にします。USDは未承認候補のため、最終承認前にPriceを作成しないでください。
 
 | Stripe Product | Price種別 | 通貨 | 金額 | Cloudflare変数名 |
 |---|---:|---:|---:|---|
-| FDE IMS License | One time | USD | 313.00 | `STRIPE_PRICE_LICENSE_USD` |
+| FDE IMS License | One time | USD | 349.00候補 | `STRIPE_PRICE_LICENSE_USD` |
 | FDE IMS License | One time | JPY | 49,800 | `STRIPE_PRICE_LICENSE_JPY` |
-| FDE IMS Updates（旧） | Recurring / Monthly | USD | 62.00 | `STRIPE_PRICE_UPDATES_USD` |
-| FDE IMS Updates（旧） | Recurring / Monthly | JPY | 9,800 | `STRIPE_PRICE_UPDATES_JPY` |
+| FDE IMS License Plus | One time | USD | 699.00候補 | `STRIPE_PRICE_LICENSE_PLUS_USD` |
+| FDE IMS License Plus | One time | JPY | 99,800 | `STRIPE_PRICE_LICENSE_PLUS_JPY` |
 
-この旧Updates価格と旧割引ルールは廃止済みです。
+Updates Add-on用Priceはまだ作成せず、旧`STRIPE_PRICE_UPDATES_*`を再利用しません。
 
 ## 3. Stripe APIキーを作る
 
@@ -69,16 +68,16 @@ openssl rand -base64 32
 
 この値はCheckoutの手動疎通確認時だけ `X-FDE-Staging-Checkout-Key` ヘッダーへ入れる。
 
-## 5. 旧Price IDと戻り先URL（参照専用）
+## 5. Price IDと戻り先URL（設定前レビュー用）
 
-次の変数は旧2プランWorkerが参照する値です。3プラン移行前に追加・更新してCheckoutを有効化しないでください。
+次の変数をstaging Workerが参照します。レビューとSandbox検証前にCheckoutを有効化しないでください。
 
 | Variable name | Value |
 |---|---|
-| `STRIPE_PRICE_LICENSE_USD` | 手順2のUSD 313.00の `price_...` |
+| `STRIPE_PRICE_LICENSE_USD` | 手順2のUSD 349.00候補の `price_...` |
 | `STRIPE_PRICE_LICENSE_JPY` | 手順2のJPY 49,800の `price_...` |
-| `STRIPE_PRICE_UPDATES_USD` | 手順2のUSD 62.00/monthの `price_...` |
-| `STRIPE_PRICE_UPDATES_JPY` | 手順2のJPY 9,800/monthの `price_...` |
+| `STRIPE_PRICE_LICENSE_PLUS_USD` | 手順2のUSD 699.00候補の `price_...` |
+| `STRIPE_PRICE_LICENSE_PLUS_JPY` | 手順2のJPY 99,800の `price_...` |
 | `STAGING_CHECKOUT_SUCCESS_URL` | `https://kales-fde-staging.pages.dev/fde-site/order.html?checkout=success` |
 | `STAGING_CHECKOUT_CANCEL_URL` | `https://kales-fde-staging.pages.dev/fde-site/order.html?checkout=cancelled` |
 | `STAGING_CHECKOUT_ENABLED` | 最初は `false` |
@@ -129,9 +128,9 @@ P2-6がstagingへ反映された後に実施する。
 
 ## 8. Sandbox Checkoutは無効のまま維持する
 
-現在の旧2プラン構成では、Cloudflareの `STAGING_CHECKOUT_ENABLED` を `true` に変更しないでください。stagingデプロイとhealth checkは `false` を必須条件として扱います。
+現在の2商品構成でも、Cloudflareの `STAGING_CHECKOUT_ENABLED` を `true` に変更しないでください。stagingデプロイとhealth checkは `false` を必須条件として扱います。
 
-3プラン対応、EULA、サーバー側allowlist、Webhook、解約、fulfillment境界、日英固定通貨の移行とレビューが完了した後、新しいSandbox QA手順を作成します。それまではCheckout疎通確認を再開しません。
+2商品のPrice ID、EULA、サーバー側allowlist、Webhook、解約、fulfillment境界、日英固定通貨のレビューが完了した後、新しいSandbox QA手順を作成します。Updates Add-onは購入日と権利判定の設計が完了するまで対象外です。それまではCheckout疎通確認を再開しません。
 
 ## トラブル時に共有してよい情報
 

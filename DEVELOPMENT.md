@@ -38,23 +38,22 @@ Core design rules:
 
 ## Public product-plan source of truth
 
-The public site uses three planned FDE IMS plans. These values and entitlements must stay synchronized across Product, comparison, License, FAQ, News, Contact, Order preview, and SEO copy.
+The public site uses two planned FDE IMS products plus a License-only Updates add-on. These values and entitlements must stay synchronized across Product, comparison, License, FAQ, News, Contact, Order preview, and SEO copy.
 
-| Plan | Japanese price | English price | Term | Source code | Update entitlement |
+| Product | Japanese price | English price | Term | Source code | Update entitlement |
 | --- | ---: | ---: | --- | --- | --- |
-| License | JPY 49,800 one-time | USD 349 candidate | Perpetual internal use | Not provided | Months 1–3 included; continuation after month 3 is optional at the standard Updates price |
-| License Plus | JPY 99,800 one-time | USD 699 candidate | Perpetual internal use | Full source code for permitted internal modification | Not included; customer-managed operation |
-| Updates | JPY 12,000 monthly | USD 79 monthly candidate | Active contract term | Not provided | Functionality, security, compatibility, and bug-fix updates provided by FDE during the active term |
+| License | JPY 49,800 one-time | USD 349 candidate | Perpetual internal use | Not provided | Months 1–3 included; optional add-on is JPY 4,900 / USD 31 candidate for months 4–6 and JPY 9,800 / USD 62 candidate from month 7 |
+| License Plus | JPY 99,800 one-time | USD 699 candidate | Perpetual internal use | Full source code for permitted internal modification | Updates add-on is not available; customer-managed operation |
 
-The proposed License-to-License Plus upgrade is JPY 50,000 / USD 350 candidate. License includes three months of Updates-equivalent service; after that, continuing at the standard Updates price requires an active choice and never begins automatically. Ending optional Updates never extinguishes a previously acquired perpetual License or License Plus right. An Updates-only subscription does not become perpetual after cancellation.
+Updates is not a standalone product. It is an optional add-on available only to License customers, starts only after explicit opt-in, and never begins automatically. Ending the add-on never extinguishes the perpetual License or the right to keep using the latest version already received. License Plus is a separate purchase rather than a difference-price upgrade and is not eligible for the Updates add-on.
 
 All prices remain planned while FDE IMS is in development. Japanese prices are the current Product Plan v2 proposal; every USD figure is an unapproved candidate pending final international pricing. License Plus is planned to include full source, internal customization rights, technical documentation, and customer-server/self-hosted operation. Local/LAN mode, customer-server mode, multiple-location registration, and multi-site synchronization remain architecture plans under development and must never be described as released features. Deployment, hosting, backup, support-SLA, refund, tax, delivery, and final EULA terms remain unfinalized until separately approved. Production payments, fulfillment, installer release, and customer fulfillment email remain disabled.
 
 ### Payment catalog migration boundary
 
-The currently deployed staging Stripe/Checkout catalog is a legacy two-plan test implementation. It still represents `fde-ims-license` and `fde-ims-updates` with the earlier price and entitlement assumptions. Checkout activation remains off, live payments remain off, and this legacy catalog must not be treated as an implementation of the public three-plan offer.
+The staging Stripe/Checkout catalog recognizes only the two base product keys: `fde-ims-license` and `fde-ims-license-plus`. The retired standalone `fde-ims-updates` key is rejected. Checkout activation remains off, live payments remain off, and the Updates add-on has no Checkout route until purchase-date entitlement and billing rules receive a separate review.
 
-A separate reviewed migration must add the License Plus product and Price IDs, replace the Updates price, reconcile License entitlements, update the staging allowlist and automated payment tests, and repeat end-to-end Sandbox verification. Until that migration is complete, no public purchase action may route into the legacy staging catalog and no production payment capability may be enabled.
+A separate reviewed activation must configure Sandbox Price IDs for both base products, reconcile existing License entitlements, implement the Updates add-on purchase-date rules, and repeat end-to-end EULA, Checkout, webhook, cancellation, and fulfillment-boundary verification. Until that work is complete, no public purchase action may route into Checkout and no production payment capability may be enabled.
 
 Japanese public copy must be written as natural Japanese rather than as a line-by-line translation of English. Visible Japanese headings, buttons, labels, and short art annotations do not end in `。`; normal sentences and explanatory body copy do.
 
@@ -118,7 +117,7 @@ Repository validation must cover both public sites, not only root HTML. It check
 - shared Product / Why FDE / Kale’s Goals / News navigation and five-link editorial footers;
 - reciprocal static language links, self-canonical URLs, and `en` / `ja` / `x-default` alternates;
 - Japanese CMS administration and Japanese/English CMS data completeness;
-- active public three-plan names, locale-specific price books, retired-price exclusion, and Japanese heading punctuation;
+- active two-product and License-only Updates add-on names, locale-specific price books, retired-price exclusion, and Japanese heading punctuation;
 - Japanese/English completeness and active-locale pricing checks for both base FAQ data and policy additions;
 - absence of obsolete localization, pricing, commerce, and migration artifacts;
 - Cloudflare Worker entry/import consistency;

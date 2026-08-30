@@ -2,7 +2,7 @@
   "latestStrip": {
     "enabled": true,
     "label": {"ja":"最新情報","en":"Latest","zh-CN":"最新信息","zh-TW":"最新資訊","ko":"최신 소식","id":"Terbaru","ms":"Terkini","vi":"Mới nhất","th":"ล่าสุด","hi":"नवीनतम","ar":"الأحدث"},
-    "text": {"ja":"FDE IMSの3プラン方針を公開","en":"FDE IMS three-plan catalog announced"},
+    "text": {"ja":"FDE IMSを2商品＋Updates追加オプションへ更新","en":"FDE IMS updated to two products plus a License Updates add-on"},
     "link": "news.html"
   },
   "newsFallbackImage": "https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-211414-ChatGPT-Image-Aug-16-2026-08_58_09-PM-1f5fe7.png",
@@ -27,8 +27,8 @@
   "news": [
     {
       "id":"ims-license-updates-policy-20260819","date":"2026-08-19","category":"Product","featured":true,"link":"license.html","image":"","translationStatus":"seeded",
-      "title":{"ja":"FDE IMSの3プラン方針を公開","en":"FDE IMS three-plan catalog announced"},
-      "body":{"ja":"FDE IMSは現在開発中です。Product Plan v2では、Licenseは49,800円の買い切りで、ソースコードを含まず、購入法人内で期限なく利用できます。購入後3か月はUpdates相当を含み、終了後もその時点のバージョンを使い続けられます。License Plusは99,800円の買い切りで、ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。Updates特典はありません。LicenseからPlusへのアップグレードは差額50,000円案です。Updatesは月額12,000円で、契約中の新機能・セキュリティ・互換性の更新と不具合修正をFDEが担当します。いずれも予定条件で、有料契約へ自動移行しません。","en":"FDE IMS is in development. Product Plan v2 proposes License at a $349 one-time USD candidate price, without source code, with perpetual internal use and three months of Updates-equivalent service. License Plus has a $699 one-time USD candidate price and is planned to include full source, internal-modification rights, technical documentation, and customer-server/self-hosted operation, with no Updates entitlement. The proposed upgrade difference is a $350 USD candidate. Updates has a $79/month USD candidate price and covers functionality, security, compatibility, and bug-fix updates during the active term. All USD figures are unapproved candidates pending final international pricing, and no paid subscription starts automatically."}
+      "title":{"ja":"FDE IMSを2商品＋Updates追加オプションへ更新","en":"FDE IMS updated to two products plus a License Updates add-on"},
+      "body":{"ja":"FDE IMSは現在開発中です。商品は2つです。Licenseは49,800円の買い切りで、ソースコードを含まず、購入法人内で期限なく利用できます。購入後3か月はUpdatesを含み、4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続できます。継続しなくても、その時点のバージョンを使い続けられます。License Plusは99,800円の買い切りで、ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。License向けUpdates追加オプションの対象外で、更新・セキュリティは購入者が管理します。Updatesは単独購入できず、有料契約へ自動移行しません。","en":"FDE IMS is in development with two products. License has a $349 one-time USD candidate price, without source code, with perpetual internal use and three months of Updates included. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. License Plus has a $699 one-time USD candidate price and is planned to include full source, internal-modification rights, technical documentation, and customer-server/self-hosted operation. It is not eligible for the License Updates add-on, and the purchaser manages updates and security. Updates cannot be purchased on its own and never starts automatically. All USD figures are unapproved candidates pending final international pricing."}
     },
     {
       "id":"ims-demo-preview","date":"2026-08-16","category":"Development","featured":false,"link":"demo.html","image":"https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png","translationStatus":"translated",

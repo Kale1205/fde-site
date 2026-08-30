@@ -5,14 +5,14 @@
 - Decision date: 2026-08-25
 - Provider: Stripe
 - Primary UI: Stripe-hosted Checkout
-- Recorded scope: legacy staging FDE IMS License (one-time) and FDE IMS Updates (monthly)
-- Catalog status: legacy two-plan test catalog; Checkout activation and live payments are off
+- Recorded scope: staging FDE IMS License and License Plus (one-time); License-only Updates add-on remains outside Checkout
+- Catalog status: two-product allowlist implemented; Checkout activation and live payments are off
 
-## Three-plan migration status
+## Two-product catalog status
 
-This document records the payment architecture and the two-plan catalog currently deployed for staging tests. That deployed catalog predates the public three-plan offer and is not an implementation of it. The current public offer is License, License Plus, and Updates; production payments remain blocked.
+The current public offer is FDE IMS License and FDE IMS License Plus. Updates is not a third product: it is an optional License-only add-on. Production payments remain blocked.
 
-A separate reviewed Stripe migration is required before another end-to-end payment test or any activation decision. It must add License Plus and its environment-specific Price IDs, update License entitlements, replace the Updates price, update the server allowlist and test fixtures, and re-run EULA, Checkout, webhook, cancellation, and fulfillment-boundary verification. Until that work is complete, no public purchase action may use the legacy staging catalog.
+The staging code now allowlists the two base product keys and rejects the retired standalone Updates key. A separately reviewed Stripe configuration and Sandbox test are still required before any activation decision. That work must configure environment-specific Price IDs, reconcile License entitlements, and re-run EULA, Checkout, webhook, cancellation, and fulfillment-boundary verification. The add-on remains outside Checkout until purchase-date eligibility and recurring billing rules are implemented and reviewed.
 
 ## Decision
 
@@ -34,9 +34,9 @@ This is a provider decision, not permission to accept live payments. The public 
 
 Stripe Checkout supports one-time purchases and subscriptions. Billing supports recurring payments, and Stripe Invoicing supports one-time or recurring invoice workflows.
 
-- License and License Plus: one-time Checkout Sessions in `payment` mode.
-- Updates: Checkout Session in `subscription` mode with Stripe Billing.
-- All models use the same order ID, webhook boundary, audit model, and Customer Portal status flow after the three-plan migration is complete.
+- License and License Plus: one-time Checkout Sessions in `payment` mode after activation review.
+- License-only Updates add-on: future `subscription` mode after entitlement review; no standalone subscription route.
+- All enabled models use the same order ID, webhook boundary, audit model, and Customer Portal status flow.
 
 ### Fit for Japan and international digital software sales
 
@@ -48,30 +48,38 @@ Managed Payments handles indirect-tax compliance for supported cross-border digi
 
 Stripe-hosted Checkout keeps card data out of the Baked Kale frontend and Cloudflare Worker. The site creates a Checkout Session server-side and redirects the buyer to Stripe. The Baked Kale Worker stores only provider identifiers, order references, payment state, amount, currency, timestamps, and non-sensitive audit metadata.
 
-## Legacy deployed staging product mapping
+## Staging product mapping
 
-The mappings below document the disabled two-plan staging implementation only. They are retained for migration and audit context and must not be presented as the current public offer.
+The mappings below describe the disabled staging implementation. USD amounts are unapproved candidates pending final international pricing.
 
 ### FDE IMS License
 
 - Internal product key: `fde-ims-license`
 - Mode: `payment`
 - Japanese price book: JPY 49,800
-- English price book: USD 313
+- English price book: USD 349 candidate
 - Candidate Managed Payments tax code: `txcd_10202003` (downloadable software - business use)
 - Entitlement: perpetual internal-use License under the accepted License Agreement / EULA
 - Delivery: separate from payment confirmation
 
-### FDE IMS Updates
+### FDE IMS License Plus
 
-- Internal product key: `fde-ims-updates`
-- Mode: `subscription`
-- Japanese price book: JPY 9,800 per month
-- English price book: USD 62 per month
-- Tax code: must be fixed after confirming whether delivery is downloadable software, SaaS, or a hybrid model
-- Entitlement: active only while the subscription remains in an entitled state
+- Internal product key: `fde-ims-license-plus`
+- Mode: `payment`
+- Japanese price book: JPY 99,800
+- English price book: USD 699 candidate
+- Candidate Managed Payments tax code: `txcd_10202003`
+- Entitlement: perpetual internal use, full source, permitted internal modification, and customer-managed/self-hosted operation under the accepted License Agreement / EULA
+- Updates add-on: not eligible
 
-The existing first-year License-to-Updates transition price is not implemented in Stripe until the commercial rule is reconfirmed and represented as an explicit Price or promotion rule.
+### License-only Updates add-on
+
+- Not a standalone product and not present in the Checkout allowlist
+- Months 1–3: included with License
+- Months 4–6: JPY 4,900 / USD 31 candidate per month after explicit opt-in
+- Month 7 onward: JPY 9,800 / USD 62 candidate per month after explicit opt-in
+- License Plus: not eligible
+- Stripe implementation remains blocked until purchase-date eligibility, renewal, cancellation, and entitlement rules are reviewed
 
 ## Currency policy
 
@@ -206,4 +214,4 @@ Fees alone do not decide the architecture. Tax liability, invoice ownership, dis
 
 ## Required next payment work
 
-The next payment task is the separately reviewed three-plan Stripe migration described above. It must preserve the existing fail-closed boundaries and keep Checkout activation, live payments, production fulfillment, installer release, and customer fulfillment email disabled throughout migration and Sandbox verification.
+The next payment task is the separately reviewed two-product Sandbox configuration and License add-on entitlement design described above. It must preserve the existing fail-closed boundaries and keep Checkout activation, live payments, production fulfillment, installer release, and customer fulfillment email disabled throughout migration and Sandbox verification.

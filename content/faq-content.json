@@ -199,12 +199,12 @@
       "subcategory": "models",
       "translationStatus": "seeded",
       "question": {
-        "ja": "License、License Plus、Updatesの違いは何ですか？",
-        "en": "What is the difference between License, License Plus, and Updates?"
+        "ja": "LicenseとLicense Plusの違いは何ですか？",
+        "en": "What is the difference between License and License Plus?"
       },
       "answer": {
-        "ja": "Licenseは、ソースコードを含まない買い切り型で、購入法人内で永続利用できます。購入後3か月はUpdatesを含み、その後は任意で継続できます。License Plusは、ソースコードと社内改変権を含む買い切り型ですが、Updates特典はありません。Updatesは、契約期間中にFDEが機能・セキュリティ・互換性を継続更新する月額型で、ソースコードは提供しません。",
-        "en": "License is a one-time purchase without source code and permits perpetual internal use. It includes the first three months of Updates, with optional continuation afterward. License Plus is a one-time purchase with source code and internal-modification rights, but it has no Updates entitlement. Updates is a monthly plan without source-code delivery, with FDE managing ongoing functionality, security, and compatibility updates during the active term."
+        "ja": "Licenseは、ソースコードを含まない買い切り型で、購入法人内で永続利用できます。購入後3か月はUpdatesを含み、その後はLicense専用の追加オプションとして任意継続できます。License Plusは、ソースコードと社内改変権を含む買い切り型で、更新・セキュリティは購入者が管理します。Updatesは第3の製品プランではなく、License Plusは対象外です。",
+        "en": "License is a one-time purchase without source code and permits perpetual internal use. It includes the first three months of Updates, with optional continuation as a License-only add-on. License Plus is a one-time purchase with source code and internal-modification rights; the purchaser manages updates and security. Updates is not a third product plan, and License Plus is not eligible."
       },
       "keywords": {
         "ja": [
@@ -398,12 +398,12 @@
         "en": "Can License be upgraded to License Plus?"
       },
       "answer": {
-        "ja": "はい。License購入者は差額50,000円でLicense Plusへアップグレードできる案です。ソースコード一式、技術資料、社内改変権、顧客管理サーバーでの自社運用権を追加する予定です。License PlusにUpdates特典はなく、更新・セキュリティは購入者が管理します。有料契約へ自動移行することはありません。",
-        "en": "Yes. A proposed $350 one-time USD candidate upgrade would add the planned License Plus full source, technical documentation, internal-modification rights, and customer-server/self-hosted rights. License Plus has no Updates entitlement, and the purchaser manages updates and security. All USD figures are unapproved candidates pending final international pricing; the upgrade does not start a paid subscription automatically."
+        "ja": "現在の2商品構成では、LicenseからLicense Plusへの差額アップグレード条件は設けていません。License Plusは別商品として購入する予定です。正式販売前に最終条件を提示します。",
+        "en": "The current two-product model does not define a price-difference upgrade from License to License Plus. License Plus is planned as a separate purchase. Final terms will be presented before formal sales."
       },
       "keywords": {
-        "ja": ["License Plus", "アップグレード", "50,000円", "差額", "ソースコード一式", "自社サーバー"],
-        "en": ["License Plus", "upgrade", "$350 candidate", "price difference", "full source", "self-hosted"]
+        "ja": ["License Plus", "アップグレード", "別商品", "ソースコード一式", "自社サーバー"],
+        "en": ["License Plus", "upgrade", "separate purchase", "full source", "self-hosted"]
       },
       "synonyms": {
         "ja": ["Plusへ変更", "コード付きへ変更", "上位プラン"],
@@ -546,8 +546,8 @@
         "en": "Can an external developer customize License Plus for us?"
       },
       "answer": {
-        "ja": "License Plusでは、社内向けの開発・改修・保守に必要な範囲で、外部開発者にソースコードを開示できます。委託先にも、秘密保持、他案件への流用禁止、販売・再配布禁止などの条件が適用されます。LicenseとUpdatesにはソースコードが含まれないため、この取り扱いは適用されません。",
-        "en": "License Plus is planned to permit necessary source-code disclosure to external developers working on the purchasing entity’s internal development, modification, or maintenance. The customer must enforce confidentiality, no reuse in other projects, and no resale or redistribution. License and Updates do not include source code and are not covered by this permission."
+        "ja": "License Plusでは、社内向けの開発・改修・保守に必要な範囲で、外部開発者にソースコードを開示できます。委託先にも、秘密保持、他案件への流用禁止、販売・再配布禁止などの条件が適用されます。Licenseにはソースコードが含まれないため、この取り扱いは適用されません。",
+        "en": "License Plus is planned to permit necessary source-code disclosure to external developers working on the purchasing entity’s internal development, modification, or maintenance. The customer must enforce confidentiality, no reuse in other projects, and no resale or redistribution. License does not include source code and is not covered by this permission."
       },
       "keywords": {
         "ja": [
@@ -759,8 +759,8 @@
         "en": "Who manages updates and security for License?"
       },
       "answer": {
-        "ja": "Licenseには購入後3か月のUpdates相当が含まれ、その期間はFDEが機能・セキュリティ・互換性の更新と不具合修正を提供します。終了後も、その時点のバージョンを使い続けられます。継続更新を希望する場合は通常料金の月額12,000円で別途申し込みが必要です。Updatesを利用しない期間は購入者が更新・セキュリティを管理し、有料契約へ自動移行しません。License PlusにもUpdates特典はありません。",
-        "en": "License includes three months of Updates-equivalent service, during which FDE provides functionality, security, compatibility, and bug-fix updates. After that, the customer may keep using the current version perpetually. Continuing Updates requires a separate choice at the standard $79/month USD candidate price. When Updates is inactive, the customer manages updates and security. There is no automatic paid conversion, and License Plus has no Updates entitlement. All USD figures are unapproved candidates pending final international pricing."
+        "ja": "Licenseには購入後3か月のUpdatesが含まれ、その期間はFDEが機能・セキュリティ・互換性の更新と不具合修正を提供します。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続できます。継続しない期間は購入者が更新・セキュリティを管理し、有料契約へ自動移行しません。License PlusはUpdates追加オプションの対象外です。",
+        "en": "License includes three months of Updates, during which FDE provides functionality, security, compatibility, and bug-fix updates. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. When Updates is inactive, the customer manages updates and security. There is no automatic paid conversion, and License Plus is not eligible for the add-on. All USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
         "ja": [
@@ -802,8 +802,8 @@
         "en": "Can we resell FDE IMS to a third party?"
       },
       "answer": {
-        "ja": "できません。License、License Plus、Updatesのいずれにも、FDE IMSの原版または改変版を第三者へ販売・再販売する権利は含まれません。利用権は購入・契約した法人の社内利用に限られます。",
-        "en": "No. License, License Plus, and Updates do not include the right to sell or resell the original or a modified version of FDE IMS to third parties. Use rights are limited to the purchasing or subscribing legal entity’s internal operations."
+        "ja": "できません。LicenseとLicense Plusのいずれにも、FDE IMSの原版または改変版を第三者へ販売・再販売する権利は含まれません。利用権は購入法人の社内利用に限られます。",
+        "en": "No. Neither License nor License Plus includes the right to sell or resell the original or a modified version of FDE IMS to third parties. Use rights are limited to the purchasing legal entity’s internal operations."
       },
       "keywords": {
         "ja": [
@@ -1009,8 +1009,8 @@
         "en": "Can we sublicense FDE IMS to third parties?"
       },
       "answer": {
-        "ja": "できません。License、License Plus、Updatesのいずれにも、購入・契約した企業が第三者へFDE IMSの利用権を独自に付与する権利は含まれません。",
-        "en": "No. License, License Plus, and Updates do not allow the purchasing or subscribing company to independently grant third parties the right to use FDE IMS."
+        "ja": "できません。LicenseとLicense Plusのいずれにも、購入企業が第三者へFDE IMSの利用権を独自に付与する権利は含まれません。",
+        "en": "No. Neither License nor License Plus allows the purchasing company to independently grant third parties the right to use FDE IMS."
       },
       "keywords": {
         "ja": [
@@ -1050,8 +1050,8 @@
         "en": "Can FDE IMS be offered to customers as SaaS or a hosted service?"
       },
       "answer": {
-        "ja": "できません。License、License Plus、Updatesのいずれも、FDE IMSそのものを第三者に利用させるSaaS、ASP、ホスティング、ソフトウェアレンタル、サービスビューロー等として提供する権利を含みません。",
-        "en": "No. License, License Plus, and Updates do not include the right to offer FDE IMS itself to third parties as SaaS, ASP, hosting, software rental, a service bureau, or a similar service."
+        "ja": "できません。LicenseとLicense Plusのいずれも、FDE IMSそのものを第三者に利用させるSaaS、ASP、ホスティング、ソフトウェアレンタル、サービスビューロー等として提供する権利を含みません。",
+        "en": "No. Neither License nor License Plus includes the right to offer FDE IMS itself to third parties as SaaS, ASP, hosting, software rental, a service bureau, or a similar service."
       },
       "keywords": {
         "ja": [
@@ -1130,24 +1130,26 @@
       "subcategory": "updates-model",
       "translationStatus": "seeded",
       "question": {
-        "ja": "FDE IMS Updatesの予定価格はいくらですか？",
-        "en": "What is the planned price of FDE IMS Updates?"
+        "ja": "License向けUpdates追加オプションの予定価格はいくらですか？",
+        "en": "What is the planned price of the License Updates add-on?"
       },
       "answer": {
-        "ja": "通常料金の予定は月額12,000円です。License購入者は購入後3か月まで追加料金なしでUpdates相当を利用でき、終了後もその時点のバージョンを使い続けられます。継続更新には通常料金での別途申し込みが必要です。License PlusにUpdates特典はなく、有料契約へ自動移行しません。FDE IMSは正式販売前です。",
-        "en": "The standard planned price is a $79/month USD candidate. License includes three months of Updates-equivalent service at no additional charge; afterward, the current version remains available and continuing Updates requires a separate choice at the standard price. License Plus has no Updates entitlement, and no paid subscription starts automatically. FDE IMS is not yet formally on sale, and all USD figures are unapproved candidates pending final international pricing."
+        "ja": "License購入後1〜3か月目は追加料金なしです。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続できます。UpdatesはLicense専用の追加オプションで、単独購入とLicense Plusへの追加はできません。有料契約へ自動移行しません。",
+        "en": "Months 1–3 are included with License. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. Updates is a License-only add-on; it cannot be purchased alone or added to License Plus. It never starts automatically, and all USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
         "ja": [
           "Updates",
-          "12000円",
+          "4,900円",
+          "9,800円",
           "月額",
           "価格",
           "料金"
         ],
         "en": [
           "Updates",
-          "$79 candidate",
+          "$31 candidate",
+          "$62 candidate",
           "monthly",
           "price",
           "subscription"
@@ -1218,8 +1220,8 @@
         "en": "Can Updates be used after the subscription ends?"
       },
       "answer": {
-        "ja": "Updatesは、契約期間中のみ利用できます。契約終了後の停止方法やデータの取り扱いは、販売開始前の利用規約で確定します。",
-        "en": "Updates is being designed for use only during an active subscription term. Final conditions concerning termination and data handling will be defined before formal sales."
+        "ja": "Updatesを終了すると、FDEによる新しい更新の提供は止まります。購入済みLicenseと、その時点までに取得したバージョンの永続利用権は残ります。",
+        "en": "When Updates ends, FDE stops providing new updates. The purchased License and the perpetual right to use the version obtained up to that point remain valid."
       },
       "keywords": {
         "ja": [
@@ -1302,8 +1304,8 @@
         "en": "Can we change the FDE logo or UI in License Plus?"
       },
       "answer": {
-        "ja": "License Plusでは、社内利用のための改変として、アプリ画面上のFDEロゴ・名称などのUI変更を一律に禁止する予定はありません。ただし、ソースコード内の著作権表示、ライセンス情報、権利表示、第三者ライセンスに関する表示などは適切に保持する必要があります。LicenseとUpdatesはソースコードを含みません。",
-        "en": "License Plus is not planned to categorically prohibit changing the FDE logo, name, or UI for internal use. Copyright, license, rights, and third-party notices in the source must be appropriately retained. License and Updates do not include source code."
+        "ja": "License Plusでは、社内利用のための改変として、アプリ画面上のFDEロゴ・名称などのUI変更を一律に禁止する予定はありません。ただし、ソースコード内の著作権表示、ライセンス情報、権利表示、第三者ライセンスに関する表示などは適切に保持する必要があります。Licenseはソースコードを含みません。",
+        "en": "License Plus is not planned to categorically prohibit changing the FDE logo, name, or UI for internal use. Copyright, license, rights, and third-party notices in the source must be appropriately retained. License does not include source code."
       },
       "keywords": {
         "ja": [
@@ -1468,8 +1470,8 @@
         "en": "What information is planned for a formal FDE IMS order?"
       },
       "answer": {
-        "ja": "正式販売時の注文画面には、選択したプラン、価格、購入法人、製品バージョン、利用期間、ソースコードとUpdates特典の有無、License Agreement / EULAを表示します。Licenseはソースコードなしの永続利用、License Plusはソースコードと社内改変権付きの永続利用、Updatesは契約期間中のみ利用できます。まだ正式販売前のため、現在は購入対象の製品バージョンはありません。",
-        "en": "Formal orders are planned to show the selected plan, price, purchasing legal entity, product version at purchase, usage term, whether source code is included, any Updates entitlement, and the applicable License Agreement / EULA. License provides perpetual use without source code, License Plus provides perpetual use with source code and internal-modification rights, and Updates is available only during the active subscription term. Because the product is not yet formally on sale, there is no current purchase-version number."
+        "ja": "正式販売時の注文画面には、選択した商品、価格、購入法人、製品バージョン、利用期間、ソースコードの有無、License向けUpdates追加オプション、License Agreement / EULAを表示します。Licenseはソースコードなしの永続利用、License Plusはソースコードと社内改変権付きの永続利用です。まだ正式販売前のため、現在は購入対象の製品バージョンはありません。",
+        "en": "Formal orders are planned to show the selected product, price, purchasing legal entity, product version at purchase, usage term, whether source code is included, any License Updates add-on, and the applicable License Agreement / EULA. License provides perpetual use without source code, while License Plus provides perpetual use with source code and internal-modification rights. Because the product is not yet formally on sale, there is no current purchase-version number."
       },
       "keywords": {
         "ja": [

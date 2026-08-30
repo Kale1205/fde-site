@@ -11,12 +11,12 @@
         "en": "How does Updates pricing work after purchasing License?"
       },
       "answer": {
-        "ja": "Licenseには購入後3か月のUpdates相当が含まれます。終了後も、その時点のバージョンを期限なく利用できます。継続更新を希望する場合は、通常料金の月額12,000円でUpdatesへ別途申し込みが必要です。有料契約へ自動移行することはありません。",
-        "en": "License includes the first three months of Updates-equivalent service. After that, the customer may keep using the current version perpetually. Continuing Updates requires a separate choice at the standard candidate price of $79/month; it never starts automatically. USD figures are unapproved candidates pending final international pricing."
+        "ja": "Licenseには購入後3か月のUpdatesが含まれます。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。継続しなくても、その時点のバージョンを期限なく利用できます。有料契約へ自動移行することはありません。",
+        "en": "License includes the first three months of Updates. Optional continuation is a $31/month USD candidate for months 4–6 and a $62/month USD candidate from month 7. The customer may keep using the current version perpetually without continuing. Updates never starts automatically, and all USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
-        "ja": ["License", "Updates", "購入後3か月分込み", "12,000円", "自動課金なし"],
-        "en": ["License", "Updates", "three months included", "$79 candidate", "no automatic conversion"]
+        "ja": ["License", "Updates", "購入後3か月分込み", "4,900円", "9,800円", "自動課金なし"],
+        "en": ["License", "Updates", "three months included", "$31 candidate", "$62 candidate", "no automatic conversion"]
       },
       "synonyms": {
         "ja": ["購入後の更新", "Updates特典", "通常料金", "有料へ自動移行"],
@@ -53,20 +53,20 @@
       "subcategory": "updates-model",
       "translationStatus": "seeded",
       "question": {
-        "ja": "Updatesだけを契約して終了した場合はどうなりますか？",
-        "en": "What happens when a standalone Updates subscription ends?"
+        "ja": "Updatesだけを購入できますか？",
+        "en": "Can Updates be purchased without License?"
       },
       "answer": {
-        "ja": "Updates単独契約では、契約期間の終了時に製品の利用権とFDEによる継続更新が終了します。Updatesにはソースコードや永続利用権が含まれないため、Licenseへ自動移行することはありません。終了時のデータ取扱いなどの詳細条件は、正式販売前の利用規約で確定します。",
-        "en": "With a standalone Updates subscription, product access and FDE-managed ongoing updates end when the subscription term ends. Updates does not include source code or a perpetual-use right, so it does not automatically convert into License. Detailed end-of-term data-handling conditions will be finalized in the terms before formal sales."
+        "ja": "いいえ。UpdatesはLicense専用の追加オプションで、単独では購入できません。License Plusも対象外です。Updatesを終了しても、購入済みLicenseとその時点までに取得したバージョンの永続利用権は残ります。",
+        "en": "No. Updates is a License-only add-on and cannot be purchased on its own. License Plus is not eligible. Ending Updates does not remove the purchased License or the perpetual right to use the version obtained up to that point."
       },
       "keywords": {
-        "ja": ["Updates", "解約", "利用終了", "永続利用なし", "ソースコードなし"],
-        "en": ["Updates", "cancel", "access ends", "no perpetual right", "no source code"]
+        "ja": ["Updates", "単独購入不可", "License専用", "追加オプション", "License Plus対象外"],
+        "en": ["Updates", "not standalone", "License only", "add-on", "License Plus excluded"]
       },
       "synonyms": {
-        "ja": ["月額のみ解約", "サブスク終了", "契約終了後"],
-        "en": ["standalone subscription cancellation", "monthly plan ends", "after subscription"]
+        "ja": ["Updatesだけ購入", "追加購入", "オプション対象"],
+        "en": ["Updates only", "add Updates", "add-on eligibility"]
       }
     }
   ]
