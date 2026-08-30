@@ -12,6 +12,7 @@ on:
       - Kale Desk foundation check
       - Kale’s Office foundation check
       - Kale Outreach foundation check
+      - Kale Outreach sales governance check
       - P3 Agent Governance acceptance check
     types:
       - completed
