@@ -1,8 +1,8 @@
-# 旧2プラン P2-7 Sandbox QA記録（実行禁止）
+# P2-7 Sandbox QA履歴と2商品移行境界（実行禁止）
 
-この文書は、旧2プランの `kales-fde-contact-staging` Workerで実施したQAの記録です。現在の3プラン、価格、権利条件とは一致しないため、再実行しないでください。`STAGING_CHECKOUT_ENABLED` は `false` のまま維持します。
+この文書は、旧Catalogの `kales-fde-contact-staging` Workerで実施したQAの記録です。現在はLicenseとLicense Plusの2商品へ更新され、Updates単独商品は廃止されています。旧Price IDと操作手順は再利用せず、`STAGING_CHECKOUT_ENABLED` は `false` のまま維持します。
 
-3プラン対応後にQAを再開する場合は、License Plus、日英の固定通貨、License購入者向けUpdates特典、通常Updates価格、EULA、Webhook、解約、fulfillment境界を更新した新しい手順を別途レビューします。公開サイトの購入ボタン、本番Stripe決済、自動納品、実メール送信は引き続き有効化しません。
+QAを再開する場合は、2商品のPrice ID、日英の固定通貨、EULA、Webhook、解約、fulfillment境界を更新した新しい手順を別途レビューします。Updates Add-onはLicense購入日による対象期間と継続権利の実装が完了するまでCheckout対象外です。公開サイトの購入ボタン、本番Stripe決済、自動納品、実メール送信は引き続き有効化しません。
 
 ## P2-7で確認したもの（履歴）
 
@@ -36,7 +36,7 @@
 
 `STAGING_CHECKOUT_ENABLED` を `true` に変更しないでください。stagingデプロイとhealth checkは `false` を必須条件として扱います。
 
-旧QAで確認していた次の制御は、3プラン移行後の新しいQAでも維持します。
+旧QAで確認していた次の制御は、2商品用の新しいQAでも維持します。
 
 - Stripe Sandbox Session (`livemode=false`) のみ許可。
 - 公開サイトに購入ボタンを追加しない。
@@ -76,7 +76,7 @@ P2-7デプロイ後は少なくとも次を確認する。
 }
 ```
 
-`stripeCheckoutActivationEnabled=false` を必須とします。3プラン移行と新しいQA手順の承認が完了するまで、例外はありません。
+`stripeCheckoutActivationEnabled=false` を必須とします。2商品のSandbox設定と新しいQA手順の承認が完了するまで、例外はありません。
 
 ## 旧QAの完了条件（履歴）
 

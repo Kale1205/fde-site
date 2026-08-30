@@ -43,7 +43,7 @@ def run():
     assert desk.validate_support_packet(license_packet)
 
     security_packet = desk.build_support_packet(
-        fixture("How do you handle security and personal data?", product="FDE IMS Updates")
+        fixture("How do you handle security and personal data?", product="FDE IMS License")
     )
     assert security_packet["analysis"]["category"] == "security_privacy"
     assert "KALE_GUARD_OR_ADMIN_REVIEW" in security_packet["analysis"]["escalationFlags"]
