@@ -12,20 +12,20 @@ const encoder = new TextEncoder();
 
 const PRICE_CATALOG = Object.freeze({
   'fde-ims-license:usd': Object.freeze({
-    productKey: 'fde-ims-license', currency: 'usd', mode: 'payment', amountTotal: 31300,
+    productKey: 'fde-ims-license', currency: 'usd', mode: 'payment', amountTotal: 34900,
     priceBinding: 'STRIPE_PRICE_LICENSE_USD'
   }),
   'fde-ims-license:jpy': Object.freeze({
     productKey: 'fde-ims-license', currency: 'jpy', mode: 'payment', amountTotal: 49800,
     priceBinding: 'STRIPE_PRICE_LICENSE_JPY'
   }),
-  'fde-ims-updates:usd': Object.freeze({
-    productKey: 'fde-ims-updates', currency: 'usd', mode: 'subscription', amountTotal: 6200,
-    priceBinding: 'STRIPE_PRICE_UPDATES_USD'
+  'fde-ims-license-plus:usd': Object.freeze({
+    productKey: 'fde-ims-license-plus', currency: 'usd', mode: 'payment', amountTotal: 69900,
+    priceBinding: 'STRIPE_PRICE_LICENSE_PLUS_USD'
   }),
-  'fde-ims-updates:jpy': Object.freeze({
-    productKey: 'fde-ims-updates', currency: 'jpy', mode: 'subscription', amountTotal: 9800,
-    priceBinding: 'STRIPE_PRICE_UPDATES_JPY'
+  'fde-ims-license-plus:jpy': Object.freeze({
+    productKey: 'fde-ims-license-plus', currency: 'jpy', mode: 'payment', amountTotal: 99800,
+    priceBinding: 'STRIPE_PRICE_LICENSE_PLUS_JPY'
   })
 });
 
@@ -310,7 +310,7 @@ export function stripeCheckoutConfiguration(env) {
   const required = [
     'STRIPE_SECRET_KEY', 'STAGING_CHECKOUT_SETUP_KEY',
     'STRIPE_PRICE_LICENSE_USD', 'STRIPE_PRICE_LICENSE_JPY',
-    'STRIPE_PRICE_UPDATES_USD', 'STRIPE_PRICE_UPDATES_JPY',
+    'STRIPE_PRICE_LICENSE_PLUS_USD', 'STRIPE_PRICE_LICENSE_PLUS_JPY',
     'STAGING_CHECKOUT_SUCCESS_URL', 'STAGING_CHECKOUT_CANCEL_URL'
   ];
   return required.every(binding => Boolean(clean(env?.[binding], 1000)));

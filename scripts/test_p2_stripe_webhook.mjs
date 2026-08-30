@@ -42,7 +42,7 @@ const baseOrder = (overrides = {}) => ({
     mode: 'payment',
     productKey: 'fde-ims-license',
     priceId: 'price_test_license_usd',
-    amountTotal: 31300,
+    amountTotal: 34900,
     currency: 'usd'
   },
   ...overrides
@@ -60,7 +60,7 @@ const checkoutEvent = (overrides = {}) => ({
       client_reference_id: ORDER_ID,
       mode: 'payment',
       payment_status: 'paid',
-      amount_total: 31300,
+      amount_total: 34900,
       currency: 'usd',
       metadata: {
         baked_kale_order_id: ORDER_ID,
@@ -120,7 +120,7 @@ const paidOrder = JSON.parse(await kv.get(ORDER_KEY));
 assert.equal(paidOrder.orderStatus, 'payment_confirmed');
 assert.equal(paidOrder.payment.provider, 'stripe');
 assert.equal(paidOrder.payment.providerEventId, 'evt_test_checkout_001');
-assert.equal(paidOrder.payment.amountTotal, 31300);
+assert.equal(paidOrder.payment.amountTotal, 34900);
 assert.equal(paidOrder.deliveredAt, undefined);
 assert.equal(JSON.parse(await kv.get(stripeEventKey('evt_test_checkout_001'))).status, 'processed');
 const auditKeys = [...kv.map.keys()].filter(key => key.includes(':stripe-evt_test_checkout_001'));
@@ -150,7 +150,7 @@ assert.equal(replay.json.error, 'STRIPE_SIGNATURE_TIMESTAMP_OUTSIDE_TOLERANCE');
 
 // Server-side expectation is authoritative for amount, currency, product, Session, and state.
 for (const [field, value, code] of [
-  ['amount_total', 31299, 'STRIPE_AMOUNT_MISMATCH'],
+  ['amount_total', 34899, 'STRIPE_AMOUNT_MISMATCH'],
   ['currency', 'jpy', 'STRIPE_CURRENCY_MISMATCH'],
   ['id', 'cs_test_wrong', 'STRIPE_SESSION_MISMATCH']
 ]) {
@@ -160,7 +160,7 @@ for (const [field, value, code] of [
 }
 
 const productMismatch = checkoutEvent();
-productMismatch.data.object.metadata.product_key = 'fde-ims-updates';
+productMismatch.data.object.metadata.product_key = 'fde-ims-license-plus';
 const rejectedProduct = await deliver(productMismatch, seededKv());
 assert.equal(rejectedProduct.response.status, 400);
 assert.equal(rejectedProduct.json.error, 'STRIPE_PRODUCT_MISMATCH');
@@ -183,8 +183,8 @@ const subscriptionOrder = baseOrder({
     checkoutSessionId: 'cs_test_subscription_001',
     subscriptionId: 'sub_test_001',
     mode: 'subscription',
-    productKey: 'fde-ims-updates',
-    priceId: 'price_test_updates_usd',
+    productKey: 'fde-ims-license-updates-addon',
+    priceId: 'price_test_license_updates_addon_usd',
     amountTotal: 6200,
     currency: 'usd'
   }
@@ -207,12 +207,12 @@ const invoiceEvent = {
           subscription: 'sub_test_001',
           metadata: {
             baked_kale_order_id: ORDER_ID,
-            product_key: 'fde-ims-updates',
-            price_id: 'price_test_updates_usd'
+            product_key: 'fde-ims-license-updates-addon',
+            price_id: 'price_test_license_updates_addon_usd'
           }
         }
       },
-      lines: { data: [{ pricing: { price_details: { price: 'price_test_updates_usd' } } }] }
+      lines: { data: [{ pricing: { price_details: { price: 'price_test_license_updates_addon_usd' } } }] }
     }
   }
 };
