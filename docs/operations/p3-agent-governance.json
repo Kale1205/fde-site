@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "phase": "P3-8",
+  "title": "Agent Governance Acceptance",
+  "baseline": {
+    "fdeSiteMain": "cac523901574910b07b21dff715a2a1589364a24",
+    "fdeImsMain": "3923cd8da13cea10a62995143a933a4d068f8fcc",
+    "productionCommerceEnabled": false,
+    "sentinelHourlyScheduleEnabled": false,
+    "outreachExecutionState": "EXECUTION_BLOCKED_UNTIL_P5_3_AND_ADMIN_APPROVAL"
+  },
+  "administrator": {
+    "finalApprovalAuthority": true,
+    "approvalGates": [
+      "material_product_scope_or_architecture",
+      "merge",
+      "release",
+      "cms_or_public_publish",
+      "customer_reply_send",
+      "outbound_campaign_send",
+      "live_payment_activation",
+      "production_fulfillment_activation",
+      "installer_customer_distribution"
+    ]
+  },
+  "hardSafetyGates": {
+    "livePayments": false,
+    "productionFulfillment": false,
+    "realInstallerCustomerDistribution": false,
+    "automaticCustomerFulfillmentMail": false,
+    "agentAutoMerge": false,
+    "agentAutoRelease": false,
+    "unapprovedPublicPosting": false,
+    "unapprovedInboundCustomerSend": false,
+    "unapprovedOutboundCustomerSend": false
+  },
+  "agents": [
+    {
+      "name": "Kale Guard",
+      "domain": "Security / Attack Surface",
+      "capabilities": {
+        "productImplementation": false,
+        "qaVerdict": false,
+        "securityGateAuthority": true,
+        "operationalObservation": false,
+        "operationalMutation": false,
+        "inboundDraft": false,
+        "publicDraft": false,
+        "outboundDraft": false,
+        "customerSend": false,
+        "publicPublish": false,
+        "outboundSend": false,
+        "recipientHarvest": false,
+        "crmWrite": false,
+        "merge": false,
+        "release": false,
+        "productionActivation": false
+      }
+    },
+    {
+      "name": "Mirror Kale",
+      "domain": "Product Brain / Engineering",
+      "capabilities": {
+        "productImplementation": true,
+        "qaVerdict": false,
+        "securityGateAuthority": false,
+        "operationalObservation": false,
+        "operationalMutation": false,
+        "inboundDraft": false,
+        "publicDraft": false,
+        "outboundDraft": false,
+        "customerSend": false,
+        "publicPublish": false,
+        "outboundSend": false,
+        "recipientHarvest": false,
+        "crmWrite": false,
+        "merge": false,
+        "release": false,
+        "productionActivation": false
+      }
+    },
+    {
+      "name": "Kale Review",
+      "domain": "Independent QA / Review / Red Team",
+      "maySelfAcceptMateriallyAuthoredChange": false,
+      "capabilities": {
+        "productImplementation": false,
+        "qaVerdict": true,
+        "securityGateAuthority": false,
+        "operationalObservation": false,
+        "operationalMutation": false,
+        "inboundDraft": false,
+        "publicDraft": false,
+        "outboundDraft": false,
+        "customerSend": false,
+        "publicPublish": false,
+        "outboundSend": false,
+        "recipientHarvest": false,
+        "crmWrite": false,
+        "merge": false,
+        "release": false,
+        "productionActivation": false
+      }
+    },
+    {
+      "name": "Kale Sentinel",
+      "domain": "Operations Monitor",
+      "capabilities": {
+        "productImplementation": false,
+        "qaVerdict": false,
+        "securityGateAuthority": false,
+        "operationalObservation": true,
+        "operationalMutation": false,
+        "inboundDraft": false,
+        "publicDraft": false,
+        "outboundDraft": false,
+        "customerSend": false,
+        "publicPublish": false,
+        "outboundSend": false,
+        "recipientHarvest": false,
+        "crmWrite": false,
+        "merge": false,
+        "release": false,
+        "productionActivation": false
+      }
+    },
+    {
+      "name": "Kale Desk",
+      "domain": "Inbound Customer Support",
+      "capabilities": {
+        "productImplementation": false,
+        "qaVerdict": false,
+        "securityGateAuthority": false,
+        "operationalObservation": false,
+        "operationalMutation": false,
+        "inboundDraft": true,
+        "publicDraft": false,
+        "outboundDraft": false,
+        "customerSend": false,
+        "publicPublish": false,
+        "outboundSend": false,
+        "recipientHarvest": false,
+        "crmWrite": false,
+        "merge": false,
+        "release": false,
+        "productionActivation": false
+      }
+    },
+    {
+      "name": "Kale’s Office",
+      "domain": "Public Editorial",
+      "capabilities": {
+        "productImplementation": false,
+        "qaVerdict": false,
+        "securityGateAuthority": false,
+        "operationalObservation": false,
+        "operationalMutation": false,
+        "inboundDraft": false,
+        "publicDraft": true,
+        "outboundDraft": false,
+        "customerSend": false,
+        "publicPublish": false,
+        "outboundSend": false,
+        "recipientHarvest": false,
+        "crmWrite": false,
+        "merge": false,
+        "release": false,
+        "productionActivation": false
+      }
+    },
+    {
+      "name": "Kale Outreach",
+      "domain": "Outbound Growth",
+      "capabilities": {
+        "productImplementation": false,
+        "qaVerdict": false,
+        "securityGateAuthority": false,
+        "operationalObservation": false,
+        "operationalMutation": false,
+        "inboundDraft": false,
+        "publicDraft": false,
+        "outboundDraft": true,
+        "customerSend": false,
+        "publicPublish": false,
+        "outboundSend": false,
+        "recipientHarvest": false,
+        "crmWrite": false,
+        "merge": false,
+        "release": false,
+        "productionActivation": false
+      }
+    }
+  ],
+  "handoffs": {
+    "productRelease": [
+      "Mirror Kale",
+      "Kale Review",
+      "Kale Guard",
+      "Administrator approval",
+      "Release"
+    ],
+    "publicEditorialGrowth": [
+      "Mirror/Guard",
+      "Kale’s Office",
+      "Administrator approval",
+      "Publish",
+      "Kale Outreach",
+      "Administrator approval",
+      "Send"
+    ],
+    "inboundCustomer": [
+      "Customer",
+      "Kale Desk",
+      "Administrator approval",
+      "Reply"
+    ],
+    "operations": [
+      "GitHub / Cloudflare / Stripe",
+      "Kale Sentinel",
+      "Administrator"
+    ]
+  },
+  "failureHandling": {
+    "agentSelfRemediationBeyondAuthority": false,
+    "escalateImpactEvidenceRecommendedAction": true,
+    "deterministicRecoveryOnlyIfPreApproved": true
+  },
+  "evidence": {
+    "mode": "synthetic_cross_agent_governance_only",
+    "containsRealCustomerData": false,
+    "containsRealRecipientData": false,
+    "externalNetworkUsed": false,
+    "secretsUsed": false,
+    "cloudflareWritePerformed": false,
+    "gitWritePerformedByWorkflow": false,
+    "publicPublishPerformed": false,
+    "customerSendPerformed": false,
+    "outboundSendPerformed": false,
+    "crmWritePerformed": false,
+    "recipientHarvestPerformed": false,
+    "mergePerformed": false,
+    "releasePerformed": false,
+    "productionActivationPerformed": false,
+    "artifactRetentionDays": 14
+  }
+}

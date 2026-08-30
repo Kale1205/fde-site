@@ -1,62 +1,26 @@
 {
   "faq": [
     {
-      "id": "license-to-updates-transition",
+      "id": "license-updates-entitlement",
       "highFrequency": true,
       "category": "updates",
       "subcategory": "updates-model",
-      "translationStatus": "translated",
+      "translationStatus": "seeded",
       "question": {
-        "ja": "LicenseからUpdatesへ切り替えられますか？",
-        "en": "Can we move from License to Updates?",
-        "zh-CN": "可以从License切换到Updates吗？",
-        "zh-TW": "可以從License切換到Updates嗎？",
-        "ko": "License에서 Updates로 전환할 수 있나요?",
-        "id": "Bisakah beralih dari License ke Updates?",
-        "ms": "Bolehkah beralih daripada License kepada Updates?",
-        "vi": "Có thể chuyển từ License sang Updates không?",
-        "th": "สามารถเปลี่ยนจาก License ไป Updates ได้หรือไม่?",
-        "hi": "क्या License से Updates पर जा सकते हैं?",
-        "ar": "هل يمكن الانتقال من License إلى Updates؟"
+        "ja": "License購入後のUpdates料金はどうなりますか？",
+        "en": "How does Updates pricing work after purchasing License?"
       },
       "answer": {
-        "ja": "はい。License購入者がUpdatesへ移行する場合、移行後12か月間は予定価格4,900円/月、その後は通常予定価格9,800円/月とする方針です。移行しても、購入済みLicenseの永続利用権そのものは消滅しません。正式な切替条件は販売開始前の規約で確定します。",
-        "en": "Yes. The planned transition for a License customer moving to Updates is JPY 4,900/month for the first 12 months after the move, followed by the standard planned price of JPY 9,800/month. The previously acquired perpetual License itself is not extinguished. Final transition terms will be defined before formal sales.",
-        "zh-CN": "可以。License客户切换至Updates后，前12个月计划价格为4,900日元/月，之后为标准计划价格9,800日元/月。已取得的永久License本身不会因切换而失效。正式切换条件将在开售前的条款中确定。",
-        "zh-TW": "可以。License客戶切換至Updates後，前12個月預定價格為4,900日圓/月，之後為標準預定價格9,800日圓/月。已取得的永久License本身不會因切換而失效。正式切換條件將於開售前條款中確定。",
-        "ko": "가능합니다. License 고객이 Updates로 전환하면 전환 후 12개월은 예정 가격 4,900엔/월, 이후에는 표준 예정 가격 9,800엔/월로 설계합니다. 이미 취득한 영구 License 자체는 전환으로 소멸하지 않습니다. 최종 전환 조건은 정식 판매 전에 약관으로 확정합니다.",
-        "id": "Ya. Saat pelanggan License beralih ke Updates, harga transisi yang direncanakan adalah JPY 4.900/bulan selama 12 bulan pertama, lalu harga standar JPY 9.800/bulan. License permanen yang telah diperoleh tidak hilang karena peralihan. Ketentuan final akan ditetapkan sebelum penjualan resmi.",
-        "ms": "Ya. Apabila pelanggan License beralih ke Updates, harga peralihan dirancang ialah JPY 4,900/bulan untuk 12 bulan pertama, kemudian harga standard JPY 9,800/bulan. License kekal yang telah diperoleh tidak terhapus akibat pertukaran. Syarat akhir akan ditetapkan sebelum jualan rasmi.",
-        "vi": "Có. Khi khách hàng License chuyển sang Updates, giá chuyển đổi dự kiến là JPY 4.900/tháng trong 12 tháng đầu, sau đó là giá chuẩn JPY 9.800/tháng. License vĩnh viễn đã mua không mất hiệu lực do việc chuyển đổi. Điều kiện cuối cùng sẽ được xác định trước khi mở bán chính thức.",
-        "th": "ได้ เมื่อลูกค้า License เปลี่ยนไป Updates ราคาช่วงเปลี่ยนผ่านที่วางแผนคือ JPY 4,900/เดือนใน 12 เดือนแรก จากนั้นเป็นราคามาตรฐาน JPY 9,800/เดือน สิทธิ License แบบถาวรที่ซื้อไว้จะไม่สิ้นสุดเพราะการเปลี่ยนแผน เงื่อนไขสุดท้ายจะกำหนดก่อนเปิดขายอย่างเป็นทางการ",
-        "hi": "हाँ। License ग्राहक के Updates पर जाने पर पहले 12 महीनों के लिए नियोजित संक्रमण मूल्य JPY 4,900/माह और उसके बाद मानक नियोजित मूल्य JPY 9,800/माह होगा। पहले से प्राप्त स्थायी License समाप्त नहीं होता। अंतिम शर्तें औपचारिक बिक्री से पहले तय होंगी।",
-        "ar": "نعم. عند انتقال عميل License إلى Updates يكون السعر الانتقالي المخطط JPY 4,900 شهرياً لأول 12 شهراً، ثم السعر القياسي المخطط JPY 9,800 شهرياً. لا ينتهي License الدائم الذي تم شراؤه بسبب الانتقال. ستُحدد الشروط النهائية قبل بدء البيع الرسمي."
+        "ja": "Licenseには購入後3か月のUpdatesが含まれます。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。継続しなくても、その時点のバージョンを期限なく利用できます。有料契約へ自動移行することはありません。",
+        "en": "License includes the first three months of Updates. Optional continuation is a $31/month USD candidate for months 4–6 and a $62/month USD candidate from month 7. The customer may keep using the current version perpetually without continuing. Updates never starts automatically, and all USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
-        "ja": ["License", "Updates", "切替", "4900円", "12か月"],
-        "en": ["License", "Updates", "switch", "JPY 4,900", "12 months"],
-        "zh-CN": ["License", "Updates", "切换", "4900日元", "12个月"],
-        "zh-TW": ["License", "Updates", "切換", "4900日圓", "12個月"],
-        "ko": ["License", "Updates", "전환", "4900엔", "12개월"],
-        "id": ["License", "Updates", "beralih", "JPY 4.900", "12 bulan"],
-        "ms": ["License", "Updates", "beralih", "JPY 4,900", "12 bulan"],
-        "vi": ["License", "Updates", "chuyển đổi", "JPY 4.900", "12 tháng"],
-        "th": ["License", "Updates", "เปลี่ยน", "JPY 4,900", "12 เดือน"],
-        "hi": ["License", "Updates", "बदलना", "JPY 4,900", "12 महीने"],
-        "ar": ["License", "Updates", "انتقال", "JPY 4,900", "12 شهراً"]
+        "ja": ["License", "Updates", "購入後3か月分込み", "4,900円", "9,800円", "自動課金なし"],
+        "en": ["License", "Updates", "three months included", "$31 candidate", "$62 candidate", "no automatic conversion"]
       },
       "synonyms": {
-        "ja": ["月額へ移行", "Licenseからサブスク", "Updatesへ変更"],
-        "en": ["move to subscription", "License conversion", "change to Updates"],
-        "zh-CN": ["转为月费", "License转订阅", "改为Updates"],
-        "zh-TW": ["轉為月費", "License轉訂閱", "改為Updates"],
-        "ko": ["월간으로 전환", "License 구독 전환", "Updates 변경"],
-        "id": ["pindah ke bulanan", "konversi License", "ubah ke Updates"],
-        "ms": ["tukar ke bulanan", "penukaran License", "ubah ke Updates"],
-        "vi": ["chuyển sang hàng tháng", "chuyển License", "đổi sang Updates"],
-        "th": ["เปลี่ยนเป็นรายเดือน", "แปลง License", "เปลี่ยนเป็น Updates"],
-        "hi": ["मासिक पर जाना", "License रूपांतरण", "Updates में बदलना"],
-        "ar": ["الانتقال للشهري", "تحويل License", "التغيير إلى Updates"]
+        "ja": ["購入後の更新", "Updates特典", "通常料金", "有料へ自動移行"],
+        "en": ["post-purchase Updates", "Updates entitlement", "standard price", "automatic paid subscription"]
       }
     },
     {
@@ -64,58 +28,22 @@
       "highFrequency": true,
       "category": "updates",
       "subcategory": "updates-model",
-      "translationStatus": "translated",
+      "translationStatus": "seeded",
       "question": {
-        "ja": "LicenseからUpdatesへ切り替えた後、Updatesを解約するとどうなりますか？",
-        "en": "What happens if we cancel Updates after moving from License?",
-        "zh-CN": "从License切换到Updates后再取消Updates会怎样？",
-        "zh-TW": "從License切換到Updates後再取消Updates會怎樣？",
-        "ko": "License에서 Updates로 전환한 뒤 Updates를 해지하면 어떻게 되나요?",
-        "id": "Apa yang terjadi jika Updates dibatalkan setelah beralih dari License?",
-        "ms": "Apa berlaku jika Updates dibatalkan selepas beralih daripada License?",
-        "vi": "Điều gì xảy ra nếu hủy Updates sau khi chuyển từ License?",
-        "th": "หากยกเลิก Updates หลังจากเปลี่ยนมาจาก License จะเกิดอะไรขึ้น?",
-        "hi": "License से Updates पर जाने के बाद Updates रद्द करने पर क्या होगा?",
-        "ar": "ماذا يحدث عند إلغاء Updates بعد الانتقال من License؟"
+        "ja": "License購入後にUpdatesを終了するとどうなりますか？",
+        "en": "What happens if Updates ends after purchasing License?"
       },
       "answer": {
-        "ja": "Updatesの利用権とFDEによる継続アップデートは契約期間終了時に停止します。ただし、すでに購入したLicenseの永続利用権は残ります。その後はLicenseの条件に戻り、購入企業側がアップデート・セキュリティを管理しながらFDE IMSを継続利用できます。",
-        "en": "The right to use Updates and FDE-managed ongoing updates ends when the subscription term ends. However, the perpetual License already purchased remains valid. The customer then returns to the License model and may continue using FDE IMS while managing updates and security itself.",
-        "zh-CN": "Updates使用权及FDE持续更新服务在订阅期结束时停止，但已购买的永久License仍然有效。之后回到License模式，由购买企业自行管理更新与安全，并可继续使用FDE IMS。",
-        "zh-TW": "Updates使用權與FDE持續更新服務於訂閱期結束時停止，但已購買的永久License仍然有效。之後回到License模式，由購買企業自行管理更新與安全，並可繼續使用FDE IMS。",
-        "ko": "Updates 이용권과 FDE의 지속 업데이트는 구독 기간 종료 시 중단됩니다. 하지만 이미 구매한 영구 License는 유지됩니다. 이후 License 모델로 돌아가 구매 기업이 업데이트와 보안을 직접 관리하며 FDE IMS를 계속 사용할 수 있습니다.",
-        "id": "Hak menggunakan Updates dan pembaruan berkelanjutan yang dikelola FDE berakhir saat masa langganan selesai. Namun License permanen yang sudah dibeli tetap berlaku. Setelah itu pelanggan kembali ke model License dan dapat terus menggunakan FDE IMS dengan mengelola pembaruan serta keamanan sendiri.",
-        "ms": "Hak menggunakan Updates dan kemas kini berterusan yang diurus FDE tamat apabila tempoh langganan berakhir. Namun License kekal yang telah dibeli masih sah. Selepas itu pelanggan kembali kepada model License dan boleh terus menggunakan FDE IMS dengan mengurus kemas kini serta keselamatan sendiri.",
-        "vi": "Quyền sử dụng Updates và các cập nhật liên tục do FDE quản lý kết thúc khi kỳ đăng ký hết hạn. Tuy nhiên License vĩnh viễn đã mua vẫn còn hiệu lực. Sau đó khách hàng quay lại mô hình License và có thể tiếp tục dùng FDE IMS với việc tự quản lý cập nhật và bảo mật.",
-        "th": "สิทธิใช้งาน Updates และการอัปเดตต่อเนื่องที่ FDE ดูแลจะสิ้นสุดเมื่อหมดระยะสมาชิก แต่ License แบบถาวรที่ซื้อไว้ยังคงมีผล หลังจากนั้นลูกค้ากลับไปใช้โมเดล License และใช้งาน FDE IMS ต่อได้โดยดูแลการอัปเดตและความปลอดภัยเอง",
-        "hi": "Updates उपयोग अधिकार और FDE-प्रबंधित लगातार अपडेट सदस्यता अवधि समाप्त होने पर बंद हो जाते हैं। पहले से खरीदा स्थायी License बना रहता है। इसके बाद ग्राहक License मॉडल पर लौटकर अपडेट और सुरक्षा स्वयं प्रबंधित करते हुए FDE IMS का उपयोग जारी रख सकता है।",
-        "ar": "ينتهي حق استخدام Updates والتحديث المستمر الذي تديره FDE عند انتهاء مدة الاشتراك. لكن License الدائم الذي تم شراؤه يظل سارياً. بعدها يعود العميل إلى نموذج License ويمكنه مواصلة استخدام FDE IMS مع إدارة التحديثات والأمان بنفسه."
+        "ja": "Updatesの利用権とFDEによる継続更新は契約期間の終了時に停止します。ソースコードなしの購入済みLicenseは、引き続き社内で利用できます。その後の更新・セキュリティ管理は購入者側の責任です。",
+        "en": "Updates access and FDE-managed ongoing updates end when the subscription term ends. The purchased perpetual License remains valid, so the customer may continue using the License version internally without source code. Updates and security are then customer-managed."
       },
       "keywords": {
-        "ja": ["Updates解約", "Licenseへ戻る", "永続利用", "解約後", "セキュリティ"],
-        "en": ["cancel Updates", "return to License", "perpetual use", "after cancellation", "security"],
-        "zh-CN": ["取消Updates", "返回License", "永久使用", "取消后", "安全"],
-        "zh-TW": ["取消Updates", "返回License", "永久使用", "取消後", "安全"],
-        "ko": ["Updates 해지", "License 복귀", "영구 이용", "해지 후", "보안"],
-        "id": ["batalkan Updates", "kembali License", "permanen", "setelah batal", "keamanan"],
-        "ms": ["batal Updates", "kembali License", "kekal", "selepas batal", "keselamatan"],
-        "vi": ["hủy Updates", "quay lại License", "vĩnh viễn", "sau khi hủy", "bảo mật"],
-        "th": ["ยกเลิก Updates", "กลับ License", "ถาวร", "หลังยกเลิก", "ความปลอดภัย"],
-        "hi": ["Updates रद्द", "License पर लौटना", "स्थायी", "रद्द करने के बाद", "सुरक्षा"],
-        "ar": ["إلغاء Updates", "العودة إلى License", "دائم", "بعد الإلغاء", "الأمان"]
+        "ja": ["Updates解約", "License継続", "永続利用", "ソースコードなし", "セキュリティ"],
+        "en": ["cancel Updates", "keep License", "perpetual use", "no source code", "security"]
       },
       "synonyms": {
-        "ja": ["サブスク停止", "月額解約", "買い切りへ戻る"],
-        "en": ["stop subscription", "end monthly plan", "fall back to License"],
-        "zh-CN": ["停止订阅", "取消月费", "回到买断"],
-        "zh-TW": ["停止訂閱", "取消月費", "回到買斷"],
-        "ko": ["구독 중단", "월간 해지", "License로 복귀"],
-        "id": ["hentikan langganan", "batalkan bulanan", "kembali ke License"],
-        "ms": ["hentikan langganan", "batal bulanan", "kembali ke License"],
-        "vi": ["dừng đăng ký", "hủy gói tháng", "trở lại License"],
-        "th": ["หยุดสมาชิก", "ยกเลิกรายเดือน", "กลับไป License"],
-        "hi": ["सदस्यता बंद", "मासिक रद्द", "License पर वापसी"],
-        "ar": ["إيقاف الاشتراك", "إلغاء الشهري", "العودة إلى License"]
+        "ja": ["更新を止める", "月額を終了", "買い切り版を使い続ける"],
+        "en": ["stop Updates", "end monthly plan", "continue perpetual License"]
       }
     },
     {
@@ -123,58 +51,22 @@
       "highFrequency": true,
       "category": "updates",
       "subcategory": "updates-model",
-      "translationStatus": "translated",
+      "translationStatus": "seeded",
       "question": {
-        "ja": "Updatesだけを契約して解約した場合はどうなりますか？",
-        "en": "What happens if an Updates-only subscription is cancelled?",
-        "zh-CN": "只订阅Updates后取消会怎样？",
-        "zh-TW": "只訂閱Updates後取消會怎樣？",
-        "ko": "Updates만 계약했다가 해지하면 어떻게 되나요?",
-        "id": "Apa yang terjadi jika langganan Updates saja dibatalkan?",
-        "ms": "Apa berlaku jika langganan Updates sahaja dibatalkan?",
-        "vi": "Điều gì xảy ra nếu hủy đăng ký chỉ Updates?",
-        "th": "หากสมัครเฉพาะ Updates แล้ว ยกเลิกจะเกิดอะไรขึ้น?",
-        "hi": "केवल Updates सदस्यता रद्द करने पर क्या होगा?",
-        "ar": "ماذا يحدث عند إلغاء اشتراك Updates فقط؟"
+        "ja": "Updatesだけを購入できますか？",
+        "en": "Can Updates be purchased without License?"
       },
       "answer": {
-        "ja": "Updates単独契約では、契約期間終了時にUpdatesの利用権とFDEによる継続アップデートが終了します。Updatesはソースコード提供や永続利用ライセンスを含む契約ではないため、解約後にLicenseへ自動移行することはありません。",
-        "en": "With an Updates-only subscription, the right to use Updates and receive ongoing FDE-managed updates ends when the subscription term ends. Updates does not include source-code delivery or a perpetual-use License, so cancellation does not automatically convert the customer to License.",
-        "zh-CN": "仅订阅Updates时，订阅期结束后Updates使用权及FDE持续更新服务终止。Updates不包含源代码或永久使用License，因此取消后不会自动转换为License。",
-        "zh-TW": "僅訂閱Updates時，訂閱期結束後Updates使用權與FDE持續更新服務終止。Updates不包含原始碼或永久使用License，因此取消後不會自動轉換為License。",
-        "ko": "Updates 단독 계약은 구독 기간 종료 시 Updates 이용권과 FDE의 지속 업데이트가 종료됩니다. Updates에는 소스 코드나 영구 License가 포함되지 않으므로 해지 후 License로 자동 전환되지 않습니다.",
-        "id": "Pada langganan Updates saja, hak penggunaan Updates dan pembaruan berkelanjutan oleh FDE berakhir saat masa langganan selesai. Updates tidak menyertakan kode sumber atau License permanen, sehingga pembatalan tidak otomatis mengubahnya menjadi License.",
-        "ms": "Bagi langganan Updates sahaja, hak penggunaan Updates dan kemas kini berterusan oleh FDE tamat apabila tempoh langganan berakhir. Updates tidak merangkumi kod sumber atau License kekal, jadi pembatalan tidak menukar pelanggan kepada License secara automatik.",
-        "vi": "Với gói chỉ Updates, quyền sử dụng Updates và các cập nhật liên tục do FDE quản lý kết thúc khi kỳ đăng ký hết hạn. Updates không bao gồm mã nguồn hay License vĩnh viễn, nên việc hủy không tự động chuyển sang License.",
-        "th": "สำหรับการสมัคร Updates อย่างเดียว สิทธิใช้งาน Updates และการอัปเดตต่อเนื่องจาก FDE จะสิ้นสุดเมื่อหมดระยะสมาชิก Updates ไม่รวมซอร์สโค้ดหรือ License แบบถาวร จึงไม่มีการเปลี่ยนเป็น License โดยอัตโนมัติหลังยกเลิก",
-        "hi": "केवल Updates सदस्यता में सदस्यता अवधि समाप्त होने पर Updates उपयोग अधिकार और FDE-प्रबंधित लगातार अपडेट समाप्त हो जाते हैं। Updates में स्रोत कोड या स्थायी License शामिल नहीं है, इसलिए रद्द करने पर ग्राहक स्वतः License में परिवर्तित नहीं होता।",
-        "ar": "في اشتراك Updates فقط ينتهي حق الاستخدام والتحديث المستمر من FDE عند انتهاء مدة الاشتراك. لا يتضمن Updates الشيفرة المصدرية أو License دائماً، لذلك لا يتحول العميل تلقائياً إلى License بعد الإلغاء."
+        "ja": "いいえ。UpdatesはLicense専用の追加オプションで、単独では購入できません。License Plusも対象外です。Updatesを終了しても、購入済みLicenseとその時点までに取得したバージョンの永続利用権は残ります。",
+        "en": "No. Updates is a License-only add-on and cannot be purchased on its own. License Plus is not eligible. Ending Updates does not remove the purchased License or the perpetual right to use the version obtained up to that point."
       },
       "keywords": {
-        "ja": ["Updates", "解約", "利用終了", "永続利用なし", "ソースコードなし"],
-        "en": ["Updates", "cancel", "usage ends", "no perpetual right", "no source code"],
-        "zh-CN": ["Updates", "取消", "使用结束", "无永久权", "无源代码"],
-        "zh-TW": ["Updates", "取消", "使用結束", "無永久權", "無原始碼"],
-        "ko": ["Updates", "해지", "이용 종료", "영구권 없음", "소스 없음"],
-        "id": ["Updates", "batal", "penggunaan berakhir", "tidak permanen", "tanpa source"],
-        "ms": ["Updates", "batal", "penggunaan tamat", "tidak kekal", "tiada source"],
-        "vi": ["Updates", "hủy", "kết thúc sử dụng", "không vĩnh viễn", "không mã nguồn"],
-        "th": ["Updates", "ยกเลิก", "สิ้นสุดการใช้", "ไม่ถาวร", "ไม่มีซอร์ส"],
-        "hi": ["Updates", "रद्द", "उपयोग समाप्त", "स्थायी नहीं", "स्रोत कोड नहीं"],
-        "ar": ["Updates", "إلغاء", "انتهاء الاستخدام", "غير دائم", "لا شيفرة مصدرية"]
+        "ja": ["Updates", "単独購入不可", "License専用", "追加オプション", "License Plus対象外"],
+        "en": ["Updates", "not standalone", "License only", "add-on", "License Plus excluded"]
       },
       "synonyms": {
-        "ja": ["月額のみ解約", "サブスク終了", "契約終了後"],
-        "en": ["subscription-only cancellation", "monthly plan ends", "after subscription"],
-        "zh-CN": ["只取消月费", "订阅结束", "合同结束后"],
-        "zh-TW": ["只取消月費", "訂閱結束", "合約結束後"],
-        "ko": ["월간만 해지", "구독 종료", "계약 종료 후"],
-        "id": ["batal bulanan", "langganan berakhir", "setelah kontrak"],
-        "ms": ["batal bulanan", "langganan tamat", "selepas kontrak"],
-        "vi": ["hủy gói tháng", "đăng ký kết thúc", "sau hợp đồng"],
-        "th": ["ยกเลิกรายเดือน", "สมาชิกสิ้นสุด", "หลังหมดสัญญา"],
-        "hi": ["मासिक रद्द", "सदस्यता समाप्त", "अनुबंध के बाद"],
-        "ar": ["إلغاء الشهري", "انتهاء الاشتراك", "بعد العقد"]
+        "ja": ["Updatesだけ購入", "追加購入", "オプション対象"],
+        "en": ["Updates only", "add Updates", "add-on eligibility"]
       }
     }
   ]

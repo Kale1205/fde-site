@@ -160,7 +160,7 @@
         "en": "Can I buy FDE IMS now?"
       },
       "answer": {
-        "ja": "いいえ。FDE IMSは現在開発中で、正式販売前です。現在サイトに掲載する価格は予定価格であり、正式販売開始、製品バージョン、詳細な更新方針は確定後に案内します。",
+        "ja": "いいえ。FDE IMSは現在開発中で、正式販売前です。現在サイトに掲載している価格は予定価格です。販売開始時期、製品バージョン、詳しい更新方針は、決まり次第お知らせします。",
         "en": "No. FDE IMS is currently under development and is not yet formally on sale. Prices shown are planned prices. Formal availability, product versions and detailed update policies will be announced after they are finalized."
       },
       "keywords": {
@@ -199,16 +199,17 @@
       "subcategory": "models",
       "translationStatus": "seeded",
       "question": {
-        "ja": "LicenseとUpdatesの違いは何ですか？",
-        "en": "What is the difference between License and Updates?"
+        "ja": "LicenseとLicense Plusの違いは何ですか？",
+        "en": "What is the difference between License and License Plus?"
       },
       "answer": {
-        "ja": "Licenseは、ソースコード付きの永続的な自社内部利用ライセンスで、購入企業が自ら更新・セキュリティ管理を行うモデルです。Updatesは、ソースコードを提供せず、契約期間中FDEが機能・セキュリティ・互換性等を継続更新する月額型モデルとして設計しています。単なる料金プラン違いではありません。",
-        "en": "License is planned as a perpetual internal-use license with source code, with updates and security primarily managed by the customer. Updates is planned as a subscription product without source-code delivery, with FDE continuously managing functionality, security and compatibility updates during the active term. They are different operating models, not merely payment plans."
+        "ja": "Licenseは、ソースコードを含まない買い切り型で、購入法人内で永続利用できます。購入後3か月はUpdatesを含み、その後はLicense専用の追加オプションとして任意継続できます。License Plusは、ソースコードと社内改変権を含む買い切り型で、更新・セキュリティは購入者が管理します。Updatesは第3の製品プランではなく、License Plusは対象外です。",
+        "en": "License is a one-time purchase without source code and permits perpetual internal use. It includes the first three months of Updates, with optional continuation as a License-only add-on. License Plus is a one-time purchase with source code and internal-modification rights; the purchaser manages updates and security. Updates is not a third product plan, and License Plus is not eligible."
       },
       "keywords": {
         "ja": [
           "License",
+          "License Plus",
           "Updates",
           "違い",
           "比較",
@@ -216,6 +217,7 @@
         ],
         "en": [
           "License",
+          "License Plus",
           "Updates",
           "difference",
           "comparison",
@@ -246,7 +248,7 @@
         "en": "What is FDE IMS intended for?"
       },
       "answer": {
-        "ja": "小規模企業の在庫管理等の業務を支援するデスクトップ型・ローカル運用中心の業務ソフトとして開発しています。具体的な完成機能は開発中のため、正式仕様として確定していない機能をここでは保証しません。",
+        "ja": "小規模企業の在庫管理を支える、デスクトップ中心・ローカル運用を前提とした業務ソフトとして開発しています。完成時の機能はまだ確定していないため、本FAQでは未確定の機能を保証しません。",
         "en": "FDE IMS is being developed as desktop-first, local-first business software intended to support inventory-related operations for small companies. The completed feature set is still under development, so this FAQ does not guarantee features that have not been formally finalized."
       },
       "keywords": {
@@ -289,7 +291,7 @@
         "en": "Is the current IMS demo a released product?"
       },
       "answer": {
-        "ja": "いいえ。現在のデモは開発中IMSの操作イメージを確認するためのサンプルです。正式製品のバージョン、完成機能、更新履歴、セキュリティ対応実績、提供実績を示すものではありません。",
+        "ja": "いいえ。現在のデモは、開発中のIMSを想定した操作イメージを確認するためのサンプルです。正式製品のバージョン、完成機能、更新履歴、セキュリティ対応実績、提供実績を示すものではありません。",
         "en": "No. The current demo is a sample used to review the intended operating experience of the IMS under development. It does not represent a released product version, completed feature set, update history, security track record or delivery record."
       },
       "keywords": {
@@ -330,8 +332,8 @@
         "en": "What is the planned price of FDE IMS License?"
       },
       "answer": {
-        "ja": "予定価格は49,800円の一括です。FDE IMSは正式販売前のため、現時点では予定価格として掲載しています。",
-        "en": "The planned price is JPY 49,800 one-time. FDE IMS is not yet formally on sale, so this is presented as a planned price."
+        "ja": "Licenseの予定価格は49,800円（買い切り）です。ソースコードは含みません。購入法人内で期限なく利用でき、購入後3か月はUpdatesを追加料金なしで利用できます。有料のUpdatesへ自動移行することはありません。FDE IMSは正式販売前のため、現時点では予定価格です。",
+        "en": "The planned one-time price is a $349 USD candidate. Source code is not included. The plan permits perpetual internal use and includes the first three months of Updates-equivalent service at no additional charge. It does not automatically convert into paid Updates. FDE IMS is not yet formally on sale, and all USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
         "ja": [
@@ -344,7 +346,7 @@
         "en": [
           "License",
           "price",
-          "JPY 49,800",
+          "$349 candidate",
           "cost",
           "one-time"
         ]
@@ -363,6 +365,52 @@
       }
     },
     {
+      "id": "license-plus-price",
+      "highFrequency": true,
+      "category": "license",
+      "subcategory": "license-basics",
+      "translationStatus": "seeded",
+      "question": {
+        "ja": "FDE IMS License Plusの価格と内容を教えてください",
+        "en": "What are the planned price and included rights for License Plus?"
+      },
+      "answer": {
+        "ja": "License Plusの予定価格は99,800円（買い切り）です。購入法人内で期限なく利用でき、ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。Updates特典はなく、更新・セキュリティは購入者が管理します。FDE IMSは正式販売前です。",
+        "en": "The planned one-time price is a $699 USD candidate. It is planned to include perpetual internal use, full source, internal-modification rights, technical documentation, and customer-server/self-hosted operation for the purchasing legal entity. It has no Updates entitlement; the purchaser manages updates and security. FDE IMS is not yet formally on sale, and all USD figures are unapproved candidates pending final international pricing."
+      },
+      "keywords": {
+        "ja": ["License Plus", "99,800円", "ソースコード一式", "社内改変", "自社サーバー", "買い切り"],
+        "en": ["License Plus", "$699 candidate", "full source", "self-hosted", "internal modification", "one-time purchase"]
+      },
+      "synonyms": {
+        "ja": ["Plusの価格", "コード付きプラン", "改変できるプラン"],
+        "en": ["Plus price", "source-code plan", "customizable plan"]
+      }
+    },
+    {
+      "id": "license-plus-upgrade",
+      "highFrequency": true,
+      "category": "license",
+      "subcategory": "license-basics",
+      "translationStatus": "seeded",
+      "question": {
+        "ja": "LicenseからLicense Plusへアップグレードできますか？",
+        "en": "Can License be upgraded to License Plus?"
+      },
+      "answer": {
+        "ja": "現在の2商品構成では、LicenseからLicense Plusへの差額アップグレード条件は設けていません。License Plusは別商品として購入する予定です。正式販売前に最終条件を提示します。",
+        "en": "The current two-product model does not define a price-difference upgrade from License to License Plus. License Plus is planned as a separate purchase. Final terms will be presented before formal sales."
+      },
+      "keywords": {
+        "ja": ["License Plus", "アップグレード", "別商品", "ソースコード一式", "自社サーバー"],
+        "en": ["License Plus", "upgrade", "separate purchase", "full source", "self-hosted"]
+      },
+      "synonyms": {
+        "ja": ["Plusへ変更", "コード付きへ変更", "上位プラン"],
+        "en": ["move to Plus", "upgrade to source code", "higher plan"]
+      }
+    },
+    {
       "id": "license-perpetual",
       "highFrequency": false,
       "category": "license",
@@ -373,7 +421,7 @@
         "en": "Is License planned to allow perpetual use?"
       },
       "answer": {
-        "ja": "はい。Licenseは購入法人による永続的な自社内部利用を認める設計です。基本利用のための必須月額契約は予定していません。ただし正式条件は販売前のLicense Agreement / EULAで定めます。",
+        "ja": "はい。Licenseは、購入した法人内で期限なく使えます。基本機能を使うための月額契約は不要です。最終条件は、販売開始前にLicense Agreement / EULAで提示します。",
         "en": "Yes. License is designed to permit perpetual internal use by the purchasing legal entity, with no mandatory monthly subscription for basic use. Final conditions will be defined in the License Agreement / EULA before formal sales."
       },
       "keywords": {
@@ -410,12 +458,12 @@
       "subcategory": "license-basics",
       "translationStatus": "seeded",
       "question": {
-        "ja": "Licenseにはソースコードが付属しますか？",
+        "ja": "Licenseにソースコードは含まれますか？",
         "en": "Does License include source code?"
       },
       "answer": {
-        "ja": "はい。Licenseはソースコード付き永続利用ライセンスとして設計しています。ただし、ソースコード提供はFDE IMSの著作権・知的財産権を購入企業へ譲渡することを意味しません。",
-        "en": "Yes. License is being designed as a perpetual internal-use license with source code. Providing source code does not transfer copyright or intellectual-property ownership of FDE IMS to the customer."
+        "ja": "いいえ。49,800円のLicenseにソースコードは含まれません。ソースコード一式と社内改変権は、99,800円のLicense Plusに含む予定です。どちらも購入法人内で期限なく利用できます。",
+        "en": "No. The License has a $349 USD candidate price and does not include source code. Customers that need full source, technical documentation, self-hosted operation, and internal-modification rights should choose License Plus at the $699 USD candidate price. Both plans permit perpetual internal use by the purchasing legal entity. All USD figures are unapproved candidates."
       },
       "keywords": {
         "ja": [
@@ -451,12 +499,12 @@
       "subcategory": "license-basics",
       "translationStatus": "seeded",
       "question": {
-        "ja": "Licenseのソースコードを自社向けに変更できますか？",
-        "en": "Can we customize License source code for our company?"
+        "ja": "ソースコードを自社向けに改変できるプランはどれですか？",
+        "en": "Which plan allows internal source-code modification?"
       },
       "answer": {
-        "ja": "はい。購入法人の自社内部業務利用を目的とする範囲で、ソースコードの閲覧・編集・改変、機能追加、自社システムとの連携、改変版の社内利用を認める方針です。Customization freedom ≠ Redistribution rightsであり、販売・再配布の権利は含みません。",
-        "en": "Yes. For the purchasing legal entity’s own internal business use, the planned license allows viewing, editing and modifying source code, adding internal features, integrating with internal systems and using modified versions internally. Customization freedom does not grant resale or redistribution rights."
+        "ja": "License Plusなら、社内業務に使う範囲でソースコードを確認・編集・改変できます。機能追加、自社システムとの連携、改変版の社内利用も可能です。Licenseにソースコードは含まれません。また、改変できる範囲に販売・再配布・サブライセンスは含まれません。",
+        "en": "License Plus is planned to allow source-code inspection, editing, modification, internal feature development, integration with internal systems, and internal use of modified versions by the purchasing legal entity. License does not include source code. Modification rights do not include resale, redistribution, or sublicensing rights."
       },
       "keywords": {
         "ja": [
@@ -495,11 +543,11 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "外部の開発会社やエンジニアに改修を委託できますか？",
-        "en": "Can an external developer customize License for us?"
+        "en": "Can an external developer customize License Plus for us?"
       },
       "answer": {
-        "ja": "自社内部利用目的の開発・改修・保守であれば、必要な範囲で外部開発者へソースコードを開示できる設計です。秘密保持義務、他案件への流用禁止、販売・再配布禁止などのライセンス条件を委託先にも遵守させる必要があります。",
-        "en": "The planned license permits necessary source-code disclosure to external developers for the purchasing company’s internal development, modification or maintenance. The customer must ensure confidentiality and license compliance, including no reuse in other projects, resale or redistribution."
+        "ja": "License Plusでは、社内向けの開発・改修・保守に必要な範囲で、外部開発者にソースコードを開示できます。委託先にも、秘密保持、他案件への流用禁止、販売・再配布禁止などの条件が適用されます。Licenseにはソースコードが含まれないため、この取り扱いは適用されません。",
+        "en": "License Plus is planned to permit necessary source-code disclosure to external developers working on the purchasing entity’s internal development, modification, or maintenance. The customer must enforce confidentiality, no reuse in other projects, and no resale or redistribution. License does not include source code and is not covered by this permission."
       },
       "keywords": {
         "ja": [
@@ -537,12 +585,12 @@
       "subcategory": "entity",
       "translationStatus": "seeded",
       "question": {
-        "ja": "Licenseは何台のPCにインストールできますか？",
-        "en": "How many devices can use one License?"
+        "ja": "LicenseまたはLicense Plusは何台のPCにインストールできますか？",
+        "en": "How many devices can use License or License Plus?"
       },
       "answer": {
-        "ja": "1 License = 1購入法人を原則とし、その法人の内部業務に必要な端末へのインストールを認める方向です。具体的な端末条件は正式EULAで定めます。",
-        "en": "The planned principle is one License per purchasing legal entity, with installation on devices needed for that entity’s internal business use. Detailed device conditions will be defined in the final EULA."
+        "ja": "LicenseとLicense Plusは、購入した1法人の内部業務に必要な端末へインストールできます。端末数などの詳細は、正式EULAで定めます。",
+        "en": "License and License Plus are each planned for one purchasing legal entity, with installation on devices needed for that entity’s internal business use. Detailed device conditions will be defined in the final EULA."
       },
       "keywords": {
         "ja": [
@@ -580,11 +628,11 @@
       "subcategory": "license-basics",
       "translationStatus": "seeded",
       "question": {
-        "ja": "Licenseのバックアップを作成できますか？",
-        "en": "Can we make backups of License?"
+        "ja": "LicenseまたはLicense Plusのバックアップを作成できますか？",
+        "en": "Can we make backups of License or License Plus?"
       },
       "answer": {
-        "ja": "はい。購入法人の内部利用を継続するために必要なバックアップを認める方針です。第三者への配布目的の複製は認めません。",
+        "ja": "はい。購入した法人が社内利用を続けるために必要なバックアップは作成できます。第三者への配布を目的とした複製はできません。",
         "en": "Yes. Backups necessary to support the purchasing entity’s internal use are planned to be permitted. Copies made for third-party distribution are not permitted."
       },
       "keywords": {
@@ -621,12 +669,12 @@
       "subcategory": "entity",
       "translationStatus": "seeded",
       "question": {
-        "ja": "1つのLicenseを親会社・子会社・グループ会社で共有できますか？",
-        "en": "Can one License be shared across a corporate group?"
+        "ja": "1つのLicenseまたはLicense Plusをグループ会社で共有できますか？",
+        "en": "Can one License or License Plus be shared across a corporate group?"
       },
       "answer": {
-        "ja": "原則としてできません。1 License = 1購入法人とし、親会社・子会社・関連会社・グループ企業など法人格が異なる組織は、原則として別Licenseを必要とする設計です。",
-        "en": "Generally no. The planned rule is one License per purchasing legal entity. Parent companies, subsidiaries, affiliates and group companies that are separate legal entities generally require separate Licenses."
+        "ja": "原則としてできません。LicenseとLicense Plusは、1購入につき1法人が対象です。親会社・子会社・関連会社など、法人格が異なる組織はそれぞれ購入する必要があります。",
+        "en": "Generally no. License and License Plus are each planned for one purchasing legal entity. Parent companies, subsidiaries, affiliates, and other separate legal entities generally require separate purchases."
       },
       "keywords": {
         "ja": [
@@ -668,8 +716,8 @@
         "en": "Can headquarters and branches of the same legal entity use one License?"
       },
       "answer": {
-        "ja": "はい。同一法人内の本社・支店・営業所・従業員による内部利用は可能とする方向です。別法人の場合は原則として別Licenseが必要です。",
-        "en": "Yes. Internal use by headquarters, branches, offices and employees within the same legal entity is planned to be permitted. Separate legal entities generally require separate Licenses."
+        "ja": "はい。同一法人内での利用を予定しています。LicenseではLocal / LAN構成で複数の倉庫・Location情報を管理する案、License Plusでは顧客管理サーバーを正本とする複数拠点・複数端末の常時同期を本格対応する案を開発中です。対応範囲は正式販売前に確定し、別法人での利用は原則として別途購入が必要です。",
+        "en": "Yes, internal use within one legal entity is planned. License is being designed around a local/LAN model that can manage multiple warehouse or location records. License Plus is planned for customer-server authoritative data and fuller multi-site, multi-PC, and multi-mobile synchronization. These capabilities remain in development; final scope will be defined before sales. Separate legal entities generally require separate purchases."
       },
       "keywords": {
         "ja": [
@@ -711,8 +759,8 @@
         "en": "Who manages updates and security for License?"
       },
       "answer": {
-        "ja": "Licenseでは、購入後のアップデート・セキュリティ管理は原則として購入企業側の責任とする設計です。将来の更新提供方法やバージョニング方針はまだ確定していません。",
-        "en": "Under the planned License model, updates and security after purchase are generally the customer’s responsibility. Future update-delivery and versioning policies have not yet been finalized."
+        "ja": "Licenseには購入後3か月のUpdatesが含まれ、その期間はFDEが機能・セキュリティ・互換性の更新と不具合修正を提供します。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続できます。継続しない期間は購入者が更新・セキュリティを管理し、有料契約へ自動移行しません。License PlusはUpdates追加オプションの対象外です。",
+        "en": "License includes three months of Updates, during which FDE provides functionality, security, compatibility, and bug-fix updates. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. When Updates is inactive, the customer manages updates and security. There is no automatic paid conversion, and License Plus is not eligible for the add-on. All USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
         "ja": [
@@ -754,8 +802,8 @@
         "en": "Can we resell FDE IMS to a third party?"
       },
       "answer": {
-        "ja": "できません。FDE IMS原版の販売・再販売は禁止する方針です。Licenseは購入法人の自社内部利用のための権利であり、再販売権を含みません。",
-        "en": "No. Resale of the original FDE IMS is planned to be prohibited. License grants rights for the purchasing entity’s internal use and does not include resale rights."
+        "ja": "できません。LicenseとLicense Plusのいずれにも、FDE IMSの原版または改変版を第三者へ販売・再販売する権利は含まれません。利用権は購入法人の社内利用に限られます。",
+        "en": "No. Neither License nor License Plus includes the right to sell or resell the original or a modified version of FDE IMS to third parties. Use rights are limited to the purchasing legal entity’s internal operations."
       },
       "keywords": {
         "ja": [
@@ -795,7 +843,7 @@
         "en": "Can we sell a modified version of FDE IMS?"
       },
       "answer": {
-        "ja": "できません。名称・UI・機能等を変更した場合でも、FDE IMSを基礎とする改変版を第三者向け商品として販売・再販売することは禁止する方針です。",
+        "ja": "できません。名称・UI・機能を変更しても、FDE IMSを基にした改変版を第三者向けの商品として販売・再販売することはできません。",
         "en": "No. Even if the name, UI or functions are changed, selling or reselling a modified product based on FDE IMS to third parties is planned to be prohibited."
       },
       "keywords": {
@@ -833,11 +881,11 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "ソースコードやインストーラーを第三者へ再配布できますか？",
-        "en": "Can we redistribute source code or installers?"
+        "en": "Can source code or installers be redistributed to third parties?"
       },
       "answer": {
-        "ja": "できません。ソースコード、インストーラー、その他FDE IMSを構成するファイルを第三者へ再配布することは禁止する方針です。外部委託先への必要な範囲の開示は別途ライセンス条件に従います。",
-        "en": "No. Redistribution of source code, installers or other files that make up FDE IMS to third parties is planned to be prohibited. Necessary disclosure to approved contractors is handled separately under the license conditions."
+        "ja": "できません。License Plusで提供するソースコード、インストーラー、FDE IMSを構成するファイルは、第三者へ再配布できません。ただし、社内向けの改修に必要な範囲で、別途定める条件を守る外部委託先に開示できます。",
+        "en": "No. Redistribution of installers, product files, or the source code supplied with License Plus is planned to be prohibited. License Plus source code may be disclosed to approved contractors only as needed for internal modification and subject to the applicable license conditions."
       },
       "keywords": {
         "ja": [
@@ -873,12 +921,12 @@
       "subcategory": "redistribution",
       "translationStatus": "seeded",
       "question": {
-        "ja": "FDE IMSのソースコードをPublic GitHubに置けますか？",
-        "en": "Can FDE IMS source code be placed in a public GitHub repository?"
+        "ja": "License PlusのソースコードをGitHubの公開リポジトリに置けますか？",
+        "en": "Can License Plus source code be placed in a public GitHub repository?"
       },
       "answer": {
-        "ja": "できません。Public GitHub Repository、Webサイト、SNS、公開ファイル共有、コミュニティ、公開サーバーなど、不特定多数または第三者がアクセスできる場所への公開は禁止する方針です。",
-        "en": "No. Publishing FDE IMS to public GitHub repositories, websites, social media, public file shares, communities, public servers or other locations accessible to third parties is planned to be prohibited."
+        "ja": "できません。License Plusのソースコードを、GitHubの公開リポジトリ、Webサイト、SNS、公開ファイル共有、コミュニティ、公開サーバーなど、不特定多数や第三者がアクセスできる場所へ公開することはできません。",
+        "en": "No. Publishing License Plus source code to public GitHub repositories, websites, social media, public file shares, communities, public servers, or other locations accessible to third parties is planned to be prohibited."
       },
       "keywords": {
         "ja": [
@@ -916,12 +964,12 @@
       "subcategory": "redistribution",
       "translationStatus": "seeded",
       "question": {
-        "ja": "Licenseを別法人へ譲渡できますか？",
-        "en": "Can a License be transferred to another legal entity?"
+        "ja": "LicenseまたはLicense Plusを別法人へ譲渡できますか？",
+        "en": "Can License or License Plus be transferred to another legal entity?"
       },
       "answer": {
-        "ja": "無断での譲渡は禁止する方針です。Licenseは購入法人に付与されるため、別法人・第三者への移転は最終EULAの条件に従います。",
-        "en": "Unauthorized transfer is planned to be prohibited. License is granted to the purchasing legal entity, and any transfer to another entity or third party would be subject to the final EULA."
+        "ja": "無断での譲渡は禁止します。LicenseとLicense Plusの利用権は購入法人に付与されるため、別法人や第三者への移転は最終EULAの条件に従います。",
+        "en": "Unauthorized transfer is prohibited. License and License Plus rights are granted to the purchasing legal entity, and any transfer to another entity or third party is subject to the final EULA."
       },
       "keywords": {
         "ja": [
@@ -961,8 +1009,8 @@
         "en": "Can we sublicense FDE IMS to third parties?"
       },
       "answer": {
-        "ja": "できません。購入企業が第三者にFDE IMSを利用する権利を独自に与えるサブライセンスは禁止する方針です。",
-        "en": "No. The purchasing company is not planned to have the right to independently grant third parties a sublicense to use FDE IMS."
+        "ja": "できません。LicenseとLicense Plusのいずれにも、購入企業が第三者へFDE IMSの利用権を独自に付与する権利は含まれません。",
+        "en": "No. Neither License nor License Plus allows the purchasing company to independently grant third parties the right to use FDE IMS."
       },
       "keywords": {
         "ja": [
@@ -998,12 +1046,12 @@
       "subcategory": "service",
       "translationStatus": "seeded",
       "question": {
-        "ja": "License版をSaaS等として顧客へ提供できますか？",
-        "en": "Can License be offered to customers as SaaS or a hosted service?"
+        "ja": "FDE IMSをSaaS等として顧客へ提供できますか？",
+        "en": "Can FDE IMS be offered to customers as SaaS or a hosted service?"
       },
       "answer": {
-        "ja": "できません。FDE IMSそのものを第三者に利用させるSaaS、ASP、ホスティング、ソフトウェアレンタル、サービスビューロー等としての提供は禁止する方針です。",
-        "en": "No. The planned license prohibits offering FDE IMS itself to third parties as SaaS, ASP, hosting, software rental, service bureau or similar services."
+        "ja": "できません。LicenseとLicense Plusのいずれも、FDE IMSそのものを第三者に利用させるSaaS、ASP、ホスティング、ソフトウェアレンタル、サービスビューロー等として提供する権利を含みません。",
+        "en": "No. Neither License nor License Plus includes the right to offer FDE IMS itself to third parties as SaaS, ASP, hosting, software rental, a service bureau, or a similar service."
       },
       "keywords": {
         "ja": [
@@ -1045,7 +1093,7 @@
         "en": "Can we use FDE IMS internally while selling our own products or services?"
       },
       "answer": {
-        "ja": "はい。FDE IMSを自社内部の在庫管理等に利用し、その結果として自社の商品・サービスを顧客へ販売することは認める方針です。禁止対象は、IMSそのものを第三者へ利用させる事業です。",
+        "ja": "はい。FDE IMSを社内の在庫管理などに使い、自社の商品・サービスを顧客へ販売できます。できないのは、FDE IMSそのものを第三者に使わせる事業です。",
         "en": "Yes. Using FDE IMS internally for operations such as inventory management while selling your own ordinary products or services to customers is planned to be permitted. The restriction concerns providing the IMS itself for third-party use."
       },
       "keywords": {
@@ -1082,24 +1130,26 @@
       "subcategory": "updates-model",
       "translationStatus": "seeded",
       "question": {
-        "ja": "FDE IMS Updatesの予定価格はいくらですか？",
-        "en": "What is the planned price of FDE IMS Updates?"
+        "ja": "License向けUpdates追加オプションの予定価格はいくらですか？",
+        "en": "What is the planned price of the License Updates add-on?"
       },
       "answer": {
-        "ja": "予定価格は9,800円/月です。FDE IMSは正式販売前のため、現時点では予定価格として掲載しています。",
-        "en": "The planned price is JPY 9,800 per month. FDE IMS is not yet formally on sale, so this is presented as a planned price."
+        "ja": "License購入後1〜3か月目は追加料金なしです。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続できます。UpdatesはLicense専用の追加オプションで、単独購入とLicense Plusへの追加はできません。有料契約へ自動移行しません。",
+        "en": "Months 1–3 are included with License. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. Updates is a License-only add-on; it cannot be purchased alone or added to License Plus. It never starts automatically, and all USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
         "ja": [
           "Updates",
-          "9800円",
+          "4,900円",
+          "9,800円",
           "月額",
           "価格",
           "料金"
         ],
         "en": [
           "Updates",
-          "JPY 9,800",
+          "$31 candidate",
+          "$62 candidate",
           "monthly",
           "price",
           "subscription"
@@ -1129,8 +1179,8 @@
         "en": "Does Updates include source code?"
       },
       "answer": {
-        "ja": "いいえ。Updatesはソースコードを提供しない製品運用モデルとして設計しています。ソースコード付きで自社内部カスタマイズを行う場合はLicenseが対象です。",
-        "en": "No. Updates is being designed as a product model without source-code delivery. License is the model intended for customers that need source code for internal customization."
+        "ja": "いいえ。Updatesはソースコードを提供しません。ソースコードと社内改変権はLicense Plusに含まれます。",
+        "en": "No. Updates does not include source-code delivery. Customers that need source code and internal-modification rights should choose License Plus."
       },
       "keywords": {
         "ja": [
@@ -1170,8 +1220,8 @@
         "en": "Can Updates be used after the subscription ends?"
       },
       "answer": {
-        "ja": "Updatesは契約期間中のみ利用可能とする方向で設計しています。正式な停止・データ取扱い等の条件は販売前の利用規約で確定します。",
-        "en": "Updates is being designed for use only during an active subscription term. Final conditions concerning termination and data handling will be defined before formal sales."
+        "ja": "Updatesを終了すると、FDEによる新しい更新の提供は止まります。購入済みLicenseと、その時点までに取得したバージョンの永続利用権は残ります。",
+        "en": "When Updates ends, FDE stops providing new updates. The purchased License and the perpetual right to use the version obtained up to that point remain valid."
       },
       "keywords": {
         "ja": [
@@ -1211,7 +1261,7 @@
         "en": "What is FDE planned to manage under Updates?"
       },
       "answer": {
-        "ja": "契約期間中、機能・セキュリティ・互換性等の継続的な更新をFDE側で管理するモデルとして設計しています。具体的な更新頻度、バージョニング、SLA、実績はまだ確定していません。",
+        "ja": "契約期間中は、FDEが機能・セキュリティ・互換性の更新を担当します。更新頻度、バージョン管理、SLAなどの詳細はまだ確定していません。",
         "en": "Updates is being designed so FDE manages ongoing functionality, security and compatibility updates during the subscription term. Specific update frequency, versioning, SLA and track record are not yet established."
       },
       "keywords": {
@@ -1250,12 +1300,12 @@
       "subcategory": "ip",
       "translationStatus": "seeded",
       "question": {
-        "ja": "LicenseでFDEロゴやアプリUIを変更できますか？",
-        "en": "Can we change the FDE logo or UI in License?"
+        "ja": "License PlusでFDEロゴやアプリUIを変更できますか？",
+        "en": "Can we change the FDE logo or UI in License Plus?"
       },
       "answer": {
-        "ja": "自社内部利用のカスタマイズとして、アプリ画面上のFDEロゴ・名称等のUI変更まで全面禁止する予定はありません。ただし、ソースコード内の著作権表示、ライセンス情報、権利表示、Third-party license notices等は適切に保持する必要があります。",
-        "en": "The planned License does not categorically prohibit changing the FDE logo, name or UI as part of internal customization. Copyright, license, rights and third-party notices in the source must be appropriately retained."
+        "ja": "License Plusでは、社内利用のための改変として、アプリ画面上のFDEロゴ・名称などのUI変更を一律に禁止する予定はありません。ただし、ソースコード内の著作権表示、ライセンス情報、権利表示、第三者ライセンスに関する表示などは適切に保持する必要があります。Licenseはソースコードを含みません。",
+        "en": "License Plus is not planned to categorically prohibit changing the FDE logo, name, or UI for internal use. Copyright, license, rights, and third-party notices in the source must be appropriately retained. License does not include source code."
       },
       "keywords": {
         "ja": [
@@ -1291,12 +1341,12 @@
       "subcategory": "ip",
       "translationStatus": "seeded",
       "question": {
-        "ja": "改変後にFDE IMS原版を自社独自開発製品と表示できますか？",
+        "ja": "改変後に、FDE IMSの原版を自社の独自開発製品と表示できますか？",
         "en": "Can we claim the original FDE IMS was independently developed by our company?"
       },
       "answer": {
-        "ja": "できません。UI等の変更を認める場合でも、FDE IMS原版について購入企業が「自社が独自開発した製品である」等と虚偽の権利主張を行うことは禁止する方針です。",
-        "en": "No. Even where UI customization is allowed, falsely claiming that the original FDE IMS was independently developed by the purchasing company is planned to be prohibited."
+        "ja": "できません。UIなどを変更しても、FDE IMSの原版を「自社が独自に開発した製品」と表示することはできません。",
+        "en": "No. Even when UI or other modifications are made under License Plus, the purchasing company may not falsely claim that the original FDE IMS was independently developed by it."
       },
       "keywords": {
         "ja": [
@@ -1332,12 +1382,12 @@
       "subcategory": "ai",
       "translationStatus": "seeded",
       "question": {
-        "ja": "Licenseの改修にAIコーディングツールを利用できますか？",
-        "en": "Can AI coding tools be used to modify License?"
+        "ja": "License Plusの改修にAIコーディングツールを利用できますか？",
+        "en": "Can AI coding tools be used to modify License Plus?"
       },
       "answer": {
-        "ja": "自社内部でFDE IMSを改修する目的で、入力コードが第三者のモデル学習に利用されない設定・契約のAIコーディングツールを使用することは許可する方向です。一方、FDE IMSのコードをモデル学習、fine-tuning、第三者向け訓練、公開データセット、類似製品再現目的の学習へ利用することは禁止する方針です。",
-        "en": "The planned policy permits AI coding tools for internal FDE IMS modification where the tool’s settings or contract ensure submitted code is not used for third-party model training. Using FDE IMS code for model training, fine-tuning, third-party training, public datasets or training intended to reproduce a similar product is planned to be prohibited."
+        "ja": "License Plusの社内改修では、入力コードを第三者のモデル学習に使わない設定・契約のAIコーディングツールを使えます。一方、FDE IMSのコードをモデル学習、ファインチューニング、第三者向け訓練、公開データセット、類似製品を再現するための学習に利用することはできません。",
+        "en": "For internal modification under License Plus, the planned policy permits AI coding tools whose settings or contract prevent submitted code from being used for third-party model training. FDE IMS code may not be used for model training, fine-tuning, third-party training, public datasets, or training intended to reproduce a similar product."
       },
       "keywords": {
         "ja": [
@@ -1379,7 +1429,7 @@
         "en": "How are OSS and third-party component licenses handled?"
       },
       "answer": {
-        "ja": "FDE独自開発部分にはFDEのLicense条件を適用し、OSS・第三者ソフトウェアにはそれぞれのライセンス条件を適用する構造です。Third-party components may be subject to their respective license terms. 具体的な構成は製品完成時に確定します。",
+        "ja": "FDEが独自に開発した部分にはFDEのLicense条件が適用され、OSSや第三者ソフトウェアには、それぞれのライセンス条件が適用されます。具体的な構成は製品完成時に確定します。",
         "en": "FDE-developed portions are planned to be governed by the FDE License, while OSS and third-party software remain subject to their respective license terms. The specific component set will be finalized as the product is completed."
       },
       "keywords": {
@@ -1416,12 +1466,12 @@
       "subcategory": "purchase",
       "translationStatus": "seeded",
       "question": {
-        "ja": "正式販売時のLicense注文では何が表示されますか？",
-        "en": "What information is planned for a formal License order?"
+        "ja": "正式販売時の注文では何が表示されますか？",
+        "en": "What information is planned for a formal FDE IMS order?"
       },
       "answer": {
-        "ja": "正式販売時には、商品名FDE IMS License、価格、購入法人、購入時の製品バージョン、永続利用ライセンス、ソースコード提供あり、適用されるLicense Agreement / EULAとそのリンクまたは添付を明示する設計です。現時点では正式販売前のため、購入時製品バージョンは存在しません。",
-        "en": "Formal License orders are planned to show FDE IMS License, price, purchasing legal entity, product version at purchase, perpetual-license status, source-code delivery, and the applicable License Agreement / EULA with a link or attachment. Because the product is not yet formally on sale, there is no current purchase-version number."
+        "ja": "正式販売時の注文画面には、選択した商品、価格、購入法人、製品バージョン、利用期間、ソースコードの有無、License向けUpdates追加オプション、License Agreement / EULAを表示します。Licenseはソースコードなしの永続利用、License Plusはソースコードと社内改変権付きの永続利用です。まだ正式販売前のため、現在は購入対象の製品バージョンはありません。",
+        "en": "Formal orders are planned to show the selected product, price, purchasing legal entity, product version at purchase, usage term, whether source code is included, any License Updates add-on, and the applicable License Agreement / EULA. License provides perpetual use without source code, while License Plus provides perpetual use with source code and internal-modification rights. Because the product is not yet formally on sale, there is no current purchase-version number."
       },
       "keywords": {
         "ja": [
@@ -1463,7 +1513,7 @@
         "en": "Will online purchase require agreement to the EULA?"
       },
       "answer": {
-        "ja": "はい。正式販売時には、購入確定前にLicense Agreement / EULAを確認でき、規約への同意チェックを行うフローを予定しています。現在のサイトにあるLicenseページは製品方針の概要であり、最終契約書ではありません。",
+        "ja": "はい。購入確定前にLicense Agreement / EULAを確認し、同意していただく予定です。現在のLicenseページは製品方針の概要であり、最終契約書ではありません。",
         "en": "Yes. Formal online sales are planned to require the customer to review the License Agreement / EULA and actively agree before purchase confirmation. The current License page is a product-policy summary, not the final legal agreement."
       },
       "keywords": {
@@ -1491,6 +1541,29 @@
           "acceptance checkbox",
           "license terms"
         ]
+      }
+    },
+    {
+      "id": "inventory-adoption-migration-fit",
+      "highFrequency": true,
+      "category": "product",
+      "subcategory": "adoption",
+      "translationStatus": "seeded",
+      "question": {
+        "ja": "紙・Excel・既存システムからFDE IMSへ移行できますか？",
+        "en": "Can FDE IMS replace paper, spreadsheets, or an existing inventory system?"
+      },
+      "answer": {
+        "ja": "FDE IMSは、紙やExcelでの在庫管理を分かりやすい仕組みへ移したい場合や、既存システムを見直したい小規模企業向けに開発しています。製品が自社に合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。",
+        "en": "FDE IMS is being designed for small businesses moving from paper or spreadsheets, or reviewing an existing inventory system. Product fit can be discussed now, but data-import formats, migration services, and final deployment support are not yet confirmed."
+      },
+      "keywords": {
+        "ja": ["在庫管理", "紙", "Excel", "既存システム", "移行", "データ取り込み"],
+        "en": ["inventory management", "paper", "spreadsheets", "existing system", "migration", "data import"]
+      },
+      "synonyms": {
+        "ja": ["在庫管理を変えたい", "Excelから移したい", "システム入れ替え"],
+        "en": ["replace inventory system", "move from Excel", "inventory software adoption"]
       }
     }
   ]

@@ -8,6 +8,11 @@ on:
       - Deploy staging environment
       - Sync site build version
       - Auto Security audit
+      - Kale Sentinel operational check
+      - Kale Desk foundation check
+      - Kale’s Office foundation check
+      - Kale Outreach foundation check
+      - P3 Agent Governance acceptance check
     types:
       - completed
   workflow_dispatch:

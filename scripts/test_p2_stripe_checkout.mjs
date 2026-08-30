@@ -42,8 +42,8 @@ const environment = (kv, overrides = {}) => ({
   STRIPE_SECRET_KEY: 'rk_test_unit_test_secret',
   STRIPE_PRICE_LICENSE_USD: 'price_test_license_usd',
   STRIPE_PRICE_LICENSE_JPY: 'price_test_license_jpy',
-  STRIPE_PRICE_UPDATES_USD: 'price_test_updates_usd',
-  STRIPE_PRICE_UPDATES_JPY: 'price_test_updates_jpy',
+  STRIPE_PRICE_LICENSE_PLUS_USD: 'price_test_license_plus_usd',
+  STRIPE_PRICE_LICENSE_PLUS_JPY: 'price_test_license_plus_jpy',
   STAGING_CHECKOUT_SUCCESS_URL: 'https://kales-fde-staging.pages.dev/fde-site/order.html?checkout=success',
   STAGING_CHECKOUT_CANCEL_URL: 'https://kales-fde-staging.pages.dev/fde-site/order.html?checkout=cancelled',
   ...overrides
@@ -72,7 +72,7 @@ const stripeSession = (overrides = {}) => ({
   livemode: false,
   mode: 'payment',
   currency: 'usd',
-  amount_total: 31300,
+  amount_total: 34900,
   status: 'open',
   url: 'https://checkout.stripe.com/c/pay/cs_test_checkout_001',
   expires_at: Math.floor(new Date('2026-08-25T02:00:00.000Z').getTime() / 1000),
@@ -90,12 +90,13 @@ globalThis.fetch = async (url, init) => {
 
 // The server-side catalog owns amount, currency, mode, and the configured Stripe Price ID.
 assert.deepEqual(resolveStripePrice(environment(seededKv()), 'fde-ims-license', 'usd'), {
-  productKey: 'fde-ims-license', currency: 'usd', mode: 'payment', amountTotal: 31300,
+  productKey: 'fde-ims-license', currency: 'usd', mode: 'payment', amountTotal: 34900,
   priceBinding: 'STRIPE_PRICE_LICENSE_USD', priceId: 'price_test_license_usd'
 });
 assert.equal(resolveStripePrice(environment(seededKv()), 'fde-ims-license', 'jpy').amountTotal, 49800);
-assert.equal(resolveStripePrice(environment(seededKv()), 'fde-ims-updates', 'usd').amountTotal, 6200);
-assert.equal(resolveStripePrice(environment(seededKv()), 'fde-ims-updates', 'jpy').amountTotal, 9800);
+assert.equal(resolveStripePrice(environment(seededKv()), 'fde-ims-license-plus', 'usd').amountTotal, 69900);
+assert.equal(resolveStripePrice(environment(seededKv()), 'fde-ims-license-plus', 'jpy').amountTotal, 99800);
+assert.throws(() => resolveStripePrice(environment(seededKv()), 'fde-ims-updates', 'jpy'), /CHECKOUT_PRICE_NOT_ALLOWED/);
 
 // A valid operator-only request creates one sandbox Session, expectation, and audit event.
 const kv = seededKv();
@@ -127,7 +128,7 @@ assert.deepEqual(storedOrder.paymentExpectation, {
   mode: 'payment',
   productKey: 'fde-ims-license',
   priceId: 'price_test_license_usd',
-  amountTotal: 31300,
+  amountTotal: 34900,
   currency: 'usd'
 });
 const auditKeys = [...kv.map.keys()].filter(key => key.includes(':stripe-checkout-cs_test_checkout_001'));

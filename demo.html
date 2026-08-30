@@ -1,1 +1,72 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FDE IMS Development Preview | Baked Kale</title><meta name="description" content="Development preview of FDE IMS by Baked Kale / Kale’s FDE. This sample interface does not represent a released product version or finalized feature set."><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://kale1205.github.io/fde-site/demo.html"><meta property="og:title" content="FDE IMS Development Preview | Baked Kale"><meta property="og:description" content="Sample interface for FDE IMS while it is still under development."><meta property="og:type" content="website"><meta property="og:url" content="https://kale1205.github.io/fde-site/demo.html"><link rel="stylesheet" href="styles.css?v=20260828-075019"><link rel="stylesheet" href="refinements.css?v=20260828-075019"><link rel="stylesheet" href="polish.css?v=20260828-075019"><link rel="stylesheet" href="editorial.css?v=20260828-075019"><link rel="stylesheet" href="responsive.css?v=20260828-075019"><link rel="stylesheet" href="brand-green.css?v=20260828-075019"><link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg"><script defer src="site.js?v=20260828-075019"></script><script defer src="seo-runtime.js?v=20260828-075019"></script></head><body class="demo-app"><div class="demo-bar"><div class="shell demo-toolbar"><div><strong>Kale’s FDE — FDE IMS Development Preview</strong></div><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">Close preview</button></div></div></div><main class="shell demo-dashboard"><div class="section-head"><div><div class="section-kicker">FDE IMS / DEVELOPMENT PREVIEW</div><h1 class="section-title">Inventory management preview</h1><p class="section-copy">Try searching the sample inventory and receiving or shipping stock. Changes are temporary and are not saved.</p><div class="ims-pre"><strong>IN DEVELOPMENT · NOT YET AVAILABLE FOR PURCHASE</strong><p>This preview demonstrates the intended operating experience. It does not represent a released product version, completed feature set, update history, security track record, or delivery record.</p></div><p class="demo-note">Baked Kale / Kale’s FDE</p></div></div><div class="demo-kpis"><div class="demo-kpi"><small>Items</small><strong id="kpiItems">5</strong></div><div class="demo-kpi"><small>Low stock</small><strong id="kpiLow">1</strong></div><div class="demo-kpi"><small>Status</small><strong>PREVIEW</strong></div></div><div class="demo-controls"><input id="demoSearch" class="faq-search" type="search" placeholder="Search by product name or SKU"><button id="demoReset" class="button light">Reset</button></div><div class="demo-table-wrap"><table class="demo-table"><thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="inventoryBody"><tr><td>Paper Cup 12oz</td><td>PC-1204</td><td data-stock-value>326</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr><tr><td>Shipping Box M</td><td>SB-2088</td><td data-stock-value>84</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr><tr><td>Label Roll</td><td>LR-0041</td><td data-stock-value>18</td><td data-stock-status>Low</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr><tr><td>Thermal Paper</td><td>TP-3011</td><td data-stock-value>41</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr><tr><td>Storage Bin S</td><td>BN-1008</td><td data-stock-value>210</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr></tbody></table></div><p class="demo-note">This preview uses sample data only. Changes are not saved.</p></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Inventory Management Software Demo | FDE IMS</title>
+  <meta name="description" content="Try the FDE IMS inventory software development demo with sample stock search, receiving, shipping, and low-stock status. Changes are temporary.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://kale1205.github.io/fde-site/demo.html">
+  <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/demo.html">
+  <link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/demo.html">
+  <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/demo.html">
+  <meta property="og:title" content="Inventory Management Software Demo | FDE IMS">
+  <meta property="og:description" content="Try the planned FDE IMS operating experience with temporary sample data.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kale1205.github.io/fde-site/demo.html">
+  <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
+  <link rel="stylesheet" href="gallery-ui.css?v=20260830-135637">
+  <link rel="stylesheet" href="gallery-pages.css?v=20260830-135637">
+  <script defer src="gallery-ui.js?v=20260830-135637"></script>
+  <script defer src="site.js?v=20260830-135637"></script>
+  <script defer src="seo-runtime.js?v=20260830-135637"></script>
+</head>
+<body class="gallery-page gallery-subpage demo-page demo-app">
+<div class="site-shell language-en">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Baked Kale home"><img alt="Baked Kale" src="assets/baked-kale-logo.svg"></a>
+    <nav class="desktop-nav" aria-label="Primary navigation"><a href="index.html">Product</a><a href="why.html">Why FDE</a><a href="goals.html">Kale’s Goals</a><a href="news.html">News</a></nav>
+    <div class="header-actions">
+      <a class="locale-button" data-locale-link href="ja/demo.html" hreflang="ja" lang="ja">日本語</a><a class="header-contact" href="contact.html">Contact us</a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg></button>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden><a href="index.html">Product</a><a href="why.html">Why FDE</a><a href="goals.html">Kale’s Goals</a><a href="news.html">News</a><a href="ja/demo.html" hreflang="ja" lang="ja">日本語</a><a href="contact.html">Contact us</a></nav>
+  </header>
+  <div class="demo-bar">
+    <div class="section-frame demo-toolbar"><strong>FDE IMS / DEVELOPMENT PREVIEW</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">Close preview</button></div></div>
+  </div>
+  <main class="demo-dashboard section-frame">
+    <section class="section-intro compact demo-intro">
+      <p>INTERACTIVE SAMPLE / TEMPORARY DATA</p>
+      <h1>Inventory management software demo</h1>
+      <span>Search the sample inventory and record incoming or outgoing stock. Changes are temporary and are not saved.</span>
+      <div class="ims-pre"><strong>IN DEVELOPMENT · NOT YET AVAILABLE FOR PURCHASE</strong><p>This preview demonstrates the intended operating experience. It does not represent a released product, completed feature set, update history, security track record, or delivery record.</p></div>
+      <small class="demo-note">Baked Kale / Kale’s FDE</small>
+    </section>
+    <section class="demo-workspace" aria-label="Sample inventory workspace">
+      <div class="demo-kpis">
+        <div class="demo-kpi"><small>Items</small><strong id="kpiItems">5</strong></div>
+        <div class="demo-kpi"><small>Low stock</small><strong id="kpiLow">1</strong></div>
+        <div class="demo-kpi"><small>Status</small><strong>PREVIEW</strong></div>
+      </div>
+      <div class="demo-controls"><input id="demoSearch" class="faq-search" type="search" placeholder="Search by product name or SKU"><button id="demoReset" class="button button-secondary light" type="button">Reset</button></div>
+      <div class="demo-table-wrap">
+        <table class="demo-table">
+          <thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="inventoryBody">
+            <tr><td>Paper Cup 12oz</td><td>PC-1204</td><td data-stock-value>326</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
+            <tr><td>Shipping Box M</td><td>SB-2088</td><td data-stock-value>84</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
+            <tr><td>Label Roll</td><td>LR-0041</td><td data-stock-value>18</td><td data-stock-status>Low</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
+            <tr><td>Thermal Paper</td><td>TP-3011</td><td data-stock-value>41</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
+            <tr><td>Storage Bin S</td><td>BN-1008</td><td data-stock-value>210</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="demo-note">This preview uses sample data only. Changes are not saved.</p>
+    </section>
+  </main>
+  <footer class="site-footer section-frame"><img alt="Baked Kale" src="assets/baked-kale-logo.svg"><div><p>Practical business software for small operations.</p><small>Interactive preview with temporary sample data.</small><nav class="footer-nav" aria-label="Footer navigation"><a href="why.html">Why FDE</a><a href="goals.html">Kale’s Goals</a><a href="news.html">News</a><a href="license.html">License</a><a href="contact.html">Contact</a></nav></div><span>© 2026 Baked Kale</span></footer>
+  <div class="toast" role="status" aria-live="polite"></div>
+</div>
+</body>
+</html>

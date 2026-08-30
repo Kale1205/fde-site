@@ -9,6 +9,7 @@ keep_vars = true
 ALLOWED_ORIGIN = "https://kale1205.github.io"
 ADMIN_EMAIL = "reyouinjune@gmail.com"
 FROM_NAME = "Kale’s FDE"
+PRODUCTION_COMMERCE_ENABLED = "false"
 
 [secrets]
 required = ["BREVO_API_KEY", "FROM_EMAIL", "ADMIN_FULFILLMENT_KEY", "TURNSTILE_SECRET_KEY"]

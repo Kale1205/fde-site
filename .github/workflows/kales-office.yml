@@ -1,0 +1,43 @@
+name: Kale’s Office foundation check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kales-office-foundation-check
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: public-editorial-draft-only-foundation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate Kale’s Office authority boundary
+        run: python scripts/validate_p3_office.py
+
+      - name: Run deterministic Kale’s Office rule tests
+        run: python scripts/test_p3_office_rules.py
+
+      - name: Generate synthetic editorial evidence
+        run: python scripts/kales_office_dry_run.py --output office-report
+
+      - name: Upload foundation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kales-office-foundation-report
+          path: office-report/
+          if-no-files-found: ignore
+          retention-days: 14

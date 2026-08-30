@@ -1,6 +1,6 @@
 # P3-1 Auto Security audit foundation
 
-- Status: implementation candidate
+- Status: complete
 - Scope: `Kale1205/fde-site`
 - Production write access: disabled
 - Automatic fixes: disabled

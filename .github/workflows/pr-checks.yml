@@ -35,6 +35,36 @@ jobs:
       - name: Slack notification integrity checks
         run: python scripts/validate_notifications.py
 
+      - name: P3 Agent Governance cross-agent contract checks
+        run: python scripts/validate_p3_governance.py
+
+      - name: P3 Agent Governance deterministic rule tests
+        run: python scripts/test_p3_governance.py
+
+      - name: P3 Kale Outreach outbound-growth/draft-only contract checks
+        run: python scripts/validate_p3_outreach.py
+
+      - name: P3 Kale Outreach deterministic rule tests
+        run: python scripts/test_p3_outreach_rules.py
+
+      - name: P3 Kale’s Office public-editorial/draft-only contract checks
+        run: python scripts/validate_p3_office.py
+
+      - name: P3 Kale’s Office deterministic rule tests
+        run: python scripts/test_p3_office_rules.py
+
+      - name: P3 Kale Desk inbound-only/no-send contract checks
+        run: python scripts/validate_p3_desk.py
+
+      - name: P3 Kale Desk deterministic rule tests
+        run: python scripts/test_p3_desk_rules.py
+
+      - name: P3 Kale Sentinel read-only contract checks
+        run: python scripts/validate_p3_sentinel.py
+
+      - name: P3 Kale Sentinel deterministic rule tests
+        run: python scripts/test_p3_sentinel_rules.py
+
       - name: P3 Auto Security contract checks
         run: python scripts/validate_p3_security.py
 
@@ -64,6 +94,9 @@ jobs:
 
       - name: P2 fulfillment boundary tests
         run: node scripts/test_p2_fulfillment.mjs
+
+      - name: Production pre-release commerce gate tests
+        run: node scripts/test_production_commerce_gate.mjs
 
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts

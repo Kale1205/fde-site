@@ -1,8 +1,10 @@
-# P2-7 EULA同意保存 → Stripe Sandbox Checkout → Webhook確認
+# P2-7 Sandbox QA履歴と2商品移行境界（実行禁止）
 
-この手順は `kales-fde-contact-staging` Worker専用です。公開サイトの購入ボタン、本番Stripe決済、自動納品、実メール送信は有効化しません。
+この文書は、旧Catalogの `kales-fde-contact-staging` Workerで実施したQAの記録です。現在はLicenseとLicense Plusの2商品へ更新され、Updates単独商品は廃止されています。旧Price IDと操作手順は再利用せず、`STAGING_CHECKOUT_ENABLED` は `false` のまま維持します。
 
-## P2-7で確認するもの
+QAを再開する場合は、2商品のPrice ID、日英の固定通貨、EULA、Webhook、解約、fulfillment境界を更新した新しい手順を別途レビューします。Updates Add-onはLicense購入日による対象期間と継続権利の実装が完了するまでCheckout対象外です。公開サイトの購入ボタン、本番Stripe決済、自動納品、実メール送信は引き続き有効化しません。
+
+## P2-7で確認したもの（履歴）
 
 1. staging専用のテスト注文を作成する。
 2. `FDE-IMS-STAGING-EULA-2026-08-27` へのテスト同意をKVへ保存する。
@@ -13,9 +15,9 @@
 
 このEULA版はstagingテスト専用であり、正式な商用EULAではありません。
 
-## テスト画面
+## 旧テスト画面（現在は使用しない）
 
-P2-7がstagingへデプロイされた後、次をブラウザで開く。
+旧QAでは、P2-7をstagingへデプロイした後に次の画面を使用しました。現在は開かず、操作しないでください。
 
 `https://kales-fde-contact-staging.reyouinjune.workers.dev/__staging/p2-7`
 
@@ -30,18 +32,18 @@ P2-7がstagingへデプロイされた後、次をブラウザで開く。
 - URLやクエリ文字列へ入れない。
 - このQA画面はlocalStorage / sessionStorageへ操作キーを保存しない。
 
-## Checkout有効化
+## Checkout有効化は禁止
 
-EULA保存機能のデプロイとhealth確認が終わってから、Cloudflareのstaging Workerで `STAGING_CHECKOUT_ENABLED` を `true` に変更してDeployする。
+`STAGING_CHECKOUT_ENABLED` を `true` に変更しないでください。stagingデプロイとhealth checkは `false` を必須条件として扱います。
 
-`true` にしても次の制御は維持される。
+旧QAで確認していた次の制御は、2商品用の新しいQAでも維持します。
 
 - Stripe Sandbox Session (`livemode=false`) のみ許可。
 - 公開サイトに購入ボタンを追加しない。
 - production WorkerのStripe決済を有効化しない。
 - Webhook支払い確認と納品処理を分離する。
 
-## QA画面の操作順
+## 旧QA画面の操作順（履歴・再実行しない）
 
 1. 操作キーを入力する。
 2. 最初の確認では `FDE IMS License` / `JPY` を選ぶ。
@@ -74,9 +76,9 @@ P2-7デプロイ後は少なくとも次を確認する。
 }
 ```
 
-Checkout疎通前は `stripeCheckoutActivationEnabled=false` のままでよい。実際にSandbox Checkoutを試す直前だけ `true` にする。
+`stripeCheckoutActivationEnabled=false` を必須とします。2商品のSandbox設定と新しいQA手順の承認が完了するまで、例外はありません。
 
-## 完了条件
+## 旧QAの完了条件（履歴）
 
 - EULA版とWorker生成の同意日時が注文レコードへ保存される。
 - `eula_accepted` audit eventが保存される。
