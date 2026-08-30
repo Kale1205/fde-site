@@ -1,0 +1,20 @@
+name: Kale Outreach sales governance check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sales-execution-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate sales execution extension
+        run: python scripts/validate_p5_outreach_sales.py
+
+      - name: Run deterministic sales execution tests
+        run: python scripts/test_p5_outreach_sales_rules.py
