@@ -104,6 +104,9 @@ jobs:
       - name: Production pre-release commerce gate tests
         run: node scripts/test_production_commerce_gate.mjs
 
+      - name: Contact email routing tests
+        run: node scripts/test_contact_email_routing.mjs
+
       - name: Compile Python helper scripts
         run: python -m compileall -q scripts
 

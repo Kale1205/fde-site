@@ -11,9 +11,9 @@ The Worker name is `kales-fde-contact`.
 ### Variables
 
 - `ALLOWED_ORIGIN` = `https://kale1205.github.io`
-- `ADMIN_EMAIL` = `reyouinjune@gmail.com`
+- `ADMIN_EMAIL` = `bakedkale1205@gmail.com`
 - `FROM_NAME` = `Kale’s FDE`
-- `FROM_EMAIL` = a sender address verified in Brevo
+- `FROM_EMAIL` = a sender address verified in Brevo. The intended sender is `bakedkale1205@gmail.com`; update the Cloudflare Secret only after that address is verified in Brevo.
 
 ### Secret
 
@@ -23,7 +23,7 @@ Never commit `BREVO_API_KEY` to GitHub.
 
 ## Brevo
 
-Create/verify a sender in Brevo, create an API key, then store that API key as the Cloudflare Worker secret `BREVO_API_KEY`.
+Create/verify `bakedkale1205@gmail.com` as a sender in Brevo, create an API key, then store that API key as the Cloudflare Worker secret `BREVO_API_KEY`. Store the verified sender address as the Cloudflare Worker secret `FROM_EMAIL`; never commit either secret value.
 
 ## Activate on the public site
 

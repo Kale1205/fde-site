@@ -7,7 +7,7 @@ keep_vars = true
 
 [vars]
 ALLOWED_ORIGIN = "https://kale1205.github.io"
-ADMIN_EMAIL = "reyouinjune@gmail.com"
+ADMIN_EMAIL = "bakedkale1205@gmail.com"
 FROM_NAME = "Kale’s FDE"
 PRODUCTION_COMMERCE_ENABLED = "false"
 

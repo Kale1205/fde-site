@@ -910,6 +910,8 @@ else:
         fail("worker/wrangler.toml: keep_vars = true is required")
     if not re.search(r'^PRODUCTION_COMMERCE_ENABLED\s*=\s*["\']false["\']\s*$', wt, re.MULTILINE):
         fail("worker/wrangler.toml: legacy production commerce must remain explicitly disabled")
+    if not re.search(r'^ADMIN_EMAIL\s*=\s*["\']bakedkale1205@gmail\.com["\']\s*$', wt, re.MULTILINE):
+        fail("worker/wrangler.toml: production inquiry recipient must use the current Baked Kale email")
     required_secret_names = {"BREVO_API_KEY", "FROM_EMAIL", "ADMIN_FULFILLMENT_KEY", "TURNSTILE_SECRET_KEY"}
     block = re.search(r"\[secrets\](.*?)(?=\n\[|\Z)", wt, re.DOTALL)
     names = set(re.findall(r"[\"']([A-Z0-9_]+)[\"']", block.group(1))) if block else set()
@@ -953,6 +955,9 @@ for path in ROOT.rglob("*"):
     except UnicodeDecodeError:
         continue
     rel = path.relative_to(ROOT).as_posix()
+    retired_contact_email = "reyouinjune" + "@gmail.com"
+    if retired_contact_email in text:
+        fail(f"{rel}: retired Baked Kale contact email remains")
     for label, pattern in secret_patterns.items():
         if pattern.search(text):
             fail(f"{rel}: possible {label} detected")
