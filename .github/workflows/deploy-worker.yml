@@ -65,6 +65,9 @@ jobs:
       - name: Verify production commerce remains disabled
         run: node scripts/test_production_commerce_gate.mjs
 
+      - name: Verify contact email routing
+        run: node scripts/test_contact_email_routing.mjs
+
       - name: Verify Cloudflare deployment credential exists
         shell: bash
         env:
