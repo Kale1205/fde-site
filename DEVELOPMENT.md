@@ -1,6 +1,6 @@
 # Development workflow
 
-Kale’s FDE uses `main` as the production source of truth.
+Baked Kale FDE uses `main` as the production source of truth for the FDE IMS site.
 
 ## Public-site architecture
 
@@ -28,13 +28,13 @@ Core design rules:
 - warehouse imagery, paper texture, operational ledgers, and restrained annotation marks used as supporting editorial elements, never as a replacement for product information;
 - deliberately restrained asymmetry: slight offsets, staggered blocks, registration marks and paper-like framing may be used to avoid a uniform SaaS-grid feel;
 - product plans and comparisons should read like designed information plates or technical-journal spreads rather than generic application cards;
-- News, Why FDE and Kale’s Goals preserve a publication/editorial reading rhythm, using semantic ledgers and CMS imagery instead of repeating the same proposition or process in multiple diagrams;
+- News, Why FDE and Our Goals preserve a publication/editorial reading rhythm, using semantic ledgers and CMS imagery instead of repeating the same proposition or process in multiple diagrams;
 - square or near-square controls/cards with minimal shadows;
 - product screenshots, CMS imagery and diagrams remain readable and functional;
 - motion stays restrained: reveal, slight lift and gentle transitions only;
 - mobile layouts must preserve the editorial hierarchy without clipping, hidden content, forced ornamental asymmetry or decorative obstruction.
 
-`gallery-ui.css` provides the shared visual tokens, header, navigation, product presentation, footer, and responsive foundations. `gallery-pages.css` extends that system across Why FDE, Kale’s Goals, News, Contact, License, and Demo. `gallery-ui.js` owns shared navigation and product-preview behavior; the locale-specific CMS readers render the same structured News data in each language. Contact, License, and Demo retain only the page-specific runtimes needed for their real interactions. Order and Customer Portal remain non-interactive pre-release information surfaces until their release policy is finalized. Do not create separate English/Japanese copies of design primitives unless a true language-specific rendering requirement exists.
+`gallery-ui.css` provides the shared visual tokens, header, navigation, product presentation, footer, and responsive foundations. `gallery-pages.css` extends that system across Why FDE, Our Goals, News, Contact, License, and Demo. `gallery-ui.js` owns shared navigation and product-preview behavior; the locale-specific CMS readers render the same structured News data in each language. Contact, License, and Demo retain only the page-specific runtimes needed for their real interactions. Order and Customer Portal remain non-interactive pre-release information surfaces until their release policy is finalized. Do not create separate English/Japanese copies of design primitives unless a true language-specific rendering requirement exists.
 
 ## Public product-plan source of truth
 
@@ -47,7 +47,7 @@ The public site uses two planned FDE IMS products plus a License-only Updates ad
 
 Updates is not a standalone product. It is an optional add-on available only to License customers, starts only after explicit opt-in, and never begins automatically. Ending the add-on never extinguishes the perpetual License or the right to keep using the latest version already received. License Plus is a separate purchase rather than a difference-price upgrade and is not eligible for the Updates add-on.
 
-All prices remain planned while FDE IMS is in development. Japanese prices are the current Product Plan v2 proposal; every USD figure is an unapproved candidate pending final international pricing. License Plus is planned to include full source, internal customization rights, technical documentation, and customer-server/self-hosted operation. Local/LAN mode, customer-server mode, multiple-location registration, and multi-site synchronization remain architecture plans under development and must never be described as released features. Deployment, hosting, backup, support-SLA, refund, tax, delivery, and final EULA terms remain unfinalized until separately approved. Production payments, fulfillment, installer release, and customer fulfillment email remain disabled.
+All prices remain planned while FDE IMS is in development. Japanese prices are the current Product Plan v2 proposal; every USD figure is an unapproved candidate pending final international pricing. License Plus is planned to include full source, internal customization rights, technical documentation, and customer-server/self-hosted operation. Local/LAN mode, customer-server requirements, multiple-location registration, and multi-site synchronization remain unconfirmed scope questions under development and must never be described as committed or released features. Deployment, hosting, backup, support-SLA, refund, tax, delivery, and final EULA terms remain unfinalized until separately approved. Production payments, fulfillment, installer release, and customer fulfillment email remain disabled.
 
 ### Payment catalog migration boundary
 
@@ -59,7 +59,7 @@ Japanese public copy must be written as natural Japanese rather than as a line-b
 
 ## Search and AI discovery contract
 
-Public search intent starts with the customer problem, not the delivery role. `Baked Kale` is the provider and site entity, `FDE IMS` is the inventory-management product, and `FDE` / Forward Deployed Engineering describes how the product is shaped and maintained alongside real work. Do not use FDE as the primary keyword for people comparing inventory software.
+Public search intent starts with the customer problem, not the delivery role. `Baked Kale FDE` is the provider and site entity (`Baked Kale` remains the formal business name), `FDE IMS` is the inventory-management product, and `FDE` / Forward Deployed Engineering describes how the product is shaped and maintained alongside real work. Do not use FDE as the primary keyword for people comparing inventory software.
 
 The English and Japanese homepages must visibly support small-business searches about moving from paper records, spreadsheets / Excel, or an existing inventory system. They must also state that data import, migration services, supported file formats, deployment assistance, and final multi-site scope are not yet confirmed. Search copy, FAQ content, and structured data may describe only visible, current facts; planned architecture must remain labeled as in development.
 
@@ -114,7 +114,7 @@ Repository validation must cover both public sites, not only root HTML. It check
 - local JS/CSS/image/HTML references resolving to existing files;
 - one shared build-version cache key across both sites;
 - required CMS and shared Gallery UI layers across paired editorial pages;
-- shared Product / Why FDE / Kale’s Goals / News navigation and five-link editorial footers;
+- shared Product / Why FDE / Our Goals / News navigation and five-link editorial footers;
 - reciprocal static language links, self-canonical URLs, and `en` / `ja` / `x-default` alternates;
 - Japanese CMS administration and Japanese/English CMS data completeness;
 - active two-product and License-only Updates add-on names, locale-specific price books, retired-price exclusion, and Japanese heading punctuation;
