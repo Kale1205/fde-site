@@ -140,6 +140,71 @@
   margin-top: 28px;
 }
 
+.license-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line-dark);
+  border-left: 1px solid var(--line);
+}
+
+.license-guide-grid a {
+  display: grid;
+  min-height: 190px;
+  align-content: start;
+  gap: 10px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 26px;
+  color: var(--forest);
+  background: rgba(253, 252, 248, 0.64);
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.license-guide-grid a:hover,
+.license-guide-grid a:focus-visible {
+  color: var(--paper);
+  background: var(--forest);
+}
+
+.license-guide-grid small {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.license-guide-grid a:hover small,
+.license-guide-grid a:focus-visible small {
+  color: var(--lime);
+}
+
+.license-guide-grid strong {
+  font-family: var(--serif);
+  font-size: clamp(24px, 2.5vw, 34px);
+  font-weight: 520;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+
+.language-ja .license-guide-grid strong {
+  font-family: var(--jp);
+  font-size: clamp(21px, 2vw, 28px);
+  font-weight: 700;
+}
+
+.license-guide-grid span {
+  color: var(--body);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.license-guide-grid a:hover span,
+.license-guide-grid a:focus-visible span {
+  color: rgba(253, 252, 248, 0.82);
+}
+
 @media (max-width: 1080px) {
   .license-grid-three {
     grid-template-columns: 1fr;
@@ -181,6 +246,15 @@
 
   .license-actions {
     display: grid;
+  }
+
+  .license-guide-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .license-guide-grid a {
+    min-height: 0;
+    padding: 22px 20px;
   }
 
   .license-actions .button {

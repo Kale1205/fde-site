@@ -1,0 +1,584 @@
+.intent-page .intent-hero {
+  position: relative;
+  min-height: 470px;
+  padding-top: 64px;
+  padding-bottom: 72px;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.intent-page .intent-hero::after {
+  position: absolute;
+  right: -6%;
+  bottom: -34%;
+  width: min(48vw, 690px);
+  height: 120%;
+  content: "";
+  background: url("assets/warehouse-operations.webp") center / cover no-repeat;
+  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%);
+  filter: saturate(0.55) contrast(1.05);
+  opacity: 0.17;
+}
+
+.intent-breadcrumbs,
+.intent-hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.intent-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 54px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.intent-breadcrumbs a:hover,
+.intent-breadcrumbs a:focus-visible {
+  color: var(--orange);
+}
+
+.intent-hero-copy {
+  width: min(100%, 990px);
+}
+
+.intent-kicker {
+  width: fit-content;
+  margin: 0 0 18px;
+  color: var(--forest);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 760;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.intent-kicker::after {
+  display: block;
+  width: 70%;
+  height: 2px;
+  margin-top: 7px;
+  content: "";
+  background: var(--orange);
+  transform: rotate(-1.5deg);
+}
+
+.intent-hero h1 {
+  max-width: 980px;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(54px, 6.1vw, 94px);
+  font-weight: 480;
+  letter-spacing: -0.06em;
+  line-height: 0.94;
+}
+
+.language-ja .intent-hero h1 {
+  font-family: var(--jp);
+  font-size: clamp(42px, 5vw, 70px);
+  font-weight: 780;
+  letter-spacing: -0.055em;
+  line-height: 1.12;
+}
+
+.intent-lede {
+  max-width: 760px;
+  margin: 28px 0 0;
+  color: var(--body);
+  font-size: 17px;
+  line-height: 1.85;
+}
+
+.intent-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 26px 0 0;
+  border-left: 3px solid var(--orange);
+  padding: 11px 15px;
+  color: var(--body);
+  background: rgba(239, 236, 227, 0.78);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.home-intent-paths {
+  padding-top: 84px;
+  padding-bottom: 84px;
+  border-bottom: 1px solid var(--line);
+}
+
+.home-intent-paths .section-intro {
+  max-width: 830px;
+  margin-bottom: 42px;
+}
+
+.home-intent-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  background: rgba(253, 252, 248, 0.48);
+}
+
+.home-intent-grid a {
+  position: relative;
+  min-width: 0;
+  min-height: 270px;
+  padding: 27px 28px 42px;
+}
+
+.home-intent-grid a:not(:last-child) {
+  border-right: 1px solid var(--line);
+}
+
+.home-intent-grid a:nth-child(2) {
+  color: white;
+  background: var(--forest);
+}
+
+.home-intent-grid a:nth-child(4) {
+  background: var(--sage);
+}
+
+.home-intent-grid small {
+  color: var(--orange);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 730;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.home-intent-grid a:nth-child(2) small {
+  color: var(--lime-bright);
+}
+
+.home-intent-grid h3 {
+  margin: 72px 0 12px;
+  font-family: var(--serif);
+  font-size: clamp(27px, 2.25vw, 35px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.language-ja .home-intent-grid h3 {
+  font-family: var(--jp);
+  font-size: clamp(23px, 2vw, 29px);
+  font-weight: 740;
+  line-height: 1.28;
+}
+
+.home-intent-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.home-intent-grid a:nth-child(2) p {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.home-intent-grid b {
+  position: absolute;
+  right: 25px;
+  bottom: 19px;
+  font-size: 22px;
+  font-weight: 400;
+  transition: transform 160ms ease;
+}
+
+.home-intent-grid a:hover b,
+.home-intent-grid a:focus-visible b {
+  transform: translate(3px, -3px);
+}
+
+.intent-summary,
+.intent-section,
+.intent-related {
+  padding-top: 76px;
+  padding-bottom: 76px;
+  border-bottom: 1px solid var(--line);
+}
+
+.intent-summary-grid,
+.intent-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 38px;
+  border-top: 1px solid var(--line-dark);
+  border-left: 1px solid var(--line);
+}
+
+.intent-summary-grid article,
+.intent-card {
+  min-width: 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 27px 28px 31px;
+  background: rgba(253, 252, 248, 0.64);
+}
+
+.intent-summary-grid article {
+  min-height: 235px;
+}
+
+.intent-summary-grid article:nth-child(2) {
+  color: white;
+  background: var(--forest);
+}
+
+.intent-number,
+.intent-card small,
+.intent-fact-label {
+  color: var(--orange);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 730;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.intent-summary-grid article:nth-child(2) .intent-number {
+  color: var(--lime-bright);
+}
+
+.intent-summary-grid h2,
+.intent-card h3 {
+  margin: 62px 0 12px;
+  font-family: var(--serif);
+  font-size: clamp(28px, 2.6vw, 38px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.language-ja .intent-summary-grid h2,
+.language-ja .intent-card h3 {
+  font-family: var(--jp);
+  font-size: clamp(24px, 2.3vw, 32px);
+  font-weight: 740;
+  line-height: 1.28;
+}
+
+.intent-summary-grid p,
+.intent-card p,
+.intent-card li {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.intent-summary-grid article:nth-child(2) p {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.intent-section-head {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(280px, 0.64fr);
+  align-items: end;
+  gap: 64px;
+  margin-bottom: 38px;
+}
+
+.intent-section-head .section-intro {
+  max-width: 760px;
+}
+
+.intent-section-copy {
+  margin: 0;
+  color: var(--body);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.intent-card-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.intent-card {
+  min-height: 270px;
+}
+
+.intent-card ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.intent-card li::marker {
+  color: var(--green);
+}
+
+.intent-fact-bar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 38px;
+  border: 1px solid var(--line-dark);
+  background: rgba(253, 252, 248, 0.7);
+}
+
+.intent-fact-bar > div {
+  min-height: 118px;
+  padding: 21px 23px;
+}
+
+.intent-fact-bar > div:not(:last-child) {
+  border-right: 1px solid var(--line);
+}
+
+.intent-fact-bar strong {
+  display: block;
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.intent-caution {
+  margin: 34px 0 0;
+  border-left: 3px solid var(--orange);
+  padding: 18px 21px;
+  color: var(--body);
+  background: rgba(184, 58, 8, 0.055);
+  font-size: 13px;
+  line-height: 1.85;
+}
+
+.intent-related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 38px;
+  border: 1px solid var(--line);
+}
+
+.intent-related-grid a {
+  position: relative;
+  min-height: 220px;
+  padding: 25px 26px 32px;
+}
+
+.intent-related-grid a:not(:last-child) {
+  border-right: 1px solid var(--line);
+}
+
+.intent-related-grid a:nth-child(2) {
+  color: white;
+  background: var(--forest);
+}
+
+.intent-related-grid small {
+  color: var(--orange);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.intent-related-grid a:nth-child(2) small {
+  color: var(--lime-bright);
+}
+
+.intent-related-grid h3 {
+  margin: 58px 0 10px;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.language-ja .intent-related-grid h3 {
+  font-family: var(--jp);
+  font-size: 25px;
+  font-weight: 740;
+  line-height: 1.25;
+}
+
+.intent-related-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.intent-related-grid a:nth-child(2) p {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.intent-related-grid b {
+  position: absolute;
+  right: 25px;
+  bottom: 20px;
+  font-size: 22px;
+  font-weight: 400;
+  transition: transform 160ms ease;
+}
+
+.intent-related-grid a:hover b,
+.intent-related-grid a:focus-visible b {
+  transform: translate(3px, -3px);
+}
+
+@media (max-width: 1100px) {
+  .home-intent-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-intent-grid a:not(:last-child) {
+    border-right: 0;
+  }
+
+  .home-intent-grid a:nth-child(odd) {
+    border-right: 1px solid var(--line);
+  }
+
+  .home-intent-grid a:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 900px) {
+  .intent-page .intent-hero::after {
+    right: -28%;
+    width: 78vw;
+  }
+
+  .intent-section-head {
+    display: block;
+  }
+
+  .intent-section-copy {
+    max-width: 700px;
+    margin-top: 22px;
+  }
+
+  .intent-summary-grid,
+  .intent-card-grid,
+  .intent-card-grid.two,
+  .intent-fact-bar,
+  .intent-related-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .intent-summary-grid article,
+  .intent-card,
+  .intent-related-grid a {
+    min-height: 0;
+  }
+
+  .intent-summary-grid article:not(:last-child),
+  .intent-card:not(:last-child),
+  .intent-fact-bar > div:not(:last-child),
+  .intent-related-grid a:not(:last-child) {
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 760px) {
+  .home-intent-paths {
+    padding-top: 62px;
+    padding-bottom: 62px;
+  }
+
+  .home-intent-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-intent-grid a,
+  .home-intent-grid a:nth-child(odd) {
+    min-height: 220px;
+    border-right: 0;
+  }
+
+  .home-intent-grid a:not(:last-child),
+  .home-intent-grid a:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .home-intent-grid h3 {
+    margin-top: 52px;
+  }
+
+  .intent-page .intent-hero {
+    min-height: 0;
+    padding-top: 42px;
+    padding-bottom: 52px;
+  }
+
+  .intent-page .intent-hero::after {
+    right: -58%;
+    bottom: -10%;
+    width: 130vw;
+    height: 82%;
+    opacity: 0.1;
+  }
+
+  .intent-breadcrumbs {
+    margin-bottom: 38px;
+  }
+
+  .intent-hero h1 {
+    font-size: clamp(44px, 13vw, 58px);
+  }
+
+  .language-ja .intent-hero h1 {
+    font-size: clamp(36px, 10vw, 46px);
+  }
+
+  .intent-lede {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .intent-status {
+    display: block;
+    font-size: 11px;
+  }
+
+  .intent-summary,
+  .intent-section,
+  .intent-related {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+
+  .intent-summary-grid,
+  .intent-card-grid,
+  .intent-fact-bar,
+  .intent-related-grid {
+    margin-top: 28px;
+  }
+
+  .intent-summary-grid article,
+  .intent-card,
+  .intent-related-grid a {
+    padding: 22px 20px 27px;
+  }
+
+  .intent-summary-grid h2,
+  .intent-card h3 {
+    margin-top: 40px;
+  }
+
+  .intent-related-grid h3 {
+    margin-top: 42px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intent-related-grid b,
+  .home-intent-grid b {
+    transition: none;
+  }
+}

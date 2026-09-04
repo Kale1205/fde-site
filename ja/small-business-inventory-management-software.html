@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>小規模企業向け在庫管理ソフトの検討ガイド | FDE IMS</title>
+  <meta name="description" content="小規模企業向けに開発中のFDE IMSを解説。紙や表計算、既存システムを見直す際に、在庫検索、入庫、出庫、在庫少の記録と未確定範囲を確認できます。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#073e2c">
+  <link rel="canonical" href="https://kale1205.github.io/fde-site/ja/small-business-inventory-management-software.html">
+  <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/small-business-inventory-management-software.html">
+  <link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/small-business-inventory-management-software.html">
+  <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/small-business-inventory-management-software.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Baked Kale FDE">
+  <meta property="og:title" content="小規模企業向け在庫管理ソフトの検討ガイド | FDE IMS">
+  <meta property="og:description" content="紙や表計算、既存システムを見直す小規模企業向けに、FDE IMSの対象業務と開発中の範囲を整理しています。">
+  <meta property="og:url" content="https://kale1205.github.io/fde-site/ja/small-business-inventory-management-software.html">
+  <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
+  <link rel="stylesheet" href="../gallery-ui.css?v=20260830-135637">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20260830-135637">
+  <link rel="stylesheet" href="../intent-pages.css?v=20260830-135637">
+  <script defer src="../gallery-ui.js?v=20260830-135637"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {"@type": "Organization", "@id": "https://kale1205.github.io/fde-site/#organization", "name": "Baked Kale FDE", "alternateName": "Baked Kale", "url": "https://kale1205.github.io/fde-site/", "logo": {"@type": "ImageObject", "url": "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg"}},
+      {"@type": "WebSite", "@id": "https://kale1205.github.io/fde-site/#website", "name": "Baked Kale FDE | FDE IMS", "url": "https://kale1205.github.io/fde-site/", "publisher": {"@id": "https://kale1205.github.io/fde-site/#organization"}, "inLanguage": ["en", "ja"]},
+      {
+        "@type": ["SoftwareApplication", "Product"],
+        "@id": "https://kale1205.github.io/fde-site/#fde-ims",
+        "name": "FDE IMS",
+        "url": "https://kale1205.github.io/fde-site/",
+        "applicationCategory": "BusinessApplication",
+        "applicationSubCategory": "在庫管理ソフト",
+        "description": "紙、表計算、既存システムから在庫管理方法の見直しを検討する小規模企業向けに開発中のソフトです。",
+        "creativeWorkStatus": "開発中",
+        "featureList": ["在庫一覧と検索", "入庫記録", "出庫記録", "在庫少の表示"],
+        "audience": {"@type": "BusinessAudience", "audienceType": "在庫管理ソフトを検討する小規模企業"},
+        "brand": {"@type": "Brand", "name": "FDE IMS"},
+        "manufacturer": {"@id": "https://kale1205.github.io/fde-site/#organization"},
+        "creator": {"@id": "https://kale1205.github.io/fde-site/#organization"},
+        "provider": {"@id": "https://kale1205.github.io/fde-site/#organization"},
+        "additionalProperty": [{"@type": "PropertyValue", "name": "開発状況", "value": "開発中・購入機能は利用不可"}]
+      },
+      {"@type": "WebPage", "@id": "https://kale1205.github.io/fde-site/ja/small-business-inventory-management-software.html#webpage", "name": "小規模企業向け在庫管理ソフトの検討ガイド | FDE IMS", "url": "https://kale1205.github.io/fde-site/ja/small-business-inventory-management-software.html", "description": "小規模企業がFDE IMSの在庫管理の流れと現在の開発範囲を確認するためのガイドです。", "inLanguage": "ja", "isPartOf": {"@id": "https://kale1205.github.io/fde-site/#website"}, "about": {"@id": "https://kale1205.github.io/fde-site/#fde-ims"}, "breadcrumb": {"@id": "https://kale1205.github.io/fde-site/ja/small-business-inventory-management-software.html#breadcrumb"}},
+      {"@type": "BreadcrumbList", "@id": "https://kale1205.github.io/fde-site/ja/small-business-inventory-management-software.html#breadcrumb", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "FDE IMS", "item": "https://kale1205.github.io/fde-site/ja/"}, {"@type": "ListItem", "position": 2, "name": "小規模企業向け在庫管理ソフト", "item": "https://kale1205.github.io/fde-site/ja/small-business-inventory-management-software.html"}]},
+      {
+        "@type": "FAQPage",
+        "@id": "https://kale1205.github.io/fde-site/ja/small-business-inventory-management-software.html#faq",
+        "mainEntity": [
+          {"@type": "Question", "name": "FDE IMSはどのような企業向けに開発していますか？", "acceptedAnswer": {"@type": "Answer", "text": "FDE IMSは、紙への繰り返し記入や分散した表計算よりも分かりやすい在庫管理の流れを求める小規模企業向けに開発しています。"}},
+          {"@type": "Question", "name": "現在の開発プレビューではどの在庫業務を確認できますか？", "acceptedAnswer": {"@type": "Answer", "text": "サンプルデータを使って、在庫検索、入庫、出庫、在庫少の表示を確認できます。操作結果は一時的であり、最終的な製品範囲を保証するものではありません。"}},
+          {"@type": "Question", "name": "Baked Kale FDEは表計算や既存システムのデータを移行しますか？", "acceptedAnswer": {"@type": "Answer", "text": "まだ確定していません。対応ファイル形式、データ取込、移行サービス、導入支援は正式販売前に定義します。"}},
+          {"@type": "Question", "name": "小規模企業は今すぐFDE IMSを使い始められますか？", "acceptedAnswer": {"@type": "Answer", "text": "いいえ。FDE IMSは開発中です。現在のサイトで利用できるのは、一時的なサンプルデータの開発プレビューとお問い合わせであり、購入、本番導入、Installer納品はできません。"}}
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="gallery-page gallery-subpage intent-page">
+<div class="site-shell language-ja">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Baked Kale FDE ホーム"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"></a>
+    <nav class="desktop-nav" aria-label="主要ナビゲーション"><a href="index.html">製品</a><a href="why.html">Why FDE</a><a href="goals.html">目標</a><a href="news.html">お知らせ</a></nav>
+    <div class="header-actions"><a class="locale-button" data-locale-link href="../small-business-inventory-management-software.html" hreflang="en" lang="en">English</a><a class="header-contact" href="contact.html">お問い合わせ</a><button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="メニューを開く"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="モバイルナビゲーション" hidden><a href="index.html">製品</a><a href="why.html">Why FDE</a><a href="goals.html">目標</a><a href="news.html">お知らせ</a><a href="../small-business-inventory-management-software.html" hreflang="en" lang="en">English</a><a href="contact.html">お問い合わせ</a></nav>
+  </header>
+  <main>
+    <section class="intent-hero section-frame">
+      <nav class="intent-breadcrumbs" aria-label="パンくず"><a href="index.html">FDE IMS</a><span aria-hidden="true">/</span><span aria-current="page">小規模企業向け</span></nav>
+      <div class="intent-hero-copy"><p class="intent-kicker">製品適合 / FDE IMS</p><h1>小規模企業向け在庫管理ソフト FDE IMS</h1><p class="intent-lede">FDE IMSは、紙への繰り返し記入、分散した表計算、必要以上に複雑な既存システムを見直し、在庫の動きを分かりやすく記録したい小規模企業向けに開発しています。</p><p class="intent-status">開発中 · プレビューは一時的なサンプルデータを使用</p></div>
+    </section>
+
+    <section class="intent-summary section-frame" aria-labelledby="small-summary-ja">
+      <div class="section-intro compact"><p>01 / 要点</p><h2 id="small-summary-ja">機能数より、実際の業務から確認</h2><span>入庫、在庫確認、出庫という絞った記録方法が、自社の現場に合うかを見極めるためのページです。</span></div>
+      <div class="intent-summary-grid">
+        <article><span class="intent-number">01</span><h2>現在庫を把握</h2><p>品名、識別子、数量、在庫少の状態を、1つの検索可能な一覧で確認する方向です。</p></article>
+        <article><span class="intent-number">02</span><h2>在庫の動きを記録</h2><p>現在のプレビューでは、サンプル在庫に対する一時的な入庫・出庫操作を確認できます。</p></article>
+        <article><span class="intent-number">03</span><h2>未確定範囲を明示</h2><p>移行形式、最終的な導入方法、対応端末、導入支援は確定していません。</p></article>
+      </div>
+    </section>
+
+    <section class="intent-section section-frame" aria-labelledby="small-workflow-ja">
+      <div class="intent-section-head"><div class="section-intro compact"><p>02 / 業務の流れ</p><h2 id="small-workflow-ja">FDE IMSが取り組んでいる現場の課題</h2></div><p class="intent-section-copy">小規模な現場では、いま何があるか、何が入ったか、何が出たか、何が少ないかという基本的な問いへ確実に答える必要があります。FDE IMSは、この絞った業務の流れを中心に設計しています。</p></div>
+      <div class="intent-card-grid">
+        <article class="intent-card"><small>紙</small><h3>繰り返す手書き記録</h3><p>検索できる記録にまとめれば、別々のメモを探して照合する手間を減らせる可能性があります。紙からの最終的な移行方法は未定です。</p></article>
+        <article class="intent-card"><small>表計算</small><h3>分散してずれるファイル</h3><p>共有する記録の流れによって、在庫の動きをどこへ記入するかを明確にする方向です。対応取込形式や移行サービスは未確定です。</p></article>
+        <article class="intent-card"><small>既存システム</small><h3>現場に対して複雑すぎる</h3><p>より小さな業務の流れを求める場合にFDE IMSを比較できます。置き換えが適切だと決めつけず、先に適合性を確認する必要があります。</p></article>
+      </div>
+    </section>
+
+    <section class="intent-section section-frame" aria-labelledby="small-fit-ja">
+      <div class="intent-section-head"><div class="section-intro compact"><p>03 / 適合確認</p><h2 id="small-fit-ja">現時点で確認できること</h2></div><p class="intent-section-copy">公開デモは本番トライアルではなく、開発プレビューです。画面と業務の方向性を確認できますが、導入に必要な未確定事項も残っています。</p></div>
+      <div class="intent-card-grid two">
+        <article class="intent-card"><small>現在確認できるもの</small><h3>サンプル業務</h3><ul><li>在庫一覧と検索</li><li>一時的な入庫操作</li><li>一時的な出庫操作</li><li>サンプル品目の在庫少表示</li></ul></article>
+        <article class="intent-card"><small>まだ確定していないもの</small><h3>本番の製品範囲</h3><ul><li>対応する取込形式とファイル形式</li><li>移行サービスと導入支援</li><li>最終的な対応環境、端末、導入要件</li><li>販売開始、Installer納品、サポート条件</li></ul></article>
+      </div>
+      <div class="intent-fact-bar" aria-label="小規模企業向けFDE IMSの予定条件">
+        <div><span class="intent-fact-label">商品</span><strong>License 49,800円 / License Plus 99,800円</strong></div>
+        <div><span class="intent-fact-label">購入方式</span><strong>買い切り2商品を予定</strong></div>
+        <div><span class="intent-fact-label">提供状況</span><strong>開発中・購入機能は利用不可</strong></div>
+      </div>
+      <p class="intent-caution">顧客への導入、利用実績、導入成果、セキュリティ認証は案内していません。プレビューの変更は保存されず、最終的な製品性能を示すものではありません。</p>
+    </section>
+
+    <section class="intent-related section-frame" aria-labelledby="small-related-ja">
+      <div class="section-intro compact"><p>04 / 関連ガイド</p><h2 id="small-related-ja">業務適合を確認してから所有方法を選ぶ</h2></div>
+      <div class="intent-related-grid">
+        <a href="one-time-purchase-inventory-software.html"><small>所有方法</small><h3>買い切り</h3><p>2つの予定商品とLicense専用Updatesを確認できます。</p><b aria-hidden="true">↗</b></a>
+        <a href="inventory-software-with-source-code.html"><small>ソース権利</small><h3>ソースコード付き</h3><p>License Plusで予定している社内改変の範囲を確認できます。</p><b aria-hidden="true">↗</b></a>
+        <a href="demo.html"><small>プレビュー</small><h3>サンプル業務を試す</h3><p>一時的なサンプルデータで現在の画面の方向性を確認できます。</p><b aria-hidden="true">↗</b></a>
+      </div>
+    </section>
+
+    <section class="faq-section section-frame" aria-labelledby="small-faq-ja">
+      <div class="section-intro compact"><p>05 / FAQ</p><h2 id="small-faq-ja">小規模企業での検討に関する質問</h2></div>
+      <div class="faq-list">
+        <details open><summary><span>01</span><strong>FDE IMSはどのような企業向けに開発していますか？</strong><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" aria-hidden="true"><path fill="currentColor" d="M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z"/></svg></summary><p>FDE IMSは、紙への繰り返し記入や分散した表計算よりも分かりやすい在庫管理の流れを求める小規模企業向けに開発しています。</p></details>
+        <details><summary><span>02</span><strong>現在の開発プレビューではどの在庫業務を確認できますか？</strong><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" aria-hidden="true"><path fill="currentColor" d="M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z"/></svg></summary><p>サンプルデータを使って、在庫検索、入庫、出庫、在庫少の表示を確認できます。操作結果は一時的であり、最終的な製品範囲を保証するものではありません。</p></details>
+        <details><summary><span>03</span><strong>Baked Kale FDEは表計算や既存システムのデータを移行しますか？</strong><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" aria-hidden="true"><path fill="currentColor" d="M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z"/></svg></summary><p>まだ確定していません。対応ファイル形式、データ取込、移行サービス、導入支援は正式販売前に定義します。</p></details>
+        <details><summary><span>04</span><strong>小規模企業は今すぐFDE IMSを使い始められますか？</strong><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" aria-hidden="true"><path fill="currentColor" d="M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z"/></svg></summary><p>いいえ。FDE IMSは開発中です。現在のサイトで利用できるのは、一時的なサンプルデータの開発プレビューとお問い合わせであり、購入、本番導入、Installer納品はできません。</p></details>
+      </div>
+    </section>
+
+    <section class="contact-section section-frame"><div><p>FDE IMS / 開発プレビュー</p><h2>業務の流れを自分で確認</h2><span>サンプルデータの開発プレビューを試すか、現在の在庫管理方法をBaked Kale FDEへお知らせください。</span></div><div class="contact-actions"><a class="button contact-preview" href="demo.html">開発プレビューを見る</a><a class="button contact-link" href="contact.html">Baked Kale FDEへ相談</a></div></section>
+  </main>
+  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>小規模な現場のためのFDE IMS在庫管理ソフト。</p><small>開発中です。購入機能は利用できません。</small><nav class="footer-nav" aria-label="フッターナビゲーション"><a href="why.html">Why FDE</a><a href="goals.html">目標</a><a href="news.html">お知らせ</a><a href="license.html">License</a><a href="contact.html">お問い合わせ</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
+  <div class="toast" role="status" aria-live="polite"></div>
+</div>
+</body>
+</html>
