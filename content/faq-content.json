@@ -716,8 +716,8 @@
         "en": "Can headquarters and branches of the same legal entity use one License?"
       },
       "answer": {
-        "ja": "はい。同一法人内での利用を予定しています。LicenseではLocal / LAN構成で複数の倉庫・Location情報を管理する案、License Plusでは顧客管理サーバーを正本とする複数拠点・複数端末の常時同期を本格対応する案を開発中です。対応範囲は正式販売前に確定し、別法人での利用は原則として別途購入が必要です。",
-        "en": "Yes, internal use within one legal entity is planned. License is being designed around a local/LAN model that can manage multiple warehouse or location records. License Plus is planned for customer-server authoritative data and fuller multi-site, multi-PC, and multi-mobile synchronization. These capabilities remain in development; final scope will be defined before sales. Separate legal entities generally require separate purchases."
+        "ja": "購入法人内での社内利用を予定しています。ただし、本社・支店・営業所をまたぐ構成、複数倉庫やLocation情報の管理、複数端末間の同期は、正式な対応範囲として確定していません。現時点で対応済みの機能として扱わないでください。利用条件と技術上の範囲は正式販売前に確定します。別法人での利用は原則として別途購入が必要です。",
+        "en": "Internal use by the purchasing legal entity is planned. However, use across headquarters, branches, or offices; management of multiple warehouses or location records; and synchronization across devices are not confirmed parts of the supported scope. These capabilities must not be treated as available. Licensing and technical scope will be finalized before formal sales. Separate legal entities generally require separate purchases."
       },
       "keywords": {
         "ja": [

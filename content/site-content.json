@@ -10,8 +10,8 @@
     "profileUrl": "https://www.instagram.com/kale1999_?igsi=MXRzYnp5eGl2b3NxMw%3D%3D&utm_source=qr",
     "handle": "@kale1999_",
     "description": {
-      "ja": "写真・映像・小説を中心とした個人のクリエイティブ活動を発信しています。FDEの業務情報とは分け、作品や制作活動を掲載しています。",
-      "en": "A personal creative account focused on photography, short-form video and literary writing. It is kept separate from Kale’s FDE business updates.",
+      "ja": "写真・映像・小説を中心とした個人のクリエイティブ活動を発信しています。Baked Kale FDEの業務情報とは分け、作品や制作活動を掲載しています。",
+      "en": "A personal creative account focused on photography, short-form video and literary writing. It is kept separate from Baked Kale FDE business updates.",
       "zh-CN": "这是一个以摄影、短视频和文学创作为主的个人创作账号，与 Kale’s FDE 的业务更新分开运营。",
       "zh-TW": "這是一個以攝影、短影音與文學創作為主的個人創作帳號，與 Kale’s FDE 的業務更新分開營運。",
       "ko": "사진, 숏폼 영상, 문학 창작을 중심으로 한 개인 창작 계정입니다. Kale’s FDE의 업무 업데이트와는 분리해 운영합니다.",
@@ -37,8 +37,8 @@
     },
     {
       "id":"website-update-20260816","date":"2026-08-16","category":"Development","featured":false,"link":"index.html","image":"","translationStatus":"translated",
-      "title":{"ja":"Kale’s FDEのサイトを更新","en":"Kale’s FDE website updated","zh-CN":"Kale’s FDE 网站已更新","zh-TW":"Kale’s FDE 網站已更新","ko":"Kale’s FDE 웹사이트 업데이트","id":"Situs Kale’s FDE diperbarui","ms":"Laman Kale’s FDE dikemas kini","vi":"Đã cập nhật trang web Kale’s FDE","th":"อัปเดตเว็บไซต์ Kale’s FDE","hi":"Kale’s FDE वेबसाइट अपडेट की गई","ar":"تم تحديث موقع Kale’s FDE"},
-      "body":{"ja":"製品、Why FDE、Kale’s Goals、お問い合わせを中心に、情報構成と日英表示を整理しました。","en":"The site structure and multilingual presentation have been refined around Products, Why FDE, Kale’s Goals and Contact.","zh-CN":"我们围绕 Products、Why FDE、Kale’s Goals 和 Contact 优化了网站结构与多语言显示。","zh-TW":"我們圍繞 Products、Why FDE、Kale’s Goals 與 Contact 優化了網站結構與多語言顯示。","ko":"Products, Why FDE, Kale’s Goals, Contact를 중심으로 사이트 구조와 다국어 표시를 정리했습니다.","id":"Struktur situs dan tampilan multibahasa telah disempurnakan dengan fokus pada Products, Why FDE, Kale’s Goals, dan Contact.","ms":"Struktur laman dan paparan berbilang bahasa telah diperhalusi dengan fokus pada Products, Why FDE, Kale’s Goals dan Contact.","vi":"Cấu trúc trang web và cách hiển thị đa ngôn ngữ đã được tinh chỉnh, tập trung vào Products, Why FDE, Kale’s Goals và Contact.","th":"ได้ปรับโครงสร้างเว็บไซต์และการแสดงผลหลายภาษา โดยเน้นที่ Products, Why FDE, Kale’s Goals และ Contact","hi":"Products, Why FDE, Kale’s Goals और Contact पर केंद्रित साइट संरचना और बहुभाषी प्रस्तुति को बेहतर किया गया है।","ar":"تم تحسين بنية الموقع والعرض متعدد اللغات مع التركيز على Products وWhy FDE وKale’s Goals وContact."}
+      "title":{"ja":"Baked Kale FDEのサイトを更新","en":"Baked Kale FDE website updated","zh-CN":"Kale’s FDE 网站已更新","zh-TW":"Kale’s FDE 網站已更新","ko":"Kale’s FDE 웹사이트 업데이트","id":"Situs Kale’s FDE diperbarui","ms":"Laman Kale’s FDE dikemas kini","vi":"Đã cập nhật trang web Kale’s FDE","th":"อัปเดตเว็บไซต์ Kale’s FDE","hi":"Kale’s FDE वेबसाइट अपडेट की गई","ar":"تم تحديث موقع Kale’s FDE"},
+      "body":{"ja":"製品、Why FDE、目標、お問い合わせを中心に、情報構成と日英表示を整理しました。","en":"The site structure and multilingual presentation have been refined around Products, Why FDE, Our Goals and Contact.","zh-CN":"我们围绕 Products、Why FDE、Kale’s Goals 和 Contact 优化了网站结构与多语言显示。","zh-TW":"我們圍繞 Products、Why FDE、Kale’s Goals 與 Contact 優化了網站結構與多語言顯示。","ko":"Products, Why FDE, Kale’s Goals, Contact를 중심으로 사이트 구조와 다국어 표시를 정리했습니다.","id":"Struktur situs dan tampilan multibahasa telah disempurnakan dengan fokus pada Products, Why FDE, Kale’s Goals, dan Contact.","ms":"Struktur laman dan paparan berbilang bahasa telah diperhalusi dengan fokus pada Products, Why FDE, Kale’s Goals dan Contact.","vi":"Cấu trúc trang web và cách hiển thị đa ngôn ngữ đã được tinh chỉnh, tập trung vào Products, Why FDE, Kale’s Goals và Contact.","th":"ได้ปรับโครงสร้างเว็บไซต์และการแสดงผลหลายภาษา โดยเน้นที่ Products, Why FDE, Kale’s Goals และ Contact","hi":"Products, Why FDE, Kale’s Goals और Contact पर केंद्रित साइट संरचना और बहुभाषी प्रस्तुति को बेहतर किया गया है।","ar":"تم تحسين بنية الموقع والعرض متعدد اللغات مع التركيز على Products وWhy FDE وKale’s Goals وContact."}
     }
   ]
 }

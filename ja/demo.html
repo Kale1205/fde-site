@@ -3,33 +3,43 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>在庫管理ソフトの操作デモ | FDE IMS</title>
-  <meta name="description" content="FDE IMSの在庫管理ソフト操作デモ。サンプルデータで在庫検索、入庫、出庫、在庫不足の表示を試せます。変更内容は保存されません。">
+  <title>FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE</title>
+  <meta name="description" content="Baked Kale FDEが開発中のFDE IMS在庫管理ソフト操作デモ。サンプルデータで在庫検索、入庫、出庫、在庫不足の表示を試せます。変更内容は保存されません。">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://kale1205.github.io/fde-site/ja/demo.html">
   <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/demo.html">
   <link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/demo.html">
   <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/demo.html">
-  <meta property="og:title" content="在庫管理ソフトの操作デモ | FDE IMS">
-  <meta property="og:description" content="サンプルデータを使って、FDE IMSで予定している操作を体験できます。">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Baked Kale FDE">
+  <meta property="og:title" content="FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE">
+  <meta property="og:description" content="サンプルデータを使って、Baked Kale FDEが開発中のFDE IMSで予定している操作を体験できます。">
   <meta property="og:url" content="https://kale1205.github.io/fde-site/ja/demo.html">
+  <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
+  <meta property="og:image:alt" content="Baked Kale FDEによるFDE IMS在庫管理の開発プレビュー">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE">
+  <meta name="twitter:description" content="サンプルデータを使って、FDE IMSで予定している操作を体験できます。">
+  <meta name="twitter:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
+  <meta name="twitter:image:alt" content="Baked Kale FDEによるFDE IMS在庫管理の開発プレビュー">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="../gallery-ui.css?v=20260830-135637">
-  <link rel="stylesheet" href="../gallery-pages.css?v=20260830-135637">
-  <script defer src="../gallery-ui.js?v=20260830-135637"></script>
-  <script defer src="../site.js?v=20260830-135637"></script>
+  <link rel="stylesheet" href="../gallery-ui.css?v=20260905-010729">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20260905-010729">
+  <script defer src="../gallery-ui.js?v=20260905-010729"></script>
+  <script defer src="../site.js?v=20260905-010729"></script>
 </head>
 <body class="gallery-page gallery-subpage demo-page demo-app">
 <div class="site-shell language-ja">
   <header class="site-header">
-    <a class="brand" href="index.html" aria-label="Baked Kale ホーム"><img alt="Baked Kale" src="../assets/baked-kale-logo.svg"></a>
-    <nav class="desktop-nav" aria-label="主要ナビゲーション"><a href="index.html">製品</a><a href="why.html">Why FDE</a><a href="goals.html">Kale’s Goals</a><a href="news.html">お知らせ</a></nav>
+    <a class="brand" href="index.html" aria-label="Baked Kale FDE ホーム"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"></a>
+    <nav class="desktop-nav" aria-label="主要ナビゲーション"><a href="index.html">製品</a><a href="why.html">Why FDE</a><a href="goals.html">目標</a><a href="news.html">お知らせ</a></nav>
     <div class="header-actions">
       <a class="locale-button" data-locale-link href="../demo.html" hreflang="en" lang="en">English</a><a class="header-contact" href="contact.html">お問い合わせ</a>
       <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="メニューを開く"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg></button>
     </div>
-    <nav class="mobile-nav" id="mobile-nav" aria-label="モバイルナビゲーション" hidden><a href="index.html">製品</a><a href="why.html">Why FDE</a><a href="goals.html">Kale’s Goals</a><a href="news.html">お知らせ</a><a href="../demo.html" hreflang="en" lang="en">English</a><a href="contact.html">お問い合わせ</a></nav>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="モバイルナビゲーション" hidden><a href="index.html">製品</a><a href="why.html">Why FDE</a><a href="goals.html">目標</a><a href="news.html">お知らせ</a><a href="../demo.html" hreflang="en" lang="en">English</a><a href="contact.html">お問い合わせ</a></nav>
   </header>
   <div class="demo-bar">
     <div class="section-frame demo-toolbar"><strong>FDE IMS / 開発プレビュー</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">プレビューを閉じる</button></div></div>
@@ -40,7 +50,7 @@
       <h1>在庫管理ソフトの操作デモ</h1>
       <span>サンプル在庫を検索し、入庫・出庫を試せます。変更内容は保存されません。</span>
       <div class="ims-pre"><strong>開発中 · 現在は購入できません</strong><p>このプレビューは、開発中の操作イメージを示すものです。正式版の仕様や機能、更新・セキュリティ対応、納品実績を示すものではありません。</p></div>
-      <small class="demo-note">Baked Kale / Kale’s FDE</small>
+      <small class="demo-note">FDE IMS by Baked Kale FDE</small>
     </section>
     <section class="demo-workspace" aria-label="サンプル在庫画面">
       <div class="demo-kpis">
@@ -64,7 +74,7 @@
       <p class="demo-note">このプレビューではサンプルデータのみを使用しています。変更内容は保存されません。</p>
     </section>
   </main>
-  <footer class="site-footer section-frame"><img alt="Baked Kale" src="../assets/baked-kale-logo.svg"><div><p>小規模な現場に寄り添う、実用的な業務ソフトウェア</p><small>サンプルデータによる操作プレビュー</small><nav class="footer-nav" aria-label="フッターナビゲーション"><a href="why.html">Why FDE</a><a href="goals.html">Kale’s Goals</a><a href="news.html">お知らせ</a><a href="license.html">License</a><a href="contact.html">お問い合わせ</a></nav></div><span>© 2026 Baked Kale</span></footer>
+  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>小規模な現場向けのFDE IMS在庫管理ソフト</p><small>サンプルデータによる操作プレビュー</small><nav class="footer-nav" aria-label="フッターナビゲーション"><a href="why.html">Why FDE</a><a href="goals.html">目標</a><a href="news.html">お知らせ</a><a href="license.html">License</a><a href="contact.html">お問い合わせ</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
   <div class="toast" role="status" aria-live="polite"></div>
 </div>
 </body>

@@ -83,6 +83,39 @@ def localized_text(value, locale):
     visit(value)
     return re.sub(r"\s+", " ", " ".join(parts)).strip()
 
+
+def tag_attributes(tag):
+    return dict(
+        (key.lower(), value)
+        for key, _, value in re.findall(r"([:\w-]+)\s*=\s*([\"'])(.*?)\2", tag, re.DOTALL)
+    )
+
+
+def plain_html_text(fragment):
+    parser = PublicHtmlTextParser()
+    parser.feed(fragment)
+    parser.close()
+    return parser.visible_text()
+
+
+def json_node_types(node):
+    value = node.get("@type") if isinstance(node, dict) else None
+    if isinstance(value, str):
+        return {value}
+    if isinstance(value, list):
+        return {item for item in value if isinstance(item, str)}
+    return set()
+
+
+def walk_json(node):
+    yield node
+    if isinstance(node, dict):
+        for value in node.values():
+            yield from walk_json(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from walk_json(value)
+
 def fail(message):
     errors.append(message)
 
@@ -95,12 +128,24 @@ else:
     if not re.fullmatch(r"[0-9A-Za-z._-]+", version):
         fail(f"Invalid build version: {version!r}")
 
-EN_PAGES = {"index.html", "why.html", "goals.html", "news.html", "contact.html", "order.html", "license.html", "demo.html"}
+INTENT_PAGE_NAMES = {
+    "one-time-purchase-inventory-software.html",
+    "inventory-software-with-source-code.html",
+    "self-hosted-inventory-management-software.html",
+    "small-business-inventory-management-software.html",
+}
+INDEXED_PAGE_NAMES = {
+    "index.html", "why.html", "goals.html", "news.html", "contact.html",
+    "license.html", "demo.html",
+} | INTENT_PAGE_NAMES
+EN_PAGES = INDEXED_PAGE_NAMES | {"order.html"}
 JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
 ROOT_ONLY_PUBLIC = {"customer.html"}
 ALL_PUBLIC = EN_PAGES | JA_PAGES | ROOT_ONLY_PUBLIC
 
-GALLERY_INNER_PAGE_NAMES = {"why.html", "goals.html", "news.html", "contact.html", "license.html", "demo.html"}
+GALLERY_INNER_PAGE_NAMES = {
+    "why.html", "goals.html", "news.html", "contact.html", "license.html", "demo.html",
+} | INTENT_PAGE_NAMES
 GALLERY_INNER_PAGES = GALLERY_INNER_PAGE_NAMES | {f"ja/{name}" for name in GALLERY_INNER_PAGE_NAMES}
 COMMON_NAV_NAMES = ("index.html", "why.html", "goals.html", "news.html")
 FOOTER_NAV_NAMES = ("why.html", "goals.html", "news.html", "license.html", "contact.html")
@@ -119,6 +164,7 @@ OBSOLETE_FILES = {
     ".github/scripts/apply_green_brand.py", ".github/scripts/apply_responsive_news.py",
     ".github/scripts/cms_update.py", ".github/scripts/refresh-news-visual-assets.py",
     "license-page-en.js", "cms-fallback.js", "cms.css", "news-reuters.css",
+    "seo-runtime.js",
     "visual-story.css", "entry-motion.css", "entry-motion.js",
     "ims-compare-en.js", "ims-compare-ja.js",
     "assets/why-fde-flow.svg", "assets/goals-business-model.svg",
@@ -208,20 +254,70 @@ for name in sorted(EN_PAGES):
     if not (ROOT / name).exists() or not (ROOT / "ja" / name).exists():
         fail(f"paired English/Japanese page missing: {name}")
 
+# Every indexable localized page has one distinct search title, description,
+# and primary heading. Intent pages must complement, not duplicate, the home page.
+indexed_seo_values = {"en": {"title": {}, "description": {}, "h1": {}}, "ja": {"title": {}, "description": {}, "h1": {}}}
+for name in sorted(INDEXED_PAGE_NAMES):
+    for locale, rel in (("en", name), ("ja", f"ja/{name}")):
+        source = public_source_text.get(rel, "")
+        title_matches = re.findall(r"<title\b[^>]*>(.*?)</title>", source, re.IGNORECASE | re.DOTALL)
+        descriptions = []
+        robots_values = []
+        for tag in re.findall(r"<meta\b[^>]*>", source, re.IGNORECASE | re.DOTALL):
+            attrs = tag_attributes(tag)
+            meta_name = attrs.get("name", "").strip().lower()
+            if meta_name == "description":
+                descriptions.append(re.sub(r"\s+", " ", attrs.get("content", "")).strip())
+            elif meta_name == "robots":
+                robots_values.append(attrs.get("content", ""))
+        h1_values = [heading for tag, heading in public_heading_text.get(rel, []) if tag == "h1"]
+
+        values = {
+            "title": [plain_html_text(value) for value in title_matches],
+            "description": descriptions,
+            "h1": h1_values,
+        }
+        for field, field_values in values.items():
+            if len(field_values) != 1 or not field_values[0]:
+                fail(f"{rel}: expected exactly one nonempty {field}, found {len(field_values)}")
+                continue
+            indexed_seo_values[locale][field][rel] = field_values[0]
+        if len(robots_values) != 1:
+            fail(f"{rel}: expected exactly one robots meta tag, found {len(robots_values)}")
+        else:
+            robots_tokens = {
+                token.strip().lower()
+                for token in re.split(r"[\s,]+", robots_values[0])
+                if token.strip()
+            }
+            if "noindex" in robots_tokens:
+                fail(f"{rel}: indexed page pair must not contain noindex")
+            if not {"index", "follow"}.issubset(robots_tokens):
+                fail(f"{rel}: indexed page robots meta must explicitly contain index,follow")
+
+for locale, fields in indexed_seo_values.items():
+    for field, values in fields.items():
+        by_value = {}
+        for rel, value in values.items():
+            by_value.setdefault(re.sub(r"\s+", " ", value).strip().casefold(), []).append(rel)
+        for duplicate_value, pages in by_value.items():
+            if len(pages) > 1:
+                fail(f"indexed {locale} pages have duplicate {field} {duplicate_value!r}: {', '.join(sorted(pages))}")
+
 # Search and AI discovery must be grounded in visible, bilingual product facts.
 search_markers = {
     "index.html": (
         "Moving from paper, spreadsheets, or an existing inventory system?",
         "Paper records", "Spreadsheets", "Existing systems",
         "Data import, migration services, supported file formats, and final deployment scope are not yet confirmed.",
-        "FDE IMS is the inventory product from Baked Kale.",
+        "FDE IMS is the inventory product from Baked Kale FDE.",
         "FDE describes how the product is shaped and maintained alongside real work.",
     ),
     "ja/index.html": (
         "紙・Excel・いまの在庫管理から、次の仕組みへ",
         "紙で管理している", "Excelで管理している", "既存システムを見直したい",
         "データ移行の対応範囲、対応ファイル形式、導入支援の条件は現在検討中です。",
-        "FDE IMSはBaked Kaleが提供する在庫管理ソフトです。",
+        "FDE IMSはBaked Kale FDEが提供を予定する在庫管理ソフトです。",
         "FDEは、現場を理解しながら製品をつくり、保守する方法を指します。",
     ),
 }
@@ -234,10 +330,10 @@ for rel, markers in search_markers.items():
 seo_page_markers = {
     "contact.html": ("Inventory Software Adoption & Migration Questions", "Ask about adopting or moving to FDE IMS"),
     "ja/contact.html": ("在庫管理ソフトの導入・移行相談", "FDE IMSの導入・移行を相談する"),
-    "demo.html": ("Inventory Management Software Demo", "Inventory management software demo"),
+    "demo.html": ("FDE IMS Inventory Software Demo | Baked Kale FDE", "Inventory management software demo"),
     "ja/demo.html": ("在庫管理ソフトの操作デモ",),
-    "license.html": ("One-Time, Source-Code & Self-Hosted Inventory Plans",),
-    "ja/license.html": ("買い切り・ソースコード・自社サーバー運用を比較",),
+    "license.html": ("FDE IMS License & License Plus | Plan Policy", "Two one-time inventory software products"),
+    "ja/license.html": ("FDE IMS LicenseとLicense Plus | 料金・利用条件", "2つの買い切り商品から選ぶ"),
 }
 for rel, markers in seo_page_markers.items():
     source = public_source_text.get(rel, "")
@@ -245,9 +341,10 @@ for rel, markers in seo_page_markers.items():
         if marker not in source:
             fail(f"{rel}: page-specific inventory search marker missing: {marker}")
 
-for rel in ("index.html", "ja/index.html", "why.html", "ja/why.html", "goals.html", "ja/goals.html"):
-    if '<meta property="og:site_name" content="Baked Kale">' not in public_source_text.get(rel, ""):
-        fail(f"{rel}: og:site_name must identify the provider as Baked Kale")
+for name in sorted(INDEXED_PAGE_NAMES):
+    for rel in (name, f"ja/{name}"):
+        if '<meta property="og:site_name" content="Baked Kale FDE">' not in public_source_text.get(rel, ""):
+            fail(f"{rel}: og:site_name must identify the provider as Baked Kale FDE")
 
 for rel in ("overview.html", "products.html"):
     source = (ROOT / rel).read_text(encoding="utf-8") if (ROOT / rel).exists() else ""
@@ -263,7 +360,7 @@ structured_faq_pairs = {
         ("Can I try the product workflow?", "Yes. The development preview uses sample data and lets you search inventory and record temporary receive or ship actions."),
         ("Where can I review detailed terms or ask a question?", "Review the License page for the current planned terms, use the comparison above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."),
         ("Is FDE IMS intended for teams using paper or spreadsheets?", "Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."),
-        ("Can Baked Kale migrate or import data from an existing system?", "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."),
+        ("Can Baked Kale FDE migrate or import data from an existing system?", "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."),
     ),
     "ja/index.html": (
         ("FDE IMSは今すぐ購入できますか？", "いいえ。FDE IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。"),
@@ -289,6 +386,14 @@ for rel, expected_pairs in structured_faq_pairs.items():
     for required_type in ("Organization", "WebSite", "WebPage", "SoftwareApplication", "FAQPage"):
         if required_type not in types:
             fail(f"{rel}: JSON-LD graph missing {required_type}")
+    organizations = [item for item in graph if isinstance(item, dict) and item.get("@type") == "Organization"]
+    expected_logo = "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg"
+    if (
+        len(organizations) != 1
+        or organizations[0].get("name") != "Baked Kale FDE"
+        or organizations[0].get("logo", {}).get("url") != expected_logo
+    ):
+        fail(f"{rel}: Organization must identify Baked Kale FDE and its canonical logo")
     if "Offer" in json.dumps(graph_document, ensure_ascii=False):
         fail(f"{rel}: JSON-LD must not claim an Offer while commerce and USD pricing are unapproved")
     faq_nodes = [item for item in graph if isinstance(item, dict) and item.get("@type") == "FAQPage"]
@@ -455,6 +560,41 @@ for rel, markers in required_markers.items():
         if marker not in text:
             fail(f"{rel}: required marker/runtime missing: {marker}")
 
+# Core Contact FAQs and News items must remain present in raw HTML so crawlers
+# and users without JavaScript receive useful product facts before CMS hydration.
+static_contact_faq_ids = {
+    "ims-sale-status", "license-updates-difference", "license-plus-price",
+    "inventory-adoption-migration-fit",
+}
+for rel in ("contact.html", "ja/contact.html"):
+    source = public_source_text.get(rel, "")
+    start = source.find('id="cmsFaqList"')
+    end = source.find('id="faqEmpty"', start + 1)
+    fragment = source[start:end] if start >= 0 and end > start else ""
+    ids = set(re.findall(r'data-faq-id=["\']([^"\']+)["\']', fragment, re.IGNORECASE))
+    if not static_contact_faq_ids.issubset(ids) or len(plain_html_text(fragment)) < 500:
+        fail(f"{rel}: static Contact FAQ fallback must contain the four core product FAQs")
+
+static_news_titles = {
+    "news.html": "FDE IMS updated to two products plus a License Updates add-on",
+    "ja/news.html": "FDE IMSを2商品＋Updates追加オプションへ更新",
+}
+for rel, expected_title in static_news_titles.items():
+    source = public_source_text.get(rel, "")
+    lead_start = source.find('id="cmsNewsLead"')
+    latest_start = source.find('id="cmsLatestList"', lead_start + 1)
+    wire_start = source.find('id="cmsNewsWire"', latest_start + 1)
+    instagram_start = source.find('id="cmsInstagram"', wire_start + 1)
+    lead_fragment = source[lead_start:latest_start] if lead_start >= 0 and latest_start > lead_start else ""
+    latest_fragment = source[latest_start:wire_start] if latest_start >= 0 and wire_start > latest_start else ""
+    wire_fragment = source[wire_start:instagram_start] if wire_start >= 0 and instagram_start > wire_start else ""
+    if expected_title not in plain_html_text(lead_fragment) or len(plain_html_text(lead_fragment)) < 350:
+        fail(f"{rel}: static News lead fallback is missing or insubstantial")
+    if "latest-card" not in latest_fragment or not plain_html_text(latest_fragment):
+        fail(f"{rel}: static News latest fallback is missing")
+    if "wire-row" not in wire_fragment or not plain_html_text(wire_fragment):
+        fail(f"{rel}: static News archive fallback is missing")
+
 # The customer portal must remain a non-interactive pre-release notice until
 # the two-product payment catalog, add-on entitlements, and fulfillment flow have been reviewed.
 customer_portal = ROOT / "customer.html"
@@ -525,6 +665,223 @@ def anchor_targets(html_path, fragment):
         href = attrs.get("href", "")
         result.append((attrs, local_target_rel(html_path, href)))
     return result
+
+
+# Intent landing pages are static, crawlable decision guides. Their JSON-LD
+# must describe only visible, pre-release facts and must not expose commerce,
+# download, review, or installation claims.
+intent_multiwarehouse_pattern = re.compile(
+    r"multi[\s-]*(?:warehouse|location)|multiple\s+(?:warehouse|location)s?|"
+    r"複数\s*(?:倉庫|拠点)|多倉庫",
+    re.IGNORECASE,
+)
+intent_plan_facts = {
+    "one-time-purchase-inventory-software.html": (
+        "$349", "$699", "$31", "$62", "two one-time products",
+        "explicit opt-in", "Purchasing is not available",
+    ),
+    "ja/one-time-purchase-inventory-software.html": (
+        "49,800円", "99,800円", "4,900円", "9,800円",
+        "LicenseとLicense Plusという2つの買い切り商品",
+        "自動で有料契約へ移行しません", "購入機能は利用できません",
+    ),
+    "inventory-software-with-source-code.html": (
+        "$699", "FDE IMS License Plus", "full source code",
+        "License Updates are not included", "Source delivery and purchasing are not available",
+    ),
+    "ja/inventory-software-with-source-code.html": (
+        "99,800円", "FDE IMS License Plus", "ソースコード一式",
+        "Updates特典はありません", "ソース納品と購入機能は利用できません",
+    ),
+    "self-hosted-inventory-management-software.html": (
+        "$699", "FDE IMS License Plus", "customer-server/self-hosted operation",
+        "License Plus does not include the License Updates add-on", "not available for deployment",
+    ),
+    "ja/self-hosted-inventory-management-software.html": (
+        "99,800円", "FDE IMS License Plus", "顧客が管理するサーバー",
+        "License PlusにはLicense専用のUpdatesを追加できません", "購入と導入は利用不可",
+    ),
+    "small-business-inventory-management-software.html": (
+        "$349", "$699", "License and License Plus are the two planned products",
+        "purchasing is not available",
+    ),
+    "ja/small-business-inventory-management-software.html": (
+        "49,800円", "99,800円", "買い切り2商品を予定", "購入機能は利用不可",
+    ),
+}
+for name in sorted(INTENT_PAGE_NAMES):
+    for locale, rel in (("en", name), ("ja", f"ja/{name}")):
+        path = ROOT / rel
+        source = public_source_text.get(rel, "")
+        if not path.exists() or not source:
+            continue
+
+        main_match = re.search(r"<main\b[^>]*>(.*?)</main>", source, re.IGNORECASE | re.DOTALL)
+        main_text = plain_html_text(main_match.group(1)) if main_match else ""
+        if not main_match or len(main_text) < 1400 or len(re.findall(r"<section\b", main_match.group(1), re.IGNORECASE)) < 3:
+            fail(f"{rel}: intent guide must contain substantial static main content")
+
+        for fact in intent_plan_facts.get(rel, ()):
+            if fact not in main_text:
+                fail(f"{rel}: required visible product-plan fact missing: {fact}")
+
+        if intent_multiwarehouse_pattern.search(main_text):
+            fail(f"{rel}: intent body must not target unconfirmed multiple-warehouse or multiple-location support")
+
+        for field in ("title", "description", "h1"):
+            value = indexed_seo_values[locale][field].get(rel, "")
+            if intent_multiwarehouse_pattern.search(value):
+                fail(f"{rel}: {field} must not target unconfirmed multiple-warehouse or multiple-location support")
+
+        scripts = re.findall(
+            r'<script\s+type=["\']application/ld\+json["\']>\s*(.*?)\s*</script>',
+            source,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if len(scripts) != 1:
+            fail(f"{rel}: expected exactly one intent-page JSON-LD graph, found {len(scripts)}")
+            continue
+        try:
+            graph_document = json.loads(scripts[0])
+        except Exception as exc:
+            fail(f"{rel}: invalid intent-page JSON-LD: {exc}")
+            continue
+        if intent_multiwarehouse_pattern.search(json.dumps(graph_document, ensure_ascii=False)):
+            fail(f"{rel}: intent JSON-LD must not claim unconfirmed multiple-warehouse or multiple-location support")
+        graph = graph_document.get("@graph", []) if isinstance(graph_document, dict) else []
+        if not isinstance(graph, list):
+            fail(f"{rel}: JSON-LD @graph must be a list")
+            continue
+        graph_types = set().union(*(json_node_types(item) for item in graph if isinstance(item, dict)))
+        for required_type in (
+            "Organization", "WebSite", "WebPage", "SoftwareApplication",
+            "Product", "BreadcrumbList", "FAQPage",
+        ):
+            if required_type not in graph_types:
+                fail(f"{rel}: intent JSON-LD graph missing {required_type}")
+
+        organizations = [item for item in graph if "Organization" in json_node_types(item)]
+        if len(organizations) != 1 or organizations[0].get("name") != "Baked Kale FDE":
+            fail(f"{rel}: JSON-LD must identify one Organization named Baked Kale FDE")
+        elif organizations[0].get("logo", {}).get("url") != "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg":
+            fail(f"{rel}: Organization logo must use the canonical Baked Kale FDE asset")
+
+        applications = [item for item in graph if "SoftwareApplication" in json_node_types(item)]
+        if len(applications) != 1:
+            fail(f"{rel}: JSON-LD must contain exactly one SoftwareApplication entity")
+        else:
+            application = applications[0]
+            if application.get("@id") != "https://kale1205.github.io/fde-site/#fde-ims":
+                fail(f"{rel}: SoftwareApplication must use the stable FDE IMS @id")
+            if application.get("url") != "https://kale1205.github.io/fde-site/":
+                fail(f"{rel}: SoftwareApplication url must use the stable English root URL")
+            expected_status = "開発中" if locale == "ja" else "In development"
+            if application.get("creativeWorkStatus") != expected_status:
+                fail(f"{rel}: SoftwareApplication creativeWorkStatus must be {expected_status!r}")
+
+        forbidden_schema_types = {"Offer", "Review", "AggregateRating"}
+        forbidden_schema_keys = {
+            "offers", "review", "reviews", "aggregateRating",
+            "downloadUrl", "installUrl",
+        }
+        for value in walk_json(graph_document):
+            if not isinstance(value, dict):
+                continue
+            forbidden_types = json_node_types(value) & forbidden_schema_types
+            if forbidden_types:
+                fail(f"{rel}: pre-release JSON-LD contains forbidden type(s): {', '.join(sorted(forbidden_types))}")
+            forbidden_keys = set(value) & forbidden_schema_keys
+            if forbidden_keys:
+                fail(f"{rel}: pre-release JSON-LD contains forbidden property: {', '.join(sorted(forbidden_keys))}")
+
+        canonical = f"https://kale1205.github.io/fde-site/{'ja/' if locale == 'ja' else ''}{name}"
+        locale_home = "https://kale1205.github.io/fde-site/ja/" if locale == "ja" else "https://kale1205.github.io/fde-site/"
+        breadcrumbs = [item for item in graph if "BreadcrumbList" in json_node_types(item)]
+        if len(breadcrumbs) != 1:
+            fail(f"{rel}: JSON-LD must contain exactly one BreadcrumbList")
+        else:
+            items = breadcrumbs[0].get("itemListElement", [])
+            positions = [item.get("position") for item in items if isinstance(item, dict)]
+            item_urls = [item.get("item") for item in items if isinstance(item, dict)]
+            if positions != [1, 2] or item_urls != [locale_home, canonical]:
+                fail(f"{rel}: BreadcrumbList must link the locale home to the canonical intent page")
+
+        breadcrumb_navs = []
+        for match in re.finditer(r"<nav\b(?P<attrs>[^>]*)>(?P<body>.*?)</nav>", source, re.IGNORECASE | re.DOTALL):
+            attrs = tag_attributes(f"<nav {match.group('attrs')}>")
+            if "intent-breadcrumbs" in attrs.get("class", "").split():
+                breadcrumb_navs.append((attrs, match.group("body")))
+        expected_home_rel = "ja/index.html" if locale == "ja" else "index.html"
+        if len(breadcrumb_navs) != 1:
+            fail(f"{rel}: expected one visible intent breadcrumb navigation")
+        else:
+            _, breadcrumb_body = breadcrumb_navs[0]
+            breadcrumb_targets = {target for _, target in anchor_targets(path, breadcrumb_body) if target}
+            if expected_home_rel not in breadcrumb_targets or not re.search(r"aria-current=[\"']page[\"']", breadcrumb_body, re.IGNORECASE):
+                fail(f"{rel}: visible breadcrumb must link the locale home and mark the current page")
+
+        related_match = re.search(
+            r'<div\b[^>]*class=["\'][^"\']*\bintent-related-grid\b[^"\']*["\'][^>]*>(.*?)</div>',
+            source,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if not related_match:
+            fail(f"{rel}: internal related-guide links are missing")
+        else:
+            related_targets = {target for _, target in anchor_targets(path, related_match.group(1)) if target}
+            other_intent_targets = {
+                f"{'ja/' if locale == 'ja' else ''}{other}"
+                for other in INTENT_PAGE_NAMES
+                if other != name
+            }
+            if len(related_targets) < 3 or len(related_targets & other_intent_targets) < 2:
+                fail(f"{rel}: related guides must provide three internal links including at least two other intent pages")
+
+        faq_nodes = [item for item in graph if "FAQPage" in json_node_types(item)]
+        json_faq_pairs = []
+        if len(faq_nodes) != 1:
+            fail(f"{rel}: JSON-LD must contain exactly one FAQPage")
+        else:
+            for entity in faq_nodes[0].get("mainEntity", []):
+                if not isinstance(entity, dict):
+                    continue
+                json_faq_pairs.append((
+                    re.sub(r"\s+", " ", str(entity.get("name", ""))).strip(),
+                    re.sub(r"\s+", " ", str(entity.get("acceptedAnswer", {}).get("text", ""))).strip(),
+                ))
+
+        faq_section = re.search(
+            r'<section\b[^>]*class=["\'][^"\']*\bfaq-section\b[^"\']*["\'][^>]*>(.*?)</section>',
+            source,
+            re.IGNORECASE | re.DOTALL,
+        )
+        visible_faq_pairs = []
+        if faq_section:
+            detail_pattern = re.compile(
+                r"<details\b[^>]*>\s*<summary\b[^>]*>(?P<summary>.*?)</summary>\s*"
+                r"<p\b[^>]*>(?P<answer>.*?)</p>\s*</details>",
+                re.IGNORECASE | re.DOTALL,
+            )
+            for detail in detail_pattern.finditer(faq_section.group(1)):
+                question_match = re.search(r"<strong\b[^>]*>(.*?)</strong>", detail.group("summary"), re.IGNORECASE | re.DOTALL)
+                question = plain_html_text(question_match.group(1)) if question_match else ""
+                answer = plain_html_text(detail.group("answer"))
+                visible_faq_pairs.append((question, answer))
+        if len(json_faq_pairs) < 3 or visible_faq_pairs != json_faq_pairs:
+            fail(f"{rel}: visible FAQ questions and answers must exactly mirror JSON-LD FAQPage")
+
+# Home is the discovery hub for all four intent pages; the retired standalone
+# Updates card must not survive in HTML comments or hidden markup.
+for locale, rel in (("en", "index.html"), ("ja", "ja/index.html")):
+    path = ROOT / rel
+    source = public_source_text.get(rel, "")
+    targets = {target for _, target in anchor_targets(path, source) if target}
+    required_targets = {f"{'ja/' if locale == 'ja' else ''}{name}" for name in INTENT_PAGE_NAMES}
+    for missing in sorted(required_targets - targets):
+        fail(f"{rel}: home intent link missing: {missing}")
+    for retired_marker in ("Retired standalone Updates card", "updates-plan", "<h3>FDE IMS Updates</h3>"):
+        if retired_marker in source:
+            fail(f"{rel}: retired standalone Updates card markup remains: {retired_marker}")
 
 
 for rel in sorted(GALLERY_INNER_PAGES):
@@ -657,7 +1014,9 @@ for rel, expected in paired_seo.items():
 
 # Sitemap mirrors the public Gallery UI pairs and their exact language alternates.
 sitemap_path = ROOT / "sitemap.xml"
-sitemap_names = ("license.html", "demo.html", "why.html", "goals.html", "contact.html", "news.html")
+sitemap_names = (
+    "license.html", "demo.html", "why.html", "goals.html", "contact.html", "news.html",
+) + tuple(sorted(INTENT_PAGE_NAMES))
 sitemap_pairs = [
     (
         "https://kale1205.github.io/fde-site/",
@@ -698,8 +1057,8 @@ else:
                 if item is None:
                     continue
                 lastmod = item.findtext("sm:lastmod", default="", namespaces=ns).strip()
-                if lastmod != "2026-08-29":
-                    fail(f"sitemap.xml: {loc} lastmod must be 2026-08-29")
+                if lastmod != "2026-09-04":
+                    fail(f"sitemap.xml: {loc} lastmod must be 2026-09-04")
                 alternates = {
                     (link.get("hreflang"), link.get("href"))
                     for link in item.findall("xhtml:link", ns)
@@ -709,6 +1068,26 @@ else:
                     fail(f"sitemap.xml: {loc} missing hreflang alternate {alternate}")
     except ET.ParseError as exc:
         fail(f"sitemap.xml: invalid XML: {exc}")
+
+# The project-path robots file is not an origin-root robots control, but its
+# contents must remain internally safe and point at the canonical sitemap for
+# direct Search Console / Bing submission.
+robots_path = ROOT / "robots.txt"
+if not robots_path.exists():
+    fail("robots.txt is missing")
+else:
+    robots_lines = [
+        line.strip()
+        for line in robots_path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    expected_robots_lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Sitemap: https://kale1205.github.io/fde-site/sitemap.xml",
+    ]
+    if robots_lines != expected_robots_lines:
+        fail(f"robots.txt must contain only the safe allow/sitemap directives: {expected_robots_lines!r}")
 
 # CMS admin has one News/Media core and one FAQ runtime. Dead order/fulfillment UI is forbidden.
 cms_admin = ROOT / "cms-admin.html"
