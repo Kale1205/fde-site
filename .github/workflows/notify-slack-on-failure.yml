@@ -8,6 +8,7 @@ on:
       - Deploy staging environment
       - Sync site build version
       - Auto Security audit
+      - CodeQL security analysis
       - Kale Sentinel operational check
       - Kale Desk foundation check
       - Kale’s Office foundation check
