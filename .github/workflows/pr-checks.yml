@@ -74,6 +74,9 @@ jobs:
       - name: P3 Auto Security contract checks
         run: python scripts/validate_p3_security.py
 
+      - name: Security tooling hardening contract checks
+        run: python scripts/validate_security_tooling.py
+
       - name: P3 Auto Security critical gate
         run: python scripts/security_audit.py
 
