@@ -5,7 +5,7 @@
 - Production write access: disabled
 - Automatic fixes: disabled
 - Automatic merge: disabled
-- Schedule: once daily at `00:00 UTC` (`09:00 JST`)
+- Schedule: **daily GitHub Actions scheduled audit** (`.github/workflows/auto-security-audit.yml`; the current cron declaration is daily, but GitHub does not guarantee exact start-time execution)
 
 ## Roadmap mapping
 
@@ -18,7 +18,7 @@ The standing Auto Security policy is:
 - require administrator approval before production changes;
 - never make unapproved automatic production fixes.
 
-P3-1 deliberately implements only the audit foundation. Automatic repair PR generation is not enabled by this step.
+P3-1 deliberately implements only the deterministic audit foundation. Automatic repair PR generation is not enabled by this step.
 
 ## Audit behavior
 
@@ -49,7 +49,7 @@ The existing Slack failure workflow monitors `Auto Security audit`, so a failed 
 
 The same read-only audit is executed in `PR checks` so a newly introduced critical credential pattern cannot be merged through the normal path without first resolving the finding.
 
-## Safety contract
+## Current safety contract
 
 P3-1 must remain read-only:
 
@@ -65,12 +65,31 @@ P3-1 must remain read-only:
 
 `scripts/validate_p3_security.py` enforces these markers.
 
+## Target Guard architecture — future specification only
+
+The current deterministic behavior remains in place. The future target is:
+
+`Deterministic Security Scan → AI Semantic Guard Review → Severity Classification → Escalation`
+
+Target severity taxonomy includes at least `Critical`, `High`, `Medium`, `Low`, and `Informational`.
+
+Alert-fatigue policy for the future semantic layer:
+
+- `Critical` / `High`: normally eligible for immediate Slack escalation when Administrator attention is time-sensitive;
+- `Medium` / `Low` / `Informational` and ordinary review candidates: normally retained in GitHub summary, artifact, or structured finding without a Slack alert for every finding.
+
+AI Semantic Guard Review may generate findings, classify severity, explain evidence, and recommend response. It may not automatically remediate, mutate production, self-approve, merge, release, or activate production.
+
+This target semantic layer and severity-aware Slack routing are **not activated by this document update**. Current behavior remains: critical finding → workflow failure → existing Slack notification; warnings/review candidates → report evidence.
+
 ## Follow-up candidates
 
-These are intentionally outside P3-1 and require a separate reviewed step:
+These remain separate reviewed steps:
 
 - CodeQL enablement;
 - Dependabot configuration;
 - dependency/SBOM scanning where applicable;
 - structured Auto Security finding triage;
+- AI Semantic Guard Review runtime;
+- severity-aware escalation routing;
 - administrator-approved repair PR generation.

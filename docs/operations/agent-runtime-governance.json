@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "status": "CURRENT_TARGET_OPERATING_MODEL",
+  "effectiveAsOf": "2026-09-06",
+  "governance": {
+    "sourceOfTruth": "GitHub",
+    "runtimeIsNotGovernance": true,
+    "historicalP3EvidencePreserved": true,
+    "historicalP3Matrix": "docs/operations/p3-agent-governance.json"
+  },
+  "runtimePlanes": {
+    "business": "ChatGPT Work",
+    "engineering": "Codex",
+    "deterministic": ["GitHub Actions", "Cloudflare", "Cron", "Webhook", "Stripe / order / payment / fulfillment state machines"],
+    "finalAuthority": "Administrator Kale"
+  },
+  "engineering": {
+    "runtime": "Codex",
+    "mode": "Codex / Mirror Engineering Mode",
+    "standaloneMirrorRuntimeRequired": false,
+    "initialImsV1BuildOwner": "Codex",
+    "inheritedMirrorResponsibilities": [
+      "feature implementation",
+      "bug fix",
+      "tests",
+      "DB migration",
+      "dependencies",
+      "UI",
+      "product-source changes",
+      "documentation",
+      "non-main branch implementation"
+    ],
+    "postV1Flow": ["Administrator", "Codex Engineering", "independent checks", "Kale Review", "Kale Guard", "Codex summary", "Administrator"],
+    "forbiddenAuthorities": ["self-approval", "final QA ACCEPT", "final security ACCEPT", "merge", "release", "production activation", "customer distribution"]
+  },
+  "review": {
+    "role": "Kale Review",
+    "runtimeBoundary": "independent execution/context",
+    "maySelfAcceptMateriallyAuthoredChange": false,
+    "futurePrTriggeredExecution": "TARGET_ONLY_NOT_ACTIVE"
+  },
+  "guard": {
+    "current": {
+      "workflow": ".github/workflows/auto-security-audit.yml",
+      "scheduleDescription": "daily GitHub Actions scheduled audit",
+      "exactStartTimeGuaranteed": false,
+      "readOnly": true,
+      "criticalFindingGate": true,
+      "slackFailureNotification": true,
+      "automaticFix": false,
+      "automaticPr": false,
+      "autoMerge": false,
+      "productionWrite": false
+    },
+    "target": {
+      "activationState": "TARGET_ONLY_NOT_ACTIVE",
+      "flow": ["Deterministic Security Scan", "AI Semantic Guard Review", "Severity Classification", "Escalation"],
+      "severityLevels": ["Critical", "High", "Medium", "Low", "Informational"],
+      "immediateSlackEscalation": ["Critical", "High"],
+      "lowerSeverityDisposition": "GitHub summary / artifact / structured finding; no per-finding Slack alert by default",
+      "aiSemanticCapabilities": ["finding generation", "severity classification", "evidence explanation", "recommended response"],
+      "aiSemanticForbidden": ["automatic remediation", "production mutation", "self-approval", "merge", "release", "production activation"]
+    }
+  },
+  "sentinel": {
+    "role": "read-only Operations Monitor",
+    "primaryRuntime": "deterministic observation",
+    "hourlyScheduleEnabled": false,
+    "stateMutation": false,
+    "automaticRemediation": false,
+    "targetFlow": ["scheduled deterministic observation", "finding / incident", "Slack", "Administrator"],
+    "scheduleActivationRequiresAdministratorApproval": true
+  },
+  "businessAgents": {
+    "Kale Outreach": {
+      "targetRuntime": "ChatGPT Work",
+      "executionModes": ["one-shot", "future schedule", "future event trigger"],
+      "runtimeWiringState": "TARGET_ONLY_NOT_ACTIVE",
+      "realSendGates": ["factsConfirmedPublished", "prospectSourceApproved", "countryComplianceApproved", "complianceEvidenceRef", "administratorApproval", "approvalScopeId", "approved sender/channel"],
+      "autonomousBulkSend": false
+    },
+    "Kale Desk": {
+      "targetRuntime": "ChatGPT Work",
+      "runtimeWiringState": "TARGET_ONLY_NOT_ACTIVE",
+      "targetFlow": ["Customer event", "Kale Desk analysis", "reply draft", "Administrator approval", "Reply"],
+      "unapprovedCustomerSend": false
+    },
+    "Kale’s Office": {
+      "targetRuntime": "ChatGPT Work",
+      "runtimeWiringState": "TARGET_ONLY_NOT_ACTIVE",
+      "publicPublishAuthority": false
+    },
+    "Kale Compliance": {
+      "targetRuntime": "ChatGPT Work",
+      "foundationState": "P5_PENDING",
+      "runtimeWiringState": "TARGET_ONLY_NOT_ACTIVE",
+      "newLegalAutomationAuthority": false
+    }
+  },
+  "deterministicExecutionPlane": {
+    "aiFreeBusinessStateMutation": false,
+    "components": ["GitHub Actions", "Cloudflare Worker / KV", "Stripe", "Cron", "Webhook", "payment/order/fulfillment state machine"]
+  },
+  "administrator": {
+    "finalAuthority": true,
+    "explicitApprovalGates": [
+      "material product scope",
+      "material architecture",
+      "merge",
+      "release",
+      "production deployment / activation",
+      "customer installer distribution",
+      "public publish",
+      "inbound customer send",
+      "outbound sales send",
+      "live payments",
+      "production fulfillment"
+    ]
+  },
+  "hardSafetyGates": {
+    "livePayments": false,
+    "productionFulfillment": false,
+    "realInstallerCustomerDistribution": false,
+    "automaticCustomerFulfillmentMail": false,
+    "agentAutoMerge": false,
+    "agentAutoRelease": false,
+    "unapprovedPublicPosting": false,
+    "unapprovedInboundCustomerSend": false,
+    "unapprovedOutboundCustomerSend": false,
+    "autonomousBulkSalesSend": false,
+    "automaticRemediationWithProductionMutation": false
+  },
+  "unsupportedRuntimeWiring": {
+    "workEventTriggers": false,
+    "workSchedules": false,
+    "codexAutonomousRuntime": false,
+    "aiSemanticGuardRuntime": false,
+    "severityAwareGuardSlackRouting": false,
+    "sentinelScheduleActivation": false,
+    "crm": false,
+    "outboundSender": false,
+    "automaticBusinessActions": false
+  }
+}
