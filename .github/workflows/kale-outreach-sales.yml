@@ -18,3 +18,9 @@ jobs:
 
       - name: Run deterministic sales execution tests
         run: python scripts/test_p5_outreach_sales_rules.py
+
+      - name: Validate Sales Operations architecture
+        run: python scripts/validate_sales_operations.py
+
+      - name: Run deterministic Sales Operations tests
+        run: python scripts/test_sales_operations_rules.py
