@@ -4,18 +4,17 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from sales_storage_policy import LOCAL_STORE, LOCAL_ALLOWED_STORE, BOOTSTRAP_TEMPLATE, validate_local_workspace
 
 ROOT = Path(__file__).resolve().parents[1]
-MODEL_PATH = ROOT / "docs" / "operations" / "sales-operations-governance.json"
-ARCH_DOC = ROOT / "docs" / "operations" / "SALES_OPERATIONS_ARCHITECTURE.md"
-RUNTIME_DOC = ROOT / "docs" / "operations" / "KALE_OUTREACH_CODEX_RUNTIME.md"
-RULES = ROOT / "scripts" / "sales_operations_rules.py"
-TESTS = ROOT / "scripts" / "test_sales_operations_rules.py"
-EXEC_RULES = ROOT / "scripts" / "kale_outreach_sales_rules.py"
-EXEC_TESTS = ROOT / "scripts" / "test_p5_outreach_sales_rules.py"
-WORKFLOW = ROOT / ".github" / "workflows" / "kale-outreach-sales.yml"
-PR_CHECKS = ROOT / ".github" / "workflows" / "pr-checks.yml"
-WRANGLER = ROOT / "worker" / "wrangler.toml"
+MODEL_PATH = ROOT / "docs/operations/sales-operations-governance.json"
+ARCH_DOC = ROOT / "docs/operations/SALES_OPERATIONS_ARCHITECTURE.md"
+RUNTIME_DOC = ROOT / "docs/operations/KALE_OUTREACH_CODEX_RUNTIME.md"
+RULES = ROOT / "scripts/sales_operations_rules.py"
+TESTS = ROOT / "scripts/test_sales_operations_rules.py"
+WORKFLOW = ROOT / ".github/workflows/kale-outreach-sales.yml"
+PR_CHECKS = ROOT / ".github/workflows/pr-checks.yml"
+WRANGLER = ROOT / "worker/wrangler.toml"
 
 REQUIRED_SHEETS = {"Prospects", "Activities", "Campaigns", "Metrics", "Dashboard"}
 REQUIRED_PROSPECT_COLUMNS = {
@@ -43,6 +42,7 @@ REQUIRED_PROHIBITED = {
     "unapproved sales send", "unapproved discount", "unsupported product claim",
     "commercial promise without source",
     "marketing reuse of existing Cloudflare/Brevo customer-order mail path",
+    "real sales data commit or push",
 }
 
 
@@ -63,39 +63,36 @@ def validate_model(model: dict) -> list[str]:
         fail("Sales Operations execution profile must be Codex / Kale Outreach Sales Mode")
     if model.get("finalAuthority") != "Administrator Kale":
         fail("Administrator Kale must remain final authority")
-
     store = model.get("persistentDataLayer", {})
-    if store.get("target") != "Baked Kale shared Google Drive / Google Sheets":
-        fail("Google Drive / Google Sheets target data layer changed")
-    for key in ("connectionImplemented", "credentialsVerified", "fileOrFolderIdsConfigured", "writePermissionVerified", "publicSharingAllowed"):
+    if store.get("target") != LOCAL_STORE:
+        fail("local MacBook Sales Operations target data layer changed")
+    if store.get("backend") != "local_filesystem":
+        fail("Sales data backend must be local_filesystem")
+    for key in ("connectionImplemented", "workspacePathConfigured", "writePermissionVerified", "publicSharingAllowed", "googleDriveRequired"):
         if store.get(key) is not False:
             fail(f"Sales data runtime connection property must remain false in this foundation: {key}")
-
+    errors.extend(validate_local_workspace(model.get("localWorkspaceSetup")))
     boundary = model.get("storageBoundary", {})
-    allowed = set(boundary.get("realSalesDataAllowedStores", []))
-    if allowed != {"Administrator-approved Baked Kale shared Google Drive / Google Sheets"}:
-        fail("real sales-data allowlist must contain only the approved external Sales Master target")
+    if set(boundary.get("realSalesDataAllowedStores", [])) != {LOCAL_ALLOWED_STORE}:
+        fail("real sales-data allowlist must contain only the approved local non-Git data area")
     forbidden = set(boundary.get("realSalesDataForbiddenStores", []))
-    for required in ("GitHub source", "repository fixtures", "GitHub Actions artifacts", "public Slack channels", "synthetic test datasets"):
+    for required in ("GitHub source", "repository fixtures", "GitHub Actions artifacts", "public Slack channels", "synthetic test datasets", "Git history", "unapproved cloud mirrors"):
         if required not in forbidden:
             fail(f"real sales-data forbidden store missing: {required}")
     if boundary.get("sensitivePersonalDataAllowed") is not False:
         fail("sensitive personal data must remain prohibited")
     if boundary.get("businessPurposeMinimumNecessary") is not True:
         fail("business-purpose minimum-necessary rule must remain enabled")
-
     sheets = model.get("sheets", {})
     if set(sheets) != REQUIRED_SHEETS:
         fail("Sales Master logical sheet set changed")
     if not REQUIRED_PROSPECT_COLUMNS.issubset(set(sheets.get("Prospects", []))):
         fail("Prospects schema is incomplete")
-
     provenance = model.get("sourceProvenance", {})
     if set(provenance.get("requiredFields", [])) != REQUIRED_SOURCE_FIELDS:
         fail("source provenance field set is incomplete")
     if provenance.get("unverifiedFactsMayBecomeConfirmed") is not False:
         fail("unverified facts must not become confirmed Sales Master facts")
-
     deterministic = model.get("deterministicLayer", {})
     if not REQUIRED_DETERMINISTIC.issubset(set(deterministic.get("responsibilities", []))):
         fail("deterministic Sales Operations responsibilities are incomplete")
@@ -105,7 +102,6 @@ def validate_model(model: dict) -> list[str]:
         fail("domain-based primary duplicate key changed")
     if "human review" not in deterministic.get("duplicateFallback", ""):
         fail("company-name duplicate fallback must require human review")
-
     lifecycle = model.get("lifecycle", {})
     states = set(lifecycle.get("states", []))
     expected_states = {
@@ -125,23 +121,19 @@ def validate_model(model: dict) -> list[str]:
         fail("ADMIN_APPROVED transition contract changed")
     if transitions.get("READY_FOR_OUTREACH") != ["SENT"]:
         fail("READY_FOR_OUTREACH transition contract changed")
-
     if model.get("sendGates") != REQUIRED_SEND_GATES:
         fail("Sales Operations send-gate set changed")
-
     execution = model.get("executionModes", {})
     if execution.get("oneShot") != "AVAILABLE_AS_ADMINISTRATOR_DIRECTED_MODE":
         fail("one-shot Administrator-directed Sales Mode is missing")
     for key in ("scheduled", "eventDriven"):
         if execution.get(key) != "TARGET_ONLY_NOT_ACTIVE":
             fail(f"Sales execution mode must remain target-only: {key}")
-
     commercial = model.get("commercialState", {})
     if commercial.get("productionCommerceEnabled") is not False:
         fail("production commerce must remain false")
     if set(commercial.get("allowedPreReleaseCtas", [])) != {"learn more", "Demo", "Contact", "discovery conversation"}:
         fail("pre-release CTA allowlist changed")
-
     if not REQUIRED_PROHIBITED.issubset(set(model.get("prohibited", []))):
         fail("Sales Operations prohibited-action set is incomplete")
     return errors
@@ -150,76 +142,55 @@ def validate_model(model: dict) -> list[str]:
 def validate_repository() -> list[str]:
     errors: list[str] = []
     fail = errors.append
-    required_files = (MODEL_PATH, ARCH_DOC, RUNTIME_DOC, RULES, TESTS, EXEC_RULES, EXEC_TESTS, WORKFLOW, PR_CHECKS, WRANGLER)
+    required_files = (MODEL_PATH, ARCH_DOC, RUNTIME_DOC, RULES, TESTS, WORKFLOW, PR_CHECKS, WRANGLER, ROOT / BOOTSTRAP_TEMPLATE, ROOT / "scripts/test_local_sales_workspace.py")
     for path in required_files:
         if not path.is_file():
             fail(f"required Sales Operations file missing: {path.relative_to(ROOT)}")
     if errors:
         return errors
-
     arch = read(ARCH_DOC)
     for marker in (
-        "TARGET / PENDING RUNTIME CONNECTION",
-        "Baked Kale shared Google Drive / Google Sheets",
-        "Real prospect and recipient data",
-        "Deterministic Sales Operations layer",
-        "Approval-protected transitions",
-        "registrable-looking domain / hostname",
-        "PRODUCTION_COMMERCE_ENABLED = \"false\"",
+        "TARGET / PENDING LOCAL WORKSPACE SETUP", LOCAL_STORE, "Real prospect and recipient data",
+        "Deterministic Sales Operations layer", "Approval-protected transitions",
+        "normalized website hostname/domain", "PRODUCTION_COMMERCE_ENABLED = \"false\"",
     ):
         if marker not in arch:
             fail(f"Sales Operations architecture missing marker: {marker}")
-
     runtime = read(RUNTIME_DOC)
     for marker in (
-        "Codex / Kale Outreach Sales Mode",
-        "Kale Outreach Role ≠ Codex itself",
-        "Codex Engineering Mode → code",
-        "Codex / Kale Outreach Sales Mode → sales operations",
+        "Codex / Kale Outreach Sales Mode", "Kale Outreach Role ≠ Codex itself",
+        "Codex Engineering Mode → code", "Codex / Kale Outreach Sales Mode → sales operations",
         "No schedule is enabled by this architecture change.",
-        "Real prospect / recipient information must not be stored in",
+        "Real prospect / recipient information must not be stored in", "Role loading is explicit",
+        "not two installed Codex agents or verified OS sandboxes",
     ):
         if marker not in runtime:
             fail(f"Kale Outreach Codex runtime document missing marker: {marker}")
-
+    template = read(ROOT / BOOTSTRAP_TEMPLATE)
+    for marker in ("TEMPLATE ONLY", "NOT_CONFIGURED", "NOT_VERIFIED", "agent-runtime-governance.json", "sales-operations-governance.json", "Do not commit/push real data"):
+        if marker not in template:
+            fail(f"local bootstrap template missing marker: {marker}")
     rules = read(RULES)
-    for marker in (
-        "detect_duplicate_prospects",
-        "assign_id",
-        "validate_prospect",
-        "missing_send_gates",
-        "validate_transition",
-        "calculate_metrics",
-    ):
+    for marker in ("detect_duplicate_prospects", "assign_id", "validate_prospect", "missing_send_gates", "validate_transition", "calculate_metrics"):
         if marker not in rules:
             fail(f"deterministic Sales Operations rules missing marker: {marker}")
-
-    tests = read(TESTS)
-    if "Sales Operations deterministic rule tests passed." not in tests:
+    if "Sales Operations deterministic rule tests passed." not in read(TESTS):
         fail("Sales Operations deterministic test success marker missing")
-
-    execution_rules = read(EXEC_RULES)
-    execution_tests = read(EXEC_TESTS)
-    for marker in ("noMaterialClaimChanged", "SALES_EXECUTION_BLOCKED", "APPROVED_FOR_BOUNDED_SALES_EXECUTION"):
-        if marker not in execution_rules:
-            fail(f"bounded sales execution rules missing required gate marker: {marker}")
-        if marker not in execution_tests:
-            fail(f"bounded sales execution tests missing required gate coverage marker: {marker}")
-
     workflow = read(WORKFLOW)
     pr_checks = read(PR_CHECKS)
     for text, label in ((workflow, "Kale Outreach sales workflow"), (pr_checks, "PR checks")):
-        for marker in ("python scripts/validate_sales_operations.py", "python scripts/test_sales_operations_rules.py"):
+        for marker in ("python scripts/validate_sales_operations.py", "python scripts/test_sales_operations_rules.py", "python scripts/test_local_sales_workspace.py"):
             if marker not in text:
                 fail(f"{label} does not enforce Sales Operations foundation: {marker}")
-
     for forbidden in ("schedule:", "cron:", "contents: write", "pull-requests: write", "secrets.", "wrangler deploy"):
         if forbidden.casefold() in workflow.casefold():
             fail(f"Kale Outreach sales governance workflow must remain read-only/manual-only: {forbidden}")
-
-    wrangler = read(WRANGLER)
-    if 'PRODUCTION_COMMERCE_ENABLED = "false"' not in wrangler:
+    if 'PRODUCTION_COMMERCE_ENABLED = "false"' not in read(WRANGLER):
         fail("production commerce must remain disabled")
+    runtime_model = json.loads(read(ROOT / "docs/operations/agent-runtime-governance.json"))
+    sales_model = json.loads(read(MODEL_PATH))
+    if runtime_model.get("localWorkspaceSetup") != sales_model.get("localWorkspaceSetup"):
+        fail("runtime and Sales Operations local-setup contracts differ")
     return errors
 
 
@@ -237,7 +208,7 @@ def main() -> int:
             print(f"- {error}")
         return 1
     print("Sales Operations governance validation passed.")
-    print("Persistent-data boundary, deterministic integrity, lifecycle approval gates, and pre-release safety are consistent.")
+    print("Local-store target and no-Git data contract verified; real workspace setup remains pending.")
     return 0
 
 

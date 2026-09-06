@@ -2,269 +2,102 @@
 
 - Owner role: **Kale Outreach**
 - Execution profile: **Codex / Kale Outreach Sales Mode**
-- Target persistent store: **Baked Kale shared Google Drive / Google Sheets**
-- Connection state: **TARGET / PENDING RUNTIME CONNECTION**
+- Target persistent store: **Administrator-designated MacBook share-folder Sales Operations workspace**
+- Connection state: **TARGET / PENDING LOCAL WORKSPACE SETUP**
 - Final authority: **Administrator Kale**
 
-## Purpose
+## Purpose and storage decision
 
-Real outbound sales work must not disappear inside a single conversation. The target architecture keeps prospect, campaign, activity and funnel evidence as persistent Sales Operations data while preserving a strict separation between AI reasoning and deterministic data integrity.
+Sales work must persist beyond a conversation. The Administrator has replaced the proposed Google Drive / Google Sheets backend with a separate local sales workspace/repository in the MacBook's `share` folder. No Google connection is required. The absolute paths and local permissions are not yet specified or verified; no filesystem work is performed by this PR.
 
-No Google Drive / Sheets credential, OAuth grant, folder ID, file ID or write permission is created or assumed by this document.
+`share` is a folder label, not a known absolute path or a grant of network sharing. Do not assume `/Users/Shared`, a home-folder location, SMB access, cloud synchronization or another repository remote.
 
 ## Data classification and storage boundary
 
-Real prospect and recipient data is business-purpose operational data and must be handled on a minimum-necessary basis.
+Real prospect and recipient data is minimum-necessary business-purpose operational data. The approved target is the Administrator-designated local data area, isolated from the product repositories and Git tracking.
 
-Allowed real-sales storage target:
+The separate sales repository can version Agent instructions, schema, validators, deterministic code, architecture and synthetic tests. Its existence does not authorize committing or pushing real sales records. Prefer a separate data directory outside every Git working tree. An ignored local data directory is an alternative only after a tracked-file check, permission review and verification that exports/backups are not remotely published. `.gitignore` alone is not a security boundary.
 
-- Administrator-approved Baked Kale shared Google Drive / Google Sheets Sales Master.
+Real prospect/recipient records, business contact details, actual message drafts, activity logs and associated evidence must not enter GitHub source/history, repository fixtures, GitHub Actions artifacts, public Slack or synthetic test datasets. Private GitHub repositories are not an exception. No unapproved cloud mirror or public link sharing.
 
-Prohibited storage for real prospect / recipient data:
+Sensitive personal data remains prohibited. Contact person and Business email are optional and collected only where necessary and within the applicable business-purpose/compliance scope. Local persistence does not imply offline model processing; runtime data handling requires its own review.
 
-- GitHub source or repository history;
-- repository fixtures;
-- GitHub Actions artifacts;
-- public Slack channels;
-- synthetic test datasets.
+## Sales Master logical datasets
 
-GitHub stores only schemas, Agent instructions, architecture, deterministic validation code and synthetic tests.
-
-Sensitive personal data is outside the Sales Master design. Prefer company-level and professional business contact data; avoid personal channels when a business route is available.
-
-## Recommended Google Sheets workbook
-
-Create one Administrator-owned workbook after the runtime connection is separately approved. Recommended logical tabs follow.
+The existing machine-readable `sheets` key is retained for compatibility as a **logical dataset map**, not a requirement for Google Sheets or a physical workbook. Local file/database formats and paths are a later Administrator-approved setup choice. Candidate representations include CSV/JSON/SQLite; no format adapter or database is installed by this PR.
 
 ### Prospects
 
-Required / recommended columns:
-
-- `Prospect ID`
-- `Company`
-- `Country`
-- `Industry`
-- `Website`
-- `Company size signal`
-- `Fit Score`
-- `Fit rationale`
-- `Source URL`
-- `Source system`
-- `Source checked date`
-- `Evidence`
-- `Confidence`
-- `Contact route`
-- `Contact person`
-- `Business email`
-- `Current status`
-- `Campaign ID`
-- `Last contact`
-- `Next follow-up`
-- `Reply status`
-- `Meeting status`
-- `Conversion status`
-- `Notes`
-
-`Contact person` and `Business email` are optional and should be stored only when needed for a legitimate business-purpose route and permitted by the relevant compliance gate.
+Columns: `Prospect ID`, `Company`, `Country`, `Industry`, `Website`, `Company size signal`, `Fit Score`, `Fit rationale`, `Source URL`, `Source system`, `Source checked date`, `Evidence`, `Confidence`, `Contact route`, `Contact person`, `Business email`, `Current status`, `Campaign ID`, `Last contact`, `Next follow-up`, `Reply status`, `Meeting status`, `Conversion status`, `Notes`.
 
 ### Activities
 
-Append-only logical activity history:
+Columns: `Activity ID`, `Prospect ID`, `Timestamp`, `Channel`, `Action`, `Message / template reference`, `Result`, `Reply category`, `Next action`.
 
-- `Activity ID`
-- `Prospect ID`
-- `Timestamp`
-- `Channel`
-- `Action`
-- `Message / template reference`
-- `Result`
-- `Reply category`
-- `Next action`
-
-Do not overwrite history merely to make the latest state look cleaner. Corrections should preserve an auditable activity trail where practical.
+Append-only logical history. Corrections preserve an audit trail instead of rewriting past outcomes. Real history persistence and concurrency/retry controls are pending implementation, not implied by a schema.
 
 ### Campaigns
 
-- `Campaign ID`
-- `Product`
-- `Market`
-- `Country`
-- `Segment`
-- `Start date`
-- `Approval scope`
-- `Sender / channel`
-- `Status`
+Columns: `Campaign ID`, `Product`, `Market`, `Country`, `Segment`, `Start date`, `Approval scope`, `Sender / channel`, `Status`.
 
 ### Metrics
 
-At minimum aggregate:
-
-- researched prospects;
-- approved prospects;
-- messages sent;
-- replies;
-- positive replies;
-- meetings;
-- wins;
-- losses;
-- reply rate;
-- positive reply rate;
-- meeting rate;
-- conversion rate.
+Researched prospects, approved prospects, messages sent, replies, positive replies, meetings, wins, losses, reply rate, positive reply rate, meeting rate and conversion rate. Preserve denominators and reporting scope; never describe an unsent draft as a sent activity.
 
 ### Dashboard
 
-Target views:
-
-- country performance;
-- industry performance;
-- channel performance;
-- funnel;
-- monthly activity;
-- reply rate;
-- meeting rate;
-- sales conversion;
-- Fit Score vs actual response;
-- campaign performance.
-
-Dashboard cells are derived views; they are not a substitute for the underlying Prospects / Activities / Campaigns records.
+Country, industry and channel performance; funnel; monthly activity; reply/meeting/sales conversion; Fit Score vs actual response; campaign performance. Derived views do not replace the underlying datasets. Dashboard UI and persistent aggregations remain future implementation.
 
 ## Deterministic Sales Operations layer
 
-Separate AI reasoning from deterministic data handling.
+Kale Outreach / Codex Sales Mode owns research, reasoning, qualification/Fit Score recommendations, personalization, follow-up/campaign recommendations and evidence interpretation.
 
-### Kale Outreach / Codex Sales Mode
+Deterministic Sales Operations owns schema validation, ID assignment, duplicate detection, status validation, approval-protected transition validation, activity history integrity, KPI calculation, dashboard aggregation and data-quality checks.
 
-Owns:
-
-- research;
-- reasoning;
-- qualification recommendation;
-- Fit Score rationale;
-- personalization;
-- campaign recommendation;
-- follow-up recommendation;
-- evidence interpretation.
-
-### Deterministic Sales Operations
-
-Owns:
-
-- schema validation;
-- ID format / assignment;
-- duplicate detection;
-- lifecycle transition validation;
-- approval-protected state enforcement;
-- activity-history integrity;
-- KPI calculation;
-- dashboard aggregation;
-- data-quality checks.
-
-An LLM recommendation must not bypass deterministic approval-state checks.
+The repository contains foundational pure rules for schema checks, ID formatting, dedupe, transitions and KPIs, plus architecture contracts for persistence/history/dashboard behavior. These are not an installed local database, enforced access-control service or verified end-to-end operational system.
 
 ## Duplicate detection
 
-Primary business duplicate key:
-
-1. normalize the company website to a registrable-looking domain / hostname;
-2. if a usable domain exists, use the normalized domain as the primary duplicate key;
-3. otherwise use a normalized company-name fallback and require human review before merging records.
-
-Multiple contacts at one company may be separate contact routes but should normally reference one company Prospect record unless an approved account model later requires otherwise.
+Use the normalized website hostname/domain as the primary duplicate signal: normalize the hostname and the `www.` prefix, then flag duplicate candidates. This does not implement public-suffix/registrable-domain or corporate-identity resolution. Company-name fallback preserves international characters and requires human review; do not blindly merge unrelated subsidiaries or shared-domain entities. Multiple business contacts normally reference the same company Prospect.
 
 ## Prospect lifecycle
 
-Current target lifecycle:
+`RESEARCHED → QUALIFIED → ADMIN_APPROVED → READY_FOR_OUTREACH → SENT → REPLIED → POSITIVE_REPLY / NEGATIVE_REPLY → MEETING where applicable → WON / LOST`.
 
-`RESEARCHED`
-
-→ `QUALIFIED` or `DISQUALIFIED`
-
-→ `ADMIN_APPROVED`
-
-→ `READY_FOR_OUTREACH`
-
-→ `SENT`
-
-→ `REPLIED`
-
-→ `POSITIVE_REPLY` or `NEGATIVE_REPLY`
-
-→ `MEETING` where applicable
-
-→ `WON` or `LOST`
-
-Terminal states: `DISQUALIFIED`, `WON`, `LOST`.
+`RESEARCHED` or `QUALIFIED` may instead become `DISQUALIFIED`. Terminal states are `DISQUALIFIED`, `WON` and `LOST`. Actual transitions are enumerated in `sales-operations-governance.json`.
 
 ### Approval-protected transitions
 
-- `QUALIFIED → ADMIN_APPROVED` requires explicit Administrator approval evidence and bounded `approvalScopeId`.
-- `ADMIN_APPROVED → READY_FOR_OUTREACH` requires the full execution-gate set for the scope.
-- `READY_FOR_OUTREACH → SENT` requires the same gates to remain valid and `noMaterialClaimChanged=true`.
+`QUALIFIED → ADMIN_APPROVED` requires explicit Administrator approval evidence and bounded `approvalScopeId`. `ADMIN_APPROVED → READY_FOR_OUTREACH` requires every outbound gate. `READY_FOR_OUTREACH → SENT` requires those gates to remain valid, unchanged material claims, and verified actual send evidence from the future approved delivery adapter.
 
-The LLM may recommend a transition but may not manufacture the approval evidence.
+The LLM can recommend a transition but cannot manufacture approvals. Pure contract checks on booleans are not authentication of approval evidence. The future local persistence/send adapter must verify the approval origin, scope, sender/channel and recipient/message binding, and prevent bypass through direct state edits. No such adapter is activated here.
 
 ## Source provenance
 
-For every real prospect, retain where available:
-
-- source URL;
-- source system;
-- checked date;
-- evidence summary;
-- confidence.
-
-A low-confidence or unverified field must remain visibly uncertain rather than being converted into a confirmed fact.
-
-Stale-source refresh should be a later scheduled review capability, not silently assumed active.
+Preserve Source URL, Source system, Source checked date, Evidence and Confidence where available. Keep uncertain fields visibly uncertain. Do not promote unsupported facts to confirmed records. Source refresh scheduling remains inactive.
 
 ## Send-gate binding
 
-A `READY_FOR_OUTREACH` or `SENT` state must bind to the current execution scope:
+Require `factsConfirmedPublished=true`, `prospectSourceApproved=true`, `countryComplianceApproved=true`, `complianceEvidenceRef`, `administratorApproval=true`, bounded `approvalScopeId`, approved sender/channel and `noMaterialClaimChanged=true`. An approval is not reusable beyond its recipient/message/campaign scope.
 
-- `factsConfirmedPublished=true`;
-- `prospectSourceApproved=true`;
-- `countryComplianceApproved=true`;
-- `complianceEvidenceRef` present;
-- `administratorApproval=true`;
-- bounded `approvalScopeId`;
-- approved sender/channel;
-- `noMaterialClaimChanged=true` before send.
-
-Approval reuse outside the scope is invalid.
+No unrestricted bulk send, mass scraping/harvesting, purchased unreviewed lists, sensitive-data collection, self-approval, unapproved discount, unsupported commercial claim, unrestricted CRM mutation or marketing reuse of the Cloudflare/Brevo customer/order mail path.
 
 ## Current commercial boundary
 
-`PRODUCTION_COMMERCE_ENABLED = "false"` is the current repository state.
+`PRODUCTION_COMMERCE_ENABLED = "false"` is the verified repository baseline. Until a later reviewed launch changes this, only learn more, Demo, Contact or discovery-conversation CTAs are allowed. No buy-now, Checkout/payment, installer delivery or commercial-availability claim.
 
-Until commercial launch is separately approved, the Sales Master may track discovery / relationship outreach, but transactional CTAs remain blocked. Valid CTA intent is limited to learn more, Demo, Contact, or a discovery conversation.
+## Local workspace setup gate
 
-## Recommended Google Drive / Sheets permissions
+Before declaring persistence or role loading operational, verify:
 
-When implemented later:
+1. Administrator-supplied sales repository/workspace and real-data absolute paths, separate from fde-site/fde-ims product work.
+2. A local Codex task with verified access; do not assume a cloud environment sees MacBook paths.
+3. Sales workspace `AGENTS.md` installed from the bootstrap template, plus verified read-only access to the approved GitHub governance revision.
+4. Exact governance commit and loaded role files recorded without real prospect data in public logs.
+5. Local ACLs, repository tracking, private data/exports/backups and synchronization boundaries. No existing real-data files in the Git index/history; violations require containment, not a false clean report.
+6. Least-privilege tools and write roots. Instructions do not replace OS/tool restrictions; separate sales from engineering contexts and approvals.
+7. Synthetic write/read-back and schema/dedupe/lifecycle/KPI tests in the approved local location, without contacting real recipients.
+8. Retention, backup, deletion, recovery and country/channel/data-handling policy.
+9. Administrator approval for actual local persistence/research scope. Sender activation remains a separate gate.
 
-- Administrator Kale should own or control the shared location;
-- runtime access should be limited to the specific Sales Master resource needed for approved work;
-- no public link sharing;
-- no broad Drive-wide write permission when a narrower resource permission is sufficient;
-- write access should be separated from approval authority;
-- credentials and OAuth grants must not be committed to GitHub;
-- a dedicated connection review should verify account, scope, retention, backup and revocation behavior.
-
-These are target permissions only. None are enabled by this PR.
-
-## Runtime connection gate
-
-Before declaring persistence implemented, verify:
-
-1. approved Google account / shared-drive ownership;
-2. OAuth / connector capability;
-3. least-privilege read/write scope;
-4. actual workbook ID and tabs;
-5. schema compatibility;
-6. write / read-back test using synthetic data;
-7. duplicate and lifecycle checks on the deterministic path;
-8. privacy / retention / compliance requirements;
-9. Administrator approval for production use.
-
-Until those checks pass, status remains `TARGET_PENDING_RUNTIME_CONNECTION`.
+The machine-readable overall state stays `TARGET_PENDING_RUNTIME_CONNECTION` for compatibility; the specific local state is `TARGET_PENDING_LOCAL_WORKSPACE_SETUP`. Neither state implies a Google OAuth requirement. No guessed paths, installed bootstrap, real research, real data creation, sending, schedule activation or merge occurs in this PR.

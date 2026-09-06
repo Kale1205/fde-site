@@ -9,24 +9,10 @@
     "historicalP3Matrix": "docs/operations/p3-agent-governance.json"
   },
   "runtimePlanes": {
-    "codexProfiles": [
-      "Codex / Mirror Engineering Mode",
-      "Codex / Kale Outreach Sales Mode"
-    ],
-    "workTargetRoles": [
-      "Kale Desk",
-      "Kale’s Office",
-      "Kale Compliance"
-    ],
-    "salesData": "Baked Kale shared Google Drive / Google Sheets — TARGET_PENDING_RUNTIME_CONNECTION",
-    "deterministic": [
-      "GitHub Actions",
-      "Cloudflare",
-      "Cron",
-      "Webhook",
-      "Stripe / order / payment / fulfillment state machines",
-      "Sales Operations deterministic data checks"
-    ],
+    "codexProfiles": ["Codex / Mirror Engineering Mode", "Codex / Kale Outreach Sales Mode"],
+    "workTargetRoles": ["Kale Desk", "Kale’s Office", "Kale Compliance"],
+    "salesData": "Administrator-designated MacBook share-folder Sales Operations workspace — TARGET_PENDING_RUNTIME_CONNECTION",
+    "deterministic": ["GitHub Actions", "Cloudflare", "Cron", "Webhook", "Stripe / order / payment / fulfillment state machines", "Sales Operations deterministic data checks"],
     "finalAuthority": "Administrator Kale"
   },
   "engineering": {
@@ -34,37 +20,10 @@
     "mode": "Codex / Mirror Engineering Mode",
     "standaloneMirrorRuntimeRequired": false,
     "initialImsV1BuildOwner": "Codex",
-    "inheritedMirrorResponsibilities": [
-      "feature implementation",
-      "bug fix",
-      "tests",
-      "DB migration",
-      "dependencies",
-      "UI",
-      "product-source changes",
-      "documentation",
-      "non-main branch implementation"
-    ],
-    "postV1Flow": [
-      "Administrator",
-      "Codex Engineering",
-      "independent checks",
-      "Kale Review",
-      "Kale Guard",
-      "Codex summary",
-      "Administrator"
-    ],
+    "inheritedMirrorResponsibilities": ["feature implementation", "bug fix", "tests", "DB migration", "dependencies", "UI", "product-source changes", "documentation", "non-main branch implementation"],
+    "postV1Flow": ["Administrator", "Codex Engineering", "independent checks", "Kale Review", "Kale Guard", "Codex summary", "Administrator"],
     "salesSendAuthority": false,
-    "forbiddenAuthorities": [
-      "self-approval",
-      "final QA ACCEPT",
-      "final security ACCEPT",
-      "merge",
-      "release",
-      "production activation",
-      "customer distribution",
-      "outbound sales send"
-    ]
+    "forbiddenAuthorities": ["self-approval", "final QA ACCEPT", "final security ACCEPT", "merge", "release", "production activation", "customer distribution", "outbound sales send"]
   },
   "outreachSales": {
     "role": "Kale Outreach",
@@ -80,14 +39,28 @@
     "releaseAuthority": false,
     "publicPublishAuthority": false,
     "selfApprovalAuthority": false,
-    "targetDataLayer": "Baked Kale shared Google Drive / Google Sheets",
+    "targetDataLayer": "Administrator-designated MacBook share-folder Sales Operations workspace",
     "persistentDataConnectionState": "TARGET_PENDING_RUNTIME_CONNECTION",
     "salesOperationsModel": "docs/operations/sales-operations-governance.json",
-    "executionModes": {
-      "oneShot": "ADMINISTRATOR_DIRECTED",
-      "scheduled": "TARGET_ONLY_NOT_ACTIVE",
-      "eventDriven": "TARGET_ONLY_NOT_ACTIVE"
-    }
+    "executionModes": {"oneShot": "ADMINISTRATOR_DIRECTED", "scheduled": "TARGET_ONLY_NOT_ACTIVE", "eventDriven": "TARGET_ONLY_NOT_ACTIVE"}
+  },
+  "localWorkspaceSetup": {
+    "state": "TARGET_PENDING_LOCAL_WORKSPACE_SETUP",
+    "backend": "local_filesystem",
+    "host": "Administrator MacBook",
+    "parentFolderLabel": "share",
+    "workspacePath": null,
+    "dataPath": null,
+    "bootstrapTemplate": "docs/operations/templates/KALE_OUTREACH_WORKSPACE_AGENTS.md",
+    "workspaceConfigured": false,
+    "roleBootstrapInstalled": false,
+    "governanceReadAccessVerified": false,
+    "dataWritePermissionVerified": false,
+    "runtimeIsolationVerified": false,
+    "realDataGitTrackingAllowed": false,
+    "realDataGitPushAllowed": false,
+    "cloudMirrorEnabled": false,
+    "googleDriveRequired": false
   },
   "review": {
     "role": "Kale Review",
@@ -110,38 +83,12 @@
     },
     "target": {
       "activationState": "TARGET_ONLY_NOT_ACTIVE",
-      "flow": [
-        "Deterministic Security Scan",
-        "AI Semantic Guard Review",
-        "Severity Classification",
-        "Escalation"
-      ],
-      "severityLevels": [
-        "Critical",
-        "High",
-        "Medium",
-        "Low",
-        "Informational"
-      ],
-      "immediateSlackEscalation": [
-        "Critical",
-        "High"
-      ],
+      "flow": ["Deterministic Security Scan", "AI Semantic Guard Review", "Severity Classification", "Escalation"],
+      "severityLevels": ["Critical", "High", "Medium", "Low", "Informational"],
+      "immediateSlackEscalation": ["Critical", "High"],
       "lowerSeverityDisposition": "GitHub summary / artifact / structured finding; no per-finding Slack alert by default",
-      "aiSemanticCapabilities": [
-        "finding generation",
-        "severity classification",
-        "evidence explanation",
-        "recommended response"
-      ],
-      "aiSemanticForbidden": [
-        "automatic remediation",
-        "production mutation",
-        "self-approval",
-        "merge",
-        "release",
-        "production activation"
-      ]
+      "aiSemanticCapabilities": ["finding generation", "severity classification", "evidence explanation", "recommended response"],
+      "aiSemanticForbidden": ["automatic remediation", "production mutation", "self-approval", "merge", "release", "production activation"]
     }
   },
   "sentinel": {
@@ -150,12 +97,7 @@
     "hourlyScheduleEnabled": false,
     "stateMutation": false,
     "automaticRemediation": false,
-    "targetFlow": [
-      "scheduled deterministic observation",
-      "finding / incident",
-      "Slack",
-      "Administrator"
-    ],
+    "targetFlow": ["scheduled deterministic observation", "finding / incident", "Slack", "Administrator"],
     "scheduleActivationRequiresAdministratorApproval": true
   },
   "businessAgents": {
@@ -163,57 +105,29 @@
       "targetRuntime": "Codex",
       "runtimeMode": "Codex / Kale Outreach Sales Mode",
       "rolePreserved": true,
-      "executionModes": [
-        "one-shot",
-        "future schedule",
-        "future event trigger"
-      ],
+      "executionModes": ["one-shot", "future schedule", "future event trigger"],
       "scheduledExecutionActive": false,
       "eventDrivenExecutionActive": false,
       "persistentDataConnectionState": "TARGET_PENDING_RUNTIME_CONNECTION",
-      "realSendGates": [
-        "factsConfirmedPublished",
-        "prospectSourceApproved",
-        "countryComplianceApproved",
-        "complianceEvidenceRef",
-        "administratorApproval",
-        "approvalScopeId",
-        "approved sender/channel",
-        "noMaterialClaimChanged"
-      ],
+      "realSendGates": ["factsConfirmedPublished", "prospectSourceApproved", "countryComplianceApproved", "complianceEvidenceRef", "administratorApproval", "approvalScopeId", "approved sender/channel", "noMaterialClaimChanged"],
       "autonomousBulkSend": false,
       "unrestrictedCrmMutation": false
     },
     "Kale Desk": {
       "targetRuntime": "ChatGPT Work",
       "runtimeWiringState": "TARGET_ONLY_NOT_ACTIVE",
-      "targetFlow": [
-        "Customer event",
-        "Kale Desk analysis",
-        "reply draft",
-        "Administrator approval",
-        "Reply"
-      ],
+      "targetFlow": ["Customer event", "Kale Desk analysis", "reply draft", "Administrator approval", "Reply"],
       "unapprovedCustomerSend": false
     },
-    "Kale’s Office": {
-      "targetRuntime": "ChatGPT Work",
-      "runtimeWiringState": "TARGET_ONLY_NOT_ACTIVE",
-      "publicPublishAuthority": false
-    },
-    "Kale Compliance": {
-      "targetRuntime": "ChatGPT Work",
-      "foundationState": "P5_PENDING",
-      "runtimeWiringState": "TARGET_ONLY_NOT_ACTIVE",
-      "newLegalAutomationAuthority": false
-    }
+    "Kale’s Office": {"targetRuntime": "ChatGPT Work", "runtimeWiringState": "TARGET_ONLY_NOT_ACTIVE", "publicPublishAuthority": false},
+    "Kale Compliance": {"targetRuntime": "ChatGPT Work", "foundationState": "P5_PENDING", "runtimeWiringState": "TARGET_ONLY_NOT_ACTIVE", "newLegalAutomationAuthority": false}
   },
   "salesDataBoundary": {
     "realProspectDataInGitHub": false,
     "realProspectDataInActionsArtifacts": false,
     "realProspectDataInPublicSlack": false,
     "realProspectDataInSyntheticTests": false,
-    "targetExternalStore": "Baked Kale shared Google Drive / Google Sheets",
+    "targetExternalStore": "Administrator-designated MacBook share-folder Sales Operations workspace",
     "targetExternalStoreConnected": false,
     "sourceProvenanceRequired": true,
     "minimumNecessaryBusinessPurposeData": true,
@@ -221,47 +135,16 @@
   },
   "deterministicSalesOperations": {
     "model": "docs/operations/sales-operations-governance.json",
-    "responsibilities": [
-      "schema validation",
-      "ID assignment",
-      "duplicate detection",
-      "status validation",
-      "approval-protected transition validation",
-      "activity history integrity",
-      "KPI calculation",
-      "dashboard aggregation",
-      "data-quality checks"
-    ],
+    "responsibilities": ["schema validation", "ID assignment", "duplicate detection", "status validation", "approval-protected transition validation", "activity history integrity", "KPI calculation", "dashboard aggregation", "data-quality checks"],
     "llmMayOverrideApprovalState": false
   },
   "deterministicExecutionPlane": {
     "aiFreeBusinessStateMutation": false,
-    "components": [
-      "GitHub Actions",
-      "Cloudflare Worker / KV",
-      "Stripe",
-      "Cron",
-      "Webhook",
-      "payment/order/fulfillment state machine",
-      "Sales Operations validation and aggregation"
-    ]
+    "components": ["GitHub Actions", "Cloudflare Worker / KV", "Stripe", "Cron", "Webhook", "payment/order/fulfillment state machine", "Sales Operations validation and aggregation"]
   },
   "administrator": {
     "finalAuthority": true,
-    "explicitApprovalGates": [
-      "material product scope",
-      "material architecture",
-      "pricing / commercial policy",
-      "merge",
-      "release",
-      "production deployment / activation",
-      "customer installer distribution",
-      "public publish",
-      "inbound customer send",
-      "outbound sales send",
-      "live payments",
-      "production fulfillment"
-    ]
+    "explicitApprovalGates": ["material product scope", "material architecture", "pricing / commercial policy", "merge", "release", "production deployment / activation", "customer installer distribution", "public publish", "inbound customer send", "outbound sales send", "live payments", "production fulfillment"]
   },
   "hardSafetyGates": {
     "livePayments": false,
@@ -283,6 +166,7 @@
     "codexSalesSchedules": false,
     "codexSalesEventTriggers": false,
     "googleDriveSalesDataConnection": false,
+    "localSalesWorkspaceConfigured": false,
     "aiSemanticGuardRuntime": false,
     "severityAwareGuardSlackRouting": false,
     "sentinelScheduleActivation": false,

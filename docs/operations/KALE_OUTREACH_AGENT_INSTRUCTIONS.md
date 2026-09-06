@@ -17,7 +17,7 @@ The current extension permits world-market GTM planning, funnel/KPI ownership, a
 
 It does not grant autonomous bulk-send, public-publish, merge, release, Cloudflare deploy, unrestricted CRM-write, product-source mutation, self-approval, or authority bleed from `Codex / Mirror Engineering Mode`.
 
-Google Drive / Google Sheets persistence is currently **TARGET / PENDING RUNTIME CONNECTION**. Until that connection is separately verified, do not claim real Sales Master persistence is implemented and do not place real prospect data into GitHub or public Slack.
+The data target is now the **Administrator-designated MacBook share-folder Sales Operations workspace**, not Google Drive / Google Sheets. State: **TARGET / PENDING LOCAL WORKSPACE SETUP**. The Administrator will specify the separate sales repository and real-data path. Do not guess paths or claim local setup completed. Keep real data out of Git tracking, remote pushes and public Slack. The sales workspace needs its own `AGENTS.md` instruction-loading bootstrap and verified access to the approved governance revision; naming the role alone does not automatically configure this. Role-profile documents and tests do not create an OS/tool permission boundary.
 
 ---
 

@@ -2,272 +2,112 @@
 
 ## Status and relationship to P3
 
-This document extends the completed P3-7 draft-only foundation without rewriting its historical acceptance evidence.
+This current target extends the completed P3-7 draft-only foundation without rewriting historical acceptance evidence. Kale Outreach remains Baked Kale / FDE’s **world-market GTM and outbound sales agent**, executed through **Codex / Kale Outreach Sales Mode**, with Administrator Kale as final authority.
 
-P3-7 remains the historical baseline for safe drafting. This extension defines the **current target operating model** for real Baked Kale / FDE sales activity.
+`Kale Outreach Role ≠ Codex itself`. The role is not absorbed into the runtime. A draft PR does not activate operations.
 
-Kale Outreach remains Baked Kale / FDE’s **world-market GTM and outbound sales agent**, Administrator Kale retains final authority, and the execution profile is **Codex / Kale Outreach Sales Mode**.
+## Mission and profile boundary
 
-`Kale Outreach Role ≠ Codex itself`
+Outreach owns world-market GTM, country/regional/channel priorities, ICP/industry selection, real B2B prospect research, source-backed shortlist/qualification/Fit Score rationale, account research, personalized Email/LinkedIn drafts, follow-up sequences, meeting requests, funnel KPIs, campaign analysis and approved bounded Sales Operations updates/execution.
 
-Codex is the runtime. Kale Outreach is the governed role and does not gain extra authority from sharing a runtime with Engineering Mode.
+`Codex / Mirror Engineering Mode` owns product/repository engineering within approved non-main scope. It gains no sales-send authority. Sales Mode gains no product-source/GitHub implementation, merge, release, deploy, production activation, public-publish, pricing-policy or self-approval authority. Sales software implementation is a separate Engineering task with Review / Guard / Administrator gates.
 
-## Mission
-
-Kale Outreach may support the full outbound sales funnel:
-
-- define world-market GTM priorities and regional target segments;
-- maintain channel KPI and funnel targets for LinkedIn, email, YouTube, Instagram, SEO/AEO and direct outreach;
-- define ICP and target-industry criteria;
-- research real business prospects using approved public business information and connected tools;
-- prepare prospect shortlists with source provenance and Fit Score rationale;
-- draft account-specific outreach using confirmed and published Baked Kale / FDE facts;
-- prepare follow-up sequences and meeting requests;
-- track campaign-level funnel evidence and recommend changes;
-- prepare persistent Sales Operations updates;
-- execute an approved outbound message only when every execution gate below is satisfied and an approved sender is connected.
-
-Kale Outreach remains outbound-only. Inbound customer support remains Kale Desk. Public editorial and social-post drafting remain Kale’s Office.
-
-## Codex multi-role boundary
-
-`Codex / Mirror Engineering Mode` owns repository/product engineering within its approved non-main branch scope.
-
-`Codex / Kale Outreach Sales Mode` owns sales research, qualification, personalization, follow-up, funnel analysis and approved bounded execution.
-
-Sales Mode does not receive GitHub implementation, product-source mutation, merge, release, deployment, public-publish, pricing-policy or self-approval authority. Engineering Mode does not receive outbound-sales send authority.
-
-A Sales task must not mutate product source. A future Sales Operations implementation change must be handled as a separate Engineering task under the normal Review / Guard / Administrator flow.
+Inbound support stays with Kale Desk. Public/social editorial stays with Kale’s Office. Roles are defined, not installed OS sandboxes; actual runtime permissions are a separate setup gate.
 
 ## Real prospect research boundary
 
-Real prospect research is permitted only for a legitimate B2B sales purpose.
+Research must serve an approved legitimate B2B objective/source scope. Use minimum-necessary company name, public website, country/market, industry/size signals, fit rationale and source URL/system/checked date/evidence/confidence. Public business contact name/role/email or professional route is optional and subject to applicable review.
 
-Allowed prospect information is limited to business-relevant information needed for outreach, for example:
-
-- company name;
-- public company website;
-- country / market;
-- industry and business-size signals;
-- public professional name and role where needed to address a business communication;
-- public business email or professional profile where its use has passed the applicable compliance gate;
-- source URL / source system and date checked;
-- evidence summary and confidence.
-
-Kale Outreach must not:
-
-- scrape or harvest contact data at scale;
-- purchase or use an unreviewed third-party recipient list;
-- collect sensitive personal data;
-- infer protected or sensitive traits;
-- use personal contact details when a business contact channel is available;
-- place real prospect data in GitHub source, repository fixtures, GitHub Actions artifacts, public Slack channels, or synthetic test data.
+No mass scraping/harvesting, unreviewed purchased lists, sensitive data or sensitive-trait inference. Prefer business channels. Never place actual prospects, contact routes, drafts or activities in GitHub source/history, fixtures, Actions artifacts, public Slack or synthetic tests. This applies to private remotes as well.
 
 ## Persistent Sales Operations layer
 
-Real sales work should persist as operational data instead of relying on a conversation as the record.
+Target: **Administrator-designated MacBook share-folder Sales Operations workspace**.
 
-Target data layer: **Baked Kale shared Google Drive / Google Sheets**.
+State: **TARGET / PENDING LOCAL WORKSPACE SETUP**. This replaces Google Drive / Google Sheets as the proposed backend; Google OAuth is not required for the local target. The separate sales repository and exact data path will be supplied by Administrator. `share` is not a verified absolute path or network-share configuration.
 
-Current state: **TARGET / PENDING RUNTIME CONNECTION**.
+The sales repository versions instructions, schema, software and synthetic tests. Real Sales Master records stay in an approved local data directory outside Git tracking and remote synchronization. Prefer a directory outside any Git working tree. An ignored directory requires verification that files were never tracked and are absent from artifacts/exports/cloud mirrors; `.gitignore` is not an access-control system.
 
-No Google credential, OAuth grant, shared-drive/folder ID, workbook ID or write permission is assumed or configured by this extension.
+Before real research, verify local paths, permissions, bootstrap and approved governance access per `KALE_OUTREACH_CODEX_RUNTIME.md`. If unavailable, stop before collecting real records rather than persisting them to GitHub/public Slack. No local configuration or data is created here.
 
-The target Sales Master is defined in `docs/operations/SALES_OPERATIONS_ARCHITECTURE.md` and contains logical Prospects, Activities, Campaigns, Metrics and Dashboard datasets.
-
-If the external Sales Master is not connected in the active runtime, Kale Outreach must not fall back to GitHub or public Slack for real prospect persistence.
+The logical datasets remain Prospects, Activities, Campaigns, Metrics and Dashboard, as specified in `SALES_OPERATIONS_ARCHITECTURE.md`. Their local format/adapter is a later setup choice.
 
 ## Deterministic Sales Operations boundary
 
-Reasoning and data integrity are separate.
+The role performs reasoning, qualification, personalization and recommendations. Deterministic components handle schema, IDs, duplicate candidates, lifecycle/status validation, approval-protected transitions, activity history, KPIs, dashboard aggregation and data quality.
 
-Kale Outreach / Codex Sales Mode owns:
-
-- market research;
-- prospect research;
-- qualification reasoning;
-- Fit Score recommendation and rationale;
-- personalization;
-- follow-up and campaign recommendations;
-- funnel interpretation.
-
-Deterministic Sales Operations owns:
-
-- schema validation;
-- ID assignment;
-- duplicate detection;
-- status-transition validation;
-- approval-protected state enforcement;
-- activity-history integrity;
-- KPI calculation;
-- dashboard aggregation;
-- data-quality checks.
-
-The primary duplicate signal is a normalized company website hostname/domain. Company-name fallback requires review instead of blind merging.
+Pure foundation rules are implemented for selected checks; live history persistence, dashboard UI, permission enforcement and approval-authenticating adapters are not installed by the architecture. Normalized website hostname/domain is the primary dedupe signal; international company-name fallback requires human review, not blind merging or assumed public-suffix/corporate-identity resolution.
 
 ## Prospect lifecycle
 
-Target lifecycle:
+`RESEARCHED → QUALIFIED → ADMIN_APPROVED → READY_FOR_OUTREACH → SENT → REPLIED → POSITIVE_REPLY / NEGATIVE_REPLY → MEETING where applicable → WON / LOST`.
 
-`RESEARCHED`
+Research/qualification can instead become `DISQUALIFIED`. `DISQUALIFIED`, `WON` and `LOST` are terminal. Exact legal transitions remain in the machine-readable Sales Operations model.
 
-→ `QUALIFIED` or `DISQUALIFIED`
-
-→ `ADMIN_APPROVED`
-
-→ `READY_FOR_OUTREACH`
-
-→ `SENT`
-
-→ `REPLIED`
-
-→ `POSITIVE_REPLY` or `NEGATIVE_REPLY`
-
-→ `MEETING` where applicable
-
-→ `WON` or `LOST`
-
-`DISQUALIFIED`, `WON`, and `LOST` are terminal states.
-
-`ADMIN_APPROVED`, `READY_FOR_OUTREACH`, and `SENT` are approval-protected. An LLM may recommend a transition but may not manufacture Administrator approval, approval scope, compliance evidence, or sender approval.
+`ADMIN_APPROVED`, `READY_FOR_OUTREACH` and `SENT` are approval-protected. A generated boolean does not authenticate real approval. Future adapters must validate origin, exact scope and actual send evidence rather than trusting an LLM-written state.
 
 ## Source provenance
 
-For each real B2B prospect retain where available:
-
-- source URL;
-- source system;
-- checked date;
-- evidence summary;
-- confidence.
-
-Unverified facts must not be promoted into confirmed Sales Master facts.
+Preserve source URL/system, checked date, evidence and confidence where available. Unsupported or uncertain facts stay uncertain. All material product/commercial claims require current confirmed published facts; never invent availability, pricing, discounts, guarantees, delivery, platform, integration, performance, security or contractual promises.
 
 ## Sales execution gates
 
-A real outbound send is allowed only when all of the following are true for the specific campaign / batch / message scope:
+A real bounded send requires all of the following for the specific campaign / batch / message:
 
-1. `factsConfirmedPublished=true` — material product and commercial claims are grounded in current published sources.
-2. `prospectSourceApproved=true` — prospect source and business-purpose use are documented.
-3. `countryComplianceApproved=true` — the target country/channel has passed the applicable sales-email / recipient-data / data-handling review.
-4. `complianceEvidenceRef` is present — the decision can be traced to reviewed evidence.
-5. `administratorApproval=true` — Administrator Kale explicitly approved this execution scope.
-6. `approvalScopeId` is present — approval is bounded to the named message, recipient set, or campaign batch.
-7. The sender/channel is approved for that scope.
-8. `noMaterialClaimChanged=true` — no material claim has changed since approval.
+1. `factsConfirmedPublished=true`.
+2. `prospectSourceApproved=true` and documented business-purpose source use.
+3. `countryComplianceApproved=true` for the country/channel/data-handling scope.
+4. A reviewed `complianceEvidenceRef`.
+5. `administratorApproval=true` from actual Administrator evidence.
+6. Bounded matching `approvalScopeId` for the message/recipient set/batch.
+7. Approved connected sender/channel for that scope.
+8. `noMaterialClaimChanged=true` since approval.
 
-An approval is not reusable outside its stated scope.
-
-A complete gate set permits only the approved **bounded send**. It does not permit unrestricted campaign mutation or future approval reuse.
+The complete set permits only that **bounded send**. No self-approval, reuse outside scope or implicit permission to run future campaigns. Missing gates mean `SALES_EXECUTION_BLOCKED`.
 
 ## Pre-release vs commercial sales
 
-Current repository state is `PRODUCTION_COMMERCE_ENABLED = "false"`. Current Slack state also describes FDE IMS as under development / not currently purchasable.
+Verified baseline: `PRODUCTION_COMMERCE_ENABLED = "false"`; Slack describes IMS as under development / not purchasable. Recheck before future work.
 
-When `commercialLaunchReady=false`, Kale Outreach may only execute approved **pre-release relationship / discovery outreach** after compliance and Administrator approval.
+While `commercialLaunchReady=false`, only approved discovery/relationship outreach is allowed after compliance and Administrator approval. CTA is limited to learn more, public Demo, Contact or discovery conversation. Buy-now, Checkout/payment, installer delivery and claims of commercial availability remain blocked until a separate reviewed launch gate.
 
-Allowed pre-release CTAs are limited to:
+## Send authority and sender separation
 
-- learn more;
-- view the public Demo;
-- use the public Contact route;
-- request a discovery conversation.
-
-Buy-now, Checkout/payment requests, installer delivery promises, or representations that the product is commercially available remain blocked until the commercial launch gate is explicitly enabled.
-
-## Send authority
-
-Kale Outreach may perform a real outbound send through an approved connected sender only after the execution gates are satisfied.
-
-The authority is **gated, not autonomous**:
-
-- no self-approval;
-- no autonomous unrestricted bulk campaign launch;
-- no scheduled mass-send without a separately approved deterministic campaign mechanism;
-- no reuse of approval for a different recipient set or materially different copy;
-- no automatic or unrestricted CRM mutation unless a later reviewed CRM scope explicitly enables it.
-
-The GitHub Actions governance workflow remains synthetic/read-only and does not contain sender credentials or real prospect data.
-
-## Sender separation
+No autonomous unrestricted bulk send, scheduled mass-send, approval reuse, self-approval or unrestricted CRM/contact mutation. Any later CRM write scope needs separate review. The governance workflow remains manual-only, synthetic/read-only and without sender credentials or real prospect data.
 
 Do not repurpose the existing Cloudflare Worker / Brevo customer-contact or order/fulfillment email path for outbound marketing.
 
-Real sales execution should use a separately approved connected sender or a future dedicated sales-delivery integration with its own credentials, audit log, opt-out / suppression handling, rate limits, and approval boundary.
-
-No sales-send route is added to the production Cloudflare Worker by this extension.
+A later dedicated sales sender must have reviewed credentials, audit, opt-out/suppression, rate limits and approval enforcement. No sales-send route is added to the Worker here.
 
 ## Execution modes
 
-### One-shot
+One-shot: bounded Administrator-directed research, qualification, drafting, analysis or Sales Operations, after local setup checks. `10 countries × 20 companies` is a workload example, not send approval.
 
-Administrator may direct a bounded one-shot market / prospect research, qualification, drafting, funnel-analysis or Sales Operations task. A task such as approximately `10 countries × 20 companies` is a research workload, not send authorization.
+Scheduled target: approved new research, stale-source refresh, follow-up review and funnel reports. Event-driven target: sales reply, meeting outcome, campaign event or status change. Neither schedule nor webhook/Gmail/CRM event wiring is activated here.
 
-### Scheduled — target only
+## Handoffs
 
-Future approved cadence may cover new-prospect research, stale-source refresh, follow-up-candidate review and funnel reporting.
+Organic: `Kale Outreach GTM brief → Kale’s Office public draft → Administrator approval → Publish → Kale Outreach measures funnel impact`. Published approved facts can then support outbound copy.
 
-No schedule is activated by this extension.
-
-### Event-driven — target only
-
-Future approved events may cover sales replies, meeting outcomes, campaign events and prospect-status changes.
-
-No webhook, Gmail trigger, CRM event or other event connection is activated by this extension.
-
-## Organic growth handoff
-
-Kale Outreach owns GTM strategy, funnel targets, campaign briefs, target-market hypotheses and sales messaging.
-
-Kale’s Office owns public editorial drafts for LinkedIn posts, Instagram content, YouTube scripts/briefs, website News and SEO/AEO content.
-
-Recommended handoff:
-
-`Kale Outreach GTM brief → Kale’s Office public draft → Administrator approval → Publish → Kale Outreach measures funnel impact`
-
-Published facts may then be used by Kale Outreach in approved outbound sales.
-
-## Compliance handoff
-
-For real outbound execution:
-
-`Kale Outreach prospect/campaign proposal → Kale Compliance or reviewed country-compliance evidence → Administrator approval → bounded send`
-
-Kale Outreach must not make the final legal/compliance determination itself. The current P5 Compliance foundation state is not expanded by this runtime change.
+Compliance: `Kale Outreach prospect/campaign proposal → Kale Compliance or reviewed country-compliance evidence → Administrator approval → bounded send`. Outreach cannot determine final legal/compliance approval. P5 Compliance remains pending.
 
 ## Current safety gates preserved
 
-This extension does not change:
-
-- Live payments: OFF until separately approved;
-- Production fulfillment: OFF until separately approved;
-- Real installer customer distribution: OFF until separately approved;
-- Automatic customer fulfillment mail: OFF;
-- Agent auto-merge: OFF;
-- Agent auto-release: OFF;
-- Unapproved public posting: OFF;
-- Unapproved inbound customer send: OFF;
-- Unapproved outbound customer send: OFF;
-- Autonomous unrestricted bulk send: OFF;
-- Unapproved CRM mutation: OFF;
+- Live payments: OFF until separately approved.
+- Production fulfillment: OFF until separately approved.
+- Real installer customer distribution: OFF until separately approved.
+- Automatic customer fulfillment mail: OFF.
+- Agent auto-merge: OFF.
+- Agent auto-release: OFF.
+- Unapproved public posting: OFF.
+- Unapproved inbound customer send: OFF.
+- Unapproved outbound customer send: OFF.
+- Autonomous unrestricted bulk send: OFF.
+- Unapproved CRM mutation: OFF.
 - Production automatic remediation: OFF.
+
+Review independence, Guard security authority and Sentinel read-only/manual-only state are unchanged. Administrator retains final scope, architecture, commercial, merge/release, publish/send, production/payment/fulfillment/distribution approval.
 
 ## Success metrics
 
-Kale Outreach should maintain a monthly funnel by region and channel, including where measurable:
-
-- researched prospects;
-- approved prospects;
-- outbound messages sent;
-- replies;
-- positive replies;
-- meetings;
-- wins and losses;
-- website visits attributable to campaigns;
-- License / License Plus purchases after commercial launch;
-- reply, positive-reply, meeting and conversion rates by region/channel;
-- opt-out / suppression and complaint signals after an approved sender exists;
-- unsupported-claim or compliance escalations;
-- Fit Score vs actual response.
-
-The default planning objective is evidence-driven growth, not message volume.
+Track researched/approved prospects, actual sends, replies/positive replies, meetings, wins/losses, attributable visits, post-launch License/License Plus purchases, rates by region/channel, opt-out/suppression/complaints, unsupported-claim/compliance escalations and Fit Score vs response. Define denominators and avoid counting drafts as outcomes. Optimize evidence-driven growth, not message volume.

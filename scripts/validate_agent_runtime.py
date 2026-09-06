@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from sales_storage_policy import LOCAL_STORE, BOOTSTRAP_TEMPLATE, validate_local_workspace
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_PATH = ROOT / "docs" / "operations" / "agent-runtime-governance.json"
@@ -38,12 +39,10 @@ def load(path: Path = MODEL_PATH) -> dict:
 def validate_model(model: dict) -> list[str]:
     errors: list[str] = []
     fail = errors.append
-
     if model.get("schemaVersion") != 2:
         fail("schemaVersion must be 2")
     if model.get("status") != "CURRENT_TARGET_OPERATING_MODEL":
         fail("status must be CURRENT_TARGET_OPERATING_MODEL")
-
     governance = model.get("governance", {})
     if governance.get("sourceOfTruth") != "GitHub":
         fail("GitHub must remain Agent Governance Source of Truth")
@@ -53,17 +52,15 @@ def validate_model(model: dict) -> list[str]:
         fail("historical P3 acceptance evidence must be preserved")
     if governance.get("historicalP3Matrix") != "docs/operations/p3-agent-governance.json":
         fail("historical P3 matrix reference changed")
-
     planes = model.get("runtimePlanes", {})
     if set(planes.get("codexProfiles", [])) != CODEX_PROFILES:
         fail("Codex runtime profiles must keep Engineering and Kale Outreach Sales Modes separated")
     if set(planes.get("workTargetRoles", [])) != WORK_TARGET_ROLES:
         fail("Work target roles must remain Desk / Office / Compliance only")
-    if "TARGET_PENDING_RUNTIME_CONNECTION" not in planes.get("salesData", ""):
-        fail("Sales data plane must remain target/pending runtime connection")
+    if planes.get("salesData") != LOCAL_STORE + " — TARGET_PENDING_RUNTIME_CONNECTION":
+        fail("Sales data plane must remain the pending local MacBook target")
     if planes.get("finalAuthority") != "Administrator Kale":
         fail("Administrator Kale must remain final authority")
-
     engineering = model.get("engineering", {})
     if engineering.get("runtime") != "Codex":
         fail("Codex must own engineering runtime")
@@ -87,7 +84,6 @@ def validate_model(model: dict) -> list[str]:
     forbidden = set(engineering.get("forbiddenAuthorities", []))
     if not {"self-approval", "final QA ACCEPT", "final security ACCEPT", "merge", "release", "production activation", "customer distribution", "outbound sales send"}.issubset(forbidden):
         fail("Codex Engineering forbidden-authority boundary is incomplete")
-
     sales = model.get("outreachSales", {})
     if sales.get("role") != "Kale Outreach":
         fail("Kale Outreach role identity must be preserved")
@@ -100,7 +96,7 @@ def validate_model(model: dict) -> list[str]:
     for key in ("githubImplementationAuthority", "productSourceMutationAuthority", "mergeAuthority", "releaseAuthority", "publicPublishAuthority", "selfApprovalAuthority"):
         if sales.get(key) is not False:
             fail(f"Codex Kale Outreach Sales Mode forbidden authority must remain false: {key}")
-    if sales.get("targetDataLayer") != "Baked Kale shared Google Drive / Google Sheets":
+    if sales.get("targetDataLayer") != LOCAL_STORE:
         fail("Kale Outreach target Sales data layer changed")
     if sales.get("persistentDataConnectionState") != "TARGET_PENDING_RUNTIME_CONNECTION":
         fail("Kale Outreach persistent-data connection must remain target/pending")
@@ -112,7 +108,7 @@ def validate_model(model: dict) -> list[str]:
     for key in ("scheduled", "eventDriven"):
         if modes.get(key) != "TARGET_ONLY_NOT_ACTIVE":
             fail(f"Kale Outreach execution mode must remain inactive target: {key}")
-
+    errors.extend(validate_local_workspace(model.get("localWorkspaceSetup")))
     review = model.get("review", {})
     if review.get("role") != "Kale Review":
         fail("Kale Review role missing")
@@ -122,7 +118,6 @@ def validate_model(model: dict) -> list[str]:
         fail("material author must not self-ACCEPT final QA")
     if review.get("futurePrTriggeredExecution") != "TARGET_ONLY_NOT_ACTIVE":
         fail("PR-triggered Review must remain target-only in this change")
-
     guard = model.get("guard", {})
     current = guard.get("current", {})
     if current.get("workflow") != ".github/workflows/auto-security-audit.yml":
@@ -150,7 +145,6 @@ def validate_model(model: dict) -> list[str]:
         fail("Medium-and-below alert-fatigue policy missing")
     if not {"automatic remediation", "production mutation", "self-approval", "merge", "release", "production activation"}.issubset(set(target.get("aiSemanticForbidden", []))):
         fail("AI Semantic Guard forbidden-authority boundary is incomplete")
-
     sentinel = model.get("sentinel", {})
     if sentinel.get("role") != "read-only Operations Monitor":
         fail("Sentinel role must remain read-only Operations Monitor")
@@ -162,7 +156,6 @@ def validate_model(model: dict) -> list[str]:
         fail("Sentinel automatic remediation must remain prohibited")
     if sentinel.get("scheduleActivationRequiresAdministratorApproval") is not True:
         fail("Sentinel schedule activation must remain an Administrator gate")
-
     business = model.get("businessAgents", {})
     outreach = business.get("Kale Outreach", {})
     if outreach.get("targetRuntime") != "Codex":
@@ -181,7 +174,6 @@ def validate_model(model: dict) -> list[str]:
         fail("Autonomous bulk sales send must remain prohibited")
     if outreach.get("unrestrictedCrmMutation") is not False:
         fail("Unrestricted CRM mutation must remain prohibited")
-
     for name in ("Kale Desk", "Kale’s Office", "Kale Compliance"):
         if business.get(name, {}).get("targetRuntime") != "ChatGPT Work":
             fail(f"{name} target runtime must remain ChatGPT Work")
@@ -196,18 +188,16 @@ def validate_model(model: dict) -> list[str]:
         fail("Kale Compliance must remain P5 pending")
     if compliance.get("newLegalAutomationAuthority") is not False:
         fail("Kale Compliance must not gain unbuilt legal automation authority")
-
     data = model.get("salesDataBoundary", {})
     for key in ("realProspectDataInGitHub", "realProspectDataInActionsArtifacts", "realProspectDataInPublicSlack", "realProspectDataInSyntheticTests", "targetExternalStoreConnected", "sensitivePersonalData"):
         if data.get(key) is not False:
             fail(f"Sales data boundary must remain false: {key}")
-    if data.get("targetExternalStore") != "Baked Kale shared Google Drive / Google Sheets":
+    if data.get("targetExternalStore") != LOCAL_STORE:
         fail("Sales data external-store target changed")
     if data.get("sourceProvenanceRequired") is not True:
         fail("real prospect source provenance must be required")
     if data.get("minimumNecessaryBusinessPurposeData") is not True:
         fail("minimum-necessary business-purpose data boundary must be enabled")
-
     deterministic_sales = model.get("deterministicSalesOperations", {})
     if deterministic_sales.get("model") != "docs/operations/sales-operations-governance.json":
         fail("deterministic Sales Operations model reference changed")
@@ -216,23 +206,19 @@ def validate_model(model: dict) -> list[str]:
         fail("deterministic Sales Operations responsibility set is incomplete")
     if deterministic_sales.get("llmMayOverrideApprovalState") is not False:
         fail("LLM must not override Sales Operations approval state")
-
     if model.get("deterministicExecutionPlane", {}).get("aiFreeBusinessStateMutation") is not False:
         fail("AI Agents must not freely mutate deterministic business state")
-
     administrator = model.get("administrator", {})
     if administrator.get("finalAuthority") is not True:
         fail("Administrator final authority must remain true")
     if set(administrator.get("explicitApprovalGates", [])) != ADMIN_GATES:
         fail("Administrator explicit-approval gate set changed")
-
     hard = model.get("hardSafetyGates", {})
     if set(hard) != HARD_GATES:
         fail("hard-safety gate set is incomplete")
     for gate, state in hard.items():
         if state is not False:
             fail(f"hard safety gate must remain OFF: {gate}")
-
     wiring = model.get("unsupportedRuntimeWiring", {})
     if not wiring:
         fail("unsupported runtime-wiring boundary is missing")
@@ -245,46 +231,40 @@ def validate_model(model: dict) -> list[str]:
 def validate_repository(root: Path = ROOT) -> list[str]:
     errors: list[str] = []
     fail = errors.append
-    if not HISTORICAL_PATH.is_file():
+    historical_path = root / "docs/operations/p3-agent-governance.json"
+    sales_model_path = root / "docs/operations/sales-operations-governance.json"
+    current_doc_path = root / "docs/operations/AGENT_RUNTIME_OPERATING_MODEL.md"
+    if not historical_path.is_file():
         fail("historical P3 matrix is missing")
     else:
-        historical = json.loads(HISTORICAL_PATH.read_text(encoding="utf-8"))
+        historical = json.loads(historical_path.read_text(encoding="utf-8"))
         if historical.get("phase") != "P3-8":
             fail("historical P3 matrix phase changed")
         if historical.get("baseline", {}).get("fdeSiteMain") != "cac523901574910b07b21dff715a2a1589364a24":
             fail("historical P3 fde-site baseline changed")
         if historical.get("baseline", {}).get("fdeImsMain") != "3923cd8da13cea10a62995143a933a4d068f8fcc":
             fail("historical P3 fde-ims baseline changed")
-
-    if not SALES_MODEL.is_file():
+    if not sales_model_path.is_file():
         fail("current Sales Operations machine-readable governance is missing")
-
-    if not CURRENT_DOC.is_file():
+    if not (root / BOOTSTRAP_TEMPLATE).is_file():
+        fail("local Sales Mode bootstrap template is missing")
+    if not current_doc_path.is_file():
         fail("current Agent Runtime Operating Model document is missing")
     else:
-        doc = CURRENT_DOC.read_text(encoding="utf-8")
+        doc = current_doc_path.read_text(encoding="utf-8")
         markers = (
-            "Runtime ≠ Governance",
-            "Codex / Mirror Engineering Mode",
-            "Codex / Kale Outreach Sales Mode",
-            "Kale Outreach Role ≠ Codex itself",
-            "material author and the final QA `ACCEPT` execution/context",
+            "Runtime ≠ Governance", "Codex / Mirror Engineering Mode", "Codex / Kale Outreach Sales Mode",
+            "Kale Outreach Role ≠ Codex itself", "material author and the final QA `ACCEPT` execution/context",
             "daily GitHub Actions scheduled audit",
             "Deterministic Security Scan → AI Semantic Guard Review → Severity Classification → Escalation",
-            "Critical` / `High",
-            "hourly schedule: **OFF**",
-            "Target runtime: **Codex / Kale Outreach Sales Mode**",
-            "Target runtime: Work",
-            "P5 is still pending",
-            "Sales Operations",
-            "Baked Kale shared Google Drive / Google Sheets",
-            "Automatic remediation with production mutation",
+            "Critical` / `High", "hourly schedule: **OFF**", "Target runtime: **Codex / Kale Outreach Sales Mode**",
+            "Target runtime: Work", "P5 is still pending", "Sales Operations", LOCAL_STORE,
+            "Automatic remediation with production mutation", "TARGET / PENDING LOCAL WORKSPACE SETUP",
         )
         for marker in markers:
             if marker not in doc:
                 fail(f"current runtime document missing marker: {marker}")
-
-    guard_workflow = root / ".github" / "workflows" / "auto-security-audit.yml"
+    guard_workflow = root / ".github/workflows/auto-security-audit.yml"
     if not guard_workflow.is_file():
         fail("Auto Security workflow is missing")
     else:
@@ -295,8 +275,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         for forbidden in ("contents: write", "pull-requests: write", "git push", "wrangler deploy"):
             if forbidden in text:
                 fail(f"current Guard workflow must remain read-only: {forbidden}")
-
-    sentinel_workflow = root / ".github" / "workflows" / "kale-sentinel.yml"
+    sentinel_workflow = root / ".github/workflows/kale-sentinel.yml"
     if not sentinel_workflow.is_file():
         fail("Kale Sentinel workflow is missing")
     else:
@@ -320,7 +299,7 @@ def main() -> int:
             print(f"- {error}")
         return 1
     print("Current Agent Runtime Governance validation passed.")
-    print("Runtime/governance separation, Codex Engineering/Sales profile isolation, Review independence, Guard/Sentinel boundaries, Sales data boundary, Administrator authority, and hard safety gates are consistent.")
+    print("Governed Engineering/Sales separation and pending local setup contract verified; no MacBook runtime isolation is claimed.")
     return 0
 
 
