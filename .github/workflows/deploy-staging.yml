@@ -29,7 +29,7 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - name: Checkout develop
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Verify deployment credential
         shell: bash
