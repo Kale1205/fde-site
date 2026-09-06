@@ -54,7 +54,7 @@ if "cron: '17 3 * * 1'" not in codeql:
 
 uses = set(re.findall(r"uses:\s*([^\s]+)", codeql))
 allowed_actions = {
-    "actions/checkout@v4",
+    "actions/checkout@v6",
     "github/codeql-action/init@v4",
     "github/codeql-action/analyze@v4",
 }
