@@ -59,6 +59,15 @@ jobs:
       - name: Kale Outreach gated sales execution deterministic rule tests
         run: python scripts/test_p5_outreach_sales_rules.py
 
+      - name: Sales Operations architecture contract checks
+        run: python scripts/validate_sales_operations.py
+
+      - name: Sales Operations deterministic rule tests
+        run: python scripts/test_sales_operations_rules.py
+
+      - name: Local Sales Workspace setup and data-boundary negative tests
+        run: python scripts/test_local_sales_workspace.py
+
       - name: P3 Kale’s Office public-editorial/draft-only contract checks
         run: python scripts/validate_p3_office.py
 

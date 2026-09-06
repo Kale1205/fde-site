@@ -21,6 +21,7 @@ def source(**overrides):
         "administratorApproval": False,
         "approvalScopeId": "",
         "senderApproved": False,
+        "noMaterialClaimChanged": True,
         "autonomousBulkSend": False,
         "reuseCloudflareBrevoCustomerPath": False,
         "crmWriteRequested": False,
@@ -56,7 +57,21 @@ assert approved["execution"]["authorized"] is True
 assert approved["execution"]["missingGates"] == []
 assert approved["execution"]["autonomousBulkSend"] is False
 assert approved["execution"]["cloudflareBrevoCustomerPathReused"] is False
+assert approved["claims"]["noMaterialClaimChanged"] is True
 assert validate_sales_execution_packet(approved) is True
+
+changed_after_approval = evaluate_sales_execution(source(
+    countryComplianceApproved=True,
+    complianceEvidenceRef="synthetic-compliance-evidence-001",
+    administratorApproval=True,
+    approvalScopeId="synthetic-single-message-001",
+    senderApproved=True,
+    noMaterialClaimChanged=False,
+))
+assert changed_after_approval["execution"]["state"] == "SALES_EXECUTION_BLOCKED"
+assert changed_after_approval["execution"]["authorized"] is False
+assert changed_after_approval["execution"]["missingGates"] == ["noMaterialClaimChanged"]
+assert validate_sales_execution_packet(changed_after_approval) is True
 
 for bad, expected in (
     ({"factsConfirmedPublished": False}, "SALES_REQUIRES_CONFIRMED_PUBLISHED_FACTS"),
@@ -82,6 +97,14 @@ tampered["approval"]["administratorApproval"] = False
 try:
     validate_sales_execution_packet(tampered)
     raise AssertionError("expected authorization mismatch")
+except ValueError as exc:
+    assert "authorization" in str(exc)
+
+tampered_claim = deepcopy(approved)
+tampered_claim["claims"]["noMaterialClaimChanged"] = False
+try:
+    validate_sales_execution_packet(tampered_claim)
+    raise AssertionError("expected unchanged-claim authorization mismatch")
 except ValueError as exc:
     assert "authorization" in str(exc)
 
