@@ -76,6 +76,8 @@ def main() -> int:
     expect(key == "domain:example.invalid", "website duplicate key normalization failed")
     fallback = prospect_dedupe_key(" Synthetic   Example, Co. ", "")
     expect(fallback == "company:synthetic example co", "company duplicate fallback normalization failed")
+    international_fallback = prospect_dedupe_key("株式会社 ベイクドケール", "")
+    expect(international_fallback == "company:株式会社 ベイクドケール", "international company-name fallback must preserve Unicode")
 
     duplicates = detect_duplicate_prospects([
         prospect(**{"Prospect ID": "PROS-000001", "Website": "https://example.invalid/a"}),
