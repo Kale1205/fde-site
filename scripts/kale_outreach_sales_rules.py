@@ -53,6 +53,7 @@ def evaluate_sales_execution(source):
     administrator_approved = source.get("administratorApproval") is True
     approval_scope_id = clean(source.get("approvalScopeId"), 300)
     sender_approved = source.get("senderApproved") is True
+    no_material_claim_changed = source.get("noMaterialClaimChanged") is True
 
     missing = []
     if not compliance_approved:
@@ -65,6 +66,8 @@ def evaluate_sales_execution(source):
         missing.append("approvalScopeId")
     if not sender_approved:
         missing.append("senderApproved")
+    if not no_material_claim_changed:
+        missing.append("noMaterialClaimChanged")
 
     if source.get("autonomousBulkSend") is True:
         raise ValueError("AUTONOMOUS_BULK_SEND_BLOCKED")
@@ -84,7 +87,7 @@ def evaluate_sales_execution(source):
     ]))
 
     return {
-        "schemaVersion": "sales-execution-extension-1",
+        "schemaVersion": "sales-execution-extension-2",
         "direction": "outbound_sales",
         "channel": channel,
         "commercialLaunchReady": commercial_launch_ready,
@@ -96,6 +99,11 @@ def evaluate_sales_execution(source):
             "businessPurposeConfirmed": True,
             "containsSensitivePersonalData": False,
             "bulkScrapingPerformed": False,
+        },
+        "claims": {
+            "factsConfirmedPublished": True,
+            "containsUnsupportedClaim": False,
+            "noMaterialClaimChanged": no_material_claim_changed,
         },
         "compliance": {
             "countryComplianceApproved": compliance_approved,
@@ -134,6 +142,12 @@ def validate_sales_execution_packet(packet):
     if prospect.get("bulkScrapingPerformed") is not False:
         errors.append("bulk scraping must remain false")
 
+    claims = packet.get("claims") or {}
+    if claims.get("factsConfirmedPublished") is not True:
+        errors.append("published facts gate required")
+    if claims.get("containsUnsupportedClaim") is not False:
+        errors.append("unsupported claim must remain false")
+
     approval = packet.get("approval") or {}
     compliance = packet.get("compliance") or {}
     execution = packet.get("execution") or {}
@@ -143,6 +157,7 @@ def validate_sales_execution_packet(packet):
         approval.get("administratorApproval") is True,
         bool(clean(approval.get("approvalScopeId"), 300)),
         approval.get("senderApproved") is True,
+        claims.get("noMaterialClaimChanged") is True,
     ])
 
     if execution.get("authorized") is not should_authorize:
