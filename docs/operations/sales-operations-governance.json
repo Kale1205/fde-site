@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "status": "TARGET_PENDING_RUNTIME_CONNECTION",
+  "ownerRole": "Kale Outreach",
+  "executionProfile": "Codex / Kale Outreach Sales Mode",
+  "finalAuthority": "Administrator Kale",
+  "persistentDataLayer": {
+    "target": "Baked Kale shared Google Drive / Google Sheets",
+    "connectionImplemented": false,
+    "credentialsVerified": false,
+    "fileOrFolderIdsConfigured": false,
+    "writePermissionVerified": false,
+    "publicSharingAllowed": false
+  },
+  "storageBoundary": {
+    "realSalesDataAllowedStores": [
+      "Administrator-approved Baked Kale shared Google Drive / Google Sheets"
+    ],
+    "realSalesDataForbiddenStores": [
+      "GitHub source",
+      "repository fixtures",
+      "GitHub Actions artifacts",
+      "public Slack channels",
+      "synthetic test datasets"
+    ],
+    "githubAllowedContent": [
+      "schema",
+      "Agent instructions",
+      "validators",
+      "deterministic code",
+      "architecture documents",
+      "synthetic test data"
+    ],
+    "sensitivePersonalDataAllowed": false,
+    "businessPurposeMinimumNecessary": true
+  },
+  "sheets": {
+    "Prospects": [
+      "Prospect ID",
+      "Company",
+      "Country",
+      "Industry",
+      "Website",
+      "Company size signal",
+      "Fit Score",
+      "Fit rationale",
+      "Source URL",
+      "Source system",
+      "Source checked date",
+      "Evidence",
+      "Confidence",
+      "Contact route",
+      "Contact person",
+      "Business email",
+      "Current status",
+      "Campaign ID",
+      "Last contact",
+      "Next follow-up",
+      "Reply status",
+      "Meeting status",
+      "Conversion status",
+      "Notes"
+    ],
+    "Activities": [
+      "Activity ID",
+      "Prospect ID",
+      "Timestamp",
+      "Channel",
+      "Action",
+      "Message / template reference",
+      "Result",
+      "Reply category",
+      "Next action"
+    ],
+    "Campaigns": [
+      "Campaign ID",
+      "Product",
+      "Market",
+      "Country",
+      "Segment",
+      "Start date",
+      "Approval scope",
+      "Sender / channel",
+      "Status"
+    ],
+    "Metrics": [
+      "researched prospects",
+      "approved prospects",
+      "messages sent",
+      "replies",
+      "positive replies",
+      "meetings",
+      "wins",
+      "losses",
+      "reply rate",
+      "positive reply rate",
+      "meeting rate",
+      "conversion rate"
+    ],
+    "Dashboard": [
+      "country performance",
+      "industry performance",
+      "channel performance",
+      "funnel",
+      "monthly activity",
+      "reply rate",
+      "meeting rate",
+      "sales conversion",
+      "Fit Score vs actual response",
+      "campaign performance"
+    ]
+  },
+  "sourceProvenance": {
+    "requiredFields": [
+      "Source URL",
+      "Source system",
+      "Source checked date",
+      "Evidence",
+      "Confidence"
+    ],
+    "unverifiedFactsMayBecomeConfirmed": false
+  },
+  "deterministicLayer": {
+    "responsibilities": [
+      "schema validation",
+      "ID assignment",
+      "duplicate detection",
+      "status validation",
+      "approval-protected transition validation",
+      "activity history integrity",
+      "KPI calculation",
+      "dashboard aggregation",
+      "data-quality checks"
+    ],
+    "llmMayBypassApprovalChecks": false,
+    "duplicatePrimaryKey": "normalized company website hostname/domain",
+    "duplicateFallback": "normalized company name requiring human review"
+  },
+  "lifecycle": {
+    "states": [
+      "RESEARCHED",
+      "QUALIFIED",
+      "DISQUALIFIED",
+      "ADMIN_APPROVED",
+      "READY_FOR_OUTREACH",
+      "SENT",
+      "REPLIED",
+      "POSITIVE_REPLY",
+      "NEGATIVE_REPLY",
+      "MEETING",
+      "WON",
+      "LOST"
+    ],
+    "terminalStates": ["DISQUALIFIED", "WON", "LOST"],
+    "transitions": {
+      "RESEARCHED": ["QUALIFIED", "DISQUALIFIED"],
+      "QUALIFIED": ["ADMIN_APPROVED", "DISQUALIFIED"],
+      "ADMIN_APPROVED": ["READY_FOR_OUTREACH"],
+      "READY_FOR_OUTREACH": ["SENT"],
+      "SENT": ["REPLIED"],
+      "REPLIED": ["POSITIVE_REPLY", "NEGATIVE_REPLY"],
+      "POSITIVE_REPLY": ["MEETING", "WON", "LOST"],
+      "NEGATIVE_REPLY": ["LOST"],
+      "MEETING": ["WON", "LOST"],
+      "DISQUALIFIED": [],
+      "WON": [],
+      "LOST": []
+    },
+    "approvalProtectedStates": ["ADMIN_APPROVED", "READY_FOR_OUTREACH", "SENT"]
+  },
+  "sendGates": [
+    "factsConfirmedPublished",
+    "prospectSourceApproved",
+    "countryComplianceApproved",
+    "complianceEvidenceRef",
+    "administratorApproval",
+    "approvalScopeId",
+    "approved sender/channel",
+    "noMaterialClaimChanged"
+  ],
+  "executionModes": {
+    "oneShot": "AVAILABLE_AS_ADMINISTRATOR_DIRECTED_MODE",
+    "scheduled": "TARGET_ONLY_NOT_ACTIVE",
+    "eventDriven": "TARGET_ONLY_NOT_ACTIVE"
+  },
+  "commercialState": {
+    "productionCommerceEnabled": false,
+    "allowedPreReleaseCtas": ["learn more", "Demo", "Contact", "discovery conversation"],
+    "blockedCtas": ["buy now", "Checkout/payment", "installer delivery", "commercial availability"]
+  },
+  "prohibited": [
+    "autonomous unrestricted bulk send",
+    "mass scraping / harvesting",
+    "purchased unreviewed recipient lists",
+    "sensitive personal data collection",
+    "self-approval",
+    "approval reuse outside scope",
+    "unrestricted CRM mutation",
+    "unapproved sales send",
+    "unapproved discount",
+    "unsupported product claim",
+    "commercial promise without source",
+    "marketing reuse of existing Cloudflare/Brevo customer-order mail path"
+  ]
+}
