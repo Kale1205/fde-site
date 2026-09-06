@@ -11,6 +11,8 @@ ARCH_DOC = ROOT / "docs" / "operations" / "SALES_OPERATIONS_ARCHITECTURE.md"
 RUNTIME_DOC = ROOT / "docs" / "operations" / "KALE_OUTREACH_CODEX_RUNTIME.md"
 RULES = ROOT / "scripts" / "sales_operations_rules.py"
 TESTS = ROOT / "scripts" / "test_sales_operations_rules.py"
+EXEC_RULES = ROOT / "scripts" / "kale_outreach_sales_rules.py"
+EXEC_TESTS = ROOT / "scripts" / "test_p5_outreach_sales_rules.py"
 WORKFLOW = ROOT / ".github" / "workflows" / "kale-outreach-sales.yml"
 PR_CHECKS = ROOT / ".github" / "workflows" / "pr-checks.yml"
 WRANGLER = ROOT / "worker" / "wrangler.toml"
@@ -148,7 +150,7 @@ def validate_model(model: dict) -> list[str]:
 def validate_repository() -> list[str]:
     errors: list[str] = []
     fail = errors.append
-    required_files = (MODEL_PATH, ARCH_DOC, RUNTIME_DOC, RULES, TESTS, WORKFLOW, PR_CHECKS, WRANGLER)
+    required_files = (MODEL_PATH, ARCH_DOC, RUNTIME_DOC, RULES, TESTS, EXEC_RULES, EXEC_TESTS, WORKFLOW, PR_CHECKS, WRANGLER)
     for path in required_files:
         if not path.is_file():
             fail(f"required Sales Operations file missing: {path.relative_to(ROOT)}")
@@ -162,7 +164,7 @@ def validate_repository() -> list[str]:
         "Real prospect and recipient data",
         "Deterministic Sales Operations layer",
         "Approval-protected transitions",
-        "normalized website hostname/domain",
+        "registrable-looking domain / hostname",
         "PRODUCTION_COMMERCE_ENABLED = \"false\"",
     ):
         if marker not in arch:
@@ -195,6 +197,14 @@ def validate_repository() -> list[str]:
     tests = read(TESTS)
     if "Sales Operations deterministic rule tests passed." not in tests:
         fail("Sales Operations deterministic test success marker missing")
+
+    execution_rules = read(EXEC_RULES)
+    execution_tests = read(EXEC_TESTS)
+    for marker in ("noMaterialClaimChanged", "SALES_EXECUTION_BLOCKED", "APPROVED_FOR_BOUNDED_SALES_EXECUTION"):
+        if marker not in execution_rules:
+            fail(f"bounded sales execution rules missing required gate marker: {marker}")
+        if marker not in execution_tests:
+            fail(f"bounded sales execution tests missing required gate coverage marker: {marker}")
 
     workflow = read(WORKFLOW)
     pr_checks = read(PR_CHECKS)
