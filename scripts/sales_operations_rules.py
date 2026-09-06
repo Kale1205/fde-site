@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from collections import Counter
 from urllib.parse import urlparse
-import re
 
 STATES = {
     "RESEARCHED",
@@ -90,8 +89,9 @@ POST_APPROVAL_STATES = {
 
 
 def normalize_company_name(value: str) -> str:
-    text = re.sub(r"[^a-z0-9]+", " ", (value or "").casefold())
-    return " ".join(text.split())
+    text = (value or "").casefold()
+    normalized = "".join(character if character.isalnum() else " " for character in text)
+    return " ".join(normalized.split())
 
 
 def normalize_website_host(value: str) -> str:
