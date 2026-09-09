@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>FDE IMS Inventory Software Demo | Baked Kale FDE</title>
-<meta name="description" content="Try the FDE IMS inventory software development demo from Baked Kale FDE using sample stock search, receiving, shipping, and low-stock status.">
+<meta name="description" content="Try a simplified FDE IMS v1.0 workflow with temporary sample data: search stock, receive, transfer, count, ship, and review movement history.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://kale1205.github.io/fde-site/demo.html">
   <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/demo.html">
@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Baked Kale FDE">
   <meta property="og:title" content="FDE IMS Inventory Software Demo | Baked Kale FDE">
-  <meta property="og:description" content="Try the planned FDE IMS operating experience from Baked Kale FDE with temporary sample data.">
+  <meta property="og:description" content="Try a simplified FDE IMS v1.0 stock workflow with temporary sample data.">
   <meta property="og:url" content="https://kale1205.github.io/fde-site/demo.html">
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta property="og:image:alt" content="FDE IMS inventory operations development preview by Baked Kale FDE">
@@ -21,14 +21,15 @@
   <meta property="og:locale:alternate" content="ja_JP">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="FDE IMS Inventory Software Demo | Baked Kale FDE">
-  <meta name="twitter:description" content="Try the planned FDE IMS operating experience with temporary sample data.">
+  <meta name="twitter:description" content="Try a simplified FDE IMS v1.0 stock workflow with temporary sample data.">
   <meta name="twitter:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:image:alt" content="FDE IMS inventory operations development preview by Baked Kale FDE">
   <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="gallery-ui.css?v=20260909-215947">
-  <link rel="stylesheet" href="gallery-pages.css?v=20260909-215947">
-  <script defer src="gallery-ui.js?v=20260909-215947"></script>
-  <script defer src="site.js?v=20260909-215947"></script>
+  <link rel="stylesheet" href="gallery-ui.css?v=20260909-222145">
+  <link rel="stylesheet" href="gallery-pages.css?v=20260909-222145">
+  <script defer src="gallery-ui.js?v=20260909-222145"></script>
+  <script defer src="demo-v1.js?v=20260909-222145"></script>
+  <script defer src="site.js?v=20260909-222145"></script>
 </head>
 <body class="gallery-page gallery-subpage demo-page demo-app">
 <div class="site-shell language-en">
@@ -42,36 +43,74 @@
     <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden><a href="index.html">Product</a><a href="why.html">Why FDE</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="ja/demo.html" hreflang="ja" lang="ja">日本語</a><a href="contact.html">Contact us</a></nav>
   </header>
   <div class="demo-bar">
-    <div class="section-frame demo-toolbar"><strong>FDE IMS / DEVELOPMENT PREVIEW</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">Close preview</button></div></div>
+    <div class="section-frame demo-toolbar"><strong>FDE IMS / v1.0 SIMPLIFIED DEMO</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">Close demo</button></div></div>
   </div>
   <main class="demo-dashboard section-frame">
     <section class="section-intro compact demo-intro">
-      <p>INTERACTIVE SAMPLE / TEMPORARY DATA</p>
-      <h1>Inventory management software demo</h1>
-      <span>Search the sample inventory and record incoming or outgoing stock. Changes are temporary and are not saved.</span>
-      <div class="ims-pre"><strong>IN DEVELOPMENT · NOT YET AVAILABLE FOR PURCHASE</strong><p>This preview demonstrates the intended operating experience. It does not represent a released product, completed feature set, update history, security track record, or delivery record.</p></div>
+      <p>V1.0 SIMPLIFIED WORKFLOW / TEMPORARY DATA</p>
+      <h1>Try the core stock workflow</h1>
+      <span>Use sample products to receive, transfer, count, and ship stock, then review the resulting inventory health and movement history.</span>
+      <div class="ims-pre"><strong>INTERACTIVE SIMULATION · NOT THE RELEASED PRODUCT</strong><p>This browser-only demo is a simplified representation of the v1.0 workflow. It does not connect to the IMS server, save your changes, provide authentication or roles, or create a production backup.</p></div>
       <small class="demo-note">FDE IMS by Baked Kale FDE</small>
     </section>
-    <section class="demo-workspace" aria-label="Sample inventory workspace">
+    <ol class="demo-flow" aria-label="Simplified v1.0 workflow">
+      <li><small>01</small><strong>Find</strong><span>SKU or barcode</span></li>
+      <li><small>02</small><strong>Receive</strong><span>Add incoming stock</span></li>
+      <li><small>03</small><strong>Transfer</strong><span>Move between locations</span></li>
+      <li><small>04</small><strong>Count</strong><span>Confirm actual stock</span></li>
+      <li><small>05</small><strong>Ship</strong><span>Prevent negative stock</span></li>
+      <li><small>06</small><strong>Review</strong><span>Health and history</span></li>
+    </ol>
+    <section class="demo-workspace" id="imsDemoRoot" aria-label="FDE IMS v1.0 sample inventory workspace">
       <div class="demo-kpis">
-        <div class="demo-kpi"><small>Items</small><strong id="kpiItems">5</strong></div>
+        <div class="demo-kpi"><small>Active products</small><strong id="kpiItems">6</strong></div>
         <div class="demo-kpi"><small>Low stock</small><strong id="kpiLow">1</strong></div>
-        <div class="demo-kpi"><small>Status</small><strong>PREVIEW</strong></div>
+        <div class="demo-kpi"><small>Out of stock</small><strong id="kpiOut">1</strong></div>
+        <div class="demo-kpi"><small>Demo actions</small><strong id="kpiActions">0</strong></div>
       </div>
-      <div class="demo-controls"><input id="demoSearch" class="faq-search" type="search" placeholder="Search by product name or SKU"><button id="demoReset" class="button button-secondary light" type="button">Reset</button></div>
-      <div class="demo-table-wrap">
-        <table class="demo-table">
-          <thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody id="inventoryBody">
-            <tr><td>Paper Cup 12oz</td><td>PC-1204</td><td data-stock-value>326</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
-            <tr><td>Shipping Box M</td><td>SB-2088</td><td data-stock-value>84</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
-            <tr><td>Label Roll</td><td>LR-0041</td><td data-stock-value>18</td><td data-stock-status>Low</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
-            <tr><td>Thermal Paper</td><td>TP-3011</td><td data-stock-value>41</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
-            <tr><td>Storage Bin S</td><td>BN-1008</td><td data-stock-value>210</td><td data-stock-status>Healthy</td><td><div class="stock-actions"><button class="mini-btn" data-stock="in">+ Receive</button><button class="mini-btn" data-stock="out">− Ship</button></div></td></tr>
-          </tbody>
-        </table>
+      <div class="demo-app-grid">
+        <div class="demo-inventory-panel">
+          <div class="demo-panel-head"><div><p class="eyebrow">CURRENT INVENTORY</p><h2>Stock by location</h2></div><button id="demoReset" class="button button-secondary light" type="button">Reset demo</button></div>
+          <label class="demo-search-label" for="demoSearch">Search products</label>
+          <input id="demoSearch" class="faq-search" type="search" placeholder="Product, SKU, or barcode" autocomplete="off">
+          <div class="demo-table-wrap">
+            <table class="demo-table">
+              <thead><tr><th>Product</th><th>Main / A-01</th><th>Osaka / B-02</th><th>Total</th><th>Health</th><th></th></tr></thead>
+              <tbody id="inventoryBody"></tbody>
+            </table>
+          </div>
+          <p class="demo-empty" id="demoEmpty" hidden>No matching products.</p>
+        </div>
+        <form class="demo-operation-panel" id="demoOperationForm">
+          <p class="eyebrow">SIMULATED STOCK COMMAND</p>
+          <h2>Record an operation</h2>
+          <label for="demoOperation">Operation</label>
+          <select id="demoOperation" name="operation">
+            <option value="receive">Receive</option>
+            <option value="transfer">Transfer</option>
+            <option value="count">Count</option>
+            <option value="ship">Ship</option>
+          </select>
+          <label for="demoProduct">Product</label>
+          <select id="demoProduct" name="product"></select>
+          <div id="demoSourceField"><label for="demoSource">Source location</label><select id="demoSource" name="source"></select></div>
+          <div id="demoDestinationField"><label for="demoDestination">Destination location</label><select id="demoDestination" name="destination"></select></div>
+          <label for="demoQuantity" id="demoQuantityLabel">Quantity received</label>
+          <input id="demoQuantity" name="quantity" type="number" min="1" step="1" value="5" inputmode="numeric" required>
+          <p class="demo-field-help" id="demoOperationHelp">Adds stock to the selected destination.</p>
+          <button class="button button-primary" id="demoApply" type="submit">Record receive</button>
+          <p class="demo-result" id="demoResult" role="status" aria-live="polite">Choose an operation to update the temporary sample inventory.</p>
+        </form>
       </div>
-      <p class="demo-note">This preview uses sample data only. Changes are not saved.</p>
+      <section class="demo-history" aria-labelledby="demoHistoryTitle">
+        <div class="demo-panel-head"><div><p class="eyebrow">APPEND-ONLY PREVIEW</p><h2 id="demoHistoryTitle">Recent movement history</h2></div><small>Latest first</small></div>
+        <div class="demo-table-wrap"><table class="demo-table demo-history-table"><thead><tr><th>Time</th><th>Operation</th><th>Product</th><th>Location</th><th>Change</th><th>Reference</th></tr></thead><tbody id="demoHistoryBody"></tbody></table></div>
+      </section>
+      <div class="demo-scope-grid">
+        <div><strong>Included in this simulation</strong><p>SKU/barcode search, Receive, Transfer, Count, Ship, non-negative stock, three-state inventory health, and movement history.</p></div>
+        <div><strong>Only available in the real product</strong><p>Server authority, sign-in and roles, signed Local/LAN communication, audit controls, CSV import/export, and encrypted backup/restore.</p></div>
+      </div>
+      <p class="demo-note">This preview uses synthetic sample data in page memory only. Refreshing or resetting the page discards every change.</p>
     </section>
   </main>
   <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="assets/baked-kale-logo.svg"><div><p>FDE IMS inventory software for small operations.</p><small>Interactive preview with temporary sample data.</small><nav class="footer-nav" aria-label="Footer navigation"><a href="why.html">Why FDE</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="license.html">License</a><a href="contact.html">Contact</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
