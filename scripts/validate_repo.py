@@ -946,6 +946,28 @@ for rel in ("site.js", "gallery-ui.js", "faq-cms.js", "contact-direct.js", "cms-
         if legacy in text:
             fail(f"{rel}: retired browser language-state dependency found: {legacy}")
 
+# Web Demo demand collection must remain explicit and complete. It reuses the
+# existing inquiry message field and must not infer an operating system.
+site_runtime = (ROOT / "site.js").read_text(encoding="utf-8")
+contact_runtime = (ROOT / "contact-direct.js").read_text(encoding="utf-8")
+platform_values = {
+    "Windows", "M1", "M2-or-later", "iOS-iPadOS", "Android", "Linux", "Other-Not-sure",
+}
+for value in sorted(platform_values):
+    if f"'{value}'" not in site_runtime:
+        fail(f"site.js: Web Demo platform-interest choice missing: {value}")
+    if f"'{value}'" not in contact_runtime:
+        fail(f"contact-direct.js: inquiry platform allowlist/display missing: {value}")
+for marker in ("source=web-demo", "Web Demo availability does not mean", "browser-based development preview"):
+    if marker not in site_runtime:
+        fail(f"site.js: Web Demo/native boundary marker missing: {marker}")
+for marker in ("[Source: Web Demo]", "[Native platform interest:", "message,lang:lang()"):
+    if marker not in contact_runtime:
+        fail(f"contact-direct.js: existing-message-field demand context missing: {marker}")
+for forbidden in ("navigator.userAgent", "navigator.platform", "getClientRects", "deviceMemory"):
+    if forbidden in site_runtime or forbidden in contact_runtime:
+        fail(f"Web Demo demand flow must not fingerprint or profile devices: {forbidden}")
+
 # The multilingual site uses paired crawlable URLs and reciprocal static links.
 paired_seo = {
     "index.html": {
