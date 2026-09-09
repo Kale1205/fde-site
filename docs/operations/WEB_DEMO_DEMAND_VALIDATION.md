@@ -42,6 +42,8 @@ Initial platform-prioritization evidence should favor explicit, low-risk signals
 
 The first implementation does not need hidden OS/device fingerprinting to validate demand.
 
+The explicit Web Demo inquiry choices are Windows, Mac M1, Mac M2 or later, iPhone/iPad, Android, Linux, and Other/Not sure. The selected choice and `Web Demo` source stay visible on the inquiry review screen and are stored in the existing message field without changing the Worker request schema.
+
 Do not introduce device fingerprinting, invasive profiling, or new third-party analytics merely to infer platform demand. Any new analytics/tracking that creates a new privacy/compliance obligation requires its own review before production activation.
 
 ## Native release independence

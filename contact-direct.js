@@ -7,7 +7,7 @@ const CURRENT_SCRIPT_URL=CURRENT_SCRIPT?.src?new URL(CURRENT_SCRIPT.src,location
 const BUILD_KEY=CURRENT_SCRIPT_URL?.searchParams.get('v')||'';
 const TURNSTILE_RUNTIME_URL=CURRENT_SCRIPT_URL?new URL(`turnstile-protection.js${BUILD_KEY?`?v=${encodeURIComponent(BUILD_KEY)}`:''}`,CURRENT_SCRIPT_URL).href:'';
 const PAGE_PARAMS=new URLSearchParams(location.search);
-const ALLOWED_PLATFORMS=new Set(['Windows','M1','iOS-iPadOS','Android','Linux']);
+const ALLOWED_PLATFORMS=new Set(['Windows','M1','M2-or-later','iOS-iPadOS','Android','Linux','Other-Not-sure']);
 const SOURCE=PAGE_PARAMS.get('source')==='web-demo'?'web-demo':'';
 const PLATFORM_INTEREST=ALLOWED_PLATFORMS.has(PAGE_PARAMS.get('platform')||'')?(PAGE_PARAMS.get('platform')||''):'';
 let turnstileRuntimePromise=null;
@@ -17,7 +17,7 @@ const lang=()=>document.documentElement.lang==='ja'?'ja':'en';
 const tr=k=>(labels[lang()]||labels.en)[k]||labels.en[k];
 const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function value(id){return $('#'+id)?.value.trim()||''}
-function platformDisplay(){const map={Windows:'Windows',M1:'Mac (M1)','iOS-iPadOS':'iPhone / iPad',Android:'Android',Linux:'Linux'};return map[PLATFORM_INTEREST]||PLATFORM_INTEREST}
+function platformDisplay(){const map={Windows:'Windows',M1:'Mac M1','M2-or-later':'Mac M2 or later','iOS-iPadOS':'iPhone / iPad',Android:'Android',Linux:'Linux','Other-Not-sure':'Other / Not sure'};return map[PLATFORM_INTEREST]||PLATFORM_INTEREST}
 function validateEmail(){const input=$('#contact');if(!input)return true;const ok=emailPattern.test(input.value.trim());input.setCustomValidity(ok?'':tr('invalidEmail'));return ok}
 function validate(form){validateEmail();if(form.checkValidity())return true;form.reportValidity();return false}
 function summaryRows(){const rows=[[$('#name')?.previousElementSibling?.textContent||'Name',value('name')],[$('#company')?.previousElementSibling?.textContent||'Company',value('company')],[$('#country')?.previousElementSibling?.textContent||'Country',value('country')],[tr('emailLabel'),value('contact')],[$('#product')?.previousElementSibling?.textContent||'Product',value('product')]];if(SOURCE==='web-demo')rows.push([tr('sourceLabel'),tr('webDemoSource')]);if(PLATFORM_INTEREST)rows.push([tr('platformLabel'),platformDisplay()]);rows.push([$('#message')?.previousElementSibling?.textContent||'Message',value('message')]);return rows}
