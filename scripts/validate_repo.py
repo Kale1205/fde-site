@@ -330,8 +330,8 @@ for rel, markers in search_markers.items():
 seo_page_markers = {
     "contact.html": ("Inventory Software Adoption & Migration Questions", "Ask about adopting or moving to FDE IMS"),
     "ja/contact.html": ("在庫管理ソフトの導入・移行相談", "FDE IMSの導入・移行を相談する"),
-    "demo.html": ("FDE IMS Inventory Software Demo | Baked Kale FDE", "Inventory management software demo"),
-    "ja/demo.html": ("在庫管理ソフトの操作デモ",),
+    "demo.html": ("FDE IMS Inventory Software Demo | Baked Kale FDE", "Try the core stock workflow"),
+    "ja/demo.html": ("FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE", "基本の在庫業務を試す"),
     "license.html": ("FDE IMS License & License Plus | Plan Policy", "Two one-time inventory software products"),
     "ja/license.html": ("FDE IMS LicenseとLicense Plus | 料金・利用条件", "2つの買い切り商品から選ぶ"),
 }
@@ -340,6 +340,42 @@ for rel, markers in seo_page_markers.items():
     for marker in markers:
         if marker not in source:
             fail(f"{rel}: page-specific inventory search marker missing: {marker}")
+
+demo_page_markers = {
+    "demo.html": (
+        "FDE IMS / v1.0 SIMPLIFIED DEMO",
+        'id="imsDemoRoot"',
+        'value="receive"',
+        'value="transfer"',
+        'value="count"',
+        'value="ship"',
+        'src="demo-v1.js?v=',
+        "INTERACTIVE SIMULATION · NOT THE RELEASED PRODUCT",
+    ),
+    "ja/demo.html": (
+        "FDE IMS / v1.0 簡易デモ",
+        'id="imsDemoRoot"',
+        'value="receive"',
+        'value="transfer"',
+        'value="count"',
+        'value="ship"',
+        'src="../demo-v1.js?v=',
+        "操作シミュレーション · 正式版製品ではありません",
+    ),
+}
+for rel, markers in demo_page_markers.items():
+    source = public_source_text.get(rel, "")
+    for marker in markers:
+        if marker not in source:
+            fail(f"{rel}: simplified v1.0 demo marker missing: {marker}")
+
+demo_runtime = (ROOT / "demo-v1.js").read_text(encoding="utf-8") if (ROOT / "demo-v1.js").exists() else ""
+for marker in ("receive", "transfer", "count", "ship", "insufficient", "demoHistoryBody"):
+    if marker not in demo_runtime:
+        fail(f"demo-v1.js: required workflow marker missing: {marker}")
+for forbidden in ("localStorage", "sessionStorage", "fetch("):
+    if forbidden in demo_runtime:
+        fail(f"demo-v1.js: public simulation must remain temporary and disconnected: {forbidden}")
 
 for name in sorted(INDEXED_PAGE_NAMES):
     for rel in (name, f"ja/{name}"):
@@ -357,14 +393,14 @@ if (ROOT / "llms.txt").exists():
 structured_faq_pairs = {
     "index.html": (
         ("Can I purchase FDE IMS now?", "No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available."),
-        ("Can I try the product workflow?", "Yes. The development preview uses sample data and lets you search inventory and record temporary receive or ship actions."),
+        ("Can I try the product workflow?", "Yes. The simplified v1.0 demo uses sample data and lets you search inventory and try temporary Receive, Transfer, Count, and Ship actions."),
         ("Where can I review detailed terms or ask a question?", "Review the License page for the current planned terms, use the comparison above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."),
         ("Is FDE IMS intended for teams using paper or spreadsheets?", "Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."),
         ("Can Baked Kale FDE migrate or import data from an existing system?", "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."),
     ),
     "ja/index.html": (
         ("FDE IMSは今すぐ購入できますか？", "いいえ。FDE IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。"),
-        ("製品の操作を試せますか？", "はい。開発プレビューではサンプルデータを使い、在庫検索と一時的な入庫・出庫操作を試せます。"),
+        ("製品の操作を試せますか？", "はい。v1.0簡易デモではサンプルデータを使い、在庫検索と一時的な入庫・移動・棚卸・出庫操作を試せます。"),
         ("詳しい条件の確認や質問はどこでできますか？", "現在の予定条件はLicenseページ、責任分担は上の比較表で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。"),
         ("紙やExcelで在庫管理している会社にも向いていますか？", "はい。紙やExcelから、入庫・在庫確認・出庫をひとつの分かりやすい記録へ移したい小規模企業向けに開発しています。"),
         ("既存システムのデータを移行・取り込みできますか？", "現在は未確定です。対応するファイル形式、データ移行、導入支援の範囲は、正式販売前にご案内します。"),
