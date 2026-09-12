@@ -21,7 +21,7 @@ for (const prefix of ['', 'ja/']) {
   assert.match(read(prefix + 'goals.html'), /class="goal-manifesto"/);
   assert.ok(read(prefix + 'goals.html').includes('License Plus'));
 }
-assert.ok(read('ja/index.html').replace(/<[^>]+>/g, '').includes('まだ、在庫を確認するたびに'));
+assert.match(read('ja/index.html'), /まだ、在庫を<br class="mobile-break">確認するたびに/);
 assert.ok(read('ja/index.html').includes('自社の道具は、自社で変えたい？'));
 assert.match(read('linear-ui.css'), /prefers-reduced-motion:reduce/);
 assert.match(read('gallery-ui.js'), /reduced\.addEventListener\("change", configure\)/);
