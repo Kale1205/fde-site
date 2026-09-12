@@ -1,4 +1,46 @@
-# Design QA — Why FDE / Kale’s Goals visual-story revision
+# Design QA — Linear-inspired public-site revision, 2026-09-12
+
+final result: passed
+
+## Current scope and visual target
+
+User-approved Linear-inspired layout, white/ink/deep-green palette and copy; this is an adaptation, not a pixel-for-pixel clone of Linear's dark site. Homepage, Why FDE, Kale’s Goal and shared EN/JA navigation/styles were revised. Commerce and demo command runtimes are unchanged.
+
+- Source: https://linear.app/; capture `/workspace/scratch/linear-reference-linear-review.jpg`.
+- Implementation: `docs/design-review/linear-20260912/` (home-ja, why-ja, goal-ja, intent-en, mobile-ja).
+- Combined comparison: `/workspace/scratch/linear-comparison.jpg`, 2696 × 926, source and implementation side by side, each 1348 × 926. Both show desktop first-screen state; palette and content differences are intentional per the approved brief.
+- Browser viewport: 1363 × 936; returned desktop captures 1348 × 926. No density resampling in the comparison. Mobile responsive iframe 390 × 844 (375px content width with scrollbar); final screenshot cropped to 390 × 844. This is responsive browser QA, not physical iPhone testing.
+
+## Findings and comparison history
+
+1. Initial mobile capture: [P2] secondary CTA wrapped and preview status text overflowed. Fixed mobile button font/spacing and preview status sizing.
+2. Follow-up capture: [P2] balanced Japanese headline split a word. Replaced automatic balancing with a mobile-only break between phrases. `mobile-ja.jpg` is the inspected final result, with legible buttons and unbroken Japanese phrases.
+3. Desktop: no remaining actionable P0/P1/P2 issue within the reviewed scope. Individual full-resolution captures were inspected for headline wrapping, product details, guide rows and manifesto copy; the focused mobile capture provides the small-control inspection.
+
+## Required surfaces
+
+- Typography: system sans-serif/JP fallback, restrained display hierarchy, large left-aligned headlines, readable body text. Native JP weight differs intentionally from Linear English typography.
+- Layout: bounded 1120px frame, generous whitespace, product illustration beneath the hero; equal-weight guide rows. Mobile columns collapse without horizontal document overflow (375px scrollWidth/clientWidth).
+- Colors: near-white/ink with deep-green actions. All four guide backgrounds are identical before interaction. Keyboard focus has an explicit outline. Formal contrast/accessibility certification is outside scope.
+- Assets: existing supplied logo and product markup retained. Decorative warehouse images and collage presentation are suppressed/replaced; no fabricated customer imagery or testimonials. Homepage illustration has zero buttons and is inert.
+- Copy: selected Excel headline, source-code question, Why FDE, and Kale’s Goal/自社のシステムを、自分たちの手に applied. License Plus rights and pre-release disclosures retained.
+
+## Behavior and validation
+
+- EN and JA hero buttons navigate directly to their respective demo.html.
+- JA demo receive: paper cups total changed 346 → 351. Search LR-0041 and Reset exercised.
+- Mobile menu opens and closes; locale navigation retained.
+- Motion: short reveal, bounded 14px passive/requestAnimationFrame drift; content is not hidden awaiting observation. Reduced-motion behavior checked in code/contract tests, not via OS preference emulation.
+- No site-origin errors in inspected browser logs. Browser-extension metadata errors were excluded and are not site errors.
+- 35 single-command PR validation/test steps passed locally, including new redesign contracts, repository/locale/SEO checks, staging integrity, commerce gating and contact routing. No real form submission/payment or installer distribution performed.
+
+## Follow-up limits
+
+Physical-device testing and native release QA are outside this presentation PR. Production is unchanged until merge. Full dark-mode parity with Linear is not part of the approved light palette.
+
+---
+
+# Historical QA — superseded visual-story direction
 
 ## Scope and source
 

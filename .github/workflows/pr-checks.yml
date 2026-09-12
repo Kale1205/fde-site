@@ -29,6 +29,9 @@ jobs:
       - name: Repository consistency checks
         run: python scripts/validate_repo.py
 
+      - name: Linear-inspired redesign contracts
+        run: node scripts/test_linear_redesign.mjs
+
       - name: Pre-staging integrity checks
         run: python scripts/validate_pre_staging.py
 
