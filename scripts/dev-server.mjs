@@ -26,6 +26,7 @@ const types = new Map([
   ['.svg', 'image/svg+xml'],
   ['.txt', 'text/plain; charset=utf-8'],
   ['.webp', 'image/webp'],
+  ['.woff2', 'font/woff2'],
   ['.xml', 'application/xml; charset=utf-8']
 ]);
 

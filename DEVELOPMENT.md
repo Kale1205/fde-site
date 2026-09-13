@@ -17,19 +17,18 @@ The IMS development preview is a paired public feature: `demo.html` is English a
 
 ## Public visual system
 
-The public visual direction is **Linear-inspired, product-first minimalism**, approved on 2026-09-12. This supersedes Gallery UI × Warehouse Art for public presentation, while retaining the shared codebase and product/runtime contracts.
+The 2026-09-13 user direction is **preserve the current white/deep-green palette and bring the layout, typography, product presentation and motion closer to Linear**. Color similarity to Linear is explicitly not the goal.
 
-- White/near-white surfaces, ink sans-serif typography, deep kale green primary actions.
-- Large left-aligned headlines, restrained borders, ample whitespace and a wide product illustration below the hero.
-- No paper texture, collage decoration or arbitrary per-card background colors.
-- Purpose guides are equally weighted rows; hover and keyboard focus identify interaction.
-- Why FDE explains workflow problems. Kale’s Goal / Kaleのゴール explains perpetual internal use and purchaser agency. Source/modification rights remain exclusive to License Plus and do not transfer copyright.
-- Homepage preview is a static, inert illustration without buttons or mutation handlers. Real operations belong to the paired demo pages; hero links navigate directly in the current tab.
-- Short reveal and hover transitions with bounded 14px scroll drift. Content remains visible without JavaScript. Reduced motion disables effects, including preference changes during a session.
-- Shared navigation and locale parity remain mandatory. linear-ui.css is the final shared presentation layer after the Gallery styles. gallery-ui.js owns the menu and progressive motion, not stock operations.
-- Preserve demo, contact, CMS, entitlement and commerce boundaries. Browser demo availability does not imply native support.
+- Keep near-white `#fcfcfc`, ink `#171b1a`, the existing deep-green brand actions and the green Goal/closing sections. Do not introduce a dark marketing theme.
+- Use locally bundled Inter Variable for Latin text, the existing Japanese font stack, wide aligned frames and left-aligned display headlines.
+- Show the existing sample product interface at a larger scale, with its workspace navigation and item details. It is an inert development illustration; actual operations remain on the paired demo pages.
+- Put the four purpose guides immediately after the product introduction, with equal two-column panels on desktop and equal rows on mobile. Product and licensing disclosures remain accurate and accessible.
+- Why FDE presents three workflow principles; Kale’s Goal preserves the License/License Plus rights distinction and the current perpetual-use wording.
+- Use progressive scroll reveal, product perspective and limited drift. No content depends on JavaScript for visibility. Reduced motion disables animation and responds to preference changes during the session.
+- Maintain EN/JA page structure, navigation, locale links and all existing demo, CMS, contact and commerce boundaries.
+- `linear-ui.css` is the shared marketing presentation layer. `gallery-ui.js` owns navigation and progressive motion, never stock mutations.
 
-Run node scripts/test_linear_redesign.mjs alongside the repository validation suite.
+Run `node scripts/test_linear_redesign.mjs` alongside the repository validation suite.
 
 ## Public product-plan source of truth
 

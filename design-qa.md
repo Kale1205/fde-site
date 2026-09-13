@@ -1,4 +1,52 @@
-# Design QA — Linear-inspired public-site revision, 2026-09-12
+# Design QA — Closer Linear composition, current brand palette, 2026-09-13
+
+final result: passed
+
+## Brief and scope
+
+The latest user instruction is to preserve the current colors and bring the other design elements substantially closer to Linear. This revision covers the EN/JA home, Why FDE, Goals and shared marketing presentation. The approved Excel headline, product facts, pre-release disclosures and License/License Plus rights remain in place.
+
+- Reference: [Linear homepage](https://linear.app/), captured from the live page on 2026-09-13.
+- Evidence folder: [docs/design-review/linear-20260913](docs/design-review/linear-20260913/).
+- Source captures: `source-linear.jpg` (first screen) and `source-sections.jpg` (lower three-column composition).
+- Final captures: `home-en.jpg`, `home-ja.jpg`, `why-ja.jpg`, `goal-ja.jpg`, `contact-ja.jpg`, `mobile-ja.jpg`, `mobile-why.jpg`, `mobile-goal.jpg` and `tablet-ja.jpg`.
+- Desktop viewport: 1363 × 936 CSS px; browser screenshot output: 1348 × 926 px for both reference and implementation. No density resampling was applied.
+- Responsive frames: 390 × 844 and 768 × 844 CSS px, captured at those dimensions. Content widths are 375 and 753 px because of the scrollbar. These are browser responsive checks, not physical-device tests.
+
+## Visual comparison and iteration
+
+The actual reference and built page were inspected together at the same capture size in `comparison-desktop.jpg` (2696 × 926). The comparison covers the aligned navigation, headline scale, restrained body/CTA row and large product panel. `comparison-detail.jpg` compares identical product-region crops at 1298 × 406 each, without resampling. `comparison-principles.jpg` compares Linear's lower section with the three-column Why FDE composition, at 1348 × 926 each; their route, text and content are intentionally different.
+
+| Finding | Repair and inspected evidence |
+| --- | --- |
+| P2: mobile hero actions inherited a vertical grid and pushed the product too far down. | Explicit flex layout keeps both actions readable on one row. Before/final captures are included in `comparison-responsive.jpg`. |
+| P2: tablet navigation controls collected on the left and the hero lead had a narrow column. | Right-aligned header actions and a stacked hero-copy layout below 1000px. The 768px before/final pair is in `comparison-responsive.jpg`. |
+| P2: the shared contact heading retained an overly heavy weight; correcting the weight exposed an orphan final character. | Unified heading weight, increased the title measure and balanced wrapping. Final `contact-ja.jpg` shows the complete title on one desktop line. |
+
+No actionable P0/P1/P2 finding remains in the inspected states. Content and brand differences from Linear are part of the brief, not claims of exact visual cloning. The retained development notice makes the hero's vertical rhythm slightly different from the reference.
+
+## Required surfaces
+
+- **Palette:** near-white `#fcfcfc`, ink `#171b1a`, deep-green `#073e2c` actions and the existing green Goal/closing sections. The supplied green logo is retained without inversion. Browser computed colors and final captures confirm the light brand palette.
+- **Typography:** locally bundled Inter Variable for Latin characters, existing Japanese fallback, 64px English hero display and responsive Japanese display. Font license is retained in `assets/fonts/Inter-LICENSE.txt`.
+- **Layout:** a wider 1280px outer frame, aligned left edges, slim header and much larger product presentation. Four equally weighted purpose guides follow the hero. Why FDE uses three principles with compact illustrative UI; Goals pairs the green manifesto with the rights summary. Responsive columns collapse without document overflow in the checked 390px, 768px and desktop states.
+- **Assets and product presentation:** existing logo, icons and sample inventory markup. A workspace rail and item inspector frame the sample table; the illustration has no interactive controls and remains inert. No Linear logo, customer endorsement or product claim is presented as Baked Kale content.
+- **Copy and locale:** EN/JA route parity and chosen copy are preserved. Japanese workflow/sample-location labels are localized. The distinction between License and License Plus remains explicit.
+- **Motion:** short staggered arrival, restrained hover transitions, and scroll-linked product perspective from 6° to 0° with drift bounded at 18px. Content is visible without JavaScript. Reduced-motion behavior is checked in code/contracts; OS preference emulation was not performed.
+
+## Behavior and validation
+
+- EN and JA hero demo links open their corresponding demo page; locale navigation, Why FDE navigation and the JA plans anchor were exercised.
+- JA demo receive changed paper-cup total 346 → 351; searching LR-0041 and Reset were exercised, and Reset restored 346. Closing the demo returned to the JA homepage.
+- Mobile menu opens with `aria-expanded=true`; Escape closes it and restores `false`.
+- Observed scroll at 518px produced 15.54px drift and 0.82° tilt, within the intended bounds.
+- No site-origin errors in the inspected browser logs; browser-extension metadata errors were excluded.
+- All 37 executable validation steps from `.github/workflows/pr-checks.yml` passed locally. Results are recorded in `docs/design-review/linear-20260913/validation.json`; these cover repository/locale/SEO consistency, redesign contracts, governance and staging boundaries, contact/commerce tests and Python/JavaScript syntax. The final contact-title CSS adjustment was followed by repository validation and `git diff --check`.
+- No real contact submission, payment or production mutation was needed for this presentation QA. The PR remains a reviewable branch change; merging and production publication are separate actions.
+
+---
+
+# Historical QA — initial Linear-inspired revision, 2026-09-12
 
 final result: passed
 

@@ -30,7 +30,11 @@
   const visual = document.querySelector(".hero-visual");
   const update = () => {
     frame = 0;
-    if (visual && !reduced.matches) visual.style.setProperty("--preview-drift", Math.min(window.scrollY * 0.018, 14) + "px");
+    if (visual && !reduced.matches) {
+      const progress = Math.min(Math.max(window.scrollY / 600, 0), 1);
+      visual.style.setProperty("--preview-drift", (progress * 18) + "px");
+      visual.style.setProperty("--preview-tilt", (6 - progress * 6) + "deg");
+    }
   };
   const scroll = () => { if (!frame) frame = window.requestAnimationFrame(update); };
   const configure = () => {
@@ -39,6 +43,7 @@
     window.cancelAnimationFrame(frame);
     frame = 0;
     visual?.style.removeProperty("--preview-drift");
+    visual?.style.removeProperty("--preview-tilt");
     document.querySelectorAll(".reveal-arrive").forEach(el => el.classList.remove("reveal-arrive"));
     if (reduced.matches) return;
     // Content is never hidden while waiting for JavaScript or observation.
@@ -48,9 +53,12 @@
         entry.target.classList.add("reveal-arrive");
         observer.unobserve(entry.target);
       }), { threshold: 0.12 });
-      document.querySelectorAll(".home-intent-grid a, .principle-list article, .goal-manifesto, .offer-card").forEach(el => observer.observe(el));
+      document.querySelectorAll(".section-intro, .offers-heading, .home-intent-grid a, .principle-list article, .goal-manifesto, .offer-card, .story-points article").forEach(el => observer.observe(el));
     }
-    if (visual) window.addEventListener("scroll", scroll, { passive: true });
+    if (visual) {
+      update();
+      window.addEventListener("scroll", scroll, { passive: true });
+    }
   };
   reduced.addEventListener("change", configure);
   configure();
