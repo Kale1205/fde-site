@@ -1,0 +1,187 @@
+[
+  {
+    "name": "Repository consistency checks",
+    "exit_code": 0,
+    "seconds": 0.29
+  },
+  {
+    "name": "Linear-inspired redesign contracts",
+    "exit_code": 0,
+    "seconds": 0.09
+  },
+  {
+    "name": "Pre-staging integrity checks",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "Slack notification integrity checks",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "P3 Agent Governance cross-agent contract checks",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "P3 Agent Governance deterministic rule tests",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "Current Agent Runtime Governance contract checks",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "Current Agent Runtime Governance deterministic negative tests",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "P3 Kale Outreach outbound-growth/draft-only contract checks",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "P3 Kale Outreach deterministic rule tests",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "Kale Outreach gated sales execution contract checks",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "Kale Outreach gated sales execution deterministic rule tests",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "Sales Operations architecture contract checks",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "Sales Operations deterministic rule tests",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "Local Sales Workspace setup and data-boundary negative tests",
+    "exit_code": 0,
+    "seconds": 0.04
+  },
+  {
+    "name": "P3 Kale\u2019s Office public-editorial/draft-only contract checks",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "P3 Kale\u2019s Office deterministic rule tests",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "P3 Kale Desk inbound-only/no-send contract checks",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "P3 Kale Desk deterministic rule tests",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "P3 Kale Sentinel read-only contract checks",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "P3 Kale Sentinel deterministic rule tests",
+    "exit_code": 0,
+    "seconds": 0.06
+  },
+  {
+    "name": "P3 Auto Security contract checks",
+    "exit_code": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "Security tooling hardening contract checks",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "P3 Auto Security critical gate",
+    "exit_code": 0,
+    "seconds": 0.19
+  },
+  {
+    "name": "P2 staging isolation checks",
+    "exit_code": 0,
+    "seconds": 0.03
+  },
+  {
+    "name": "P2 quote policy tests",
+    "exit_code": 0,
+    "seconds": 0.06
+  },
+  {
+    "name": "P2 audit log tests",
+    "exit_code": 0,
+    "seconds": 0.08
+  },
+  {
+    "name": "P2 expiry Cron tests",
+    "exit_code": 0,
+    "seconds": 0.08
+  },
+  {
+    "name": "P2 Stripe webhook tests",
+    "exit_code": 0,
+    "seconds": 0.09
+  },
+  {
+    "name": "P2 Stripe Checkout tests",
+    "exit_code": 0,
+    "seconds": 0.1
+  },
+  {
+    "name": "P2 EULA acceptance QA tests",
+    "exit_code": 0,
+    "seconds": 0.1
+  },
+  {
+    "name": "P2 fulfillment boundary tests",
+    "exit_code": 0,
+    "seconds": 0.1
+  },
+  {
+    "name": "Production pre-release commerce gate tests",
+    "exit_code": 0,
+    "seconds": 0.07
+  },
+  {
+    "name": "Contact email routing tests",
+    "exit_code": 0,
+    "seconds": 0.07
+  },
+  {
+    "name": "Compile Python helper scripts",
+    "exit_code": 0,
+    "seconds": 0.06
+  },
+  {
+    "name": "Check browser JavaScript syntax",
+    "exit_code": 0,
+    "seconds": 0.83
+  },
+  {
+    "name": "Check Cloudflare Worker JavaScript syntax",
+    "exit_code": 0,
+    "seconds": 1.16
+  }
+]

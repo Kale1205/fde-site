@@ -17,24 +17,18 @@ The IMS development preview is a paired public feature: `demo.html` is English a
 
 ## Public visual system
 
-The shared public-site visual direction is **Gallery UI × Warehouse Art**. It applies equally to the English and Japanese sites and must be implemented through shared assets and shared CSS wherever practical.
+The 2026-09-13 user direction is **preserve the current white/deep-green palette and bring the layout, typography, product presentation and motion closer to Linear**. Color similarity to Linear is explicitly not the goal.
 
-Core design rules:
+- Keep near-white `#fcfcfc`, ink `#171b1a`, the existing deep-green brand actions and the green Goal/closing sections. Do not introduce a dark marketing theme.
+- Use locally bundled Inter Variable for Latin text, the existing Japanese font stack, wide aligned frames and left-aligned display headlines.
+- Show the existing sample product interface at a larger scale, with its workspace navigation and item details. It is an inert development illustration; actual operations remain on the paired demo pages.
+- Put the four purpose guides immediately after the product introduction, with equal two-column panels on desktop and equal rows on mobile. Product and licensing disclosures remain accurate and accessible.
+- Why FDE presents three workflow principles; Kale’s Goal preserves the License/License Plus rights distinction and the current perpetual-use wording.
+- Use progressive scroll reveal, product perspective and limited drift. No content depends on JavaScript for visibility. Reduced motion disables animation and responds to preference changes during the session.
+- Maintain EN/JA page structure, navigation, locale links and all existing demo, CMS, contact and commerce boundaries.
+- `linear-ui.css` is the shared marketing presentation layer. `gallery-ui.js` owns navigation and progressive motion, never stock mutations.
 
-- warm ivory/paper background rather than a cold SaaS-white surface;
-- charcoal/ink typography with deep kale green as the primary accent;
-- serif display typography paired with a restrained sans-serif UI/body layer;
-- generous editorial spacing and thin rules instead of dense rounded-card layouts;
-- warehouse imagery, paper texture, operational ledgers, and restrained annotation marks used as supporting editorial elements, never as a replacement for product information;
-- deliberately restrained asymmetry: slight offsets, staggered blocks, registration marks and paper-like framing may be used to avoid a uniform SaaS-grid feel;
-- product plans and comparisons should read like designed information plates or technical-journal spreads rather than generic application cards;
-- News, Why FDE and Our Goals preserve a publication/editorial reading rhythm, using semantic ledgers and CMS imagery instead of repeating the same proposition or process in multiple diagrams;
-- square or near-square controls/cards with minimal shadows;
-- product screenshots, CMS imagery and diagrams remain readable and functional;
-- motion stays restrained: reveal, slight lift and gentle transitions only;
-- mobile layouts must preserve the editorial hierarchy without clipping, hidden content, forced ornamental asymmetry or decorative obstruction.
-
-`gallery-ui.css` provides the shared visual tokens, header, navigation, product presentation, footer, and responsive foundations. `gallery-pages.css` extends that system across Why FDE, Our Goals, News, Contact, License, and Demo. `gallery-ui.js` owns shared navigation and product-preview behavior; the locale-specific CMS readers render the same structured News data in each language. Contact, License, and Demo retain only the page-specific runtimes needed for their real interactions. Order and Customer Portal remain non-interactive pre-release information surfaces until their release policy is finalized. Do not create separate English/Japanese copies of design primitives unless a true language-specific rendering requirement exists.
+Run `node scripts/test_linear_redesign.mjs` alongside the repository validation suite.
 
 ## Public product-plan source of truth
 
