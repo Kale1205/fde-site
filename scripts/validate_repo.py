@@ -135,7 +135,7 @@ INTENT_PAGE_NAMES = {
     "small-business-inventory-management-software.html",
 }
 INDEXED_PAGE_NAMES = {
-    "index.html", "why.html", "goals.html", "news.html", "contact.html",
+    "index.html", "goals.html", "news.html", "contact.html",
     "license.html", "demo.html",
 } | INTENT_PAGE_NAMES
 EN_PAGES = INDEXED_PAGE_NAMES | {"order.html"}
@@ -144,11 +144,11 @@ ROOT_ONLY_PUBLIC = {"customer.html"}
 ALL_PUBLIC = EN_PAGES | JA_PAGES | ROOT_ONLY_PUBLIC
 
 GALLERY_INNER_PAGE_NAMES = {
-    "why.html", "goals.html", "news.html", "contact.html", "license.html", "demo.html",
+    "goals.html", "news.html", "contact.html", "license.html", "demo.html",
 } | INTENT_PAGE_NAMES
 GALLERY_INNER_PAGES = GALLERY_INNER_PAGE_NAMES | {f"ja/{name}" for name in GALLERY_INNER_PAGE_NAMES}
-COMMON_NAV_NAMES = ("index.html", "why.html", "goals.html", "news.html")
-FOOTER_NAV_NAMES = ("why.html", "goals.html", "news.html", "license.html", "contact.html")
+COMMON_NAV_NAMES = ("index.html", "goals.html", "news.html")
+FOOTER_NAV_NAMES = ("goals.html", "news.html", "license.html", "contact.html")
 
 OBSOLETE_FILES = {
     "contact-mailer.js", "fulfillment-v2.js", "faq-admin-v2.js", "translations.js",
@@ -307,18 +307,16 @@ for locale, fields in indexed_seo_values.items():
 # Search and AI discovery must be grounded in visible, bilingual product facts.
 search_markers = {
     "index.html": (
-        "Moving from paper, spreadsheets, or an existing inventory system?",
-        "Paper records", "Spreadsheets", "Existing systems",
-        "Data import, migration services, supported file formats, and final deployment scope are not yet confirmed.",
-        "FDE IMS is the inventory product from Baked Kale FDE.",
-        "FDE describes how the product is shaped and maintained alongside real work.",
+        "Your company’s system. Yours to build on.",
+        "Read the source.", "Make it fit.", "Keep improving.",
+        "FDE IMS License Plus", "Source code. Internal customization.",
+        "Deployment assistance, development services and support scope are not yet confirmed.",
     ),
     "ja/index.html": (
-        "紙・Excel・いまの在庫管理から、次の仕組みへ",
-        "紙で管理している", "Excelで管理している", "既存システムを見直したい",
-        "データ移行の対応範囲、対応ファイル形式、導入支援の条件は現在検討中です。",
-        "FDE IMSはBaked Kale FDEが提供を予定する在庫管理ソフトです。",
-        "FDEは、現場を理解しながら製品をつくり、保守する方法を指します。",
+        "自社で使うシステムを、 自社で育てていく。",
+        "中身を読む", "自社に合わせる", "使いながら育てる",
+        "FDE IMS License Plus", "ソースコード付き・自社向けの改変",
+        "導入支援・開発代行・保守サービスの提供範囲は未確定です。",
     ),
 }
 for rel, markers in search_markers.items():
@@ -394,14 +392,14 @@ structured_faq_pairs = {
     "index.html": (
         ("Can I purchase FDE IMS now?", "No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available."),
         ("Can I try the product workflow?", "Yes. The simplified v1.0 demo uses sample data and lets you search inventory and try temporary Receive, Transfer, Count, and Ship actions."),
-        ("Where can I review detailed terms or ask a question?", "Review the License page for the current planned terms, use the comparison above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."),
+        ("Where can I review detailed terms or ask a question?", "Review the License page for the current planned terms, review each plan above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."),
         ("Is FDE IMS intended for teams using paper or spreadsheets?", "Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."),
         ("Can Baked Kale FDE migrate or import data from an existing system?", "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."),
     ),
     "ja/index.html": (
         ("FDE IMSは今すぐ購入できますか？", "いいえ。FDE IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。"),
         ("製品の操作を試せますか？", "はい。v1.0簡易デモではサンプルデータを使い、在庫検索と一時的な入庫・移動・棚卸・出庫操作を試せます。"),
-        ("詳しい条件の確認や質問はどこでできますか？", "現在の予定条件はLicenseページ、責任分担は上の比較表で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。"),
+        ("詳しい条件の確認や質問はどこでできますか？", "現在の予定条件はLicenseページ、責任分担は各プランの利用条件で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。"),
         ("紙やExcelで在庫管理している会社にも向いていますか？", "はい。紙やExcelから、入庫・在庫確認・出庫をひとつの分かりやすい記録へ移したい小規模企業向けに開発しています。"),
         ("既存システムのデータを移行・取り込みできますか？", "現在は未確定です。対応するファイル形式、データ移行、導入支援の範囲は、正式販売前にご案内します。"),
     ),
@@ -442,10 +440,13 @@ for rel, expected_pairs in structured_faq_pairs.items():
         if question not in visible or answer not in visible:
             fail(f"{rel}: structured FAQ is not mirrored in visible HTML: {question}")
 
-# Japanese editorial headings are short labels, not prose sentences.
+# Japanese editorial headings are short labels, except the approved homepage statement.
+JA_SENTENCE_HEADINGS = {
+    ("ja/index.html", "h1", "自社で使うシステムを、 自社で育てていく。"),
+}
 for rel in sorted(JA_PAGES):
     for tag, heading in public_heading_text.get(rel, []):
-        if heading.endswith("。"):
+        if heading.endswith("。") and (rel, tag, heading) not in JA_SENTENCE_HEADINGS:
             fail(f"{rel}: visible {tag} must not end in Japanese full stop: {heading!r}")
 
 # Active public commerce surfaces use two purchasable products. Updates may be
@@ -578,10 +579,8 @@ for rel, marker in currency_disclosure_markers.items():
 required_markers = {
     "index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content.js", "data-demo-open"),
     "ja/index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content-ja.js", "data-demo-open"),
-    "why.html": ("principle-list", "linear-ui.css", "Why should that be the norm?"),
-    "ja/why.html": ("principle-list", "linear-ui.css", "それが当たり前でいい？"),
-    "goals.html": ("goal-manifesto", "linear-ui.css", "In your hands."),
-    "ja/goals.html": ("goal-manifesto", "linear-ui.css", "自分たちの手に"),
+    "goals.html": ('id="fde"', 'id="approach"', 'id="partnership"', "mission-code", "stock_state", "ims-v1-operation-en.mp4"),
+    "ja/goals.html": ('id="fde"', 'id="approach"', 'id="partnership"', "mission-code", "stock_state", "ims-v1-operation-ja.mp4"),
     "news.html": ("cms-content.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
     "ja/news.html": ("cms-content-ja.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
     "contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
@@ -1073,7 +1072,7 @@ for rel, expected in paired_seo.items():
 # Sitemap mirrors the public Gallery UI pairs and their exact language alternates.
 sitemap_path = ROOT / "sitemap.xml"
 sitemap_names = (
-    "license.html", "demo.html", "why.html", "goals.html", "contact.html", "news.html",
+    "license.html", "demo.html", "goals.html", "contact.html", "news.html",
 ) + tuple(sorted(INTENT_PAGE_NAMES))
 sitemap_pairs = [
     (

@@ -6,25 +6,32 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = p => readFileSync(path.join(root, p), 'utf8');
 for (const prefix of ['', 'ja/']) {
   const home = read(prefix + 'index.html');
-  assert.match(home, /class="button button-primary" href="demo.html"/);
+  assert.match(home, /class="button button-primary" href="#license-plus"/);
+  assert.match(home, /class="button button-secondary" href="(?:\.\.\/)?demo.html" data-demo-open/);
   assert.doesNotMatch(home, /href="#preview-panel"/);
   const panel = home.slice(home.indexOf('<div class="product-window"'), home.indexOf('<img class="hero-foreground"'));
-  assert.match(panel, /\binert\b/);
-  assert.doesNotMatch(panel, /<(button|input|a)\b/);
+  assert.match(panel, /<button class="inventory-row/);
+  assert.match(panel, /<button class="ship-button" type="button">/);
   assert.doesNotMatch(home, /Explore freely|触って確認|Real interface/);
-  for (const name of ['index.html', 'why.html', 'goals.html', 'demo.html', 'license.html', 'contact.html']) {
+  for (const name of ['index.html', 'goals.html', 'demo.html', 'license.html', 'contact.html']) {
     const html = read(prefix + name);
-    assert.match(html, /linear-ui\.css\?v=/);
-    assert.ok(html.includes(prefix ? 'Kaleのゴール' : 'Kale’s Goal'));
+    assert.match(html, /gallery-ui\.css\?v=/);
+    assert.ok(html.includes('Our Goals'));
   }
-  assert.match(read(prefix + 'why.html'), /class="principle-list"/);
-  assert.match(read(prefix + 'goals.html'), /class="goal-manifesto"/);
-  assert.ok(read(prefix + 'goals.html').includes('License Plus'));
+  const why = read(prefix + 'why.html');
+  assert.match(why, /noindex,follow/);
+  assert.match(why, /goals\.html#fde/);
+  const goals = read(prefix + 'goals.html');
+  assert.match(goals, /class="mission-chapter\b/);
+  assert.match(goals, /class="mission-code"/);
+  assert.match(goals, /ims-v1-operation-(?:en|ja)\.mp4/);
+  assert.ok(goals.includes('License Plus'));
 }
-assert.match(read('ja/index.html'), /まだ、在庫を<br class="mobile-break">確認するたびに/);
-assert.ok(read('ja/index.html').includes('自社の道具は、自社で変えたい？'));
-assert.match(read('linear-ui.css'), /prefers-reduced-motion:reduce/);
-assert.match(read('gallery-ui.js'), /reduced\.addEventListener\("change", configure\)/);
-assert.match(read('gallery-ui.js'), /passive: true/);
-assert.doesNotMatch(read('gallery-ui.js'), /updateRow|stockButtons|localStorage|fetch\(/);
-console.log('Linear redesign copy, static preview, locale and motion contracts passed.');
+assert.ok(read('index.html').includes('Your company’s system.'));
+assert.ok(read('ja/index.html').includes('自社で使うシステムを、'));
+assert.ok(read('ja/index.html').includes('自社で育てていく。'));
+assert.match(read('gallery-ui.css'), /prefers-reduced-motion:\s*reduce/);
+assert.match(read('gallery-ui.js'), /reducedMotion\.addEventListener\("change", \(\) =>/);
+assert.match(read('gallery-ui.js'), /updateRow|stockButtons/);
+assert.doesNotMatch(read('gallery-ui.js'), /localStorage|fetch\(/);
+console.log('Source-led redesign copy, static preview, locale and motion contracts passed.');
