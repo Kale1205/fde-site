@@ -132,3 +132,200 @@ The reference and final Why FDE implementation were normalized to the same 1536 
 - Repository validator and all seven P2 policy/fulfillment test suites pass.
 
 final result: passed
+
+---
+
+# 2026-09-15 — Source-code-led homepage implementation
+
+Scope: English and Japanese homepages. Existing tracked files were clean at the start; pre-existing untracked output/ screenshots were preserved. Existing Why FDE / Goals QA above is retained.
+
+## Visual target and approved changes
+
+Source visual: /Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-2b2556d3-e686-42ca-bf37-91e49ae3db81.png (836 × 1881).
+The user's subsequent approved copy changes are authoritative: encourage building an internal system from source, replace the generic migration challenge with Read / Adapt / Refine, merge pricing and comparison, fold maintenance into plan details, and prioritize License Plus.
+Figma MCP get_metadata inspected the previously captured 1440 × 5989 existing homepage in file kYfXENf0rnnxRkMW5F01XF, node 1:2. This was structural context, not a new Figma design or a token export. Implementation reuses gallery-ui.css tokens, the supplied brand logo, the existing inventory preview, and the selected visual.
+
+## Evidence
+
+Baseline: output/chrome-devtools/baseline/source-led-before-{1440,1024,390}.png.
+Final screenshots: output/source-led-qa/en-1440.png (1440 × 3826), en-1024.png (1024 × 4569), en-390.png; ja-1440.png (1440 × 3777), ja-1024.png (1024 × 4506), ja-390.png (390 × 6854).
+Final capture viewports: 1440 × 1024, 1024 × 900, 390 × 844, using Chrome DevTools MCP emulation with deviceScaleFactor 1. All widths were verified from innerWidth. Baseline desktop captures were 2× density; final captures are 1×.
+State: public homepage, sample inventory, plan details closed, first FAQ open. Mobile plan-details-open state was also exercised.
+Full-view comparison: source and rendered EN homepage were opened together in the same multi-image comparison input, with Japanese mobile and tablet evidence. Source/render proportions were compared relative to page width; the approved content consolidation intentionally changes page height and section count. This is not a claim of pixel-identical reproduction.
+Focused evidence: output/source-led-qa/pricing-focus.png at 1440 × 1024, plus the post-fix 1024 × 900 hero viewport inspected in Chrome. Prices share y=461.58 and plan buttons y=610.22 in the focused pricing capture.
+
+## Findings and fixes
+
+- P1, tablet hero: an inherited translateX(-50%) moved the inventory preview over the editorial panel despite zero page overflow. Explicitly reset preview transform and hero-visual margin. Final 1024px inspection shows no overlap and a 24px gap; ja-1024.png and en-1024.png were recaptured.
+- P2, mobile prices: inherited grid/flex alignment split the Japanese currency label and shortened CTA widths. Restored a column flex layout with stretched children and nowrap price text. Final mobile capture keeps 49,800円 and 99,800円 on one line.
+- P2, desktop pricing alignment: different description lengths offset prices/buttons. Equal minimum text-block heights now align both plans without forcing mobile card heights.
+- P2, Japanese headline wrapping: shortened line groups and adjusted the display scale to prevent orphaned characters.
+- P2, keyboard menu: Escape hid a focused menu item without returning focus. Focus now returns to the menu button; verified with actual Escape input.
+- P2, accessible inventory names: redundant aria-label strings did not match visible cell text. Removed those labels and allow live cell content to supply the accessible name. Final EN Lighthouse audits report zero failed audits.
+- P2, reading order: moved plan disclosures after price/CTA in the HTML so keyboard and visual order agree.
+- P2, metadata consistency: updated FAQ JSON-LD and visible text together after removing the separate comparison table. Updated the repository's old copy assertions to the approved source-code message while retaining all price, entitlement, release-state, and license-condition checks.
+
+## Required fidelity surfaces
+
+- Typography: existing Georgia display, system sans / Japanese stack, and mono labels retained; large editorial hierarchy and comfortable 14–15px body copy. Japanese headings use their existing sans family. Plan prices and CTA baselines align.
+- Layout: dark asymmetric hero, a full-width workflow strip, research-note layout, facing pricing pages, compact related links, FAQ, and source-led final CTA. No overlapping primary regions at 1440/1024/390.
+- Colors: existing forest, paper, ink, and burnt orange tokens reused; lighter orange is restricted to high-contrast dark-surface actions/headline accents.
+- Images: custom night lab and blank binder generated with built-in ImageGen and saved as local WebP assets (about 102KB + 64KB). Existing logo and paper texture reused. Readable website text and the working inventory interface remain HTML.
+- Copy: English/Japanese parity, source access as the main proposition, two existing plans, existing currency/prices and commercial restrictions. No new migration or development-service promise.
+
+## Verification
+
+- npm run validate: passed.
+- python3 scripts/validate_pre_staging.py: passed.
+- node --check for gallery-ui.js, cms-content.js, cms-content-ja.js and demo-v1.js: passed.
+- node scripts/test_production_commerce_gate.mjs: passed.
+- node scripts/test_contact_email_routing.mjs: passed.
+- git diff --check: passed.
+- This is an existing static HTML site. package.json has dev and validate scripts; it has no separate build or lint script.
+- Chrome: 1440, 1024 and 390px, EN and JA; page-level overflow zero. Images loaded successfully; inspected homepage requests returned HTTP 200; no console warnings/errors.
+- Primary homepage inventory row selection, Receive (+1), Ship (-1), License Plus anchors, plan disclosures and local navigation destinations: passed.
+- Mobile menu open/close, Escape focus restoration, visible focus styles, native details keyboard affordances: checked.
+- Separate Japanese Web Demo: search/filter path, Receive success, insufficient-stock error, Reset and restored sample history: checked; no console errors.
+- Contact form: all six required field definitions present; empty form is invalid; no message submitted.
+- Lighthouse EN desktop and mobile: Accessibility 100, Best Practices 100, SEO 100, zero failed audits after repairs. JA mobile first pass: same category scores; inherited accessible-name issue subsequently fixed in both locales.
+- Chrome performance trace on local JA at 1024px: CLS 0.00, LCP 81ms, unthrottled local environment. These are local observations, not production field performance.
+
+## Constraints / follow-up polish
+
+- No deployment, merge, external announcement, purchase, or form submission was performed.
+- Dedicated guide, license, demo and contact pages remain the existing product surfaces; top-page layout changes are scoped to source-home. Their navigation and shared styling remain available.
+- Newly generated assets are decorative compositions, not photographs of the company's actual facilities.
+- Figma was inspected for existing structure; the accepted image and approved copy, not a newly authored Figma file, define this implementation.
+- P3: open plan disclosures lengthen the archival binder background; it remains decorative and all terms stay readable.
+- Production cache versioning remains managed by the repository's existing build-version / deployment workflow.
+
+final result: passed
+
+---
+
+# 2026-09-15 — English headline, product layering, and editorial pages
+
+Scope: the requested English headline change, shared homepage product presentation, and EN/JA Why FDE, Goals, News and Contact. This entry supersedes the previous entry's statement that Contact and the company pages remain unchanged. Existing homepage work, assets and untracked evidence were preserved; there was no reset, dependency change, new framework or deployment.
+
+## Reference and design decisions
+
+- Current code and the user's latest selected direction were authoritative. Product Design's image-to-code and design-QA workflow informed the rendered comparison and corrections without restarting concept generation.
+- Linear's live site was inspected as a reference for restrained product layering and edge fades, not copied. No Linear code, text, logo, image or proprietary asset was imported.
+- Figma MCP get_metadata read the existing homepage structure in file kYfXENf0rnnxRkMW5F01XF, node 1:2 (1440 × 5989). This was structural context only: no new Figma design, token export or Figma mutation.
+- English H1 is now “Your company’s system. / Yours to build on.” Japanese retains the approved “自社で使うシステムを、 / 自社で育てていく。” The duplicate English proposition was removed.
+- The existing inventory table supplies one decorative overlapping fragment with a fading edge. It is inert, aria-hidden, ID-free and excluded from operational row selection. Focus within the real preview disables its edge mask so controls remain clear.
+- Why FDE uses an image beside unboxed, vertically ordered stages. Goals uses an asymmetric editorial layout. News prioritizes dates and titles in rows, with smaller images and a compact social link. Contact puts the form first and retains all existing searchable FAQ content in a native disclosure.
+- Existing Gallery tokens, brand colors, fonts and illustrations were reused. No new imagery, tracking, fingerprinting or outbound integration was added. Existing prices, plan conditions and release restrictions were retained.
+
+## Evidence and comparison
+
+- Before: output/refinement-qa/before/{why,goals,news,contact}-{1440,1024,390}.png, English, 12 captures. Homepage comparison also uses the preceding output/source-led-qa/ evidence.
+- After: output/refinement-qa/after/{en,ja}-{index,why,goals,news,contact}-{1440,1024,390}.jpg, 30 route/viewport captures.
+- Capture viewport sizes: Desktop 1440 × 1024, Tablet 1024 × 1024, Mobile 390 × 844; device pixel ratio 1. Before images are PNG; final matrix images are JPEG at quality 85. Full-page heights vary with content.
+- Focused final evidence: after/en-index-final-390.jpg, after/contact-review-final-390.jpg and after/ja-news-dialog-390.jpg. The focused English hero capture follows the final mobile font adjustment and supersedes the earlier matrix image for that headline. JA Contact, Why and Goals mobile full-page captures were refreshed after their last relevant corrections.
+- Before/after Why, Goals and News were opened in paired visual comparisons. Final mobile screenshots, the contact review state and article dialog were inspected directly. Typography, hierarchy, spacing, alignment, color, image crop and content preservation were compared; the requested reflow deliberately changes section proportions and page heights.
+- Raw viewport checks and per-route console/network evidence: output/refinement-qa/results.json.
+
+## Findings corrected during the browser loop
+
+- P2: inherited stage borders produced a stray right rule and doubled mobile separators. Removed the conflicting borders in the scoped refinement.
+- P2: the English mobile hero left an isolated “system.” Adjusted only its responsive headline scale; the final 390px capture fits each intended phrase on one line.
+- P2: Japanese Contact's headline had an awkward short final line and the business-information heading competed with the form. Added balanced wrapping and reduced that secondary heading.
+- P2: the review state inherited an oversized serif heading and crowded labels/values. Introduced a restrained heading and readable two-column summary with safe long-value wrapping.
+- P2: review/back hid the previously focused control. Focus now moves to the review heading, and back to the first input after Edit. Actual Tab/Enter operation and retained values were verified.
+- P2: the transformed offscreen skip link appeared in mobile full-page capture stitching. Added a standard visually-hidden non-focus state; focused link is visible at top 8px, with a solid outline and a 120 × 48.8px box.
+- P3: removed a redundant News list separator. No unresolved actionable P0/P1/P2 visual finding remained in the inspected scope.
+
+## Browser and functional verification
+
+- Chrome DevTools MCP: EN and JA Home, Why, Goals, News and Contact at all three widths, 30 combinations. No horizontal page overflow, missing images or duplicate IDs in the recorded checks. Per-route console warning/error lists were empty, and captured network logs contained no failed/error responses. All ten local page URLs returned HTTP 200 in a final same-origin GET check.
+- Homepage: select row, Receive 18 → 19, Ship 19 → 18; real preview retains five rows; duplicate fragment is inert. Source-plan CTA anchor, mobile menu and Escape focus restoration passed. Actual desktop CTA hover changes its background; focused preview has no edge mask.
+- News: article opened, close control received focus, mobile dialog remained in bounds; Escape closed it and restored focus to its trigger.
+- Contact: six required fields and invalid empty state checked. Synthetic values were filled, Review opened with six retained values and no overflow, and Edit restored the form without losing values. The final English keyboard path was review-heading focus → Tab to Edit → Enter → focus on name input. No Send action was taken and no inquiry email was submitted.
+- FAQ: disclosure, query filtering, matching results and no-results state checked on Japanese mobile. Search “LicensePlus” returned 22 entries; a synthetic no-match query returned zero with the empty state visible.
+- Lighthouse navigation audits: JA Home desktop, EN News mobile and EN Contact mobile each scored Accessibility 100 and Best Practices 100 (also SEO 100), with zero failed audits. These are representative routes, not an assertion that every page received a Lighthouse audit. JSON evidence is in output/refinement-qa/lighthouse-{home-desktop,news-mobile,contact-mobile}.json.
+- Local JA homepage performance trace, 1440px, CPU 1× and no network throttling: LCP 111ms, CLS 0.00. No CrUX field data was available; these are local measurements, not production performance certification.
+
+## Final code checks
+
+- npm run validate: passed.
+- python3 scripts/validate_pre_staging.py: passed.
+- node scripts/test_production_commerce_gate.mjs: passed.
+- node scripts/test_contact_email_routing.mjs: passed.
+- node --check gallery-ui.js and contact-direct.js: passed.
+- git diff --check: passed.
+- The repository is static HTML/CSS/JS and defines no separate build or lint command; repository validation and JavaScript syntax checks were used instead.
+
+## Files and remaining boundaries
+
+Changed this turn: index.html; why.html and ja/why.html; goals.html and ja/goals.html; news.html and ja/news.html; contact.html and ja/contact.html; gallery-ui.css; gallery-pages.css; gallery-ui.js; contact-direct.js; scripts/validate_repo.py; this QA log. Existing ja/index.html changes and the two generated WebP assets predate this turn and were preserved.
+
+No deployment, merge, GitHub/Slack update, purchase or inquiry submission was performed. Real-device Safari/iOS/Android testing and production-origin checks are not covered by these local Chrome results. Source cache versioning remains with the existing release workflow. License, guide and dedicated demo layouts were not redesigned in this turn.
+
+final result: passed
+
+---
+
+# 2026-09-15 — Unified Our Goals and genuine IMS operation media
+
+## Scope and source of truth
+
+The user requested one bilingual Our Goals page combining Why FDE and Goals, in three chapters: what FDE means; Baked Kale's source-code-included systems as a lower-barrier starting point; remaining the customer's software people and partner. The user also requested a real source excerpt and real IMS v1.0 operations, not an invented interface or the website's Web Demo.
+
+Existing uncommitted site work and assets were preserved. The existing selected Gallery design and current page screenshots were the visual baseline, with the requested content/structure changes taking precedence. Product Design's source comparison and QA loop were used; no new framework, design-system fork or dependency was introduced. Linear's live site informed the use of a clipped code surface, without copying its code or assets. Figma MCP read existing homepage metadata (kYfXENf0rnnxRkMW5F01XF / 1:2) only; the old Figma capture was not implemented or edited.
+
+## Implementation and copy
+
+- One goals.html / ja/goals.html pair with #fde, #approach and #partnership sections, a local chapter index, actual code excerpt and real native-app capture sequence.
+- Japanese core headlines: “現場を知り、使える仕組みに変える”; “動くシステムと、その中身を届ける”; “あなたのシステム屋であり、パートナーであり続ける”.
+- English equivalents: “Understand the work. Build what helps.”; “A working system. And the code behind it.”; “Your software people. Your partner, for the long run.”
+- The copy describes a goal, not a currently contracted support entitlement. Development status, undefined assistance/maintenance scope and purchaser-managed License Plus updates/security remain explicit.
+- Why FDE is removed from public header/footer navigation and homepage related links. Both old why.html URLs remain as noindex, canonicalized redirects to the matching goals.html#fde, with a normal fallback link. Sitemap now lists only the unified destination.
+- The existing forest/ivory/orange palette, logo, Georgia English display type and Japanese sans hierarchy are retained. Narrow rules and spacing organize the story; no extra illustrations or decorative cards were introduced.
+
+## Genuine code and capture provenance
+
+- Source excerpt: fde-ims crates/ims-domain/src/lib.rs lines 140–148, stock_state; exact logic with signature line breaks adjusted, identical in both locales.
+- IMS source commit: a195e39ce3609f05a52247dade3626747cb3b367. The source working tree was clean before and after this work.
+- Built the actual unoptimized React/Tauri development-shell, changing only the runtime bundle identifier/name via command-line configuration to com.bakedkale.fdeims.sitecapture / FDE IMS Site Capture. No IMS source file was edited.
+- The separate identifier uses a fresh app-local SQLite database, populated with the application's own 12-product synthetic dataset. The existing IMS application data was not used or modified.
+- Actual English UI operation: DEMO-003 Paper Cups, stock 3 → receive 17 → stock 20; healthy state and movement +17 verified.
+- Actual Japanese UI operation: DEMO-011 Ballpoint Pen, stock 2 → receive 18 → stock 20; healthy state and movement +18 verified.
+- Each localized MP4 is four unchanged native-app window captures held for three seconds each: 12 seconds, 900 × 700, 15 fps, silent H.264. This is an actual-operation capture sequence, NOT continuous cursor footage. No interface was generated, drawn, mocked or composited. Page captions disclose the sequence and development status.
+- Videos are approximately 596KB EN / 602KB JA; posters approximately 93KB / 87KB. Native playback controls and text transcripts remain available. Playback begins when visible unless reduced motion is requested; it pauses offscreen.
+- Full capture/build/hash evidence: output/ims-capture/provenance.md and raw captures/encoder script in that directory. This development-shell recording is not release approval or proof of production Local/LAN authentication.
+
+## Visual comparison and fixes
+
+Source captures: output/refinement-qa/after/en-goals-1440.jpg (1440 × 1048), prior JA mobile Goals and output/goals-merged-before-390.jpg. Final matrix: output/goals-merged-qa/{en,ja}-goals-{1440,1024,390}.jpg. Final desktop EN is 1440 × 3825; JA mobile is 390 × 3712. Viewports are 1440 × 1024, 1024 × 1024 and 390 × 844; all DPR 1, JPEG quality 85. Content is substantially longer by request, so page height is intentionally different.
+
+The source and revised desktop captures were opened in the same comparison input. Full desktop and mobile layouts, source typography, colors, spacing, image/media quality and copy hierarchy were inspected. Focused native-operation and mobile video frames were inspected at readable scale rather than judged only from a downscaled full-page screenshot.
+
+- P2: default figure margins made the mobile code block unnecessarily narrow. Reset horizontal figure margins and retained a controlled right-edge fade.
+- P2: inherited eyebrow color made the code block label weak against forest. Added a high-contrast light label.
+- P2: the first implementation inherited bold sans display headings in English, drifting from the selected site language. Restored the existing Georgia display family and regular weight.
+- P2: after that font correction, the English mobile headline left isolated “do.” and “own.” lines. Reduced only the English mobile hero to 32px. Focused post-fix capture output/goals-merged-qa/en-hero-final-390.jpg supersedes the earlier full-page mobile image for this headline and shows the intended two lines.
+- P2: the old simple preview server served MP4 as octet-stream without byte ranges, so Chrome exposed seekable [0,0] despite buffered [0,12]. Added MP4 MIME, HEAD and bounded single-range responses to scripts/dev-server.mjs. Started the updated preview at loopback port 4183 without terminating the existing 4173 process. Playback now exposes seekable [0,12], and seeking to 7 seconds succeeds.
+- P3: the actual native UI is dense when scaled to mobile. The video keeps native fullscreen controls and an adjacent text transcript; no fake enlarged UI replaces it.
+
+## Validation
+
+- EN and JA Our Goals: Desktop 1440, Tablet 1024, Mobile 390. All six checks report no page overflow, missing images or duplicate IDs. Per-route console warnings/errors were empty. Evidence: output/goals-merged-qa/results.json.
+- Real video playback: decoded 900 × 700, duration 12s, readyState 4; pause and seek succeeded. Focused Japanese playback: output/goals-merged-qa/ja-video-playing-390.jpg.
+- Updated preview server: HEAD 200 / video/mp4 / correct length; bytes 0–31 returns 206 with 32 bytes; suffix request returns 206 with 16 bytes; out-of-range request returns expected 416. The intentionally invalid-range test produced an expected Console 416 entry; a subsequent clean navigation had no errors.
+- Reduced-motion branch checked with a controlled matchMedia preference fixture: video remained paused after scrolling into view. This did not change the user's OS or browser preferences.
+- Old EN and JA Why URLs resolve to the correct localized Goals #fde; target top 28px. Chapter anchor navigation passed. Mobile menu Escape closes it and restores button focus.
+- Contact CTA: focused with visible solid outline, activated with actual Enter input, reached the existing contact page/form. No inquiry was submitted.
+- Lighthouse: EN mobile and JA desktop each Accessibility 100 / Best Practices 100 / SEO 100, zero failed audits. Saved reports: output/goals-merged-qa/lighthouse-en-mobile.json and lighthouse-ja-desktop.json.
+- npm run validate, node scripts/test_goals_content.mjs, python3 scripts/validate_pre_staging.py, production-commerce gate test, contact-email-routing test, JS syntax checks and git diff --check: passed.
+- The existing static site has no separate build/lint script. IMS capture build and built-asset compatibility check also passed; this does not certify a released binary or OS support.
+
+## Files and boundaries
+
+Core files: goals.html, ja/goals.html, why.html, ja/why.html, gallery-pages.css, gallery-ui.css, gallery-ui.js, sitemap.xml, scripts/validate_repo.py, scripts/test_goals_content.mjs, scripts/dev-server.mjs, four assets/ims-v1-operation-* files and this report. Public HTML header/footer links were updated mechanically across both locales; other page functions/content were preserved.
+
+No deployment, merge, external announcement, analytics, tracking, inquiry submission or release authorization was performed. The new preview is http://127.0.0.1:4183/ja/goals.html (EN /goals.html); the older preview server remains untouched. Production-origin and physical Safari/iOS/Android checks are outside this local Chrome verification.
+
+Browser cleanup: the task-owned Chrome DevTools pages 9, 10 and 12 were closed; no pre-existing normal user Chrome session was targeted. Closing the remaining task-owned page 11 was attempted, but Chrome DevTools MCP refuses to close its last page. This remaining page and the tool limitation are reported in the handoff.
+
+final result: passed
