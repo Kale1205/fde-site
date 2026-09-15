@@ -17,7 +17,7 @@ for (const lang of ["en", "ja"]) {
   assert.ok(html.includes('href="goals.html" aria-current="page"'));
   assert.ok(html.includes("Forward Deployed Engineering"));
   assert.ok(html.includes("License Plus"));
-  const code = html.match(/<pre[^>]*>[\s\S]*?<code>([\s\S]*?)<\/code>/)[1].replace(/<[^>]*>/g, "").replace(/\s+/g, "");
+  const code = html.match(/<pre[^>]*>[\s\S]*?<code>([\s\S]*?)<\/code>/)[1].replace(/\s+/g, "");
   if (firstCode) assert.equal(code, firstCode);
   firstCode = code;
   for (const state of ["OutOfStock", "LowStock", "Healthy"]) assert.ok(code.includes(state));
