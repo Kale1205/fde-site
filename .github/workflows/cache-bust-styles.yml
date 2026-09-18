@@ -20,6 +20,8 @@ jobs:
   sync-build-version:
     if: github.actor != 'github-actions[bot]' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      SITEMAP_BASE_REF: origin/main
     steps:
       - name: Checkout working branch
         uses: actions/checkout@v4
@@ -54,12 +56,6 @@ jobs:
           VERSION="$(cat build-version.txt)"
           git commit -m "Sync site asset build ${VERSION}"
           git push
-          python scripts/generate_sitemap.py
-          git add sitemap.xml
-          if ! git diff --cached --quiet; then
-            git commit -m "Sync sitemap for site asset build ${VERSION}"
-            git push
-          fi
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 

@@ -17,6 +17,8 @@ jobs:
   validate:
     name: validate
     runs-on: ubuntu-latest
+    env:
+      SITEMAP_BASE_REF: ${{ github.event.pull_request.base.sha || 'origin/main' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,11 +31,14 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Generate sitemap from committed HTML history
+      - name: Sitemap lastmod regression tests
+        run: python scripts/test_sitemap_lastmod.py
+
+      - name: Generate sitemap from substantive HTML changes
         run: npm run sitemap
 
-      - name: Verify generated sitemap is committed
-        run: git diff --exit-code -- sitemap.xml
+      - name: Verify generated sitemap state is committed
+        run: git diff --exit-code -- sitemap-lastmod.json sitemap.xml
 
       - name: Repository consistency checks
         run: npm run validate

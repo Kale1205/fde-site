@@ -3,17 +3,12 @@ from html.parser import HTMLParser
 import json
 import re
 import sys
-import xml.etree.ElementTree as ET
 from urllib.parse import urlsplit
 
 from sitemap_config import (
-    GitHistoryError,
-    LASTMOD_PATTERN,
-    SITEMAP_NAMESPACE,
-    SITEMAP_PAIRS,
-    XHTML_NAMESPACE,
-    git_last_modified,
-    require_complete_git_history,
+    SitemapStateError,
+    resolve_base_ref,
+    validate_sitemap_state,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1079,87 +1074,15 @@ for rel, expected in paired_seo.items():
     if not locale_ok:
         fail(f"{rel}: reciprocal static language link is missing or incorrect")
 
-# Sitemap mirrors the public Gallery UI pairs and their exact language alternates.
-sitemap_path = ROOT / "sitemap.xml"
-expected_sitemap_pages = {
-    page.url: (pair, page)
-    for pair in SITEMAP_PAIRS
-    for page in pair.pages
-}
-expected_sitemap_urls = set(expected_sitemap_pages)
-if not sitemap_path.exists():
-    fail("sitemap.xml is missing")
-else:
-    try:
-        sitemap_root = ET.parse(sitemap_path).getroot()
-        ns = {"sm": SITEMAP_NAMESPACE, "xhtml": XHTML_NAMESPACE}
-        if sitemap_root.tag != f"{{{SITEMAP_NAMESPACE}}}urlset":
-            fail("sitemap.xml: root element must be the sitemap urlset")
-        sitemap_entries = {}
-        for item in sitemap_root.findall("sm:url", ns):
-            loc = item.findtext("sm:loc", default="", namespaces=ns).strip()
-            if not loc:
-                fail("sitemap.xml: url entry is missing loc")
-                continue
-            if loc in sitemap_entries:
-                fail(f"sitemap.xml: duplicate loc: {loc}")
-            sitemap_entries[loc] = item
-        actual_sitemap_urls = set(sitemap_entries)
-        for missing in sorted(expected_sitemap_urls - actual_sitemap_urls):
-            fail(f"sitemap.xml: expected URL missing: {missing}")
-        for unexpected in sorted(actual_sitemap_urls - expected_sitemap_urls):
-            fail(f"sitemap.xml: unexpected URL: {unexpected}")
-        try:
-            require_complete_git_history(ROOT)
-            complete_git_history = True
-        except GitHistoryError as exc:
-            fail(f"sitemap.xml: cannot verify lastmod values: {exc}")
-            complete_git_history = False
-        for pair in SITEMAP_PAIRS:
-            required = set(pair.alternates)
-            for page in pair.pages:
-                loc = page.url
-                item = sitemap_entries.get(loc)
-                if item is None:
-                    continue
-                lastmod = item.findtext("sm:lastmod", default="", namespaces=ns).strip()
-                if not LASTMOD_PATTERN.fullmatch(lastmod):
-                    fail(f"sitemap.xml: {loc} lastmod must use YYYY-MM-DD")
-                elif complete_git_history:
-                    try:
-                        expected_lastmod = git_last_modified(ROOT, page.html_path)
-                    except GitHistoryError as exc:
-                        fail(f"sitemap.xml: cannot verify {page.html_path}: {exc}")
-                    else:
-                        if lastmod != expected_lastmod:
-                            fail(
-                                f"sitemap.xml: {loc} lastmod is {lastmod}; "
-                                f"Git history for {page.html_path} is {expected_lastmod}"
-                            )
-                changefreq = item.findtext("sm:changefreq", default="", namespaces=ns).strip()
-                if changefreq != pair.changefreq:
-                    fail(f"sitemap.xml: {loc} changefreq must be {pair.changefreq}")
-                priority = item.findtext("sm:priority", default="", namespaces=ns).strip()
-                if priority != pair.priority:
-                    fail(f"sitemap.xml: {loc} priority must be {pair.priority}")
-                alternate_links = [
-                    link
-                    for link in item.findall("xhtml:link", ns)
-                    if link.get("rel") == "alternate"
-                ]
-                alternate_values = [
-                    (link.get("hreflang"), link.get("href"))
-                    for link in alternate_links
-                ]
-                alternates = set(alternate_values)
-                if len(alternate_values) != len(alternates):
-                    fail(f"sitemap.xml: {loc} has duplicate hreflang alternates")
-                for alternate in sorted(required - alternates):
-                    fail(f"sitemap.xml: {loc} missing hreflang alternate {alternate}")
-                for alternate in sorted(alternates - required):
-                    fail(f"sitemap.xml: {loc} has unexpected hreflang alternate {alternate}")
-    except ET.ParseError as exc:
-        fail(f"sitemap.xml: invalid XML: {exc}")
+# The manifest is the durable lastmod source of truth. Off main, compare the
+# PR branch with its base and update only materially changed indexed HTML.
+try:
+    sitemap_base_ref = resolve_base_ref(ROOT)
+except SitemapStateError as exc:
+    fail(f"sitemap lastmod base resolution failed: {exc}")
+    sitemap_base_ref = None
+for sitemap_error in validate_sitemap_state(ROOT, base_ref=sitemap_base_ref):
+    fail(sitemap_error)
 
 # The project-path robots file is not an origin-root robots control, but its
 # contents must remain internally safe and point at the canonical sitemap for

@@ -63,9 +63,9 @@ This repository is served as the GitHub Pages project path `/fde-site/`. A file 
 
 ### Sitemap `lastmod` workflow
 
-The committed `sitemap.xml` is generated from each indexed HTML file's last committed change date (`git log -1 --format=%cs -- <file>`). After committing an indexed HTML change, run `npm run sitemap` and commit the resulting sitemap update before opening or updating the pull request. Do not substitute the generation date, deployment date, or a stylesheet/JavaScript change date.
+`sitemap-lastmod.json` is the durable source of truth for each indexed HTML page's last substantive content change. On a feature branch, `npm run sitemap` compares the branch with `main`, normalizes local CSS/JavaScript `?v=<build-version>` cache keys, and updates only pages whose remaining HTML differs. The updated date comes from the latest substantive page-change commit in the branch, not from generation or deployment time. Commit both `sitemap-lastmod.json` and `sitemap.xml` before opening or updating the pull request.
 
-Generation fails closed when the repository is shallow, a target file is untracked, or its Git history is unavailable. Fetch the complete history and commit new HTML files before generating; the script does not invent a date or silently reuse a potentially stale value. GitHub Pages serves the root of `main` directly, so `sitemap.xml` remains a reviewed, committed build artifact rather than an Actions self-commit. PR checks fetch complete history, regenerate the file, require a clean sitemap diff, and then run repository validation.
+After a squash merge, `main` renders `sitemap.xml` from the persisted manifest without replacing dates with the squash commit date. CSS/JavaScript-only work and cache-key-only HTML rewrites retain existing page dates. Generation fails closed when a feature comparison has shallow or missing history, indexed HTML is uncommitted, or the branch and current base both materially changed the same page. GitHub Pages serves the root of `main` directly, so these remain reviewed, committed artifacts rather than post-merge bot commits. PR checks fetch complete history, run the Case A/B/C regression suite, regenerate both files, require a clean diff, and then validate the manifest, sitemap structure, and base-to-HEAD page changes.
 
 ## CMS invariant
 
