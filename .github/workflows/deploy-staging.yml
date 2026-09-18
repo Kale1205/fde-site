@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Checkout develop
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Verify deployment credential
         shell: bash
@@ -38,6 +40,11 @@ jobs:
             echo "CLOUDFLARE_API_TOKEN is not configured."
             exit 1
           fi
+
+      - name: Generate sitemap from committed HTML history
+        run: |
+          npm run sitemap
+          git diff --exit-code -- sitemap.xml
 
       - name: Validate repository before staging deploy
         run: |

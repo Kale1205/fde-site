@@ -6,6 +6,16 @@ import sys
 import xml.etree.ElementTree as ET
 from urllib.parse import urlsplit
 
+from sitemap_config import (
+    GitHistoryError,
+    LASTMOD_PATTERN,
+    SITEMAP_NAMESPACE,
+    SITEMAP_PAIRS,
+    XHTML_NAMESPACE,
+    git_last_modified,
+    require_complete_git_history,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
 
@@ -1071,28 +1081,20 @@ for rel, expected in paired_seo.items():
 
 # Sitemap mirrors the public Gallery UI pairs and their exact language alternates.
 sitemap_path = ROOT / "sitemap.xml"
-sitemap_names = (
-    "license.html", "demo.html", "goals.html", "contact.html", "news.html",
-) + tuple(sorted(INTENT_PAGE_NAMES))
-sitemap_pairs = [
-    (
-        "https://kale1205.github.io/fde-site/",
-        "https://kale1205.github.io/fde-site/ja/",
-    )
-] + [
-    (
-        f"https://kale1205.github.io/fde-site/{name}",
-        f"https://kale1205.github.io/fde-site/ja/{name}",
-    )
-    for name in sitemap_names
-]
-expected_sitemap_urls = {url for pair in sitemap_pairs for url in pair}
+expected_sitemap_pages = {
+    page.url: (pair, page)
+    for pair in SITEMAP_PAIRS
+    for page in pair.pages
+}
+expected_sitemap_urls = set(expected_sitemap_pages)
 if not sitemap_path.exists():
     fail("sitemap.xml is missing")
 else:
     try:
         sitemap_root = ET.parse(sitemap_path).getroot()
-        ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9", "xhtml": "http://www.w3.org/1999/xhtml"}
+        ns = {"sm": SITEMAP_NAMESPACE, "xhtml": XHTML_NAMESPACE}
+        if sitemap_root.tag != f"{{{SITEMAP_NAMESPACE}}}urlset":
+            fail("sitemap.xml: root element must be the sitemap urlset")
         sitemap_entries = {}
         for item in sitemap_root.findall("sm:url", ns):
             loc = item.findtext("sm:loc", default="", namespaces=ns).strip()
@@ -1107,22 +1109,55 @@ else:
             fail(f"sitemap.xml: expected URL missing: {missing}")
         for unexpected in sorted(actual_sitemap_urls - expected_sitemap_urls):
             fail(f"sitemap.xml: unexpected URL: {unexpected}")
-        for en_url, ja_url in sitemap_pairs:
-            required = {("en", en_url), ("ja", ja_url), ("x-default", en_url)}
-            for loc in (en_url, ja_url):
+        try:
+            require_complete_git_history(ROOT)
+            complete_git_history = True
+        except GitHistoryError as exc:
+            fail(f"sitemap.xml: cannot verify lastmod values: {exc}")
+            complete_git_history = False
+        for pair in SITEMAP_PAIRS:
+            required = set(pair.alternates)
+            for page in pair.pages:
+                loc = page.url
                 item = sitemap_entries.get(loc)
                 if item is None:
                     continue
                 lastmod = item.findtext("sm:lastmod", default="", namespaces=ns).strip()
-                if lastmod != "2026-09-04":
-                    fail(f"sitemap.xml: {loc} lastmod must be 2026-09-04")
-                alternates = {
-                    (link.get("hreflang"), link.get("href"))
+                if not LASTMOD_PATTERN.fullmatch(lastmod):
+                    fail(f"sitemap.xml: {loc} lastmod must use YYYY-MM-DD")
+                elif complete_git_history:
+                    try:
+                        expected_lastmod = git_last_modified(ROOT, page.html_path)
+                    except GitHistoryError as exc:
+                        fail(f"sitemap.xml: cannot verify {page.html_path}: {exc}")
+                    else:
+                        if lastmod != expected_lastmod:
+                            fail(
+                                f"sitemap.xml: {loc} lastmod is {lastmod}; "
+                                f"Git history for {page.html_path} is {expected_lastmod}"
+                            )
+                changefreq = item.findtext("sm:changefreq", default="", namespaces=ns).strip()
+                if changefreq != pair.changefreq:
+                    fail(f"sitemap.xml: {loc} changefreq must be {pair.changefreq}")
+                priority = item.findtext("sm:priority", default="", namespaces=ns).strip()
+                if priority != pair.priority:
+                    fail(f"sitemap.xml: {loc} priority must be {pair.priority}")
+                alternate_links = [
+                    link
                     for link in item.findall("xhtml:link", ns)
                     if link.get("rel") == "alternate"
-                }
+                ]
+                alternate_values = [
+                    (link.get("hreflang"), link.get("href"))
+                    for link in alternate_links
+                ]
+                alternates = set(alternate_values)
+                if len(alternate_values) != len(alternates):
+                    fail(f"sitemap.xml: {loc} has duplicate hreflang alternates")
                 for alternate in sorted(required - alternates):
                     fail(f"sitemap.xml: {loc} missing hreflang alternate {alternate}")
+                for alternate in sorted(alternates - required):
+                    fail(f"sitemap.xml: {loc} has unexpected hreflang alternate {alternate}")
     except ET.ParseError as exc:
         fail(f"sitemap.xml: invalid XML: {exc}")
 

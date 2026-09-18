@@ -61,6 +61,12 @@ Each homepage publishes one JSON-LD `@graph` containing `Organization`, `WebSite
 
 This repository is served as the GitHub Pages project path `/fde-site/`. A file at `/fde-site/robots.txt` does not control crawling for the `kale1205.github.io` origin; only the origin-root `/robots.txt` does. The current missing origin-root file implies no explicit crawler block, but future crawler directives or a robots-advertised sitemap require control of the root Pages site or a custom domain. Keep the project sitemap discoverable through normal links and search-console submission.
 
+### Sitemap `lastmod` workflow
+
+The committed `sitemap.xml` is generated from each indexed HTML file's last committed change date (`git log -1 --format=%cs -- <file>`). After committing an indexed HTML change, run `npm run sitemap` and commit the resulting sitemap update before opening or updating the pull request. Do not substitute the generation date, deployment date, or a stylesheet/JavaScript change date.
+
+Generation fails closed when the repository is shallow, a target file is untracked, or its Git history is unavailable. Fetch the complete history and commit new HTML files before generating; the script does not invent a date or silently reuse a potentially stale value. GitHub Pages serves the root of `main` directly, so `sitemap.xml` remains a reviewed, committed build artifact rather than an Actions self-commit. PR checks fetch complete history, regenerate the file, require a clean sitemap diff, and then run repository validation.
+
 ## CMS invariant
 
 CMS administration is performed in Japanese. Editors enter Japanese source content. The CMS stores both Japanese and English public fields:
