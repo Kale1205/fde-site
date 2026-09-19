@@ -11,7 +11,6 @@ on:
       - '*.js'
       - '*.css'
       - 'scripts/sync_build_version.py'
-      - '.github/workflows/cache-bust-styles.yml'
 
 permissions:
   contents: write
@@ -21,9 +20,13 @@ jobs:
   sync-build-version:
     if: github.actor != 'github-actions[bot]' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      SITEMAP_BASE_REF: origin/main
     steps:
       - name: Checkout working branch
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

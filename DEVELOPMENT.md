@@ -61,6 +61,12 @@ Each homepage publishes one JSON-LD `@graph` containing `Organization`, `WebSite
 
 This repository is served as the GitHub Pages project path `/fde-site/`. A file at `/fde-site/robots.txt` does not control crawling for the `kale1205.github.io` origin; only the origin-root `/robots.txt` does. The current missing origin-root file implies no explicit crawler block, but future crawler directives or a robots-advertised sitemap require control of the root Pages site or a custom domain. Keep the project sitemap discoverable through normal links and search-console submission.
 
+### Sitemap `lastmod` workflow
+
+`sitemap-lastmod.json` is the durable source of truth for each indexed HTML page's last substantive content change. On a feature branch, `npm run sitemap` compares the branch with `main`, normalizes local CSS/JavaScript `?v=<build-version>` cache keys, and updates only pages whose remaining HTML differs. The updated date comes from the latest substantive page-change commit in the branch, not from generation or deployment time. Commit both `sitemap-lastmod.json` and `sitemap.xml` before opening or updating the pull request.
+
+After a squash merge, `main` renders `sitemap.xml` from the persisted manifest without replacing dates with the squash commit date. CSS/JavaScript-only work and cache-key-only HTML rewrites retain existing page dates. Generation fails closed when a feature comparison has shallow or missing history, indexed HTML is uncommitted, or the branch and current base both materially changed the same page. GitHub Pages serves the root of `main` directly, so these remain reviewed, committed artifacts rather than post-merge bot commits. PR checks fetch complete history, run the Case A/B/C regression suite, regenerate both files, require a clean diff, and then validate the manifest, sitemap structure, and base-to-HEAD page changes.
+
 ## CMS invariant
 
 CMS administration is performed in Japanese. Editors enter Japanese source content. The CMS stores both Japanese and English public fields:

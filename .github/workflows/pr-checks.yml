@@ -17,17 +17,31 @@ jobs:
   validate:
     name: validate
     runs-on: ubuntu-latest
+    env:
+      SITEMAP_BASE_REF: ${{ github.event.pull_request.base.sha || 'origin/main' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
+      - name: Sitemap lastmod regression tests
+        run: python scripts/test_sitemap_lastmod.py
+
+      - name: Generate sitemap from substantive HTML changes
+        run: npm run sitemap
+
+      - name: Verify generated sitemap state is committed
+        run: git diff --exit-code -- sitemap-lastmod.json sitemap.xml
+
       - name: Repository consistency checks
-        run: python scripts/validate_repo.py
+        run: npm run validate
 
       - name: Linear-inspired redesign contracts
         run: node scripts/test_linear_redesign.mjs
