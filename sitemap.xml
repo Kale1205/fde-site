@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://kale1205.github.io/fde-site/</loc>
-    <lastmod>2026-09-16</lastmod>
+    <lastmod>2026-09-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/" />
@@ -11,7 +11,7 @@
   </url>
   <url>
     <loc>https://kale1205.github.io/fde-site/ja/</loc>
-    <lastmod>2026-09-16</lastmod>
+    <lastmod>2026-09-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/" />
@@ -128,7 +128,7 @@
   </url>
   <url>
     <loc>https://kale1205.github.io/fde-site/goals.html</loc>
-    <lastmod>2026-09-16</lastmod>
+    <lastmod>2026-09-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/goals.html" />
@@ -137,7 +137,7 @@
   </url>
   <url>
     <loc>https://kale1205.github.io/fde-site/ja/goals.html</loc>
-    <lastmod>2026-09-16</lastmod>
+    <lastmod>2026-09-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/goals.html" />
