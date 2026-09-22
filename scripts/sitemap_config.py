@@ -165,7 +165,7 @@ def load_lastmod_manifest(root):
     return _validate_lastmods(value, LASTMOD_MANIFEST_NAME)
 
 
-def _load_manifest_at_ref(root, ref):
+def _load_manifest_at_ref(root, ref, allow_missing=False):
     content = _run_git(root, "show", f"{ref}:{LASTMOD_MANIFEST_NAME}", allow_failure=True)
     if content is None:
         return None
@@ -175,7 +175,22 @@ def _load_manifest_at_ref(root, ref):
         raise SitemapStateError(
             f"{ref}:{LASTMOD_MANIFEST_NAME} is not valid JSON: {exc}"
         ) from exc
-    return _validate_lastmods(value, f"{ref}:{LASTMOD_MANIFEST_NAME}")
+    if not allow_missing:
+        return _validate_lastmods(value, f"{ref}:{LASTMOD_MANIFEST_NAME}")
+    if not isinstance(value, dict):
+        raise SitemapStateError(f"{ref}:{LASTMOD_MANIFEST_NAME} must contain one object")
+    unexpected = set(value) - set(SITEMAP_HTML_PATHS)
+    if unexpected:
+        raise SitemapStateError(
+            f"{ref}:{LASTMOD_MANIFEST_NAME} has unexpected pages: {sorted(unexpected)}"
+        )
+    for html_path, lastmod in value.items():
+        if not _valid_lastmod(lastmod):
+            raise SitemapStateError(
+                f"{ref}:{LASTMOD_MANIFEST_NAME} has invalid YYYY-MM-DD lastmod "
+                f"for {html_path}: {lastmod!r}"
+            )
+    return {path: value[path] for path in SITEMAP_HTML_PATHS if path in value}
 
 
 def require_complete_git_history(root):
@@ -289,7 +304,7 @@ def expected_lastmods_for_base(root, base_ref, current_lastmods=None):
     head = _run_git(root, "rev-parse", "--verify", "HEAD^{commit}")
     merge_base = _run_git(root, "merge-base", base_tip, head)
 
-    base_lastmods = _load_manifest_at_ref(root, base_tip)
+    base_lastmods = _load_manifest_at_ref(root, base_tip, allow_missing=True)
     if base_lastmods is None:
         if current_lastmods is None:
             current_lastmods = load_lastmod_manifest(root)
