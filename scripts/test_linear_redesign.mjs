@@ -29,6 +29,15 @@ for (const prefix of ['', 'ja/']) {
   assert.match(goals, /ims-v1-operation-(?:en|ja)\.mp4/);
   assert.match(goals, /<meta property="og:image" content="https:\/\/kale1205\.github\.io\/fde-site\/assets\/warehouse-operations\.webp">/);
   assert.ok(goals.includes('License Plus'));
+
+  const license = read(prefix + 'license.html');
+  assert.match(license, /class="license-document"/);
+  assert.match(license, /class="license-matrix"/);
+  assert.match(license, /data-license-plan="license"/);
+  assert.match(license, /data-license-plan="plus"/);
+  assert.match(license, /class="matrix-symbol positive" aria-hidden="true">✓</);
+  assert.match(license, /class="matrix-symbol" aria-hidden="true">—</);
+  assert.match(license, /data-license-summary/);
 }
 assert.ok(statSync(path.join(root, 'assets/night-lab-20260915.webp')).size < 70000);
 assert.ok(read('index.html').includes('Your company’s system.'));
@@ -37,5 +46,10 @@ assert.ok(read('ja/index.html').includes('自社で育てていく。'));
 assert.match(read('gallery-ui.css'), /prefers-reduced-motion:\s*reduce/);
 assert.match(read('gallery-ui.js'), /reducedMotion\.addEventListener\("change", \(\) =>/);
 assert.match(read('gallery-ui.js'), /updateRow|stockButtons/);
+assert.match(read('gallery-ui.js'), /mobile-nav-shortcuts/);
+assert.match(read('gallery-ui.js'), /mobile-nav-backdrop/);
+assert.match(read('gallery-ui.js'), /data-license-plan/);
+assert.match(read('gallery-ui.css'), /\.mobile-sheet/);
+assert.match(read('license.css'), /\.license-plan-switcher/);
 assert.doesNotMatch(read('gallery-ui.js'), /localStorage|fetch\(/);
 console.log('Source-led redesign copy, static preview, locale and motion contracts passed.');

@@ -335,8 +335,8 @@ seo_page_markers = {
     "ja/contact.html": ("在庫管理ソフトの導入・移行相談", "FDE IMSの導入・移行を相談する"),
     "demo.html": ("FDE IMS Inventory Software Demo | Baked Kale FDE", "Try the core stock workflow"),
     "ja/demo.html": ("FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE", "基本の在庫業務を試す"),
-    "license.html": ("FDE IMS License & License Plus | Plan Policy", "Two one-time inventory software products"),
-    "ja/license.html": ("FDE IMS LicenseとLicense Plus | 料金・利用条件", "2つの買い切り商品から選ぶ"),
+    "license.html": ("FDE IMS License & License Plus | Plan Policy", "Where do you want to start?"),
+    "ja/license.html": ("FDE IMS LicenseとLicense Plus | 料金・利用条件", "どちらから始めますか？"),
 }
 for rel, markers in seo_page_markers.items():
     source = public_source_text.get(rel, "")
