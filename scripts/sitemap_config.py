@@ -58,13 +58,15 @@ def _pair(name, changefreq, priority, include_zh=False):
     if name == "index.html":
         en_url = f"{BASE_URL}/"
         ja_url = f"{BASE_URL}/ja/"
+        zh_url = f"{BASE_URL}/zh/"
     else:
         en_url = f"{BASE_URL}/{name}"
         ja_url = f"{BASE_URL}/ja/{name}"
+        zh_url = f"{BASE_URL}/zh/{name}"
     return SitemapPair(
         en=SitemapPage(name, en_url),
         ja=SitemapPage(f"ja/{name}", ja_url),
-        zh=SitemapPage(f"zh/{name}", f"{BASE_URL}/zh/{name}") if include_zh else None,
+        zh=SitemapPage(f"zh/{name}", zh_url) if include_zh else None,
         changefreq=changefreq,
         priority=priority,
     )
@@ -72,16 +74,16 @@ def _pair(name, changefreq, priority, include_zh=False):
 
 # Keep this order aligned with the established sitemap and Search Console URLs.
 SITEMAP_PAIRS = (
-    _pair("index.html", "weekly", "1.0"),
-    _pair("one-time-purchase-inventory-software.html", "monthly", "0.9"),
-    _pair("inventory-software-with-source-code.html", "monthly", "0.9"),
-    _pair("self-hosted-inventory-management-software.html", "monthly", "0.9"),
-    _pair("small-business-inventory-management-software.html", "monthly", "0.9"),
+    _pair("index.html", "weekly", "1.0", include_zh=True),
+    _pair("one-time-purchase-inventory-software.html", "monthly", "0.9", include_zh=True),
+    _pair("inventory-software-with-source-code.html", "monthly", "0.9", include_zh=True),
+    _pair("self-hosted-inventory-management-software.html", "monthly", "0.9", include_zh=True),
+    _pair("small-business-inventory-management-software.html", "monthly", "0.9", include_zh=True),
     _pair("license.html", "monthly", "0.9", include_zh=True),
-    _pair("demo.html", "weekly", "0.8"),
-    _pair("goals.html", "monthly", "0.8"),
-    _pair("contact.html", "monthly", "0.7"),
-    _pair("news.html", "weekly", "0.7"),
+    _pair("demo.html", "weekly", "0.8", include_zh=True),
+    _pair("goals.html", "monthly", "0.8", include_zh=True),
+    _pair("contact.html", "monthly", "0.7", include_zh=True),
+    _pair("news.html", "weekly", "0.7", include_zh=True),
 )
 SITEMAP_PAGES = tuple(page for pair in SITEMAP_PAIRS for page in pair.pages)
 SITEMAP_HTML_PATHS = tuple(page.html_path for page in SITEMAP_PAGES)

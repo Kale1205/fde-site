@@ -145,14 +145,18 @@ INDEXED_PAGE_NAMES = {
 } | INTENT_PAGE_NAMES
 EN_PAGES = INDEXED_PAGE_NAMES | {"order.html"}
 JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
-ZH_PAGES = {"zh/license.html"}
+ZH_PAGES = {f"zh/{name}" for name in EN_PAGES}
 ROOT_ONLY_PUBLIC = {"customer.html"}
 ALL_PUBLIC = EN_PAGES | JA_PAGES | ZH_PAGES | ROOT_ONLY_PUBLIC
 
 GALLERY_INNER_PAGE_NAMES = {
     "goals.html", "news.html", "contact.html", "license.html", "demo.html",
 } | INTENT_PAGE_NAMES
-GALLERY_INNER_PAGES = GALLERY_INNER_PAGE_NAMES | {f"ja/{name}" for name in GALLERY_INNER_PAGE_NAMES}
+GALLERY_INNER_PAGES = (
+    GALLERY_INNER_PAGE_NAMES
+    | {f"ja/{name}" for name in GALLERY_INNER_PAGE_NAMES}
+    | {f"zh/{name}" for name in GALLERY_INNER_PAGE_NAMES}
+)
 COMMON_NAV_NAMES = ("index.html", "goals.html", "news.html")
 FOOTER_NAV_NAMES = ("goals.html", "news.html", "license.html", "contact.html")
 
@@ -257,14 +261,17 @@ for rel in sorted(ALL_PUBLIC):
                 fail(f"{rel}: asset build key {vm.group(1)!r} != {version!r}: {ref}")
 
 for name in sorted(EN_PAGES):
-    if not (ROOT / name).exists() or not (ROOT / "ja" / name).exists():
-        fail(f"paired English/Japanese page missing: {name}")
+    if not (ROOT / name).exists() or not (ROOT / "ja" / name).exists() or not (ROOT / "zh" / name).exists():
+        fail(f"paired English/Japanese/Chinese page missing: {name}")
 
 # Every indexable localized page has one distinct search title, description,
 # and primary heading. Intent pages must complement, not duplicate, the home page.
-indexed_seo_values = {"en": {"title": {}, "description": {}, "h1": {}}, "ja": {"title": {}, "description": {}, "h1": {}}}
+indexed_seo_values = {
+    locale: {"title": {}, "description": {}, "h1": {}}
+    for locale in ("en", "ja", "zh-CN")
+}
 for name in sorted(INDEXED_PAGE_NAMES):
-    for locale, rel in (("en", name), ("ja", f"ja/{name}")):
+    for locale, rel in (("en", name), ("ja", f"ja/{name}"), ("zh-CN", f"zh/{name}")):
         source = public_source_text.get(rel, "")
         title_matches = re.findall(r"<title\b[^>]*>(.*?)</title>", source, re.IGNORECASE | re.DOTALL)
         descriptions = []
@@ -935,7 +942,7 @@ for rel in sorted(GALLERY_INNER_PAGES):
         if marker not in text:
             fail(f"{rel}: Gallery UI stylesheet missing: {marker}")
 
-    prefix = "ja/" if rel.startswith("ja/") else ""
+    prefix = "ja/" if rel.startswith("ja/") else "zh/" if rel.startswith("zh/") else ""
     expected_common = {f"{prefix}{name}" for name in COMMON_NAV_NAMES}
     expected_footer = {f"{prefix}{name}" for name in FOOTER_NAV_NAMES}
     nav_blocks = re.findall(r"<nav\b(?P<attrs>[^>]*)>(?P<body>.*?)</nav>", text, re.IGNORECASE | re.DOTALL)
@@ -1016,6 +1023,7 @@ paired_seo = {
         "canonical": "https://kale1205.github.io/fde-site/",
         "en_url": "https://kale1205.github.io/fde-site/",
         "ja_url": "https://kale1205.github.io/fde-site/ja/",
+        "zh_url": "https://kale1205.github.io/fde-site/zh/",
         "locale_href": "ja/",
         "locale_hreflang": "ja",
     },
@@ -1023,6 +1031,15 @@ paired_seo = {
         "canonical": "https://kale1205.github.io/fde-site/ja/",
         "en_url": "https://kale1205.github.io/fde-site/",
         "ja_url": "https://kale1205.github.io/fde-site/ja/",
+        "zh_url": "https://kale1205.github.io/fde-site/zh/",
+        "locale_href": "../",
+        "locale_hreflang": "en",
+    },
+    "zh/index.html": {
+        "canonical": "https://kale1205.github.io/fde-site/zh/",
+        "en_url": "https://kale1205.github.io/fde-site/",
+        "ja_url": "https://kale1205.github.io/fde-site/ja/",
+        "zh_url": "https://kale1205.github.io/fde-site/zh/",
         "locale_href": "../",
         "locale_hreflang": "en",
     },
@@ -1030,10 +1047,12 @@ paired_seo = {
 for name in sorted(GALLERY_INNER_PAGE_NAMES):
     en_url = f"https://kale1205.github.io/fde-site/{name}"
     ja_url = f"https://kale1205.github.io/fde-site/ja/{name}"
+    zh_url = f"https://kale1205.github.io/fde-site/zh/{name}"
     paired_seo[name] = {
         "canonical": en_url,
         "en_url": en_url,
         "ja_url": ja_url,
+        "zh_url": zh_url,
         "locale_href": f"ja/{name}",
         "locale_hreflang": "ja",
     }
@@ -1041,21 +1060,18 @@ for name in sorted(GALLERY_INNER_PAGE_NAMES):
         "canonical": ja_url,
         "en_url": en_url,
         "ja_url": ja_url,
+        "zh_url": zh_url,
         "locale_href": f"../{name}",
         "locale_hreflang": "en",
     }
-
-zh_license_url = "https://kale1205.github.io/fde-site/zh/license.html"
-for rel in ("license.html", "ja/license.html"):
-    paired_seo[rel]["zh_url"] = zh_license_url
-paired_seo["zh/license.html"] = {
-    "canonical": zh_license_url,
-    "en_url": "https://kale1205.github.io/fde-site/license.html",
-    "ja_url": "https://kale1205.github.io/fde-site/ja/license.html",
-    "zh_url": zh_license_url,
-    "locale_href": "../license.html",
-    "locale_hreflang": "en",
-}
+    paired_seo[f"zh/{name}"] = {
+        "canonical": zh_url,
+        "en_url": en_url,
+        "ja_url": ja_url,
+        "zh_url": zh_url,
+        "locale_href": f"../{name}",
+        "locale_hreflang": "en",
+    }
 
 for rel, expected in paired_seo.items():
     path = ROOT / rel

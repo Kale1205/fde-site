@@ -1,3 +1,38 @@
+# Design QA — Mobile navigation repair and full Simplified Chinese locale, 2026-09-22
+
+## Scope and reference
+
+This pass uses the two supplied iPhone screenshots as the defect reference. The first shows the intended closed state; the second shows the failure state where the backdrop also dims the bottom sheet and menu links only close the sheet. The existing Baked Kale visual system is retained. No new design system, framework, dependency, tracking, or external runtime translation was added.
+
+## Findings and repairs
+
+| Priority | Finding | Repair |
+| --- | --- | --- |
+| P1 | On iOS-sized browsers the backdrop could be painted above the sheet because the two layers lived in different stacking contexts. | Both layers now mount directly under `body`; backdrop uses z-index 1000 and the sheet 1010. The sheet stays bright and interactive while only the page behind it is dimmed. |
+| P1 | Hiding the sheet synchronously in its link click handler could cancel Safari's default navigation. | Link-triggered closing is deferred until after the default navigation begins. Product, Demo, Contact, Goals, News, and locale links now navigate. |
+| P2 | The former binary EN/JA link did not scale to a third locale. | Desktop now uses a compact language selector; tablet and mobile place English, 日本語, and 简体中文 together in the navigation sheet. |
+| P2 | Simplified Chinese existed only on the License page. | Added generated, indexed zh-CN pages for all 10 public sitemap routes plus the purchase-preview route, with localized navigation, product interactions, contact labels, demo behavior, CMS labels, metadata, canonical URLs, and hreflang. |
+
+No actionable P0, P1, or P2 issue remains in the checked states.
+
+## Browser and behavior verification
+
+- Codex in-app browser at 390 × 844, 1024 × 900, and 1440 × 1000. Page-level horizontal overflow was zero at every checked width.
+- At 390px, the bottom sheet was compared directly with the supplied defect screenshot. It remains undimmed above the backdrop; Product/Demo/Contact shortcuts, Goals/News rows, and the three-language selector are visible without overlap.
+- At 1024px, the right drawer, backdrop, all shortcuts, secondary rows, and the three-language selector fit without clipping or document overflow.
+- At 1440px, the inline navigation and compact language popover were exercised. English → 日本語 navigation succeeded.
+- Mobile Simplified Chinese navigation to News and Goals succeeded. Backdrop click and Escape both closed the sheet; Escape returned the closed state. Desktop and mobile locale selection navigated to the matching locale route.
+- Simplified Chinese home, Goals, and News were visually inspected. Chinese headings and body copy wrap without collisions; the existing night-lab hero, product UI, brand colors, pricing, and product facts remain intact.
+- Browser console reported no warnings or errors during the final local pass.
+
+## Boundaries
+
+The Simplified Chinese locale is generated from a versioned static translation catalog; no browser-time translation service or data transmission is used. Figma was not used because this was a screenshot-defined defect repair and an extension of the existing approved components rather than a new visual direction. Physical-device testing is outside this pass; the reported iPhone result is a real browser responsive viewport test at 390px.
+
+final result: passed
+
+---
+
 # Design QA — Editorial Inspector license and navigation, 2026-09-22
 
 ## Scope and selected source

@@ -2,7 +2,7 @@
 const root=document.getElementById('imsDemoRoot');
 if(!root)return;
 
-const lang=document.documentElement.lang==='ja'?'ja':'en';
+const lang=document.documentElement.lang.startsWith('zh')?'zh':document.documentElement.lang==='ja'?'ja':'en';
 const text={
  en:{
   healthy:'Healthy',low:'Low stock',out:'Out of stock',use:'Use',
@@ -55,21 +55,47 @@ const text={
   reset:'デモデータを初期状態へ戻しました。すべての変更は一時的です',
   initial:'サンプル初期在庫',noMatches:'該当する商品はありません',
   movementLocation:{receive:'入庫先：{destination}',ship:'出庫元：{source}',count:'棚卸場所：{source}',transfer:'{source} → {destination}'}
+ },
+ zh:{
+  healthy:'正常',low:'库存偏低',out:'缺货',use:'选择',
+  receive:'入库',transfer:'调拨',count:'盘点',ship:'出库',
+  source:'来源位置',destination:'目标位置',
+  quantity:{receive:'入库数量',transfer:'调拨数量',count:'实际盘点数量',ship:'出库数量'},
+  help:{
+   receive:'将库存增加到所选目标位置。',
+   transfer:'在两个不同位置之间原子性调拨库存。',
+   count:'将所选位置的库存更新为实际盘点数量。',
+   ship:'仅在库存充足时执行出库。'
+  },
+  submit:{receive:'记录入库',transfer:'记录调拨',count:'确认盘点',ship:'记录出库'},
+  choose:'已选择 {product}。请选择操作与数量。',
+  success:{
+   receive:'已将 {quantity} 件 {product} 入库至 {destination}。',
+   transfer:'已将 {quantity} 件 {product} 从 {source} 调拨至 {destination}。',
+   count:'已盘点 {source} 的 {product}：{before} → {quantity}。',
+   ship:'已从 {source} 出库 {quantity} 件 {product}。'
+  },
+  invalidQuantity:'请输入有效的非负整数。',
+  sameLocation:'请选择与来源位置不同的目标位置。',
+  insufficient:'{source} 库存不足。当前可用：{available}。',
+  reset:'演示数据已重置。所有更改均为临时数据。',
+  initial:'示例期初库存',noMatches:'未找到匹配的商品。',
+  movementLocation:{receive:'入库至 {destination}',ship:'从 {source} 出库',count:'盘点位置 {source}',transfer:'{source} → {destination}'}
  }
 }[lang];
 
 const seed={
  locations:[
-  {id:'main',name:{en:'Main / A-01',ja:'本社 / A-01'}},
-  {id:'osaka',name:{en:'Osaka / B-02',ja:'大阪 / B-02'}}
+  {id:'main',name:{en:'Main / A-01',ja:'本社 / A-01',zh:'总部 / A-01'}},
+  {id:'osaka',name:{en:'Osaka / B-02',ja:'大阪 / B-02',zh:'大阪 / B-02'}}
  ],
  products:[
-  {id:'cup',sku:'PC-1204',barcode:'4901000001204',name:{en:'Paper Cup 12oz',ja:'紙コップ 12oz'},reorder:40,stock:{main:326,osaka:20}},
-  {id:'box',sku:'SB-2088',barcode:'4901000002089',name:{en:'Shipping Box M',ja:'配送箱 M'},reorder:60,stock:{main:84,osaka:12}},
-  {id:'label',sku:'LR-0041',barcode:'4901000000047',name:{en:'Label Roll',ja:'ラベルロール'},reorder:30,stock:{main:18,osaka:0}},
-  {id:'paper',sku:'TP-3011',barcode:'4901000003017',name:{en:'Thermal Paper',ja:'感熱紙'},reorder:25,stock:{main:41,osaka:9}},
-  {id:'bin',sku:'BN-1008',barcode:'4901000001006',name:{en:'Storage Bin S',ja:'収納コンテナ S'},reorder:50,stock:{main:210,osaka:60}},
-  {id:'glove',sku:'SG-0092',barcode:'4901000000092',name:{en:'Safety Gloves L',ja:'作業用手袋 L'},reorder:20,stock:{main:0,osaka:0}}
+  {id:'cup',sku:'PC-1204',barcode:'4901000001204',name:{en:'Paper Cup 12oz',ja:'紙コップ 12oz',zh:'纸杯 12oz'},reorder:40,stock:{main:326,osaka:20}},
+  {id:'box',sku:'SB-2088',barcode:'4901000002089',name:{en:'Shipping Box M',ja:'配送箱 M',zh:'配送箱 M'},reorder:60,stock:{main:84,osaka:12}},
+  {id:'label',sku:'LR-0041',barcode:'4901000000047',name:{en:'Label Roll',ja:'ラベルロール',zh:'标签卷'},reorder:30,stock:{main:18,osaka:0}},
+  {id:'paper',sku:'TP-3011',barcode:'4901000003017',name:{en:'Thermal Paper',ja:'感熱紙',zh:'热敏纸'},reorder:25,stock:{main:41,osaka:9}},
+  {id:'bin',sku:'BN-1008',barcode:'4901000001006',name:{en:'Storage Bin S',ja:'収納コンテナ S',zh:'收纳箱 S'},reorder:50,stock:{main:210,osaka:60}},
+  {id:'glove',sku:'SG-0092',barcode:'4901000000092',name:{en:'Safety Gloves L',ja:'作業用手袋 L',zh:'作业手套 L'},reorder:20,stock:{main:0,osaka:0}}
  ]
 };
 
