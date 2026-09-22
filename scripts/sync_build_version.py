@@ -20,7 +20,11 @@ string_asset = re.compile(
 changed = []
 
 # Keep both public sites and the CMS on one cache key. Do not rewrite lang attributes.
-html_paths = sorted(ROOT.glob("*.html")) + sorted((ROOT / "ja").glob("*.html"))
+html_paths = (
+    sorted(ROOT.glob("*.html"))
+    + sorted((ROOT / "ja").glob("*.html"))
+    + sorted((ROOT / "zh").glob("*.html"))
+)
 for path in html_paths:
     text = path.read_text(encoding="utf-8")
     new = versioned_asset.sub(
