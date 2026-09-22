@@ -27,16 +27,19 @@
   const text = {
     en: {
       openMenu: "Open menu", closeMenu: "Close menu", menu: "Menu", product: "Product", demo: "Demo", contact: "Contact",
+      language: "Language", chooseLanguage: "Choose language",
       received: "Received one unit", shipped: "Shipped one unit", ok: "OK", low: "Low stock",
       tools: ["Inventory", "Products", "Records", "Shipping", "Settings"],
     },
     ja: {
       openMenu: "メニューを開く", closeMenu: "メニューを閉じる", menu: "メニュー", product: "製品", demo: "デモ", contact: "お問い合わせ",
+      language: "言語", chooseLanguage: "言語を選択",
       received: "1点を入庫しました", shipped: "1点を出庫しました", ok: "正常", low: "要補充",
       tools: ["在庫一覧", "商品", "記録", "出荷", "設定"],
     },
     zh: {
       openMenu: "打开菜单", closeMenu: "关闭菜单", menu: "菜单", product: "产品", demo: "演示", contact: "联系我们",
+      language: "语言", chooseLanguage: "选择语言",
       received: "已入库 1 件", shipped: "已出库 1 件", ok: "正常", low: "需要补货",
       tools: ["库存", "产品", "记录", "出库", "设置"],
     },
@@ -63,10 +66,62 @@
   const menuButton = document.querySelector(".menu-button");
   const mobileNav = document.getElementById("mobile-nav");
   if (menuButton && mobileNav) {
+    const localeNames = { en: "English", ja: "日本語", "zh-CN": "简体中文" };
+    const localeKey = locale === "zh" ? "zh-CN" : locale;
+    const localizeAlternateUrl = (href) => {
+      const url = new URL(href, window.location.href);
+      if (!/^(?:localhost|127\.0\.0\.1)$/.test(window.location.hostname)) return url.href;
+      const projectPath = url.pathname.replace(/^\/fde-site\//, "/");
+      return `${projectPath}${url.search}${url.hash}`;
+    };
+    const localeRoutes = Array.from(document.querySelectorAll('link[rel="alternate"][hreflang]'))
+      .filter((link) => Object.hasOwn(localeNames, link.hreflang))
+      .map((link) => ({ code: link.hreflang, name: localeNames[link.hreflang], href: localizeAlternateUrl(link.href) }));
+
+    const sourceLocaleButtons = Array.from(document.querySelectorAll(".header-actions .locale-button"));
+    if (localeRoutes.length === 3 && sourceLocaleButtons.length) {
+      const picker = document.createElement("details");
+      picker.className = "locale-picker";
+      const summary = document.createElement("summary");
+      summary.className = "locale-picker-button";
+      summary.setAttribute("aria-label", text.chooseLanguage);
+      summary.innerHTML = `<span>${localeNames[localeKey]}</span><span class="locale-picker-chevron" aria-hidden="true">⌄</span>`;
+      const menu = document.createElement("div");
+      menu.className = "locale-picker-menu";
+      menu.setAttribute("aria-label", text.chooseLanguage);
+      localeRoutes.forEach((route) => {
+        const link = document.createElement("a");
+        link.href = route.href;
+        link.hreflang = route.code;
+        link.lang = route.code;
+        link.textContent = route.name;
+        if (route.code === localeKey) {
+          link.setAttribute("aria-current", "page");
+          const mark = document.createElement("span");
+          mark.setAttribute("aria-hidden", "true");
+          mark.textContent = "✓";
+          link.append(mark);
+        }
+        menu.append(link);
+      });
+      picker.append(summary, menu);
+      sourceLocaleButtons[0].before(picker);
+      sourceLocaleButtons.forEach((button) => button.remove());
+      document.addEventListener("pointerdown", (event) => {
+        if (picker.open && !picker.contains(event.target)) picker.open = false;
+      });
+      picker.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          picker.open = false;
+          summary.focus();
+        }
+      });
+    }
+
     const desktopNav = document.querySelector(".desktop-nav");
     if (desktopNav && !desktopNav.querySelector('a[href$="demo.html"]')) {
       const demoLink = document.createElement("a");
-      demoLink.href = locale === "zh" ? "../demo.html" : "demo.html";
+      demoLink.href = "demo.html";
       demoLink.textContent = text.demo;
       if (window.location.pathname.endsWith("/demo.html")) demoLink.setAttribute("aria-current", "page");
       desktopNav.firstElementChild?.after(demoLink);
@@ -77,10 +132,9 @@
     const productLink = originalLinks[0];
     const goalsLink = byHref("goals.html");
     const newsLink = byHref("news.html");
-    const localeLinks = originalLinks.filter((link) => link.hasAttribute("hreflang"));
     const contactLink = byHref("contact.html") || originalLinks.at(-1);
     const demoLink = document.createElement("a");
-    demoLink.href = locale === "zh" ? "../demo.html" : "demo.html";
+    demoLink.href = "demo.html";
     demoLink.textContent = text.demo;
     if (window.location.pathname.endsWith("/demo.html")) demoLink.setAttribute("aria-current", "page");
 
@@ -132,7 +186,7 @@
 
     const rows = document.createElement("div");
     rows.className = "mobile-nav-rows";
-    [goalsLink, newsLink, ...localeLinks].filter(Boolean).forEach((link) => {
+    [goalsLink, newsLink].filter(Boolean).forEach((link) => {
       link.classList.add("mobile-nav-row");
       const arrow = document.createElement("span");
       arrow.setAttribute("aria-hidden", "true");
@@ -141,9 +195,29 @@
       rows.append(link);
     });
 
+    const languageBlock = document.createElement("div");
+    languageBlock.className = "mobile-nav-language";
+    const languageLabel = document.createElement("strong");
+    languageLabel.textContent = text.language;
+    const languageOptions = document.createElement("div");
+    languageOptions.className = "mobile-nav-language-options";
+    localeRoutes.forEach((route) => {
+      const link = document.createElement("a");
+      link.href = route.href;
+      link.hreflang = route.code;
+      link.lang = route.code;
+      link.textContent = route.name;
+      if (route.code === localeKey) link.setAttribute("aria-current", "page");
+      languageOptions.append(link);
+    });
+    languageBlock.append(languageLabel, languageOptions);
+
     mobileNav.classList.add("mobile-sheet");
-    mobileNav.replaceChildren(handle, sheetHeader, shortcuts, rows);
-    document.body.append(backdrop);
+    mobileNav.replaceChildren(handle, sheetHeader, shortcuts, rows, languageBlock);
+    // Keep both overlay layers in the same top-level stacking context. Leaving
+    // the sheet inside the sticky header lets iOS Safari paint the backdrop
+    // above it, which makes every visible menu link untappable.
+    document.body.append(backdrop, mobileNav);
     menuButton.setAttribute("aria-haspopup", "true");
 
     const setMenu = (open) => {
@@ -164,7 +238,12 @@
       menuButton.focus();
     });
     mobileNav.addEventListener("click", (event) => {
-      if (event.target.closest("a")) setMenu(false);
+      if (event.target.closest("a")) {
+        // Let the browser complete the link's default navigation first. Hiding
+        // the link's containing sheet synchronously cancels navigation in
+        // iOS Safari, leaving users on the dimmed page with only Close working.
+        window.setTimeout(() => setMenu(false), 0);
+      }
     });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !mobileNav.hidden) {

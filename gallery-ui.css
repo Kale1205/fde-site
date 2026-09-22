@@ -294,7 +294,7 @@ button { color: inherit; }
   white-space: nowrap;
 }
 
-.desktop-nav a, .locale-button {
+.desktop-nav a, .locale-button, .locale-picker-button {
   position: relative;
   border: 0;
   background: transparent;
@@ -322,6 +322,43 @@ button { color: inherit; }
 
 .header-actions { display: flex; align-items: center; gap: 18px; margin-left: auto; }
 .locale-button { min-height: 44px; padding: 0 5px; }
+.locale-picker { position: relative; }
+.locale-picker summary { list-style: none; }
+.locale-picker summary::-webkit-details-marker { display: none; }
+.locale-picker-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 0 5px;
+  color: var(--ink);
+}
+.locale-picker-chevron { color: var(--muted); font-size: 14px; transition: transform 160ms ease; }
+.locale-picker[open] .locale-picker-chevron { transform: rotate(180deg); }
+.locale-picker-menu {
+  position: absolute;
+  z-index: 120;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  width: 172px;
+  padding: 6px;
+  border: 1px solid var(--line-dark);
+  border-radius: 4px;
+  background: var(--paper);
+  box-shadow: 0 16px 40px rgba(13, 30, 23, 0.14);
+}
+.locale-picker-menu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 42px;
+  padding: 0 11px;
+  color: var(--body);
+  font-size: 13px;
+}
+.locale-picker-menu a:hover, .locale-picker-menu a:focus-visible { color: var(--forest); background: var(--sage); }
+.locale-picker-menu a[aria-current="page"] { color: var(--forest); font-weight: 700; }
 
 .header-contact, .button {
   display: inline-flex;
@@ -357,7 +394,7 @@ button { color: inherit; }
 
 .mobile-nav-backdrop {
   position: fixed;
-  z-index: 70;
+  z-index: 1000;
   inset: 0;
   border: 0;
   padding: 0;
@@ -366,12 +403,12 @@ button { color: inherit; }
 }
 
 html.mobile-menu-open { overflow: hidden; }
-html.mobile-menu-open .site-header { z-index: 90; }
 
 .mobile-nav-handle,
 .mobile-nav-header,
 .mobile-nav-shortcuts,
 .mobile-nav-rows { display: none; }
+.mobile-nav-language { display: none; }
 
 .tldr-strip {
   display: flex;
@@ -801,7 +838,7 @@ button.inventory-row { cursor: pointer; }
   .mobile-nav a, .mobile-nav button { min-height: 50px; border: 0; border-bottom: 1px solid var(--line); padding: 0 18px; background: transparent; text-align: left; }
   .mobile-nav.mobile-sheet {
     position: fixed;
-    z-index: 95;
+    z-index: 1010;
     top: 0;
     right: 0;
     bottom: 0;
@@ -904,6 +941,44 @@ button.inventory-row { cursor: pointer; }
   }
   .mobile-sheet .mobile-nav-row:hover,
   .mobile-sheet .mobile-nav-row:focus-visible { color: var(--forest); }
+  .mobile-sheet .mobile-nav-language {
+    display: grid;
+    gap: 10px;
+    padding-top: 16px;
+  }
+  .mobile-sheet .mobile-nav-language > strong {
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .mobile-nav-language-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .mobile-sheet .mobile-nav-language-options a {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    min-height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 5px 4px;
+    color: var(--body);
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+  }
+  .mobile-sheet .mobile-nav-language-options a:hover,
+  .mobile-sheet .mobile-nav-language-options a:focus-visible,
+  .mobile-sheet .mobile-nav-language-options a[aria-current="page"] {
+    border-color: var(--forest);
+    color: var(--paper);
+    background: var(--forest);
+  }
   @keyframes navigation-drawer-in {
     from { opacity: 0; transform: translateX(22px); }
     to { opacity: 1; transform: none; }
@@ -934,6 +1009,7 @@ button.inventory-row { cursor: pointer; }
   .header-contact { display: none; }
   .header-actions { gap: 4px; }
   .locale-button { font-size: 11px; }
+  .locale-picker-button { font-size: 11px; }
   .mobile-nav.mobile-sheet {
     top: auto;
     right: 0;
@@ -941,7 +1017,7 @@ button.inventory-row { cursor: pointer; }
     left: 0;
     grid-template-rows: auto auto auto 1fr;
     width: 100%;
-    max-height: min(55dvh, 470px);
+    max-height: min(68dvh, 570px);
     border: 0;
     border-top: 1px solid var(--line-dark);
     border-radius: 18px 18px 0 0;

@@ -5,14 +5,25 @@
   let stripTimer = null;
   let lastNewsTrigger = null;
   let reloadTimers = [];
+  const LANG = document.documentElement.lang.startsWith('zh') ? 'zh-CN' : 'ja';
+  const UI = LANG === 'zh-CN' ? {
+    latest: '最新', update: '更新', close: '关闭消息', read: '阅读消息 →',
+    noLatest: '暂无其他消息。', noArchive: '暂无归档消息。', instagram: '查看 Instagram ↗',
+    top: '重点消息', categories: { Product: '产品', Development: '开发', Social: '社交' }
+  } : {
+    latest: '最新', update: '更新', close: '記事を閉じる', read: '記事を読む →',
+    noLatest: '追加のお知らせはまだありません。', noArchive: 'アーカイブはまだありません。', instagram: 'Instagramを見る ↗',
+    top: 'Top News', categories: {}
+  };
 
   const CMS_URL = '../content/site-content.json';
 
   const pick = value => {
     if (value == null) return '';
     if (typeof value === 'string') return value;
-    return value.ja || value.en || Object.values(value)[0] || '';
+    return value[LANG] || value.ja || value.en || Object.values(value)[0] || '';
   };
+  const categoryLabel = value => UI.categories[value] || value || UI.update;
 
   const esc = value => String(value ?? '').replace(/[&<>'"]/g, character => ({
     '&': '&amp;',
@@ -61,7 +72,7 @@
     const label = strip.querySelector('b');
     const spans = strip.querySelectorAll('span');
     const apply = () => {
-      if (label) label.textContent = item.category || 'Latest';
+      if (label) label.textContent = categoryLabel(item.category) || UI.latest;
       if (spans[0]) spans[0].textContent = pick(item.title);
       strip.classList.remove('is-switching');
     };
@@ -107,7 +118,7 @@
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-labelledby', 'newsArticleTitle');
-    modal.innerHTML = '<div class="news-article-backdrop" data-news-close></div><article class="news-article-panel"><button class="news-article-close" type="button" aria-label="記事を閉じる" data-news-close>×</button><div id="newsArticleContent"></div></article>';
+    modal.innerHTML = `<div class="news-article-backdrop" data-news-close></div><article class="news-article-panel"><button class="news-article-close" type="button" aria-label="${UI.close}" data-news-close>×</button><div id="newsArticleContent"></div></article>`;
     document.body.appendChild(modal);
     return modal;
   }
@@ -118,7 +129,7 @@
     const modal = ensureArticleModal();
     const content = modal.querySelector('#newsArticleContent');
     lastNewsTrigger = trigger instanceof HTMLElement ? trigger : document.activeElement;
-    content.innerHTML = `<div class="news-article-meta">${esc(dateLabel(item.date))} / ${esc(item.category || 'Update')}</div><h2 id="newsArticleTitle">${esc(pick(item.title))}</h2>${newsImage(item, 'news-article-image')}<div class="news-article-body">${esc(pick(item.body)).replace(/\n/g, '<br>')}</div>`;
+    content.innerHTML = `<div class="news-article-meta">${esc(dateLabel(item.date))} / ${esc(categoryLabel(item.category))}</div><h2 id="newsArticleTitle">${esc(pick(item.title))}</h2>${newsImage(item, 'news-article-image')}<div class="news-article-body">${esc(pick(item.body)).replace(/\n/g, '<br>')}</div>`;
     modal.hidden = false;
     document.body.classList.add('news-modal-open');
     modal.querySelector('.news-article-close')?.focus();
@@ -140,20 +151,20 @@
     const latest = document.getElementById('cmsLatestList');
     if (!latest) return;
     if (!items.length) {
-      latest.innerHTML = '<p class="news-empty">追加のお知らせはまだありません。</p>';
+      latest.innerHTML = `<p class="news-empty">${UI.noLatest}</p>`;
       return;
     }
-    latest.innerHTML = items.map(item => `<button class="latest-card news-open" type="button" data-news-id="${attr(item.id)}">${newsImage(item, 'cms-latest-image')}<div class="latest-card-copy"><small>${esc(item.category || 'Update')} / ${esc(dateLabel(item.date))}</small><strong>${esc(pick(item.title))}</strong><span>記事を読む →</span></div></button>`).join('');
+    latest.innerHTML = items.map(item => `<button class="latest-card news-open" type="button" data-news-id="${attr(item.id)}">${newsImage(item, 'cms-latest-image')}<div class="latest-card-copy"><small>${esc(categoryLabel(item.category))} / ${esc(dateLabel(item.date))}</small><strong>${esc(pick(item.title))}</strong><span>${UI.read}</span></div></button>`).join('');
   }
 
   function renderArchive(items) {
     const wire = document.getElementById('cmsNewsWire');
     if (!wire) return;
     if (!items.length) {
-      wire.innerHTML = '<p class="news-empty">アーカイブはまだありません。</p>';
+      wire.innerHTML = `<p class="news-empty">${UI.noArchive}</p>`;
       return;
     }
-    wire.innerHTML = items.map(item => `<button class="wire-row news-open" type="button" data-news-id="${attr(item.id)}"><div class="wire-type">${esc(item.category || 'Update')}</div><div class="wire-title">${esc(pick(item.title))}</div><time datetime="${attr(item.date)}">${esc(dateLabel(item.date))}</time></button>`).join('');
+    wire.innerHTML = items.map(item => `<button class="wire-row news-open" type="button" data-news-id="${attr(item.id)}"><div class="wire-type">${esc(categoryLabel(item.category))}</div><div class="wire-title">${esc(pick(item.title))}</div><time datetime="${attr(item.date)}">${esc(dateLabel(item.date))}</time></button>`).join('');
   }
 
   function renderInstagram() {
@@ -168,7 +179,7 @@
     const media = image
       ? `<div class="instagram-photo"><img src="${attr(image)}" alt="${attr(data.handle || 'Instagram')}"></div>`
       : '<div class="instagram-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.4" cy="6.7" r="1"></circle></svg></div>';
-    box.innerHTML = `${media}<div class="instagram-copy"><small>Instagram / Creative</small><h2>${esc(data.handle || 'Instagram')}</h2><p>${esc(pick(data.description))}</p></div><div class="instagram-cta">Instagramを見る ↗</div>`;
+    box.innerHTML = `${media}<div class="instagram-copy"><small>Instagram / Creative</small><h2>${esc(data.handle || 'Instagram')}</h2><p>${esc(pick(data.description))}</p></div><div class="instagram-cta">${UI.instagram}</div>`;
   }
 
   function renderNews() {
@@ -184,7 +195,7 @@
       lead.href = '#';
       lead.dataset.newsId = featured.id;
       lead.classList.add('news-open');
-      lead.innerHTML = `${newsImage(featured, 'cms-lead-image')}<div class="news-lead-copy"><div class="news-label">Top News / ${esc(featured.category || 'Update')}</div><h2>${esc(pick(featured.title))}</h2><p>${esc(pick(featured.body))}</p><div class="news-meta">${esc(dateLabel(featured.date))}</div><span class="news-read-more">記事を読む →</span></div>`;
+      lead.innerHTML = `${newsImage(featured, 'cms-lead-image')}<div class="news-lead-copy"><div class="news-label">${UI.top} / ${esc(categoryLabel(featured.category))}</div><h2>${esc(pick(featured.title))}</h2><p>${esc(pick(featured.body))}</p><div class="news-meta">${esc(dateLabel(featured.date))}</div><span class="news-read-more">${UI.read}</span></div>`;
     }
     renderLatest(latestItems);
     renderArchive(archiveItems);
@@ -200,7 +211,7 @@
       renderNews();
       renderInstagram();
     } catch (error) {
-      console.warn('Japanese CMS content load failed', error);
+      console.warn('Localized CMS content load failed', error);
     }
   }
 

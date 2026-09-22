@@ -48,9 +48,27 @@ assert.match(read('gallery-ui.js'), /reducedMotion\.addEventListener\("change", 
 assert.match(read('gallery-ui.js'), /updateRow|stockButtons/);
 assert.match(read('gallery-ui.js'), /mobile-nav-shortcuts/);
 assert.match(read('gallery-ui.js'), /mobile-nav-backdrop/);
+assert.match(read('gallery-ui.js'), /document\.body\.append\(backdrop, mobileNav\)/);
+assert.match(read('gallery-ui.js'), /setTimeout\(\(\) => setMenu\(false\), 0\)/);
 assert.match(read('gallery-ui.js'), /data-license-plan/);
 assert.match(read('gallery-ui.css'), /\.mobile-sheet/);
+assert.match(read('gallery-ui.css'), /\.mobile-nav-backdrop\s*\{[\s\S]*?z-index:\s*1000/);
+assert.match(read('gallery-ui.css'), /\.mobile-nav\.mobile-sheet\s*\{[\s\S]*?z-index:\s*1010/);
 assert.match(read('license.css'), /\.license-plan-switcher/);
+const localizedPages = [
+  'index.html', 'one-time-purchase-inventory-software.html',
+  'inventory-software-with-source-code.html',
+  'self-hosted-inventory-management-software.html',
+  'small-business-inventory-management-software.html', 'license.html',
+  'demo.html', 'goals.html', 'contact.html', 'news.html', 'order.html',
+];
+for (const name of localizedPages) {
+  const html = read(`zh/${name}`);
+  assert.match(html, /<html lang="zh-CN">/);
+  assert.match(html, /hreflang="en"/);
+  assert.match(html, /hreflang="ja"/);
+  assert.match(html, /hreflang="zh-CN"/);
+}
 const zhLicense = read('zh/license.html');
 assert.match(zhLicense, /<html lang="zh-CN">/);
 assert.ok(zhLicense.includes('您想从哪一种方案开始？'));
