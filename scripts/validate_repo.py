@@ -145,8 +145,9 @@ INDEXED_PAGE_NAMES = {
 } | INTENT_PAGE_NAMES
 EN_PAGES = INDEXED_PAGE_NAMES | {"order.html"}
 JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
+ZH_PAGES = {"zh/license.html"}
 ROOT_ONLY_PUBLIC = {"customer.html"}
-ALL_PUBLIC = EN_PAGES | JA_PAGES | ROOT_ONLY_PUBLIC
+ALL_PUBLIC = EN_PAGES | JA_PAGES | ZH_PAGES | ROOT_ONLY_PUBLIC
 
 GALLERY_INNER_PAGE_NAMES = {
     "goals.html", "news.html", "contact.html", "license.html", "demo.html",
@@ -235,7 +236,7 @@ for rel in sorted(ALL_PUBLIC):
     public_visible_text[rel] = parser.visible_text()
     public_heading_text[rel] = parser.headings
     public_source_text[rel] = text
-    expected = "ja" if rel.startswith("ja/") else "en"
+    expected = "zh-CN" if rel.startswith("zh/") else "ja" if rel.startswith("ja/") else "en"
     if not re.search(rf"<html\s+lang=[\"']{expected}[\"']", text, re.IGNORECASE):
         fail(f"{rel}: expected html lang={expected}")
     if re.search(r"id=[\"']lang[\"']|data-i18n=|fde-lang|language-selector", text, re.IGNORECASE):
@@ -335,8 +336,9 @@ seo_page_markers = {
     "ja/contact.html": ("在庫管理ソフトの導入・移行相談", "FDE IMSの導入・移行を相談する"),
     "demo.html": ("FDE IMS Inventory Software Demo | Baked Kale FDE", "Try the core stock workflow"),
     "ja/demo.html": ("FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE", "基本の在庫業務を試す"),
-    "license.html": ("FDE IMS License & License Plus | Plan Policy", "Two one-time inventory software products"),
-    "ja/license.html": ("FDE IMS LicenseとLicense Plus | 料金・利用条件", "2つの買い切り商品から選ぶ"),
+    "license.html": ("FDE IMS License & License Plus | Plan Policy", "Where do you want to start?"),
+    "ja/license.html": ("FDE IMS LicenseとLicense Plus | 料金・利用条件", "どちらから始めますか？"),
+    "zh/license.html": ("FDE IMS License 与 License Plus｜价格与使用条件", "您想从哪一种方案开始？"),
 }
 for rel, markers in seo_page_markers.items():
     source = public_source_text.get(rel, "")
@@ -1043,6 +1045,18 @@ for name in sorted(GALLERY_INNER_PAGE_NAMES):
         "locale_hreflang": "en",
     }
 
+zh_license_url = "https://kale1205.github.io/fde-site/zh/license.html"
+for rel in ("license.html", "ja/license.html"):
+    paired_seo[rel]["zh_url"] = zh_license_url
+paired_seo["zh/license.html"] = {
+    "canonical": zh_license_url,
+    "en_url": "https://kale1205.github.io/fde-site/license.html",
+    "ja_url": "https://kale1205.github.io/fde-site/ja/license.html",
+    "zh_url": zh_license_url,
+    "locale_href": "../license.html",
+    "locale_hreflang": "en",
+}
+
 for rel, expected in paired_seo.items():
     path = ROOT / rel
     if not path.exists():
@@ -1062,6 +1076,8 @@ for rel, expected in paired_seo.items():
         ("ja", expected["ja_url"]),
         ("x-default", expected["en_url"]),
     }
+    if expected.get("zh_url"):
+        required_alternates.add(("zh-CN", expected["zh_url"]))
     for alternate in sorted(required_alternates - alternates):
         fail(f"{rel}: missing hreflang alternate {alternate}")
     locale_tags = re.findall(r"<a\b[^>]*data-locale-link[^>]*>", text, re.IGNORECASE)

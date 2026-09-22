@@ -46,6 +46,9 @@ jobs:
       - name: Linear-inspired redesign contracts
         run: node scripts/test_linear_redesign.mjs
 
+      - name: Chinese license locale is current
+        run: node scripts/generate_zh_locale.mjs --check
+
       - name: Pre-staging integrity checks
         run: python scripts/validate_pre_staging.py
 

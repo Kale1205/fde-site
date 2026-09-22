@@ -1,3 +1,41 @@
+# Design QA — Editorial Inspector license and navigation, 2026-09-22
+
+## Scope and selected source
+
+This pass implements the user-selected second comparison design: an editorial, technical plan-inspector page at desktop and tablet widths, with the selected compact iPhone bottom sheet. The selected source visual is preserved at `docs/design-review/editorial-inspector-20260922/source-selected.png`; final browser captures are stored beside it.
+
+- Desktop: `ja-desktop.png`, `en-desktop.png` at 1440 × 1024.
+- Tablet: `ja-tablet-closed.png`, `ja-tablet-menu.png` at 1024 × 900.
+- Mobile: `ja-mobile-closed.png`, `ja-mobile-menu.png`, `en-mobile-closed.png`, `zh-mobile-closed.png` at 390 × 844.
+- The source, final desktop, and final mobile-menu captures were inspected together at original detail. Layout, spacing, hierarchy, colors, table treatment, and responsive menu behavior were compared directly.
+
+## Findings and repairs
+
+| Priority | Finding | Repair |
+| --- | --- | --- |
+| P2 | Binary plan differences were slower to scan as prose. | Source delivery and internal modification now use visible `✓` and `—`, with screen-reader-only descriptions retaining their full meaning. |
+| P2 | A full mobile navigation panel obscured too much of the product page. | iPhone navigation is now a compact lower sheet with a handle, close control, three shortcuts, and three secondary rows; tablet retains a right-side drawer. |
+| P2 | License conditions were visually repetitive and hard to compare. | Desktop and tablet use one wide comparison matrix plus a persistent decision summary; mobile uses a sticky plan selector and native disclosure sections. |
+| P2 | Initial mobile Lighthouse found 4.21:1 contrast on small decision labels. | Darkened those labels and the candidate-price note. The repeated audit reports Accessibility 100 with zero failures. |
+
+No actionable P0, P1, or P2 issue remains in the checked states.
+
+## Browser and behavior verification
+
+- Chrome DevTools MCP: Japanese and English license pages at 1440 × 1024, 1024 × 900, and 390 × 844; Simplified Chinese at 1440 × 1024 and 390 × 844. Page-level horizontal overflow was zero at each width.
+- Plan selector: License Plus defaults correctly; choosing License updates price and all three responsibility statements in Japanese, English, and Simplified Chinese.
+- Navigation: desktop inline links, tablet right drawer, mobile bottom sheet, backdrop/close actions, focus trap, and Escape focus return were exercised. The shared menu was also opened on the Japanese homepage.
+- Disclosures: the initial Deliverables section and an additional Internal use section were opened and read in the accessibility tree.
+- Console and network: no warnings/errors; all eight page resources returned HTTP 200 on the final Japanese tablet load.
+- Lighthouse: English mobile and desktop, plus Simplified Chinese mobile, each returned Accessibility 100, Best Practices 100, SEO 100, and Agentic Browsing 100.
+- Local performance trace, Japanese tablet: CLS 0.00 and LCP 109 ms in an unthrottled loopback environment. These are local lab observations, not production field data.
+
+## Implementation boundaries
+
+The existing brand palette, logo, copy, prices, development notice, legal-entity scope, and commerce-disabled state remain intact. No dependency, tracking, analytics, framework, purchase path, or external transmission was added. Figma MCP was not used because there was no linked Figma source for this selected variant; the user-approved generated visual was the implementation source. The site remains a static project with `dev` and `validate` scripts and no separate build or lint command.
+
+---
+
 # Design QA — Closer Linear composition, current brand palette, 2026-09-13
 
 final result: passed
