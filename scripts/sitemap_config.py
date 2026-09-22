@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+from typing import Optional
 import xml.etree.ElementTree as ET
 
 
@@ -34,23 +35,26 @@ class SitemapPage:
 class SitemapPair:
     en: SitemapPage
     ja: SitemapPage
+    zh: Optional[SitemapPage]
     changefreq: str
     priority: str
 
     @property
     def pages(self):
-        return (self.en, self.ja)
+        return (self.en, self.ja) + ((self.zh,) if self.zh else ())
 
     @property
     def alternates(self):
-        return (
+        alternates = (
             ("en", self.en.url),
             ("ja", self.ja.url),
-            ("x-default", self.en.url),
         )
+        if self.zh:
+            alternates += (("zh-CN", self.zh.url),)
+        return alternates + (("x-default", self.en.url),)
 
 
-def _pair(name, changefreq, priority):
+def _pair(name, changefreq, priority, include_zh=False):
     if name == "index.html":
         en_url = f"{BASE_URL}/"
         ja_url = f"{BASE_URL}/ja/"
@@ -60,6 +64,7 @@ def _pair(name, changefreq, priority):
     return SitemapPair(
         en=SitemapPage(name, en_url),
         ja=SitemapPage(f"ja/{name}", ja_url),
+        zh=SitemapPage(f"zh/{name}", f"{BASE_URL}/zh/{name}") if include_zh else None,
         changefreq=changefreq,
         priority=priority,
     )
@@ -72,7 +77,7 @@ SITEMAP_PAIRS = (
     _pair("inventory-software-with-source-code.html", "monthly", "0.9"),
     _pair("self-hosted-inventory-management-software.html", "monthly", "0.9"),
     _pair("small-business-inventory-management-software.html", "monthly", "0.9"),
-    _pair("license.html", "monthly", "0.9"),
+    _pair("license.html", "monthly", "0.9", include_zh=True),
     _pair("demo.html", "weekly", "0.8"),
     _pair("goals.html", "monthly", "0.8"),
     _pair("contact.html", "monthly", "0.7"),

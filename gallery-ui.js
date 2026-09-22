@@ -1,7 +1,10 @@
 (() => {
   "use strict";
 
-  const isJapanese = document.documentElement.lang === "ja";
+  const locale = document.documentElement.lang.startsWith("zh")
+    ? "zh"
+    : document.documentElement.lang === "ja" ? "ja" : "en";
+  const isJapanese = locale === "ja";
   // Motion is a real development-build capture, loaded only when in view.
   // Native controls remain available; reduced-motion users opt in to playback.
   const operationVideo = document.querySelector(".mission-recording video");
@@ -22,20 +25,22 @@
     });
   }
   const text = {
-    openMenu: isJapanese ? "メニューを開く" : "Open menu",
-    closeMenu: isJapanese ? "メニューを閉じる" : "Close menu",
-    menu: isJapanese ? "メニュー" : "Menu",
-    product: isJapanese ? "製品" : "Product",
-    demo: isJapanese ? "デモ" : "Demo",
-    contact: isJapanese ? "お問い合わせ" : "Contact",
-    received: isJapanese ? "1点を入庫しました" : "Received one unit",
-    shipped: isJapanese ? "1点を出庫しました" : "Shipped one unit",
-    ok: isJapanese ? "正常" : "OK",
-    low: isJapanese ? "要補充" : "Low stock",
-    tools: isJapanese
-      ? ["在庫一覧", "商品", "記録", "出荷", "設定"]
-      : ["Inventory", "Products", "Records", "Shipping", "Settings"],
-  };
+    en: {
+      openMenu: "Open menu", closeMenu: "Close menu", menu: "Menu", product: "Product", demo: "Demo", contact: "Contact",
+      received: "Received one unit", shipped: "Shipped one unit", ok: "OK", low: "Low stock",
+      tools: ["Inventory", "Products", "Records", "Shipping", "Settings"],
+    },
+    ja: {
+      openMenu: "メニューを開く", closeMenu: "メニューを閉じる", menu: "メニュー", product: "製品", demo: "デモ", contact: "お問い合わせ",
+      received: "1点を入庫しました", shipped: "1点を出庫しました", ok: "正常", low: "要補充",
+      tools: ["在庫一覧", "商品", "記録", "出荷", "設定"],
+    },
+    zh: {
+      openMenu: "打开菜单", closeMenu: "关闭菜单", menu: "菜单", product: "产品", demo: "演示", contact: "联系我们",
+      received: "已入库 1 件", shipped: "已出库 1 件", ok: "正常", low: "需要补货",
+      tools: ["库存", "产品", "记录", "出库", "设置"],
+    },
+  }[locale];
 
   const thresholds = {
     "PC-1204": 40,
@@ -61,7 +66,7 @@
     const desktopNav = document.querySelector(".desktop-nav");
     if (desktopNav && !desktopNav.querySelector('a[href$="demo.html"]')) {
       const demoLink = document.createElement("a");
-      demoLink.href = "demo.html";
+      demoLink.href = locale === "zh" ? "../demo.html" : "demo.html";
       demoLink.textContent = text.demo;
       if (window.location.pathname.endsWith("/demo.html")) demoLink.setAttribute("aria-current", "page");
       desktopNav.firstElementChild?.after(demoLink);
@@ -72,10 +77,10 @@
     const productLink = originalLinks[0];
     const goalsLink = byHref("goals.html");
     const newsLink = byHref("news.html");
-    const localeLink = originalLinks.find((link) => link.hasAttribute("hreflang"));
+    const localeLinks = originalLinks.filter((link) => link.hasAttribute("hreflang"));
     const contactLink = byHref("contact.html") || originalLinks.at(-1);
     const demoLink = document.createElement("a");
-    demoLink.href = "demo.html";
+    demoLink.href = locale === "zh" ? "../demo.html" : "demo.html";
     demoLink.textContent = text.demo;
     if (window.location.pathname.endsWith("/demo.html")) demoLink.setAttribute("aria-current", "page");
 
@@ -127,7 +132,7 @@
 
     const rows = document.createElement("div");
     rows.className = "mobile-nav-rows";
-    [goalsLink, newsLink, localeLink].filter(Boolean).forEach((link) => {
+    [goalsLink, newsLink, ...localeLinks].filter(Boolean).forEach((link) => {
       link.classList.add("mobile-nav-row");
       const arrow = document.createElement("span");
       arrow.setAttribute("aria-hidden", "true");
@@ -187,9 +192,12 @@
   const planButtons = Array.from(document.querySelectorAll("[data-license-plan]"));
   const planSummary = document.querySelector("[data-license-summary]");
   if (planButtons.length && planSummary) {
-    const planData = isJapanese ? {
+    const planData = locale === "ja" ? {
       license: { name: "License", price: "49,800円", points: ["ソースコードの提供：なし", "社内での改変：不可", "更新：3か月含む・以降は任意"] },
       plus: { name: "License Plus", price: "99,800円", points: ["ソースコードの提供：あり", "社内での改変：可能", "更新・セキュリティ：購入者が管理"] }
+    } : locale === "zh" ? {
+      license: { name: "License", price: "$349", points: ["不提供源代码", "不允许内部修改", "包含 3 个月更新，之后可选购"] },
+      plus: { name: "License Plus", price: "$699", points: ["包含完整源代码", "允许内部修改", "更新与安全由购买方管理"] }
     } : {
       license: { name: "License", price: "$349", points: ["Source code not included", "Internal modification not permitted", "Updates: 3 months included, then optional"] },
       plus: { name: "License Plus", price: "$699", points: ["Full source code included", "Internal modification permitted", "Updates and security managed by purchaser"] }
