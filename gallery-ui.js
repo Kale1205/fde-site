@@ -284,6 +284,7 @@
     const selectPlan = (key) => {
       const plan = planData[key];
       if (!plan) return;
+      document.body.dataset.selectedPlan = key;
       planButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.licensePlan === key)));
       planSummary.querySelector("[data-license-name]").textContent = plan.name;
       planSummary.querySelector("[data-license-price]").textContent = plan.price;

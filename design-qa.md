@@ -1,3 +1,33 @@
+# Design QA — License selector responsiveness, 2026-09-23
+
+## Source and rendered comparison
+
+- Source visual truth: `docs/design-review/license-switcher-20260923/source-reported.jpg` (590 × 1280), the supplied iPhone screenshot showing the selector stuck over scrolled content.
+- Reproducible combined comparison: `docs/design-review/license-switcher-20260923/comparison.html`, inspected in the Codex in-app browser at 830 × 900. Each side is normalized to a 390 × 844 CSS viewport; the source is scaled from the supplied capture and the implementation iframe renders at deviceScaleFactor 1.
+- Additional implementation states: English at 1440 × 1000, Simplified Chinese at 1024 × 900, and Japanese at 390 × 844.
+
+## Findings and iteration history
+
+| Priority | Before | Fix | Post-fix evidence |
+| --- | --- | --- | --- |
+| P1 | The mobile selector used `position: sticky`, so it obscured later policy content while scrolling. | Removed sticky positioning and backdrop blur; the selector now remains in normal document flow. | At 390px its computed position is `static`; after scrolling to `scrollY=824`, its top is `-468px`, fully outside the viewport. The combined comparison shows the formerly obscured content unobstructed. |
+| P1 | The selector was `display:none` above 760px, preventing selection on tablet and desktop. | Made the two-button selector available at every width, with a bounded 620px desktop/tablet width and full-width mobile layout. | Both buttons are visible and clickable at 1024px and 1440px with no horizontal overflow. |
+| P2 | Selecting License changed the summary, but the comparison table continued to visually emphasize License Plus. | Added a shared selected-plan state so the corresponding table column, button, product name, price, and responsibility list change together. | License produces $349 / 49,800円 and highlights the License column; License Plus produces $699 / 99,800円 and highlights the Plus column. zh-CN also switches $349 ↔ $699. |
+
+## Required fidelity surfaces
+
+- Typography and copy: existing serif/sans/mono hierarchy and all EN/JA/zh-CN product wording are unchanged.
+- Spacing and layout: selector is right-aligned and bounded on desktop/tablet, full-width on mobile, and no longer overlays scrolled content.
+- Colors and tokens: existing paper, forest, orange, rule, and tint tokens are reused for active states.
+- Images and assets: no product or brand imagery changed; the supplied defect screenshot is retained only as QA evidence.
+- Interaction and accessibility: native buttons retain `aria-pressed`; selected name, price, responsibility copy, and table emphasis stay synchronized.
+
+No actionable P0, P1, or P2 issue remains in the checked states. Focused inspection was limited to the selector, comparison matrix, and decision-summary region because no other visual surface changed.
+
+final result: passed
+
+---
+
 # Design QA — Mobile navigation repair and full Simplified Chinese locale, 2026-09-22
 
 ## Scope and reference

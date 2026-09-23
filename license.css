@@ -116,9 +116,10 @@
 }
 
 .license-plan-switcher {
-  display: none;
+  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-bottom: 20px;
+  width: min(100%, 620px);
+  margin: 0 0 20px auto;
   border: 1px solid var(--license-rule-strong);
 }
 
@@ -181,7 +182,8 @@
   text-transform: uppercase;
 }
 
-.license-matrix thead th:last-child {
+.license-page[data-selected-plan="license"] .license-matrix thead th:nth-child(2),
+.license-page[data-selected-plan="plus"] .license-matrix thead th:nth-child(3) {
   color: white;
   background: var(--forest);
   box-shadow: inset 0 -3px var(--orange);
@@ -219,7 +221,10 @@
   line-height: 1.5;
 }
 
-.license-matrix td:last-child { background: var(--license-tint); }
+.license-page[data-selected-plan="license"] .license-matrix tbody td:nth-child(2),
+.license-page[data-selected-plan="plus"] .license-matrix tbody td:nth-child(3) {
+  background: var(--license-tint);
+}
 
 .matrix-symbol {
   display: inline-grid;
@@ -539,12 +544,9 @@
   }
 
   .license-plan-switcher {
-    position: sticky;
-    z-index: 18;
-    top: 72px;
-    display: grid;
-    background: rgba(250, 248, 244, .96);
-    backdrop-filter: blur(14px);
+    width: 100%;
+    margin-left: 0;
+    background: var(--paper);
   }
 
   .license-matrix-region { display: none; }

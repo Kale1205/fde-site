@@ -35,6 +35,7 @@ for (const prefix of ['', 'ja/']) {
   assert.match(license, /class="license-matrix"/);
   assert.match(license, /data-license-plan="license"/);
   assert.match(license, /data-license-plan="plus"/);
+  assert.match(license, /data-selected-plan="plus"/);
   assert.match(license, /class="matrix-symbol positive" aria-hidden="true">✓</);
   assert.match(license, /class="matrix-symbol" aria-hidden="true">—</);
   assert.match(license, /data-license-summary/);
@@ -51,10 +52,13 @@ assert.match(read('gallery-ui.js'), /mobile-nav-backdrop/);
 assert.match(read('gallery-ui.js'), /document\.body\.append\(backdrop, mobileNav\)/);
 assert.match(read('gallery-ui.js'), /setTimeout\(\(\) => setMenu\(false\), 0\)/);
 assert.match(read('gallery-ui.js'), /data-license-plan/);
+assert.match(read('gallery-ui.js'), /document\.body\.dataset\.selectedPlan = key/);
 assert.match(read('gallery-ui.css'), /\.mobile-sheet/);
 assert.match(read('gallery-ui.css'), /\.mobile-nav-backdrop\s*\{[\s\S]*?z-index:\s*1000/);
 assert.match(read('gallery-ui.css'), /\.mobile-nav\.mobile-sheet\s*\{[\s\S]*?z-index:\s*1010/);
 assert.match(read('license.css'), /\.license-plan-switcher/);
+assert.match(read('license.css'), /\.license-plan-switcher\s*\{[^}]*display:\s*grid/);
+assert.doesNotMatch(read('license.css'), /\.license-plan-switcher\s*\{[^}]*position:\s*sticky/);
 const localizedPages = [
   'index.html', 'one-time-purchase-inventory-software.html',
   'inventory-software-with-source-code.html',
