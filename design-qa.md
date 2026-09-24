@@ -1,3 +1,33 @@
+# Design QA — Homepage operating-model comparison, 2026-09-24
+
+## Source and rendered comparison
+
+- Source visual truth: the current production homepage and its plans section, typography, paper texture, forest/orange accents, fine rules, and `section-frame` rhythm.
+- Reproducible combined comparison: `docs/design-review/home-comparison-20260924/comparison.html`. It places the production plan surface and the new local comparison surface together, plus Japanese and Simplified Chinese 390 × 844 views.
+- Browser checks: English at 1440 × 1000; Japanese at 1024 × 900 and 390 × 844; Simplified Chinese at 390 × 844.
+
+## Findings and iteration history
+
+| Priority | Finding | Fix | Post-fix evidence |
+| --- | --- | --- | --- |
+| P1 | The homepage did not provide a short, neutral comparison of Excel/spreadsheets, typical cloud inventory SaaS, and FDE IMS License Plus. | Added one static HTML comparison section after the plan cards, with cautious product-dependent language and an explicit development/purchase-status note. | All three locales expose the same six comparison rows in the accessibility tree and source HTML. |
+| P2 | A four-column table cannot remain readable at 390px without either tiny type or an alternate interaction. | Kept 13px body type, added a keyboard-focusable horizontal region, and made the row-heading column sticky with an opaque paper background. | At 390px the document has zero overflow; the table region is 350px wide with 760px scroll content and reaches the FDE IMS column at `scrollLeft=410`. |
+| P2 | The first sticky-column version covered the beginning of the final FDE IMS column at the right edge. | Rebalanced the mobile table to 16% row headings and 28% data columns. | At the right edge the 122px row-heading column and 213px FDE IMS column both fit inside the 350px region without text overlap. |
+
+## Required fidelity surfaces
+
+- Typography and spacing: reuses the existing serif/sans/mono hierarchy, `section-frame` widths, and section rhythm.
+- Color and material: uses existing paper, forest, orange, sage, and rule tokens. The FDE IMS column receives restrained emphasis without a ranking badge.
+- Content: the comparison explains differences in ownership, change scope, infrastructure, pricing model, and update/security responsibility without claiming universal superiority.
+- Responsive behavior: no page-level horizontal overflow at 1440, 1024, or 390px. The table itself scrolls only at mobile width; text remains 13px.
+- Accessibility: native `table`, `caption`, `thead`, `tbody`, `th scope="col"`, and `th scope="row"`; the overflow region is named and keyboard focusable.
+
+No actionable P0, P1, or P2 issue remains in the checked states.
+
+final result: passed
+
+---
+
 # Design QA — License selector responsiveness, 2026-09-23
 
 ## Source and rendered comparison

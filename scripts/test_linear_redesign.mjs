@@ -66,6 +66,31 @@ const localizedPages = [
   'small-business-inventory-management-software.html', 'license.html',
   'demo.html', 'goals.html', 'contact.html', 'news.html', 'order.html',
 ];
+const comparisonExpectations = [
+  ['index.html', 'Excel, SaaS, or a system you can shape?', 'Typical cloud inventory SaaS'],
+  ['ja/index.html', 'Excel・SaaS・FDE IMSの違い', '一般的なクラウド型在庫管理SaaS'],
+  ['zh/index.html', 'Excel、SaaS，还是可以自行调整的系统？', '一般的云端库存管理 SaaS'],
+];
+for (const [name, heading, cloudLabel] of comparisonExpectations) {
+  const html = read(name);
+  const comparisonStart = html.indexOf('<section class="operating-comparison');
+  const guidesStart = html.indexOf('<nav class="source-guides');
+  assert.ok(comparisonStart > html.indexOf('<section class="offers'), `${name}: comparison must follow plans`);
+  assert.ok(comparisonStart < guidesStart, `${name}: comparison must precede product guides`);
+  const comparison = html.slice(comparisonStart, guidesStart);
+  assert.ok(comparison.includes(heading));
+  assert.ok(comparison.includes(cloudLabel));
+  assert.match(comparison, /<table class="comparison-table">[\s\S]*?<caption>[^<]+<\/caption>[\s\S]*?<thead>[\s\S]*?<tbody>/);
+  assert.equal(comparison.match(/<th scope="col"/g)?.length, 4);
+  assert.equal(comparison.match(/<th scope="row"/g)?.length, 6);
+  assert.match(comparison, /role="region" aria-labelledby="operating-model-title" tabindex="0"/);
+  for (const href of [
+    'one-time-purchase-inventory-software.html',
+    'inventory-software-with-source-code.html',
+    'self-hosted-inventory-management-software.html',
+    'small-business-inventory-management-software.html',
+  ]) assert.match(comparison, new RegExp(`href="${href}"`));
+}
 for (const name of localizedPages) {
   const html = read(`zh/${name}`);
   assert.match(html, /<html lang="zh-CN">/);

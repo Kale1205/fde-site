@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Homepage comparison section QA</title>
+  <style>
+    *{box-sizing:border-box} body{margin:0;padding:28px;background:#e8e5dd;color:#102019;font:13px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif} h1{margin:0 0 22px;font:600 20px/1.2 Georgia,serif}.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-bottom:28px}.view{background:#faf8f4;border:1px solid #aeb3ad}.label{display:flex;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #c9cbc5;font:600 10px/1.3 ui-monospace,SFMono-Regular,monospace;letter-spacing:.08em;text-transform:uppercase}.desktop-window{height:500px;overflow:hidden}.desktop-window iframe{width:1440px;height:1050px;border:0;transform:scale(.45);transform-origin:top left}.mobile-pair{display:flex;gap:20px;overflow-x:auto;padding-bottom:8px}.mobile-window{flex:0 0 392px;background:#faf8f4;border:1px solid #aeb3ad}.mobile-window iframe{display:block;width:390px;height:844px;border:0}@media(max-width:900px){.pair{grid-template-columns:1fr}.desktop-window{height:420px}.desktop-window iframe{transform:scale(.36)} body{padding:18px}}
+  </style>
+</head>
+<body>
+  <h1>Existing visual language → integrated operating-model comparison</h1>
+  <section class="pair" aria-label="Desktop comparison">
+    <article class="view"><div class="label"><span>Existing production / plans</span><span>1440px source</span></div><div class="desktop-window"><iframe title="Existing production plans" src="https://kale1205.github.io/fde-site/#plans"></iframe></div></article>
+    <article class="view"><div class="label"><span>Implementation / comparison</span><span>1440px target</span></div><div class="desktop-window"><iframe title="Local comparison implementation" src="../../../index.html#operating-model-comparison"></iframe></div></article>
+  </section>
+  <section class="mobile-pair" aria-label="Mobile comparison">
+    <article class="mobile-window"><div class="label"><span>Japanese / start</span><span>390 × 844</span></div><iframe title="Japanese comparison start" src="../../../ja/index.html#operating-model-comparison"></iframe></article>
+    <article class="mobile-window"><div class="label"><span>Simplified Chinese / start</span><span>390 × 844</span></div><iframe title="Chinese comparison start" src="../../../zh/index.html#operating-model-comparison"></iframe></article>
+  </section>
+</body>
+</html>
