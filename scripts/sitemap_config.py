@@ -75,10 +75,6 @@ def _pair(name, changefreq, priority, include_zh=False):
 # Keep this order aligned with the established sitemap and Search Console URLs.
 SITEMAP_PAIRS = (
     _pair("index.html", "weekly", "1.0", include_zh=True),
-    _pair("one-time-purchase-inventory-software.html", "monthly", "0.9", include_zh=True),
-    _pair("inventory-software-with-source-code.html", "monthly", "0.9", include_zh=True),
-    _pair("self-hosted-inventory-management-software.html", "monthly", "0.9", include_zh=True),
-    _pair("small-business-inventory-management-software.html", "monthly", "0.9", include_zh=True),
     _pair("license.html", "monthly", "0.9", include_zh=True),
     _pair("demo.html", "weekly", "0.8", include_zh=True),
     _pair("goals.html", "monthly", "0.8", include_zh=True),

@@ -6,10 +6,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-translations.json'), 'utf8'));
 const pages = [
   'index.html',
-  'one-time-purchase-inventory-software.html',
-  'inventory-software-with-source-code.html',
-  'self-hosted-inventory-management-software.html',
-  'small-business-inventory-management-software.html',
   'license.html',
   'demo.html',
   'goals.html',

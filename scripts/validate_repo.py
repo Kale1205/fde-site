@@ -133,7 +133,7 @@ else:
     if not re.fullmatch(r"[0-9A-Za-z._-]+", version):
         fail(f"Invalid build version: {version!r}")
 
-INTENT_PAGE_NAMES = {
+REMOVED_DECISION_PAGE_NAMES = {
     "one-time-purchase-inventory-software.html",
     "inventory-software-with-source-code.html",
     "self-hosted-inventory-management-software.html",
@@ -142,16 +142,22 @@ INTENT_PAGE_NAMES = {
 INDEXED_PAGE_NAMES = {
     "index.html", "goals.html", "news.html", "contact.html",
     "license.html", "demo.html",
-} | INTENT_PAGE_NAMES
+}
 EN_PAGES = INDEXED_PAGE_NAMES | {"order.html"}
 JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
 ZH_PAGES = {f"zh/{name}" for name in EN_PAGES}
 ROOT_ONLY_PUBLIC = {"customer.html"}
 ALL_PUBLIC = EN_PAGES | JA_PAGES | ZH_PAGES | ROOT_ONLY_PUBLIC
 
+for prefix in ("", "ja/", "zh/"):
+    for name in REMOVED_DECISION_PAGE_NAMES:
+        retired_path = f"{prefix}{name}"
+        if (ROOT / retired_path).exists():
+            fail(f"{retired_path}: removed decision-guide page must stay deleted")
+
 GALLERY_INNER_PAGE_NAMES = {
     "goals.html", "news.html", "contact.html", "license.html", "demo.html",
-} | INTENT_PAGE_NAMES
+}
 GALLERY_INNER_PAGES = (
     GALLERY_INNER_PAGE_NAMES
     | {f"ja/{name}" for name in GALLERY_INNER_PAGE_NAMES}
@@ -771,7 +777,7 @@ intent_plan_facts = {
         "49,800円", "99,800円", "買い切り2商品を予定", "購入機能は利用不可",
     ),
 }
-for name in sorted(INTENT_PAGE_NAMES):
+for name in sorted(REMOVED_DECISION_PAGE_NAMES):
     for locale, rel in (("en", name), ("ja", f"ja/{name}")):
         path = ROOT / rel
         source = public_source_text.get(rel, "")
@@ -893,7 +899,7 @@ for name in sorted(INTENT_PAGE_NAMES):
             related_targets = {target for _, target in anchor_targets(path, related_match.group(1)) if target}
             other_intent_targets = {
                 f"{'ja/' if locale == 'ja' else ''}{other}"
-                for other in INTENT_PAGE_NAMES
+                for other in REMOVED_DECISION_PAGE_NAMES
                 if other != name
             }
             if len(related_targets) < 3 or len(related_targets & other_intent_targets) < 2:
@@ -932,15 +938,14 @@ for name in sorted(INTENT_PAGE_NAMES):
         if len(json_faq_pairs) < 3 or visible_faq_pairs != json_faq_pairs:
             fail(f"{rel}: visible FAQ questions and answers must exactly mirror JSON-LD FAQPage")
 
-# The homepage now keeps product decisions on the plan-terms path instead of
-# repeating the four intent-page links. The intent pages remain indexed, while
-# their retired homepage links and the retired Updates card must stay absent.
+# Product decisions stay on the plan-terms path. The removed standalone
+# decision-guide links and the retired Updates card must stay absent.
 for locale, rel in (("en", "index.html"), ("ja", "ja/index.html"), ("zh", "zh/index.html")):
     path = ROOT / rel
     source = public_source_text.get(rel, "")
     targets = {target for _, target in anchor_targets(path, source) if target}
     prefix = f"{locale}/" if locale in {"ja", "zh"} else ""
-    retired_targets = {f"{prefix}{name}" for name in INTENT_PAGE_NAMES}
+    retired_targets = {f"{prefix}{name}" for name in REMOVED_DECISION_PAGE_NAMES}
     for remaining in sorted(retired_targets & targets):
         fail(f"{rel}: retired home intent link remains: {remaining}")
     for retired_marker in ("Retired standalone Updates card", "updates-plan", "<h3>FDE IMS Updates</h3>"):
