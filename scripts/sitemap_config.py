@@ -75,10 +75,6 @@ def _pair(name, changefreq, priority, include_zh=False):
 # Keep this order aligned with the established sitemap and Search Console URLs.
 SITEMAP_PAIRS = (
     _pair("index.html", "weekly", "1.0", include_zh=True),
-    _pair("one-time-purchase-inventory-software.html", "monthly", "0.9", include_zh=True),
-    _pair("inventory-software-with-source-code.html", "monthly", "0.9", include_zh=True),
-    _pair("self-hosted-inventory-management-software.html", "monthly", "0.9", include_zh=True),
-    _pair("small-business-inventory-management-software.html", "monthly", "0.9", include_zh=True),
     _pair("license.html", "monthly", "0.9", include_zh=True),
     _pair("demo.html", "weekly", "0.8", include_zh=True),
     _pair("goals.html", "monthly", "0.8", include_zh=True),
@@ -181,11 +177,9 @@ def _load_manifest_at_ref(root, ref, allow_missing=False):
         return _validate_lastmods(value, f"{ref}:{LASTMOD_MANIFEST_NAME}")
     if not isinstance(value, dict):
         raise SitemapStateError(f"{ref}:{LASTMOD_MANIFEST_NAME} must contain one object")
-    unexpected = set(value) - set(SITEMAP_HTML_PATHS)
-    if unexpected:
-        raise SitemapStateError(
-            f"{ref}:{LASTMOD_MANIFEST_NAME} has unexpected pages: {sorted(unexpected)}"
-        )
+    # A trusted base may contain pages intentionally retired by the current
+    # branch. Validate every persisted date, then carry forward only routes
+    # still present in the active sitemap configuration.
     for html_path, lastmod in value.items():
         if not _valid_lastmod(lastmod):
             raise SitemapStateError(

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -39,6 +39,7 @@ for (const prefix of ['', 'ja/']) {
   assert.match(license, /class="matrix-symbol positive" aria-hidden="true">✓</);
   assert.match(license, /class="matrix-symbol" aria-hidden="true">—</);
   assert.match(license, /data-license-summary/);
+  assert.doesNotMatch(license, /Decision guides|判断ガイド|#guides|license-guide/);
 }
 assert.ok(statSync(path.join(root, 'assets/night-lab-20260915.webp')).size < 70000);
 assert.ok(read('index.html').includes('Your company’s system.'));
@@ -60,12 +61,17 @@ assert.match(read('license.css'), /\.license-plan-switcher/);
 assert.match(read('license.css'), /\.license-plan-switcher\s*\{[^}]*display:\s*grid/);
 assert.doesNotMatch(read('license.css'), /\.license-plan-switcher\s*\{[^}]*position:\s*sticky/);
 const localizedPages = [
-  'index.html', 'one-time-purchase-inventory-software.html',
-  'inventory-software-with-source-code.html',
-  'self-hosted-inventory-management-software.html',
-  'small-business-inventory-management-software.html', 'license.html',
+  'index.html', 'license.html',
   'demo.html', 'goals.html', 'contact.html', 'news.html', 'order.html',
 ];
+for (const prefix of ['', 'ja/', 'zh/']) {
+  for (const name of [
+    'one-time-purchase-inventory-software.html',
+    'inventory-software-with-source-code.html',
+    'self-hosted-inventory-management-software.html',
+    'small-business-inventory-management-software.html',
+  ]) assert.equal(existsSync(path.join(root, prefix + name)), false, `${prefix + name} must stay removed`);
+}
 const comparisonExpectations = [
   ['index.html', 'Excel, SaaS, or a system you can shape?', 'Typical cloud inventory SaaS'],
   ['ja/index.html', 'Excel・SaaS・FDE IMSの違い', '一般的なクラウド型在庫管理SaaS'],
@@ -116,6 +122,7 @@ const zhLicense = read('zh/license.html');
 assert.match(zhLicense, /<html lang="zh-CN">/);
 assert.ok(zhLicense.includes('您想从哪一种方案开始？'));
 assert.ok(zhLicense.includes('内部使用 ≠ 转售或再分发'));
+assert.doesNotMatch(zhLicense, /选择指南|#guides|license-guide/);
 assert.match(zhLicense, /hreflang="en"/);
 assert.match(zhLicense, /hreflang="ja"/);
 assert.match(zhLicense, /hreflang="zh-CN"/);
