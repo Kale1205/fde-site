@@ -321,14 +321,16 @@ for locale, fields in indexed_seo_values.items():
 search_markers = {
     "index.html": (
         "Your company’s system. Yours to build on.",
-        "Read the source.", "Make it fit.", "Keep improving.",
-        "FDE IMS License Plus", "Source code. Internal customization.",
+        "Excel, SaaS, or a system you can shape?",
+        "Build your own", "Internal source changes", "One-time purchase",
+        "FDE IMS License Plus",
         "Deployment assistance, development services and support scope are not yet confirmed.",
     ),
     "ja/index.html": (
         "自社で使うシステムを、 自社で育てていく。",
-        "中身を読む", "自社に合わせる", "使いながら育てる",
-        "FDE IMS License Plus", "ソースコード付き・自社向けの改変",
+        "Excel・SaaS・FDE IMSの違い",
+        "自社で設計", "社内向け改変", "買い切り",
+        "FDE IMS License Plus",
         "導入支援・開発代行・保守サービスの提供範囲は未確定です。",
     ),
 }
@@ -919,15 +921,17 @@ for name in sorted(INTENT_PAGE_NAMES):
         if len(json_faq_pairs) < 3 or visible_faq_pairs != json_faq_pairs:
             fail(f"{rel}: visible FAQ questions and answers must exactly mirror JSON-LD FAQPage")
 
-# Home is the discovery hub for all four intent pages; the retired standalone
-# Updates card must not survive in HTML comments or hidden markup.
-for locale, rel in (("en", "index.html"), ("ja", "ja/index.html")):
+# The homepage now keeps product decisions on the plan-terms path instead of
+# repeating the four intent-page links. The intent pages remain indexed, while
+# their retired homepage links and the retired Updates card must stay absent.
+for locale, rel in (("en", "index.html"), ("ja", "ja/index.html"), ("zh", "zh/index.html")):
     path = ROOT / rel
     source = public_source_text.get(rel, "")
     targets = {target for _, target in anchor_targets(path, source) if target}
-    required_targets = {f"{'ja/' if locale == 'ja' else ''}{name}" for name in INTENT_PAGE_NAMES}
-    for missing in sorted(required_targets - targets):
-        fail(f"{rel}: home intent link missing: {missing}")
+    prefix = f"{locale}/" if locale in {"ja", "zh"} else ""
+    retired_targets = {f"{prefix}{name}" for name in INTENT_PAGE_NAMES}
+    for remaining in sorted(retired_targets & targets):
+        fail(f"{rel}: retired home intent link remains: {remaining}")
     for retired_marker in ("Retired standalone Updates card", "updates-plan", "<h3>FDE IMS Updates</h3>"):
         if retired_marker in source:
             fail(f"{rel}: retired standalone Updates card markup remains: {retired_marker}")

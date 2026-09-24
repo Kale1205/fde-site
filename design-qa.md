@@ -1,3 +1,38 @@
+# Design QA — Homepage comparison refinement, 2026-09-24
+
+## Source and rendered comparison
+
+- Source visual truth: the three user-supplied screenshots identifying the workflow band, development-notes sheet, and four-row guide block to remove, together with the current homepage typography, paper texture, forest/orange accents, fine rules, and `section-frame` rhythm.
+- Reproducible combined comparison: `docs/design-review/home-comparison-20260924/comparison.html`. It places the production plan surface and the new local comparison surface together, plus Japanese and Simplified Chinese 390 × 844 views.
+- Browser checks: Japanese, English, and Simplified Chinese across 320, 360, 375, 390, 428, 768, 820, 1024, 1280, and 1440px-wide viewports. Focused visual captures cover 320px Japanese, 390px Japanese/English, 1024px Simplified Chinese, and 1440px Japanese.
+
+## Findings and iteration history
+
+| Priority | Finding | Fix | Post-fix evidence |
+| --- | --- | --- | --- |
+| P1 | The workflow band and development-notes sheet repeated ideas already explained elsewhere and separated the product story from the comparison. | Removed both blocks and moved the static HTML comparison directly after the story section, before the plans. | All three locales now follow the same story → comparison → plans sequence. |
+| P1 | The starting-point link and the compact four-link product-guide list repeated explanations already available on the plan-terms page. | Removed both homepage link groups while keeping each product card’s plan-terms link. The underlying detail pages remain unchanged. | Story → comparison → plans now reads as one continuous decision path in all three locales. |
+| P1 | Long prose, an explanatory symbol legend, and two notes around the table made the comparison slower to scan. | Reduced the block to the heading, short introduction, and comparison table. Each cell retains ○ / △ / × / — plus a short textual label, so assistive technology does not need the decorative symbol to understand it. | Each locale exposes 18 symbol-and-label cells across the same six comparison rows with no legend or surrounding notes. |
+| P1 | FDE IMS License Plus deliverables were marked △ solely because the product is still in development, even though those capabilities define the product being offered. | Changed all six License Plus entries to ○ and named the delivered capability directly: interface, internal modification, full source, one-time purchase, customer-managed server, and purchaser-managed updates/security. | Development and purchase availability remain stated in the section introduction and plan area; the table now compares the intended product models rather than release timing. |
+| P2 | A four-column table cannot remain readable at 390px without either tiny type or an alternate interaction. | Kept 13px body type, added a keyboard-focusable horizontal region, and made the row-heading column sticky with an opaque paper background. | At 390px the document has zero overflow; the table region is 350px wide with 760px scroll content and reaches the FDE IMS column at `scrollLeft=410`. |
+| P2 | The first sticky-column version covered the beginning of the final FDE IMS column at the right edge. | Rebalanced the mobile table to 16% row headings and 28% data columns. | At the right edge the 122px row-heading column and 213px FDE IMS column both fit inside the 350px region without text overlap. |
+| P2 | At 768px and 820px the table needed a short horizontal scroll, but its row headings were only sticky below 760px. | Extended sticky row headings through 980px, covering the full range where the 920px table can overflow inside the page frame. Mobile widths retain the narrower 16% / 28% column proportions. | Tablet users can keep each comparison item visible while scrolling to the SaaS and FDE IMS columns; 1024px and wider continue to show the whole table without scrolling. |
+
+## Required fidelity surfaces
+
+- Typography and spacing: reuses the existing serif/sans/mono hierarchy, `section-frame` widths, and section rhythm.
+- Color and material: uses existing paper, forest, orange, sage, and rule tokens. The FDE IMS column receives restrained emphasis without a ranking badge.
+- Content: the comparison explains differences in ownership, change scope, infrastructure, pricing model, and update/security responsibility without claiming universal superiority. The FDE IMS column marks defined License Plus capabilities with ○; every symbol is paired with a visible text label.
+- Responsive behavior: no page-level horizontal overflow in the checked 320–1440px matrix. The table retains 13px text; it scrolls inside its named region at 320–820px, keeps row headings sticky through tablet portrait widths, and fits without scrolling at 1024px and above.
+- Accessibility: native `table`, `caption`, `thead`, `tbody`, `th scope="col"`, and `th scope="row"`; the overflow region is named and keyboard focusable.
+- Runtime: the checked English mobile state reported zero console warnings or errors. Removed workflow, development-notes, and duplicated-guide selectors were absent from the checked DOM.
+
+No actionable P0, P1, or P2 issue remains in the checked states.
+
+final result: passed
+
+---
+
 # Design QA — License selector responsiveness, 2026-09-23
 
 ## Source and rendered comparison
