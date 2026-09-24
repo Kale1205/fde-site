@@ -321,14 +321,16 @@ for locale, fields in indexed_seo_values.items():
 search_markers = {
     "index.html": (
         "Your company’s system. Yours to build on.",
-        "Read the source.", "Make it fit.", "Keep improving.",
-        "FDE IMS License Plus", "Source code. Internal customization.",
+        "Excel, SaaS, or a system you can shape?",
+        "Build your own", "Internal source changes", "One-time purchase planned",
+        "FDE IMS License Plus",
         "Deployment assistance, development services and support scope are not yet confirmed.",
     ),
     "ja/index.html": (
         "自社で使うシステムを、 自社で育てていく。",
-        "中身を読む", "自社に合わせる", "使いながら育てる",
-        "FDE IMS License Plus", "ソースコード付き・自社向けの改変",
+        "Excel・SaaS・FDE IMSの違い",
+        "自社で設計", "社内向け改変", "買い切り予定",
+        "FDE IMS License Plus",
         "導入支援・開発代行・保守サービスの提供範囲は未確定です。",
     ),
 }

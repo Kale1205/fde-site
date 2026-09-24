@@ -1,16 +1,18 @@
-# Design QA — Homepage operating-model comparison, 2026-09-24
+# Design QA — Homepage comparison refinement, 2026-09-24
 
 ## Source and rendered comparison
 
-- Source visual truth: the current production homepage and its plans section, typography, paper texture, forest/orange accents, fine rules, and `section-frame` rhythm.
+- Source visual truth: the three user-supplied screenshots identifying the workflow band, development-notes sheet, and four-row guide block to remove, together with the current homepage typography, paper texture, forest/orange accents, fine rules, and `section-frame` rhythm.
 - Reproducible combined comparison: `docs/design-review/home-comparison-20260924/comparison.html`. It places the production plan surface and the new local comparison surface together, plus Japanese and Simplified Chinese 390 × 844 views.
-- Browser checks: English at 1440 × 1000; Japanese at 1024 × 900 and 390 × 844; Simplified Chinese at 390 × 844.
+- Browser checks: Japanese at 1440 × 1000 and 390 × 844; Simplified Chinese at 1024 × 900; English at 390 × 844.
 
 ## Findings and iteration history
 
 | Priority | Finding | Fix | Post-fix evidence |
 | --- | --- | --- | --- |
-| P1 | The homepage did not provide a short, neutral comparison of Excel/spreadsheets, typical cloud inventory SaaS, and FDE IMS License Plus. | Added one static HTML comparison section after the plan cards, with cautious product-dependent language and an explicit development/purchase-status note. | All three locales expose the same six comparison rows in the accessibility tree and source HTML. |
+| P1 | The workflow band and development-notes sheet repeated ideas already explained elsewhere and separated the product story from the comparison. | Removed both blocks and moved the static HTML comparison directly after the story section, before the plans. | All three locales now follow the same story → comparison → plans sequence. |
+| P1 | The large four-row guide block repeated links that already exist in the compact product-guide list below the plans. | Removed the duplicated large block while retaining the existing four internal links in the compact guide list. | Buyout, source-code, self-hosting, and small-business pages remain linked in all three locales. |
+| P1 | Long prose in every cell made the comparison slower to scan. | Recast each cell with ○ / △ / × / — plus a short qualifier, and added a visible legend. Symbols are decorative to assist scanning; text still carries the meaning. | Each locale exposes 18 symbol-and-label cells across the same six comparison rows. |
 | P2 | A four-column table cannot remain readable at 390px without either tiny type or an alternate interaction. | Kept 13px body type, added a keyboard-focusable horizontal region, and made the row-heading column sticky with an opaque paper background. | At 390px the document has zero overflow; the table region is 350px wide with 760px scroll content and reaches the FDE IMS column at `scrollLeft=410`. |
 | P2 | The first sticky-column version covered the beginning of the final FDE IMS column at the right edge. | Rebalanced the mobile table to 16% row headings and 28% data columns. | At the right edge the 122px row-heading column and 213px FDE IMS column both fit inside the 350px region without text overlap. |
 
@@ -18,9 +20,10 @@
 
 - Typography and spacing: reuses the existing serif/sans/mono hierarchy, `section-frame` widths, and section rhythm.
 - Color and material: uses existing paper, forest, orange, sage, and rule tokens. The FDE IMS column receives restrained emphasis without a ranking badge.
-- Content: the comparison explains differences in ownership, change scope, infrastructure, pricing model, and update/security responsibility without claiming universal superiority.
-- Responsive behavior: no page-level horizontal overflow at 1440, 1024, or 390px. The table itself scrolls only at mobile width; text remains 13px.
+- Content: the comparison explains differences in ownership, change scope, infrastructure, pricing model, and update/security responsibility without claiming universal superiority. ○ / △ / × / — indicate availability or conditions, not a score or ranking.
+- Responsive behavior: no page-level horizontal overflow at 1440, 1024, or 390px. At 390px the 350px table region retains 13px text and exposes 760px of content; keyboard/finger horizontal scrolling reaches the 410px maximum and displays the FDE IMS column without overlap.
 - Accessibility: native `table`, `caption`, `thead`, `tbody`, `th scope="col"`, and `th scope="row"`; the overflow region is named and keyboard focusable.
+- Runtime: the checked English mobile state reported zero console warnings or errors. Removed workflow, development-notes, and duplicated-guide selectors were absent from the checked DOM.
 
 No actionable P0, P1, or P2 issue remains in the checked states.
 
