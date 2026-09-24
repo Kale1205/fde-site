@@ -74,34 +74,37 @@ const comparisonExpectations = [
 for (const [name, heading, cloudLabel] of comparisonExpectations) {
   const html = read(name);
   assert.match(html, /<meta name="viewport" content="width=device-width,\s*initial-scale=1">/);
+  const storyStart = html.indexOf('<section class="story-section');
   const comparisonStart = html.indexOf('<section class="operating-comparison');
   const plansStart = html.indexOf('<section class="offers');
-  const guidesStart = html.indexOf('<nav class="source-guides');
-  assert.ok(comparisonStart > html.indexOf('<section class="story-section'), `${name}: comparison must follow the starting-point story`);
+  assert.ok(comparisonStart > storyStart, `${name}: comparison must follow the starting-point story`);
   assert.ok(comparisonStart < plansStart, `${name}: comparison must replace the development-notes position before plans`);
+  const story = html.slice(storyStart, comparisonStart);
   const comparison = html.slice(comparisonStart, plansStart);
   assert.ok(comparison.includes(heading));
   assert.ok(comparison.includes(cloudLabel));
-  assert.doesNotMatch(html, /class="workflow-band|class="research-sheet|class="comparison-guides/);
+  assert.doesNotMatch(story, /class="text-link"|inventory-software-with-source-code\.html/);
+  assert.doesNotMatch(html, /class="workflow-band|class="research-sheet|class="comparison-guides|class="source-guides/);
+  assert.doesNotMatch(comparison, /class="comparison-legend|class="comparison-notes/);
   assert.match(comparison, /<table class="comparison-table">[\s\S]*?<caption>[^<]+<\/caption>[\s\S]*?<thead>[\s\S]*?<tbody>/);
   assert.equal(comparison.match(/<th scope="col"/g)?.length, 4);
   assert.equal(comparison.match(/<th scope="row"/g)?.length, 6);
   assert.equal(comparison.match(/class="comparison-symbol/g)?.length, 18);
+  assert.equal(comparison.match(/class="fde-column"><span class="comparison-symbol positive"/g)?.length, 6);
   assert.match(comparison, /role="region" aria-labelledby="operating-model-title" tabindex="0"/);
-  const guides = html.slice(guidesStart, html.indexOf('</nav>', guidesStart));
   for (const href of [
     'one-time-purchase-inventory-software.html',
     'inventory-software-with-source-code.html',
     'self-hosted-inventory-management-software.html',
     'small-business-inventory-management-software.html',
-  ]) assert.match(guides, new RegExp(`href="${href}"`));
+  ]) assert.doesNotMatch(html, new RegExp(`href="${href}"`));
 }
 const comparisonCss = read('gallery-ui.css');
 assert.match(comparisonCss, /\.comparison-table-scroll\s*\{[^}]*overflow-x:\s*auto/);
 assert.match(comparisonCss, /@media \(max-width:\s*980px\)[\s\S]*?\.comparison-table thead th:first-child\s*\{[^}]*position:\s*sticky/);
 assert.match(comparisonCss, /@media \(max-width:\s*980px\)[\s\S]*?\.comparison-table tbody th\s*\{[^}]*position:\s*sticky/);
 assert.match(comparisonCss, /@media \(max-width:\s*760px\)[\s\S]*?\.comparison-table\s*\{[^}]*min-width:\s*760px/);
-assert.match(comparisonCss, /@media \(max-width:\s*760px\)[\s\S]*?\.comparison-notes\s*\{[^}]*grid-template-columns:\s*1fr/);
+assert.doesNotMatch(comparisonCss, /comparison-legend|comparison-notes|source-guides/);
 for (const name of localizedPages) {
   const html = read(`zh/${name}`);
   assert.match(html, /<html lang="zh-CN">/);
