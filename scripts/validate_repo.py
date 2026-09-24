@@ -391,6 +391,17 @@ for forbidden in ("localStorage", "sessionStorage", "fetch("):
     if forbidden in demo_runtime:
         fail(f"demo-v1.js: public simulation must remain temporary and disconnected: {forbidden}")
 
+demo_styles = (ROOT / "gallery-pages.css").read_text(encoding="utf-8")
+demo_styles_start = demo_styles.find("/* Development preview: preserve dense, readable operational UI. */")
+demo_styles_end = demo_styles.find("@media (max-width: 1080px)", demo_styles_start)
+demo_styles_block = demo_styles[demo_styles_start:demo_styles_end]
+if demo_styles_start < 0 or demo_styles_end < 0:
+    fail("gallery-pages.css: demo typography block missing")
+elif "var(--serif)" in demo_styles_block:
+    fail("gallery-pages.css: demo operational UI must use the shared sans family, not serif")
+if not re.search(r"\.demo-operation-panel input,\s*\.demo-operation-panel select\s*\{[^}]*font:\s*inherit", demo_styles_block):
+    fail("gallery-pages.css: demo form controls must inherit the shared font")
+
 for name in sorted(INDEXED_PAGE_NAMES):
     for rel in (name, f"ja/{name}"):
         if '<meta property="og:site_name" content="Baked Kale FDE">' not in public_source_text.get(rel, ""):
