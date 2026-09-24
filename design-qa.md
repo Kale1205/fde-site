@@ -4,7 +4,7 @@
 
 - Source visual truth: the three user-supplied screenshots identifying the workflow band, development-notes sheet, and four-row guide block to remove, together with the current homepage typography, paper texture, forest/orange accents, fine rules, and `section-frame` rhythm.
 - Reproducible combined comparison: `docs/design-review/home-comparison-20260924/comparison.html`. It places the production plan surface and the new local comparison surface together, plus Japanese and Simplified Chinese 390 × 844 views.
-- Browser checks: Japanese at 1440 × 1000 and 390 × 844; Simplified Chinese at 1024 × 900; English at 390 × 844.
+- Browser checks: Japanese, English, and Simplified Chinese across 320, 360, 375, 390, 428, 768, 820, 1024, 1280, and 1440px-wide viewports. Focused visual captures cover 320px Japanese, 390px Japanese/English, 1024px Simplified Chinese, and 1440px Japanese.
 
 ## Findings and iteration history
 
@@ -15,13 +15,14 @@
 | P1 | Long prose in every cell made the comparison slower to scan. | Recast each cell with ○ / △ / × / — plus a short qualifier, and added a visible legend. Symbols are decorative to assist scanning; text still carries the meaning. | Each locale exposes 18 symbol-and-label cells across the same six comparison rows. |
 | P2 | A four-column table cannot remain readable at 390px without either tiny type or an alternate interaction. | Kept 13px body type, added a keyboard-focusable horizontal region, and made the row-heading column sticky with an opaque paper background. | At 390px the document has zero overflow; the table region is 350px wide with 760px scroll content and reaches the FDE IMS column at `scrollLeft=410`. |
 | P2 | The first sticky-column version covered the beginning of the final FDE IMS column at the right edge. | Rebalanced the mobile table to 16% row headings and 28% data columns. | At the right edge the 122px row-heading column and 213px FDE IMS column both fit inside the 350px region without text overlap. |
+| P2 | At 768px and 820px the table needed a short horizontal scroll, but its row headings were only sticky below 760px. | Extended sticky row headings through 980px, covering the full range where the 920px table can overflow inside the page frame. Mobile widths retain the narrower 16% / 28% column proportions. | Tablet users can keep each comparison item visible while scrolling to the SaaS and FDE IMS columns; 1024px and wider continue to show the whole table without scrolling. |
 
 ## Required fidelity surfaces
 
 - Typography and spacing: reuses the existing serif/sans/mono hierarchy, `section-frame` widths, and section rhythm.
 - Color and material: uses existing paper, forest, orange, sage, and rule tokens. The FDE IMS column receives restrained emphasis without a ranking badge.
 - Content: the comparison explains differences in ownership, change scope, infrastructure, pricing model, and update/security responsibility without claiming universal superiority. ○ / △ / × / — indicate availability or conditions, not a score or ranking.
-- Responsive behavior: no page-level horizontal overflow at 1440, 1024, or 390px. At 390px the 350px table region retains 13px text and exposes 760px of content; keyboard/finger horizontal scrolling reaches the 410px maximum and displays the FDE IMS column without overlap.
+- Responsive behavior: no page-level horizontal overflow in the checked 320–1440px matrix. The table retains 13px text; it scrolls inside its named region at 320–820px, keeps row headings sticky through tablet portrait widths, and fits without scrolling at 1024px and above.
 - Accessibility: native `table`, `caption`, `thead`, `tbody`, `th scope="col"`, and `th scope="row"`; the overflow region is named and keyboard focusable.
 - Runtime: the checked English mobile state reported zero console warnings or errors. Removed workflow, development-notes, and duplicated-guide selectors were absent from the checked DOM.
 

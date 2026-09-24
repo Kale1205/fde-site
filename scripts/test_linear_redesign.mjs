@@ -73,6 +73,7 @@ const comparisonExpectations = [
 ];
 for (const [name, heading, cloudLabel] of comparisonExpectations) {
   const html = read(name);
+  assert.match(html, /<meta name="viewport" content="width=device-width,\s*initial-scale=1">/);
   const comparisonStart = html.indexOf('<section class="operating-comparison');
   const plansStart = html.indexOf('<section class="offers');
   const guidesStart = html.indexOf('<nav class="source-guides');
@@ -95,6 +96,12 @@ for (const [name, heading, cloudLabel] of comparisonExpectations) {
     'small-business-inventory-management-software.html',
   ]) assert.match(guides, new RegExp(`href="${href}"`));
 }
+const comparisonCss = read('gallery-ui.css');
+assert.match(comparisonCss, /\.comparison-table-scroll\s*\{[^}]*overflow-x:\s*auto/);
+assert.match(comparisonCss, /@media \(max-width:\s*980px\)[\s\S]*?\.comparison-table thead th:first-child\s*\{[^}]*position:\s*sticky/);
+assert.match(comparisonCss, /@media \(max-width:\s*980px\)[\s\S]*?\.comparison-table tbody th\s*\{[^}]*position:\s*sticky/);
+assert.match(comparisonCss, /@media \(max-width:\s*760px\)[\s\S]*?\.comparison-table\s*\{[^}]*min-width:\s*760px/);
+assert.match(comparisonCss, /@media \(max-width:\s*760px\)[\s\S]*?\.comparison-notes\s*\{[^}]*grid-template-columns:\s*1fr/);
 for (const name of localizedPages) {
   const html = read(`zh/${name}`);
   assert.match(html, /<html lang="zh-CN">/);
