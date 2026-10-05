@@ -22,10 +22,10 @@
   <link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
   <link rel="stylesheet" href="../gallery-pages.css?v=20260925-081759">
   <link rel="stylesheet" href="../license.css?v=20260925-081759">
-  <script defer src="../gallery-ui.js?v=20260925-081759"></script>
-  <link rel="stylesheet" href="../quiet-pages.css?v=20260925-081759">
+  <script defer src="../gallery-ui.js?v=20261006-w02"></script>
+  <link rel="stylesheet" href="../quiet-pages.css?v=20261006-w02">
 </head>
-<body class="quiet-page gallery-page gallery-subpage license-page" data-selected-plan="plus">
+<body class="quiet-page gallery-page gallery-subpage license-page license-renewal" data-selected-plan="plus">
 <div class="site-shell language-ja">
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="Baked Kale FDE ホーム"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"></a>
@@ -38,15 +38,6 @@
   </header>
   <main id="main-content">
     <div class="license-document">
-      <aside class="license-index" aria-label="このページの内容">
-        <p class="license-index-label">PLAN POLICY</p>
-        <a href="#comparison" data-index="01">プランと利用範囲</a>
-        <a href="#deliverables" data-index="02">提供物</a>
-        <a href="#internal-use" data-index="03">社内利用</a>
-        <a href="#updates" data-index="04">更新と保守</a>
-        <a href="#conditions" data-index="05">利用条件</a>
-      </aside>
-
       <article class="license-content">
         <header class="license-intro" id="comparison">
           <p class="license-eyebrow">PLAN POLICY / 開発中</p>
@@ -54,14 +45,24 @@
           <p class="license-lede">用途に合わせて、最適なプランを選択してください。どちらも購入した1法人内で期限なく使える、買い切りの商品です。</p>
         </header>
 
+        <section class="license-decision" aria-label="選択中のプラン" data-license-summary>
         <div class="license-plan-switcher" role="group" aria-label="表示するプラン">
-          <button type="button" data-license-plan="license" aria-pressed="false">License</button>
-          <button type="button" data-license-plan="plus" aria-pressed="true">License Plus</button>
+          <button type="button" data-license-plan="license" aria-pressed="false"><img src="../assets/ims-license-update.webp" alt="" width="32" height="32">License</button>
+          <button type="button" data-license-plan="plus" aria-pressed="true"><img src="../assets/ims-license-plus-customize.webp" alt="" width="32" height="32">License Plus</button>
         </div>
+          <figure class="license-spotlight-art" aria-hidden="true">
+            <img data-license-art="license" src="../assets/ims-license-update.webp" alt="" width="960" height="960" decoding="async">
+            <img data-license-art="plus" src="../assets/ims-license-plus-customize.webp" alt="" width="960" height="960" decoding="async" fetchpriority="high">
+          </figure>
+          <div><p class="decision-label">選択中のプラン</p><strong data-license-name>License Plus</strong></div>
+          <div class="license-decision-price"><p class="decision-label">合計金額</p><strong data-license-price>99,800円</strong><small>（日本円・税込）</small></div>
+          <div class="license-decision-responsibility"><p class="decision-label">主な責任範囲</p><ul data-license-points><li>ソースコードの提供：あり</li><li>社内での改変：可能</li><li>更新・セキュリティ：購入者が管理</li></ul></div>
+          <a class="button button-primary" href="contact.html">この条件について相談</a>
+        </section>
 
         <div class="license-matrix-region" role="region" aria-labelledby="license-matrix-ja" tabindex="0">
           <table class="license-matrix">
-            <caption id="license-matrix-ja" class="sr-only">LicenseとLicense Plusの予定条件比較</caption>
+            <caption id="license-matrix-ja">LicenseとLicense Plusの予定条件比較</caption>
             <thead><tr><th scope="col">項目</th><th scope="col"><strong>License</strong><small>買い切り</small></th><th scope="col"><strong>License Plus</strong><small>買い切り</small></th></tr></thead>
             <tbody>
               <tr><th scope="row">価格（日本円・税込）</th><td>49,800円</td><td>99,800円</td></tr>
@@ -75,49 +76,42 @@
 
         <p class="license-note"><strong>以下は開発中の予定条件です。</strong> 表示価格は日本円です。最終的な価格・利用条件・License Agreement / EULAは、販売開始前に提示します。</p>
 
-        <section class="license-decision" aria-label="選択中のプラン" data-license-summary>
-          <div><p class="decision-label">選択中のプラン</p><strong data-license-name>License Plus</strong></div>
-          <div class="license-decision-price"><p class="decision-label">合計金額</p><strong data-license-price>99,800円</strong><small>（日本円・税込）</small></div>
-          <div class="license-decision-responsibility"><p class="decision-label">主な責任範囲</p><ul data-license-points><li>ソースコードの提供：あり</li><li>社内での改変：可能</li><li>更新・セキュリティ：購入者が管理</li></ul></div>
-          <a class="button button-primary" href="contact.html">この条件について相談</a>
-        </section>
-
-        <h2 class="license-callout">社内利用 ≠ 再販売・再配布</h2>
-        <p class="license-boundary">本製品は、貴社の社内業務での利用を前提としています。FDE IMSを社内で使いながら、自社の通常の商品やサービスを販売することは可能です。</p>
-
         <div class="license-details">
           <details id="deliverables" open>
             <summary><span class="license-detail-index">02</span><strong>提供物</strong></summary>
             <div class="license-detail-body">
-              <div><h3>License</h3><p>購入した1法人内で、期限なく利用できます。ソースコードとソースレベルの改変権は含まれません。購入後3か月はUpdatesが含まれます。</p></div>
-              <div><h3>License Plus</h3><p>ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。License向けUpdates追加オプションの対象外です。</p></div>
+              <div><h2>License</h2><p>購入した1法人内で、期限なく利用できます。ソースコードとソースレベルの改変権は含まれません。購入後3か月はUpdatesが含まれます。</p></div>
+              <div><h2>License Plus</h2><p>ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。License向けUpdates追加オプションの対象外です。</p></div>
             </div>
           </details>
 
           <details id="internal-use">
             <summary><span class="license-detail-index">03</span><strong>社内利用</strong></summary>
             <div class="license-detail-body">
-              <div><h3>License Plusで可能なこと</h3><ul><li>ソースコード一式の確認・編集・拡張・連携</li><li>改変版の社内利用</li><li>秘密保持義務と同じ利用制限を守る外部開発者への委託</li><li>構築・導入・データベース・API・バックアップ／復元資料を提供予定</li></ul></div>
-              <div><h3>禁止される利用</h3><ul><li>原版・改変版の販売または再販売</li><li>無断譲渡、サブライセンス、製品ファイルの再配布</li><li>公開リポジトリ、Webサイト、SNS、公開ファイルへの掲載</li><li>第三者向けSaaS、レンタル、ホスティングとしての提供</li></ul></div>
+              <div><h2>License Plusで可能なこと</h2><ul><li>ソースコード一式の確認・編集・拡張・連携</li><li>改変版の社内利用</li><li>秘密保持義務と同じ利用制限を守る外部開発者への委託</li><li>構築・導入・データベース・API・バックアップ／復元資料を提供予定</li></ul></div>
+              <div><h2>禁止される利用</h2><ul><li>原版・改変版の販売または再販売</li><li>無断譲渡、サブライセンス、製品ファイルの再配布</li><li>公開リポジトリ、Webサイト、SNS、公開ファイルへの掲載</li><li>第三者向けSaaS、レンタル、ホスティングとしての提供</li></ul></div>
             </div>
           </details>
 
           <details id="updates">
             <summary><span class="license-detail-index">04</span><strong>更新と保守</strong></summary>
             <div class="license-detail-body">
-              <div><h3>LicenseのUpdates</h3><p>購入後3か月は追加費用なしです。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。終了後もその時点のバージョンは使い続けられます。</p></div>
-              <div><h3>License Plusの管理責任</h3><p>ソースコードの改変、製品の更新、互換性、セキュリティは購入者が管理します。Updatesは第3の商品ではなく、License Plusには追加できません。</p></div>
+              <div><h2>LicenseのUpdates</h2><p>購入後3か月は追加費用なしです。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。終了後もその時点のバージョンは使い続けられます。</p></div>
+              <div><h2>License Plusの管理責任</h2><p>ソースコードの改変、製品の更新、互換性、セキュリティは購入者が管理します。Updatesは第3の商品ではなく、License Plusには追加できません。</p></div>
             </div>
           </details>
 
           <details id="conditions">
             <summary><span class="license-detail-index">05</span><strong>利用条件</strong></summary>
             <div class="license-detail-body">
-              <div><h3>対象法人と権利表示</h3><p>各プランは購入した1法人が対象です。親会社、子会社、関連会社などの別法人では原則として別途購入が必要です。知的財産権は移転せず、著作権・ライセンス・第三者ライセンス表示を保持する必要があります。</p></div>
-              <div><h3>AI・OSS・自社運用</h3><p>第三者のモデル学習に利用されない条件下では社内AIツールを利用できます。FDE IMSコードのモデル学習や公開データセットへの利用は禁止します。自社サーバー運用、対応環境、導入、SLA、税、返金、移行、納品方法は開発・検討中です。</p></div>
+              <div><h2>対象法人と権利表示</h2><p>各プランは購入した1法人が対象です。親会社、子会社、関連会社などの別法人では原則として別途購入が必要です。知的財産権は移転せず、著作権・ライセンス・第三者ライセンス表示を保持する必要があります。</p></div>
+              <div><h2>AI・OSS・自社運用</h2><p>第三者のモデル学習に利用されない条件下では社内AIツールを利用できます。FDE IMSコードのモデル学習や公開データセットへの利用は禁止します。自社サーバー運用、対応環境、導入、SLA、税、返金、移行、納品方法は開発・検討中です。</p></div>
             </div>
           </details>
         </div>
+
+        <h2 class="license-callout">社内利用 ≠ 再販売・再配布</h2>
+        <p class="license-boundary">本製品は、貴社の社内業務での利用を前提としています。FDE IMSを社内で使いながら、自社の通常の商品やサービスを販売することは可能です。</p>
 
       </article>
     </div>

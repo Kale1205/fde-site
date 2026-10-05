@@ -274,3 +274,89 @@
   .quiet-page *, .quiet-page *::before, .quiet-page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .quiet-page :is(.button,.header-contact,.admin-button,.mini-btn):hover { transform: none; }
 }
+
+/* W02: selected-product spotlight, from the approved second design. */
+.quiet-page.license-renewal .license-document { display: block; padding: 54px 48px 72px; }
+.quiet-page.license-renewal .license-intro { max-width: none; padding-bottom: 32px; }
+.quiet-page.license-renewal .license-intro h1 { max-width: none; font-size: clamp(42px,4.4vw,64px); }
+.quiet-page.license-renewal .license-lede { max-width: 1020px; margin-top: 18px; line-height: 1.75; }
+.quiet-page.license-renewal .license-eyebrow { font-size: 12px; padding-bottom: 16px; }
+.quiet-page.license-renewal .license-decision {
+  position: static; inset: auto; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 10px 48px; margin: 0 0 40px; padding: 32px 40px; border: 0; border-radius: 10px;
+  background: #edf1e7; box-shadow: none; backdrop-filter: none; align-items: start;
+}
+.quiet-page.license-renewal .license-plan-switcher { grid-column: 2; grid-row: 1; width: 100%; margin: 0 0 8px; }
+.quiet-page.license-renewal .license-plan-switcher button { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 6px 12px; min-height: 50px; font-size: 16px; }
+.quiet-page.license-renewal .license-plan-switcher button img { width: 32px; height: 32px; object-fit: contain; }
+.quiet-page.license-renewal .license-spotlight-art { grid-column: 1; grid-row: 1 / 6; align-self: center; margin: 0; min-width: 0; }
+.quiet-page.license-renewal .license-spotlight-art img { display: block; width: min(100%,500px); height: auto; margin: auto; object-fit: contain; animation: quiet-license-reveal 180ms ease-out; }
+.quiet-page.license-renewal[data-selected-plan=plus] [data-license-art=license],
+.quiet-page.license-renewal[data-selected-plan=license] [data-license-art=plus] { display: none; }
+.quiet-page.license-renewal .license-decision > div:not(.license-plan-switcher) { grid-column: 2; padding: 0; border: 0; min-height: 0; }
+.quiet-page.license-renewal .license-decision > div:nth-of-type(2) { grid-row: 2; }
+.quiet-page.license-renewal .license-decision-price { grid-row: 3; }
+.quiet-page.license-renewal .license-decision-responsibility { grid-row: 4; padding-top: 16px !important; margin-top: 6px; border-top: 1px solid var(--line) !important; }
+.quiet-page.license-renewal .license-decision strong { margin-top: 2px; font-size: 32px; font-weight: 700; letter-spacing: -.035em; line-height: 1.25; }
+.quiet-page.license-renewal .license-decision-price strong { font-size: 38px; }
+.quiet-page.license-renewal .license-decision-price .decision-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.quiet-page.license-renewal .decision-label { font-family: var(--sans); font-size: 12px; letter-spacing: .01em; }
+.quiet-page.license-renewal .license-decision ul { margin: 10px 0 0; padding-left: 20px; font-size: 16px; line-height: 1.8; color: var(--ink); }
+.quiet-page.license-renewal .license-decision .button { grid-column: 2; grid-row: 5; width: 100%; min-height: 54px; margin: 8px 0 0; }
+.quiet-page.license-renewal .license-matrix-region { border: 0; border-radius: 0; background: transparent; }
+.quiet-page.license-renewal .license-matrix { min-width: 680px; }
+.quiet-page.license-renewal .license-matrix caption { padding: 0 0 22px; font-size: 21px; font-weight: 700; line-height: 1.4; text-align: left; color: var(--ink); }
+.quiet-page.license-renewal .license-matrix :is(th,td) { padding: 18px 20px; font-size: 16px; border-right: 0; border-bottom: 1px solid var(--line); }
+.quiet-page.license-renewal .license-matrix thead th { border-top: 1px solid var(--line); }
+.quiet-page.license-renewal .license-matrix thead strong { font-size: 18px; }
+.quiet-page.license-renewal .license-matrix thead small { font-size: 12px; }
+.quiet-page.license-renewal[data-selected-plan] .license-matrix thead th { color: var(--ink); background: transparent; box-shadow: none; }
+.quiet-page.license-renewal[data-selected-plan=license] .license-matrix thead th:nth-child(2),
+.quiet-page.license-renewal[data-selected-plan=plus] .license-matrix thead th:nth-child(3) { background: #edf1e7; }
+.quiet-page.license-renewal .license-note { margin: 22px 0 48px; font-size: 14px; }
+.quiet-page.license-renewal .license-details { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.quiet-page.license-renewal .license-details details:last-child { border-bottom: 0; }
+.quiet-page.license-renewal .license-details summary { min-height: 68px; padding-inline: 24px; border-radius: 0; }
+.quiet-page.license-renewal .license-detail-body { padding: 12px 36px 32px; gap: 36px; }
+.quiet-page.license-renewal .license-detail-body > div + div { border-left: 1px solid var(--line); padding-left: 36px; }
+.quiet-page.license-renewal .license-detail-body h2 { margin: 0 0 12px; font-size: 19px; font-weight: 700; line-height: 1.4; letter-spacing: -.025em; color: var(--forest); }
+.quiet-page.license-renewal .license-detail-body :is(p,li) { font-size: 16px; line-height: 1.85; }
+.quiet-page.license-renewal .license-callout { font-size: 24px; margin: 40px 0 12px; }
+.quiet-page.license-renewal .license-boundary { max-width: 1020px; font-size: 15px; margin-bottom: 0; }
+@keyframes quiet-license-reveal { from { opacity: .6; } to { opacity: 1; } }
+@media(max-width:1080px) {
+  .quiet-page.license-renewal .license-document { padding-inline: 32px; }
+  .quiet-page.license-renewal .license-decision { padding: 28px; gap: 8px 28px; }
+}
+@media(max-width:760px) {
+  .quiet-page.license-renewal .license-document { padding: 36px 22px 48px; }
+  .quiet-page.license-renewal .license-intro { padding-bottom: 24px; }
+  .quiet-page.license-renewal .license-intro h1 { font-size: 30px; line-height: 1.35; }
+  .quiet-page.license-renewal .license-lede { font-size: 15px; margin-top: 16px; }
+  .quiet-page.license-renewal .license-decision { display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 0; margin-bottom: 36px; background: transparent; }
+  .quiet-page.license-renewal .license-plan-switcher { margin: 0 0 20px; display: grid; }
+  .quiet-page.license-renewal .license-plan-switcher button { font-size: 14px; gap: 6px; padding-inline: 6px; }
+  .quiet-page.license-renewal .license-plan-switcher button img { width: 26px; height: 26px; }
+  .quiet-page.license-renewal .license-spotlight-art { align-self: stretch; height: 210px; }
+  .quiet-page.license-renewal .license-spotlight-art img { width: 260px; height: 260px; margin-block: -25px; }
+  .quiet-page.license-renewal .license-decision > div:nth-of-type(2),
+  .quiet-page.license-renewal .license-decision-price { text-align: center; }
+  .quiet-page.license-renewal .license-decision strong { font-size: 27px; }
+  .quiet-page.license-renewal .license-decision-price strong { font-size: 31px; margin: 4px 0; }
+  .quiet-page.license-renewal .license-decision-responsibility { margin-top: 24px; padding-top: 20px !important; }
+  .quiet-page.license-renewal .license-decision ul { font-size: 15px; margin-top: 8px; }
+  .quiet-page.license-renewal .license-decision .button { margin-top: 20px; min-height: 52px; }
+  .quiet-page.license-renewal .license-matrix { min-width: 552px; table-layout: fixed; }
+  .quiet-page.license-renewal .license-matrix :is(th,td) { padding: 14px 16px; font-size: 15px; }
+  .quiet-page.license-renewal[data-selected-plan] .license-matrix tr > :first-child { position: sticky; left: 0; z-index: 1; width: 140px; border-right: 1px solid var(--line); background: var(--paper); }
+  .quiet-page.license-renewal[data-selected-plan] .license-matrix tr > :nth-child(2),
+  .quiet-page.license-renewal[data-selected-plan] .license-matrix tr > :nth-child(3) { display: table-cell; }
+  .quiet-page.license-renewal .license-matrix caption { position: sticky; left: 0; width: calc(100vw - 44px); font-size: 19px; }
+  .quiet-page.license-renewal .license-note { margin-bottom: 36px; padding: 14px 16px; font-size: 13px; }
+  .quiet-page.license-renewal .license-details summary { min-height: 64px; padding-inline: 18px; }
+  .quiet-page.license-renewal .license-detail-body { grid-template-columns: minmax(0,1fr); padding: 8px 22px 24px; gap: 24px; }
+  .quiet-page.license-renewal .license-detail-body > div + div { border-left: 0; padding-left: 0; padding-top: 20px; border-top: 1px solid var(--line); }
+  .quiet-page.license-renewal .license-detail-body :is(p,li) { font-size: 15px; }
+  .quiet-page.license-renewal .license-callout { font-size: 21px; margin-top: 32px; }
+  .quiet-page.license-renewal .license-boundary { font-size: 14px; }
+}

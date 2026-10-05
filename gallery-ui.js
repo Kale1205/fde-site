@@ -294,6 +294,14 @@
         item.textContent = point;
         return item;
       }));
+      // Keep the selected column visible without shrinking the mobile comparison.
+      // Only the table scrolls; the selector and summary remain in normal flow.
+      if (document.body.classList.contains("license-renewal") && window.matchMedia("(max-width: 760px)").matches) {
+        const region = document.querySelector(".license-matrix-region");
+        requestAnimationFrame(() => {
+          region.scrollLeft = key === "plus" ? region.scrollWidth - region.clientWidth : 0;
+        });
+      }
     };
     planButtons.forEach((button) => button.addEventListener("click", () => selectPlan(button.dataset.licensePlan)));
     selectPlan("plus");

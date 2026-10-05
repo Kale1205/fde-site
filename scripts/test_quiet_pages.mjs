@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import test from 'node:test';
+import { renderQuietLicense } from './build_quiet_license.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pages = ['', 'ja/', 'zh/'].flatMap(locale =>
@@ -23,7 +24,10 @@ for (const name of pages) {
     if (name === 'zh/goals.html') stripped = stripped.replace('poster="../assets/', 'poster="assets/');
     if (name === 'customer.html') stripped = stripped.replace('href="index.html" aria-label="Baked Kale FDE"', 'href="index.html"');
     const normalizeBuildKeys = source => source.replace(/([?&]v=)[0-9A-Za-z._-]+/g, '$1BUILD');
-    assert.equal(normalizeBuildKeys(stripped), normalizeBuildKeys(original(name)));
+    const expected = name.endsWith('license.html')
+      ? renderQuietLicense(original(name), name.includes('/') ? '../' : '')
+      : original(name);
+    assert.equal(normalizeBuildKeys(stripped), normalizeBuildKeys(expected));
     assert.equal((html.match(/quiet-pages\.css/g) || []).length, 1);
   });
 }
