@@ -1,6 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { renderQuietHomepage } from './build_quiet_homepages.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-translations.json'), 'utf8'));
@@ -128,7 +129,10 @@ function renderPage(name) {
 mkdirSync(path.join(root, 'zh'), { recursive: true });
 let stale = false;
 for (const name of pages) {
-  const output = renderPage(name);
+  // The approved homepage has manually authored three-language copy in one
+  // shared renderer. Do not translate it back to the retired source-home UI.
+  const output = name === 'index.html' && /class="gallery-page quiet-home"/.test(readFileSync(path.join(root, name), 'utf8'))
+    ? await renderQuietHomepage('zh') : renderPage(name);
   const outputPath = path.join(root, 'zh', name);
   if (process.argv.includes('--check')) {
     let current = '';

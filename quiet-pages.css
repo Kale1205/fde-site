@@ -219,9 +219,13 @@
   .quiet-page .site-footer > span { display: block; margin-top: 16px; }
   .quiet-page .license-document { padding: 36px 22px 48px; }
   .quiet-page .license-plan-switcher { margin-inline: 0; }
-  .quiet-page .license-matrix { min-width: 560px; }
-  .quiet-page .license-matrix tr > :first-child { width: 20%; position: sticky; left: 0; z-index: 1; background: var(--paper); border-right: 1px solid var(--line); }
-  .quiet-page .license-matrix thead th:first-child { width: 20%; }
+  .quiet-page .license-matrix { min-width: 0; width: 100%; }
+  .quiet-page .license-matrix tr > :first-child { width: 32%; background: var(--paper); border-right: 1px solid var(--line); }
+  .quiet-page .license-matrix thead th:first-child { width: 32%; }
+  /* Keep the selected plan's column and summary in agreement on small screens.
+     Both columns stay visible for side-by-side desktop/tablet comparison. */
+  .quiet-page[data-selected-plan=plus] .license-matrix tr > :nth-child(2),
+  .quiet-page[data-selected-plan=license] .license-matrix tr > :nth-child(3) { display: none; }
   .quiet-page .license-decision { padding: 20px; gap: 20px; }
   .quiet-page .license-decision strong { font-size: 23px; }
   .quiet-page .license-decision-price strong { font-size: 28px; }

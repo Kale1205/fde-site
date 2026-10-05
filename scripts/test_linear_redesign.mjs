@@ -6,14 +6,15 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = p => readFileSync(path.join(root, p), 'utf8');
 for (const prefix of ['', 'ja/']) {
   const home = read(prefix + 'index.html');
-  assert.match(home, /class="button button-primary" href="#license-plus"/);
-  assert.match(home, /class="button button-secondary" href="(?:\.\.\/)?demo.html" data-demo-open/);
+  assert.match(home, /class="button" href="#license-plus"/);
+  assert.match(home, /class="quiet-text-link" href="#motion-demo"/);
   assert.doesNotMatch(home, /href="#preview-panel"/);
   assert.doesNotMatch(home, /gallery-pages\.css\?v=/);
-  assert.equal(home.match(/<img alt="Baked Kale FDE" src="(?:\.\.\/)?assets\/baked-kale-logo\.svg" width="980" height="240">/g)?.length, 2);
-  const panel = home.slice(home.indexOf('<div class="product-window"'), home.indexOf('<img class="hero-foreground"'));
-  assert.match(panel, /<button class="inventory-row/);
-  assert.match(panel, /<button class="ship-button" type="button">/);
+  assert.equal(home.match(/alt="Baked Kale FDE" width="980" height="240"/g)?.length, 2);
+  assert.match(home, /id="imsDemoRoot"/);
+  assert.match(home, /id="demoOperationForm"/);
+  assert.match(home, /quiet-form\.css\?v=/);
+  assert.match(home, /quiet-form\.js\?v=/);
   assert.doesNotMatch(home, /Explore freely|触って確認|Real interface/);
   for (const name of ['index.html', 'goals.html', 'demo.html', 'license.html', 'contact.html']) {
     const html = read(prefix + name);
@@ -42,9 +43,9 @@ for (const prefix of ['', 'ja/']) {
   assert.doesNotMatch(license, /Decision guides|判断ガイド|#guides|license-guide/);
 }
 assert.ok(statSync(path.join(root, 'assets/night-lab-20260915.webp')).size < 70000);
-assert.ok(read('index.html').includes('Your company’s system.'));
-assert.ok(read('ja/index.html').includes('自社で使うシステムを、'));
-assert.ok(read('ja/index.html').includes('自社で育てていく。'));
+assert.ok(read('index.html').includes('Your own system.'));
+assert.ok(read('ja/index.html').includes('自社開発は、'));
+assert.ok(read('ja/index.html').includes('ゼロからじゃなくていい。'));
 assert.match(read('gallery-ui.css'), /prefers-reduced-motion:\s*reduce/);
 assert.match(read('gallery-ui.js'), /reducedMotion\.addEventListener\("change", \(\) =>/);
 assert.match(read('gallery-ui.js'), /updateRow|stockButtons/);
@@ -80,6 +81,15 @@ const comparisonExpectations = [
 for (const [name, heading, cloudLabel] of comparisonExpectations) {
   const html = read(name);
   assert.match(html, /<meta name="viewport" content="width=device-width,\s*initial-scale=1">/);
+  if (html.includes('class="gallery-page quiet-home"')) {
+    const comparison = html.slice(html.indexOf('<table class="quiet-comparison"'),html.indexOf('</table>')+8);
+    assert.match(comparison, /<caption[^>]*>[^<]+<\/caption>[\s\S]*?<thead>[\s\S]*?<tbody>/);
+    assert.equal(comparison.match(/<th scope="col"/g)?.length,2);
+    assert.equal(comparison.match(/<td>/g)?.length,8);
+    assert.match(html,/class="updates-strip"/);
+    assert.doesNotMatch(html,/class="workflow-band|class="research-sheet|class="comparison-guides|class="source-guides/);
+    continue;
+  }
   const storyStart = html.indexOf('<section class="story-section');
   const comparisonStart = html.indexOf('<section class="operating-comparison');
   const plansStart = html.indexOf('<section class="offers');

@@ -27,8 +27,8 @@ for (const name of pages) {
   });
 }
 
-test('public homepages and SEO configuration are unchanged', () => {
-  for (const name of ['index.html', 'ja/index.html', 'zh/index.html', 'robots.txt', 'content/zh-translations.json']) {
+test('SEO configuration and route inventory are unchanged', () => {
+  for (const name of ['robots.txt', 'content/zh-translations.json']) {
     assert.equal(readFileSync(path.join(root, name), 'utf8'), original(name), name);
   }
   // The repository requires commit-derived lastmods for modified HTML.
@@ -42,5 +42,7 @@ test('shared theme stays scoped and keeps selection stationary', () => {
   assert.match(css, /\.quiet-page \.license-decision \{ position: static/);
   assert.match(css, /prefers-reduced-motion: reduce/);
   assert.match(css, /:focus-visible/);
+  assert.match(css, /data-selected-plan=plus\] \.license-matrix tr > :nth-child\(2\)/);
+  assert.match(css, /data-selected-plan=license\] \.license-matrix tr > :nth-child\(3\)/);
   assert.doesNotMatch(css, /url\(['"]?https?:/);
 });
