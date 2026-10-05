@@ -21,6 +21,7 @@ for (const name of pages) {
       .replace('class="quiet-page ', 'class="')
       .replace('<body class="quiet-page">', '<body>');
     if (name === 'zh/goals.html') stripped = stripped.replace('poster="../assets/', 'poster="assets/');
+    if (name === 'customer.html') stripped = stripped.replace('href="index.html" aria-label="Baked Kale FDE"', 'href="index.html"');
     assert.equal(stripped, original(name));
     assert.equal((html.match(/quiet-pages\.css/g) || []).length, 1);
   });
