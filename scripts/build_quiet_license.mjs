@@ -3,10 +3,11 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const buildVersion=readFileSync(path.join(root,'build-version.txt'),'utf8').trim();
 // Recompose existing markup only: commercial copy, links and metadata remain source-owned.
 export function renderQuietLicense(source, prefix='') {
   const finalize = html => html.replace(/<h3>/g, '<h2>').replace(/<\/h3>/g, '</h2>')
-    .replace(/(quiet-pages\.css|gallery-ui\.js)\?v=[0-9A-Za-z._-]+/g, '$1?v=20261006-w02');
+    .replace(/(quiet-pages\.css|gallery-ui\.js)\?v=[0-9A-Za-z._-]+/g, `$1?v=${buildVersion}`);
   if(source.includes('license-renewal')) return finalize(source);
   const take=expression=>{const match=source.match(expression);if(!match)throw new Error(`Missing License region: ${expression}`);return match[0];};
   const index=take(/      <aside class="license-index"[\s\S]*?<\/aside>/);
