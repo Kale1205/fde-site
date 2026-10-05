@@ -71,7 +71,7 @@ function translateMarkup(source) {
 }
 
 function localizeReferences(source) {
-  return source.replace(/\b(href|src)=(['"])(.*?)\2/gi, (match, name, quote, value) => {
+  return source.replace(/\b(href|src|poster)=(['"])(.*?)\2/gi, (match, name, quote, value) => {
     if (!value || /^(?:[a-z][a-z0-9+.-]*:|\/\/|#|\.\.\/)/i.test(value)) return match;
     if (value.startsWith('ja/')) return `${name}=${quote}../${value}${quote}`;
     if (value === './' || /^(?:[\w-]+\.html)?(?:#.*)?$/.test(value)) return match;

@@ -13,6 +13,8 @@ function option(name, fallback) {
 
 const host = option('--host', '0.0.0.0');
 const port = Number(option('--port', '4173'));
+// Opt-in local review only: keep public home files and links intact.
+const quietFormPreview = args.includes('--quiet-form');
 const types = new Map([
   ['.css', 'text/css; charset=utf-8'],
   ['.gif', 'image/gif'],
@@ -35,6 +37,9 @@ const server = http.createServer(async (request, response) => {
     const url = new URL(request.url || '/', `http://${request.headers.host || 'terminal.local'}`);
     let relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
     if (!relative || relative.endsWith('/')) relative += 'index.html';
+    if (quietFormPreview && /^(?:ja\/|zh\/)?index\.html$/.test(relative)) {
+      relative = relative.replace('index.html', 'quiet-form.html');
+    }
     let target = path.resolve(root, relative);
     if (target !== root && !target.startsWith(`${root}${path.sep}`)) throw new Error('Invalid path');
     const targetStat = await stat(target);

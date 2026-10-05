@@ -1,0 +1,272 @@
+/* Quiet Form: the approved homepage language, extended to existing pages.
+   Content, route structure and interaction scripts remain unchanged. */
+@font-face { font-family: Inter; src: url('assets/fonts/inter-latin-variable.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+.quiet-page {
+  --paper: #faf8f4; --paper-deep: #f1eee5; --surface: #fdfcf9;
+  --ink: #0d1e17; --forest: #073e2c; --green: #0e4937; --green-dark: #073e2c;
+  --orange: #b83a08; --body: #39443f; --muted: #526159;
+  --line: #c9cbc5; --line-dark: #9da59f; --line-strong: #9da59f;
+  --sans: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Microsoft YaHei', Arial, sans-serif;
+  --serif: var(--sans); --jp: var(--sans);
+  background: var(--paper); color: var(--ink); font-family: var(--sans); line-height: 1.7;
+}
+.quiet-page *, .quiet-page *::before, .quiet-page *::after { box-sizing: border-box; }
+.quiet-page .site-shell { background: var(--paper); overflow: clip; }
+.quiet-page .site-shell::before, .quiet-page::before, .quiet-page .order-hero::after, .quiet-page .demo-dashboard::before, .quiet-page.customer-page .page-hero::before, .quiet-page.customer-page .page-hero::after { display: none; }
+.quiet-page :is(h1,h2,h3,h4,button,input,select,textarea) { font-family: var(--sans); }
+.quiet-page :is(h1,h2,h3) { text-wrap: balance; }
+.quiet-page :is(p,li) { overflow-wrap: break-word; }
+.quiet-page :is(.section-frame,.shell,.order-shell,.customer-shell,.admin-shell) { max-width: 1280px; margin-inline: auto; }
+.quiet-page .section-frame { padding-inline: 48px; }
+.quiet-page :is(.shell,.order-shell,.customer-shell,.admin-shell) { width: min(1184px, calc(100% - 96px)); }
+.quiet-page .site-header { position: relative; max-width: 1280px; margin-inline: auto; padding: 16px 48px; min-height: 100px; border: 0; background: var(--paper); backdrop-filter: none; box-shadow: none; z-index: 50; }
+.quiet-page .brand { flex: 0 0 232px; }
+.quiet-page .brand img { width: 232px; }
+.quiet-page .desktop-nav { position: static; transform: none; gap: 28px; margin: auto; }
+.quiet-page .desktop-nav a { padding-block: 14px; font-size: 14px; letter-spacing: -.01em; }
+.quiet-page .header-actions { margin-left: auto; }
+.quiet-page :is(.button,.header-contact,.admin-button,.admin-tab,.mini-btn,.faq-category-bar button,.mobile-toggle) { border-radius: 10px; min-height: 48px; padding: 12px 22px; font-size: 15px; font-weight: 650; line-height: 1.5; border: 1px solid var(--line); background: var(--paper); color: var(--forest); box-shadow: 3px 5px 12px #18251b12, inset 1px 1px 0 #fff; transition: background-color 160ms, box-shadow 160ms, transform 160ms; }
+.quiet-page :is(.button-primary,.header-contact,.admin-button,.button.dark) { color: var(--paper); background: var(--forest); border-color: var(--forest); box-shadow: 3px 5px 12px #18251b12, inset 0 1px 0 #ffffff18; }
+.quiet-page :is(.button-secondary,.admin-button.secondary,.demo-back) { background: var(--paper); color: var(--forest); border-color: var(--line); }
+.quiet-page :is(.button,.header-contact,.admin-button,.mini-btn):hover { transform: translateY(-1px); background: var(--paper-deep); color: var(--forest); }
+.quiet-page :is(.button-primary,.header-contact,.admin-button:not(.secondary):not(.danger),.button.dark):hover { background: var(--green); color: var(--paper); }
+.quiet-page :is(.button,.header-contact,.admin-button,.mini-btn):active { transform: none; box-shadow: inset 1px 2px 4px #18251b20; }
+.quiet-page .admin-button.danger { color: var(--danger); background: var(--paper); border-color: #cf9b9b; }
+.quiet-page .admin-button.danger:hover { background: var(--danger); color: white; }
+.quiet-page :is(button,[type=submit]):disabled { transform: none; opacity: .55; cursor: not-allowed; }
+.quiet-page :is(.menu-button,.mobile-toggle) { width: 48px; height: 48px; padding: 11px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); box-shadow: 3px 5px 12px #18251b12, inset 1px 1px 0 #fff; }
+.quiet-page :is(input:not([type=checkbox]):not([type=radio]):not([type=hidden]),select,textarea) { font: inherit; font-size: 16px; min-height: 48px; border: 1px solid var(--line-dark); border-radius: 8px; padding: 11px 14px; color: var(--ink); background: #fdfcf9; box-shadow: inset 1px 2px 4px #18251b08; max-width: 100%; }
+.quiet-page textarea { resize: vertical; line-height: 1.7; }
+.quiet-page :is(input,select,textarea):hover { border-color: var(--forest); }
+.quiet-page :is(a,button,input,select,textarea,summary,[tabindex]):focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+.quiet-page :is(input,select,textarea):focus { border-color: var(--forest); }
+.quiet-page :is(.eyebrow,.license-eyebrow,.news-desk-label,.admin-kicker) { font-family: var(--sans); font-size: 12px; font-weight: 650; letter-spacing: .09em; }
+.quiet-page .eyebrow::after, .quiet-page .license-eyebrow::after { display: none; }
+.quiet-page.quiet-page :is(.page-hero,.contact-hero,.mission-hero,.license-intro,.order-hero,.admin-intro) h1 { font-size: clamp(40px,4.7vw,64px); font-weight: 750; line-height: 1.22; letter-spacing: -.045em; color: var(--forest); }
+.quiet-page.quiet-page :is(.section-intro,.mission-text,.mission-partnership) h2 { font-size: clamp(30px,3.2vw,44px); font-weight: 700; line-height: 1.3; letter-spacing: -.035em; }
+.quiet-page.quiet-page :is(.page-hero.compact-hero,.mission-hero,.order-hero) { padding-block: 64px; min-height: 0; background: var(--paper); }
+.quiet-page.quiet-page :is(.lede,.mission-lead,.license-lede,.order-hero p) { max-width: 800px; font-size: 17px; line-height: 1.85; margin-top: 24px; color: var(--body); }
+.quiet-page .content-section { padding-block: 64px; }
+.quiet-page .site-footer { min-height: 106px; padding-block: 28px; gap: 28px; border-top: 1px solid var(--line); background: var(--paper); color: var(--body); }
+.quiet-page .site-footer img { width: 210px; height: auto; }
+.quiet-page .site-footer p { font-size: 14px; line-height: 1.7; }
+.quiet-page .site-footer :is(small,span) { font-size: 12px; }
+.quiet-page .footer-nav { display: flex; flex-wrap: wrap; gap: 4px 24px; margin-top: 12px; }
+.quiet-page .footer-nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; }
+.quiet-page :is(section,header,details)[id] { scroll-margin-top: 28px; }
+.quiet-page [hidden] { display: none !important; }
+
+/* Product conditions: stationary selection, readable side-by-side data. */
+.quiet-page .license-document { padding: 64px 48px 80px; gap: 40px; }
+.quiet-page .license-index { top: 28px; }
+.quiet-page .license-index a { font-size: 13px; }
+.quiet-page .license-plan-switcher { position: static; inset: auto; width: min(100%,620px); padding: 5px; gap: 5px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper-deep); box-shadow: inset 1px 2px 5px #18251b09; }
+.quiet-page .license-plan-switcher button { border: 0; border-radius: 8px; min-height: 48px; font-size: 16px; }
+.quiet-page .license-plan-switcher button[aria-pressed=true] { box-shadow: 0 3px 8px #18251b20; background: var(--forest); }
+.quiet-page .license-matrix-region { display: block; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.quiet-page .license-matrix { min-width: 680px; }
+.quiet-page .license-matrix :is(th,td) { padding: 18px 20px; font-size: 14px; }
+.quiet-page .license-matrix thead strong { font-size: 22px; font-weight: 700; }
+.quiet-page .license-matrix thead small { font-size: 12px; }
+.quiet-page .license-matrix thead th:first-child { font-family: var(--sans); font-size: 12px; }
+.quiet-page .license-note { font-size: 14px; border-radius: 0 8px 8px 0; background: var(--paper-deep); }
+.quiet-page .license-decision { position: static; inset: auto; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 22px; padding: 26px; border: 1px solid #d3dfd5; border-radius: 12px; background: #edf1e7; box-shadow: 0 10px 26px #253a2710; backdrop-filter: none; }
+.quiet-page .license-decision > div { padding: 0; border: 0; min-height: 0; }
+.quiet-page .license-decision strong { font-size: 26px; font-weight: 700; }
+.quiet-page .license-decision-price strong { font-size: 32px; font-variant-numeric: tabular-nums; }
+.quiet-page .license-decision :is(small,.decision-label) { font-size: 12px; }
+.quiet-page .license-decision ul { font-size: 14px; margin-top: 8px; }
+.quiet-page .license-decision .button { margin: 0; white-space: normal; text-align: center; justify-content: center; align-self: end; }
+.quiet-page .license-callout { font-size: clamp(30px,3.3vw,44px); font-weight: 700; line-height: 1.3; }
+.quiet-page .license-boundary { font-size: 16px; }
+.quiet-page .license-details summary { min-height: 72px; padding-inline: 12px; border-radius: 8px; }
+.quiet-page .license-details summary:hover { background: var(--paper-deep); }
+.quiet-page .license-details summary strong { font-size: 17px; }
+.quiet-page .license-detail-body { padding-block: 16px 32px; }
+.quiet-page .license-detail-body h3 { font-size: 22px; font-weight: 700; }
+.quiet-page .license-detail-body :is(p,li) { font-size: 15px; }
+
+/* Our Goals: real code and operation footage, not a decorative lab scene. */
+.quiet-page .mission-hero { padding-bottom: 0; }
+.quiet-page .mission-index { margin-top: 40px; padding-block: 16px; }
+.quiet-page .mission-index a { font-size: 14px; min-height: 44px; }
+.quiet-page .mission-chapter { padding-block: 64px; }
+.quiet-page :is(.mission-text,.mission-recording-intro,.mission-closing) { gap: 48px; }
+.quiet-page .mission-text p, .quiet-page .mission-closing p { font-size: 16px; line-height: 1.85; }
+.quiet-page .mission-code { border-radius: 12px; padding: 36px; gap: 32px; }
+.quiet-page .mission-code-window { margin-right: 0; mask-image: none; border-radius: 8px; }
+.quiet-page .mission-code pre { padding: 24px; font-size: 13px; }
+.quiet-page .mission-recording video { border-radius: 12px; box-shadow: 0 10px 26px #253a2710; }
+.quiet-page .mission-recording figcaption { gap: 24px; }
+.quiet-page .mission-plan-link { min-height: 44px; display: inline-flex; align-items: center; font-size: 15px; }
+
+/* News: restrained raised surfaces with editorial hierarchy. */
+.quiet-page #cmsNewsLead { grid-template-columns: minmax(0,1.3fr) minmax(0,.8fr); gap: 36px; padding: 32px; margin-bottom: 32px; border: 1px solid #e8e8df; border-radius: 12px; background: var(--surface); box-shadow: 0 10px 26px #253a2710; }
+.quiet-page #cmsNewsLead .cms-lead-image { height: 100%; min-height: 260px; margin: 0; border-radius: 8px; background: var(--paper-deep); }
+.quiet-page #cmsNewsLead .news-lead-copy { padding: 0; }
+.quiet-page .news-lead-copy h2 { font-size: clamp(26px,2.8vw,38px); font-weight: 700; line-height: 1.35; }
+.quiet-page .news-lead-copy p { font-size: 16px; }
+.quiet-page :is(.news-read-more,.latest-card-copy span,.news-meta,.news-label,.wire-type,.wire-row time) { font-family: var(--sans); font-size: 13px; letter-spacing: 0; }
+.quiet-page #cmsLatestList { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.quiet-page .latest-card { grid-template-columns: minmax(0,1fr) 120px; gap: 20px; padding: 24px; border: 1px solid #e8e8df; border-radius: 12px; background: var(--surface); box-shadow: 0 6px 18px #253a270b; }
+.quiet-page .latest-card:last-child { border-bottom: 1px solid #e8e8df; }
+.quiet-page .latest-card .cms-latest-image { height: 120px; border: 0; border-radius: 8px; }
+.quiet-page .latest-card-copy strong { font-size: 22px; font-weight: 650; }
+.quiet-page .news-article-panel { border-radius: 12px; box-shadow: 0 20px 70px #0d1e1733; }
+.quiet-page .news-article-backdrop { backdrop-filter: none; }
+.quiet-page .news-article-panel h2 { font-size: clamp(28px,4vw,44px); font-weight: 700; line-height: 1.35; }
+.quiet-page .news-article-close { border-radius: 8px; }
+
+/* Contact: comfortable inputs and clear confirm/edit states. */
+.quiet-page.contact-page .contact-hero { padding-block: 64px; }
+.quiet-page.contact-page .contact-hero .section-frame { gap: 48px; }
+.quiet-page.contact-page .form-wrap { gap: 48px; padding-block: 64px; }
+.quiet-page.contact-page :is(.contact-form,.inquiry-state) { padding: 32px; border: 1px solid #e8e8df; border-radius: 12px; background: var(--surface); box-shadow: 0 10px 26px #253a2710; }
+.quiet-page.contact-page .field { margin-bottom: 24px; }
+.quiet-page.contact-page .field label { font-family: var(--sans); font-size: 15px; font-weight: 650; margin-bottom: 8px; }
+.quiet-page.contact-page .business-profile { gap: 48px; margin-top: 32px; }
+.quiet-page.contact-page .faq-category-bar button { min-height: 44px; font-size: 14px; padding: 10px 16px; border-radius: 8px; }
+.quiet-page.contact-page .faq-q { font-size: 16px; min-height: 48px; }
+.quiet-page.contact-page .faq-a { font-size: 15px; }
+
+/* Demo: the same product UI as the homepage, with every existing tool visible. */
+.quiet-page .demo-bar { background: var(--paper-deep); color: var(--forest); }
+.quiet-page .demo-dashboard { padding-top: 48px; padding-bottom: 64px; }
+.quiet-page .demo-intro h1 { font-size: clamp(36px,4vw,56px); line-height: 1.3; font-weight: 750; }
+.quiet-page .demo-kpis { border: 1px solid var(--line); border-radius: 12px; background: var(--paper-deep); overflow: hidden; }
+.quiet-page .demo-kpi { background: transparent; }
+.quiet-page .demo-kpi small { font: 14px var(--sans); }
+.quiet-page .demo-kpi strong { margin-top: 12px; font-size: 36px; font-variant-numeric: tabular-nums; }
+.quiet-page :is(.demo-inventory-panel,.demo-operation-panel,.demo-history) { border: 1px solid #e8e8df; border-radius: 12px; background: var(--surface); box-shadow: 0 10px 26px #253a2710; padding: 24px; }
+.quiet-page :is(.demo-panel-head h2,.demo-operation-panel h2) { font-size: 23px; }
+.quiet-page :is(.demo-search-label,.demo-operation-panel label) { font-family: var(--sans); font-size: 14px; color: var(--body); letter-spacing: 0; text-transform: none; }
+.quiet-page .demo-table-wrap { border-radius: 8px; }
+.quiet-page .demo-table th { font: 600 13px var(--sans); letter-spacing: 0; }
+.quiet-page .demo-table td { font-size: 14px; }
+.quiet-page .demo-table td small { font-family: var(--sans); font-size: 12px; }
+.quiet-page .demo-health { font: 600 12px var(--sans); border-radius: 4px; }
+.quiet-page .mini-btn { min-height: 44px; padding: 8px 12px; font-size: 13px; border-radius: 6px; }
+.quiet-page :is(.demo-field-help,.demo-result,.demo-scope-grid p,.demo-note) { font-size: 14px; }
+.quiet-page .demo-result { border-radius: 0 8px 8px 0; }
+.quiet-page .demo-scope-grid { border-radius: 12px; }
+
+/* Existing auxiliary and private pages: same materials, no new workflows. */
+.quiet-page:is(.order-page,.customer-page) .site-header { padding-inline: 0; }
+.quiet-page:is(.order-page,.customer-page) .header-inner { height: auto; min-height: 68px; gap: 24px; }
+.quiet-page:is(.order-page,.customer-page) .brand { width: 232px; height: 50px; min-width: 232px; background-size: contain; }
+.quiet-page .main-nav a { font-size: 14px; min-height: 44px; display: inline-flex; align-items: center; }
+.quiet-page .order-locale { gap: 4px; }
+.quiet-page .order-locale a { min-height: 44px; border-radius: 8px; font-size: 12px; }
+.quiet-page :is(.quote-sheet,.order-form-card,.customer-card,.customer-help,.admin-card) { background: var(--surface); border: 1px solid #e8e8df; border-radius: 12px; box-shadow: 0 10px 26px #253a2710; }
+.quiet-page :is(.order-form-card,.admin-tabs) { position: static; min-height: 0; backdrop-filter: none; }
+.quiet-page .order-layout { padding-top: 32px; }
+.quiet-page :is(.quote-head h2,.order-form-card h2) { font-size: 28px; font-weight: 700; line-height: 1.35; }
+.quiet-page .quote-line h3 { font-size: 23px; font-weight: 650; }
+.quiet-page .quote-price { font-size: 32px; font-variant-numeric: tabular-nums; }
+.quiet-page :is(.quote-note,.customer-note,.customer-help p) { font-size: 15px; line-height: 1.8; }
+.quiet-page .quote-note { background: var(--paper-deep); border-radius: 0 8px 8px 0; }
+.quiet-page .order-actions { flex-wrap: wrap; }
+.quiet-page:is(.order-page,.customer-page) .site-footer { display: block; }
+.quiet-page:is(.order-page,.customer-page) .footer-grid { display: flex; justify-content: space-between; align-items: center; gap: 48px; }
+.quiet-page:is(.order-page,.customer-page) .footer-grid > div:last-child { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 22px; }
+.quiet-page:is(.order-page,.customer-page) .footer-title { flex-basis: 100%; font: 12px var(--sans); color: var(--muted); }
+.quiet-page:is(.order-page,.customer-page) .footer-brand { width: 210px; height: 52px; background-size: contain; }
+.quiet-page:is(.order-page,.customer-page) .footer-grid a { min-height: 44px; display: inline-flex; align-items: center; font-size: 13px; }
+.quiet-page:is(.order-page,.customer-page) .copyright { margin-top: 20px; padding-top: 16px; font-size: 12px; color: var(--muted); }
+.quiet-page.customer-page .page-hero { background: var(--paper); }
+.quiet-page.customer-page .page-hero .shell::after { display: none; }
+.quiet-page:is(.order-page,.customer-page) .brand { background-image: url('assets/baked-kale-logo.svg'); background-position: left center; background-repeat: no-repeat; }
+.quiet-page.customer-page .brand > span { display: block; position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.quiet-page:is(.order-page,.customer-page) .main-nav a { text-transform: none; letter-spacing: -.01em; }
+.quiet-page .demo-flow :is(small,span) { font-family: var(--sans); font-size: 12px; }
+.quiet-page .section.white { background: var(--paper); }
+.quiet-page .admin-header { background: var(--paper); border: 0; padding: 26px 0; }
+.quiet-page .admin-main { padding-top: 48px; }
+.quiet-page .admin-warning { border-left-color: var(--orange); border-radius: 0 8px 8px 0; background: var(--paper-deep); font-size: 14px; }
+.quiet-page .admin-tabs { border-radius: 12px; background: var(--paper-deep); }
+.quiet-page .admin-tab.active { background: var(--forest); color: var(--paper); }
+.quiet-page .admin-card { padding: 32px; }
+.quiet-page .field label { font-size: 14px; }
+.quiet-page :is(.preview-box,.status,.radio-chip) { border-radius: 8px; }
+.quiet-page .token-note { font-size: 13px; }
+
+@media (max-width: 1080px) {
+  .quiet-page .site-header { padding-inline: 32px; }
+  .quiet-page .section-frame { padding-inline: 32px; }
+  .quiet-page :is(.shell,.order-shell,.customer-shell,.admin-shell) { width: calc(100% - 64px); }
+  .quiet-page .license-document { padding-inline: 32px; }
+  .quiet-page :is(.mission-text,.mission-recording-intro,.mission-closing) { gap: 32px; }
+  .quiet-page .demo-app-grid { grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); }
+  .quiet-page .latest-card { grid-template-columns: minmax(0,1fr) 96px; }
+  .quiet-page .latest-card .cms-latest-image { height: 96px; }
+  .quiet-page .site-footer { grid-template-columns: 170px minmax(0,1fr); }
+}
+@media (max-width: 760px) {
+  .quiet-page .site-header { padding: 12px 20px; min-height: 76px; }
+  .quiet-page .brand { flex-basis: 154px; }
+  .quiet-page .brand img { width: 154px; }
+  .quiet-page .header-actions { gap: 10px; }
+  .quiet-page .locale-picker-button { padding-inline: 5px; font-size: 12px; }
+  .quiet-page .section-frame { padding-inline: 22px; }
+  .quiet-page :is(.shell,.order-shell,.customer-shell,.admin-shell) { width: calc(100% - 44px); }
+  .quiet-page.quiet-page :is(.page-hero,.contact-hero,.mission-hero,.license-intro,.order-hero,.admin-intro) h1 { font-size: clamp(30px,8.2vw,46px); line-height: 1.35; letter-spacing: -.04em; }
+  .quiet-page.quiet-page :is(.section-intro,.mission-text,.mission-partnership) h2 { font-size: 28px; line-height: 1.4; }
+  .quiet-page.quiet-page :is(.page-hero.compact-hero,.mission-hero,.order-hero), .quiet-page.contact-page .contact-hero { padding-block: 36px; }
+  .quiet-page.quiet-page :is(.lede,.mission-lead,.license-lede,.order-hero p) { font-size: 16px; margin-top: 18px; }
+  .quiet-page :is(.content-section,.mission-chapter) { padding-block: 40px; }
+  .quiet-page .site-footer { display: block; padding-block: 24px; }
+  .quiet-page .site-footer img { width: 154px; margin-bottom: 16px; }
+  .quiet-page .site-footer > span { display: block; margin-top: 16px; }
+  .quiet-page .license-document { padding: 36px 22px 48px; }
+  .quiet-page .license-plan-switcher { margin-inline: 0; }
+  .quiet-page .license-matrix { min-width: 560px; }
+  .quiet-page .license-matrix tr > :first-child { width: 20%; position: sticky; left: 0; z-index: 1; background: var(--paper); border-right: 1px solid var(--line); }
+  .quiet-page .license-matrix thead th:first-child { width: 20%; }
+  .quiet-page .license-decision { padding: 20px; gap: 20px; }
+  .quiet-page .license-decision strong { font-size: 23px; }
+  .quiet-page .license-decision-price strong { font-size: 28px; }
+  .quiet-page .license-decision :is(.license-decision-responsibility,.button) { grid-column: 1 / -1; }
+  .quiet-page .license-callout { font-size: 28px; line-height: 1.4; }
+  .quiet-page .license-detail-body { padding: 8px 12px 28px; }
+  .quiet-page :is(.mission-text,.mission-recording-intro,.mission-closing) { gap: 24px; }
+  .quiet-page .mission-code { grid-template-columns: 1fr; padding: 22px; gap: 24px; margin-top: 32px; }
+  .quiet-page .mission-code pre { font-size: 13px; padding: 18px; }
+  .quiet-page .code-file { padding: 14px; }
+  .quiet-page .mission-recording figcaption { display: block; }
+  .quiet-page #cmsNewsLead { grid-template-columns: minmax(0,1fr); padding: 22px; gap: 24px; }
+  .quiet-page #cmsNewsLead .cms-lead-image { grid-column: 1; grid-row: 1; height: 220px; min-height: 0; }
+  .quiet-page #cmsNewsLead .news-lead-copy { grid-column: 1; grid-row: 2; }
+  .quiet-page #cmsLatestList { grid-template-columns: minmax(0,1fr); gap: 18px; }
+  .quiet-page .latest-card { padding: 20px; }
+  .quiet-page .news-article-modal { padding: 16px; }
+  .quiet-page .news-article-panel { padding: 54px 22px 24px; max-height: calc(100dvh - 32px); }
+  .quiet-page .news-article-panel h2 { margin-right: 0; font-size: 28px; }
+  .quiet-page.contact-page .form-wrap { padding-block: 40px; gap: 24px; }
+  .quiet-page.contact-page :is(.contact-form,.inquiry-state) { padding: 22px; }
+  .quiet-page.contact-page .business-profile { gap: 24px; }
+  .quiet-page .demo-dashboard { padding-top: 36px; }
+  .quiet-page .demo-app-grid { grid-template-columns: minmax(0,1fr); }
+  .quiet-page :is(.demo-inventory-panel,.demo-operation-panel,.demo-history) { padding: 20px; }
+  .quiet-page .demo-panel-head { flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+  .quiet-page .demo-panel-head h2 { margin-bottom: 0; }
+  .quiet-page .demo-kpi { padding: 18px; }
+  .quiet-page .demo-kpis { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .quiet-page .demo-kpi:nth-child(2n) { border-right: 0; }
+  .quiet-page .demo-kpi:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .quiet-page .demo-kpi strong { font-size: 30px; }
+  .quiet-page:is(.order-page,.customer-page) .brand { flex-basis: 154px; min-width: 154px; width: 154px; height: 42px; }
+  .quiet-page:is(.order-page,.customer-page) .header-inner { gap: 12px; }
+  .quiet-page.customer-page .main-nav.open { position: fixed; inset: auto 16px 16px; z-index: 1010; padding: 20px; border-radius: 20px !important; background: var(--paper); border: 1px solid var(--line) !important; box-shadow: 0 20px 70px #0d1e1733 !important; }
+  .quiet-page.customer-page .main-nav.open a { width: 100%; padding: 14px 12px; border-radius: 8px; }
+  .quiet-page:is(.order-page,.customer-page) .footer-grid { display: block; }
+  .quiet-page:is(.order-page,.customer-page) .footer-grid > div:last-child { margin-top: 16px; }
+  .quiet-page:is(.order-page,.customer-page) .footer-brand { width: 154px; height: 42px; }
+  .quiet-page :is(.quote-sheet,.order-form-card,.customer-card,.customer-help,.admin-card) { padding: 22px; }
+  .quiet-page .customer-shell { grid-template-columns: minmax(0,1fr); }
+  .quiet-page .admin-main { padding-top: 36px; }
+  .quiet-page .admin-brand strong { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quiet-page *, .quiet-page *::before, .quiet-page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .quiet-page :is(.button,.header-contact,.admin-button,.mini-btn):hover { transform: none; }
+}
