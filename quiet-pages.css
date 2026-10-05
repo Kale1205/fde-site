@@ -346,7 +346,7 @@
   .quiet-page.license-renewal .license-decision-responsibility { margin-top: 24px; padding-top: 20px !important; }
   .quiet-page.license-renewal .license-decision ul { font-size: 15px; margin-top: 8px; }
   .quiet-page.license-renewal .license-decision .button { margin-top: 20px; min-height: 52px; }
-  .quiet-page.license-renewal .license-matrix { min-width: 552px; table-layout: fixed; }
+  .quiet-page.license-renewal .license-matrix { min-width: min(552px,calc(200vw - 228px)); table-layout: fixed; }
   .quiet-page.license-renewal .license-matrix :is(th,td) { padding: 14px 16px; font-size: 15px; }
   .quiet-page.license-renewal[data-selected-plan] .license-matrix tr > :first-child { position: sticky; left: 0; z-index: 1; width: 140px; border-right: 1px solid var(--line); background: var(--paper); }
   .quiet-page.license-renewal[data-selected-plan] .license-matrix tr > :nth-child(2),

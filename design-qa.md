@@ -1,3 +1,50 @@
+# W02 selected product conditions design — 2026-10-06
+
+## Scope and source visual truth
+
+- The user selected option two of the three W02 concepts. Implemented only the English, Japanese and Simplified Chinese product conditions pages. The approved homepage and the other page compositions are unchanged in this continuation.
+- Source: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-bd92ac57-7159-4f37-84e0-70e8e36c6092.png`, a 1024 x 1536 illustrated board with labeled Desktop 1440 and Mobile 390 regions. This is an illustrative composition, not a 1:1 browser capture. Its desktop/mobile regions were compared at the corresponding CSS widths, excluding the surrounding labels/canvas; no pixel-perfect claim is made.
+- Implementation: `output/w02-implementation/{en,ja,zh}-{1440,1024,390}-final.jpg`. Japanese full-page captures are 1440 x 2393 and 390 x 2713 pixels, DPR 1, at CSS viewports 1440 x 1000 and 390 x 844. Default state is License Plus, first detail open, menu closed. Source and both final Japanese captures were opened in the same comparison input, alongside English Mobile and Chinese Tablet.
+- Focused evidence: `output/w02-implementation/ja-390-table-final.jpg` (346 x 485). Table headings, symbols, prices and row labels were compared with the source table; the main captures also allow readable inspection of the selector, price, art, CTA and typography.
+
+## Fidelity surfaces and intentional constraints
+
+- Typography: existing local Inter/platform-CJK sans stack and existing page text remain authoritative. Large left-aligned heading, selected product/price hierarchy, 16px desktop and 15px mobile table text, and consistent accordion/body rhythm replace the prior document-index layout. Long existing English/Chinese conditions wrap naturally rather than being shortened.
+- Rhythm: pale-sage desktop spotlight with large product artwork on the left and selection/price/responsibility/action on the right. Mobile stacks a compact selector, artwork, selected price and action. Fine horizontal rules and one restrained accordion surface follow the selected composition. The selector and price remain static in document flow.
+- Colors: reuse forest green, warm white, paper and line tokens, and the existing pale-sage summary surface. No external font, new design system, decorative background, large gradient or dependency was added.
+- Assets: reuse the two previously approved update/customization sculptures and brand logo. Their transparent canvases were accounted for in display sizing; assets were not redrawn, raster-edited or replaced by code-native shapes. The selected product artwork follows the existing selected-plan state.
+- Copy: prices, responsibility lists, disclaimer, agreement conditions, IDs, CTA destinations, head metadata and JSON-LD are unchanged. Removed only the redundant in-page index; its destination IDs remain. Existing condition headings now use sequential h2 rather than h3 after the layout change. The original caption is visible as the comparison title. The mock's new instructional copy and commercial phrasing were not adopted.
+- Intentional deviations: mobile uses a horizontally scrollable native table with a sticky row-label column instead of the mock's very small three-column text. Selecting a product aligns its column into view; both columns remain available by scrolling and in the accessibility tree. Native list bullets remain for the responsibility list. The existing shared header/menu and footer are retained, rather than cloning the mock's header or adding duplicated controls.
+
+## Comparison history and fixes
+
+1. [P2] Initial artwork was undersized and responsibility text too muted. Increased desktop image allocation to 500px and mobile artwork to 260px inside a 210px layout slot; restored ink text. Source and revised Desktop/Mobile captures were compared together.
+2. [P2] Initial Mobile table showed License while Plus was selected. Added bounded, W02-only scroll alignment on selection and sticky row headings, keeping text readable. Before: `output/w02-implementation/ja-390-before.jpg`; after: final full-page/table captures.
+3. [P2] The sticky header's transparent background allowed a scrolling product heading to overlap the row-label heading. Corrected selector specificity so its surface is opaque. Focused final table capture shows clean separation.
+4. [P2] Moving the boundary heading below the details exposed an h1-to-h3 heading jump (initial Lighthouse Accessibility 98). Converted existing detail headings to h2 without changing their wording or appearance. All four repeated Lighthouse audits have zero failing checks.
+5. [P2] At the extra 320px edge, the fixed 552px table could leave a product column partly behind the sticky label. The min-width now adapts below 390px. At 320px the 140px label and 136px selected column fit the complete 276px region; at 390px the complete 206px selected column fits beside the label.
+
+## Browser and engineering verification
+
+- Chrome DevTools MCP: all three locales at 1440, 1024 and 390 CSS px, DPR 1. License/Plus switching updates the visible artwork, price and responsibility. No document overflow, broken images, Console errors/warnings or failed HTTP requests in the nine checked views. CTA locale destinations remain correct. Evidence: `output/w02-implementation/browser-evidence.json`.
+- Scroll check in all nine views: selector moves with the document and is not sticky. Mobile table contains all three semantic columns, caption, column/row scopes, accessible text for symbols and a named keyboard-focusable scroll region.
+- Keyboard: Japanese Mobile License/Plus activated with Enter, native detail summary toggled with Enter. Shared mobile-menu links are hit-testable above the backdrop; Escape closes the sheet and returns focus. Its three language links target the current localized License routes. No actual contact submission or authenticated flow was executed.
+- Observed local CLS maximum 0.00105 across the nine unthrottled checks. This is local lab evidence, not field performance certification. Existing reduced-motion CSS remains active by contract; no new looping motion was introduced.
+- Final Lighthouse snapshot: Japanese Desktop/Mobile and English/Chinese Mobile each have Accessibility, Best Practices, SEO and Agentic Browsing 100; zero failing checks. Performance was not a Lighthouse category in these audits. Physical iPhone/Safari remains unverified.
+- Repository validation, 40 relevant Node tests, three sitemap regressions, Chinese generation check, approved homepage generation check, W02 recomposition check, browser JS syntax and whitespace checks pass. The repository has no conventional build or lint command for this static frontend. No dependency changes.
+- The initial validator rejected page-specific asset build keys; the renderer now respects the existing shared `build-version.txt` contract. Before any production release, use the normal repository-wide asset-version procedure. No isolated build-key exception was introduced.
+- Sitemap route inventory, canonical/hreflang, robots and JSON-LD remain unchanged. Only the three substantively changed License lastmod dates advance to 2026-10-06 under the existing commit-derived generator.
+
+## Handoff and remaining limits
+
+- Design/implementation QA: no actionable P0/P1/P2 issue remains in this W02 scope. Original checkout and unrelated untracked output were preserved. Code is saved on the existing local preview branch; no GitHub push, PR, merge or FDE production publication was performed.
+- The existing private Sites gallery still contains the three original concept boards. Permission was requested separately to add an interactive EN/JA/ZH implementation preview; that addition is not yet published. Localhost is not an iPhone-accessible preview.
+- Production-content alignment is still a separate pending decision: approved homepage uses JPY and required Updates, while the unchanged conditions retain optional continuation and EN/ZH USD candidates. This design-only change does not resolve or silently alter those terms.
+
+final result: passed
+
+---
+
 # All-page Quiet Form application — 2026-10-05
 
 ## Scope and source
