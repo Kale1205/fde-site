@@ -84,7 +84,7 @@
       picker.className = "locale-picker";
       const summary = document.createElement("summary");
       summary.className = "locale-picker-button";
-      summary.setAttribute("aria-label", text.chooseLanguage);
+      summary.setAttribute("aria-label", `${text.chooseLanguage}: ${localeNames[localeKey]}`);
       summary.innerHTML = `<span>${localeNames[localeKey]}</span><span class="locale-picker-chevron" aria-hidden="true">⌄</span>`;
       const menu = document.createElement("div");
       menu.className = "locale-picker-menu";

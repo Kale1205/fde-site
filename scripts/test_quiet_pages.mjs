@@ -17,12 +17,13 @@ for (const name of pages) {
   test(`${name}: content, scripts, links, conditions and SEO are unchanged`, () => {
     const html = readFileSync(path.join(root, name), 'utf8');
     let stripped = html
-      .replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=20260925-081759">\n/m, '')
+      .replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m, '')
       .replace('class="quiet-page ', 'class="')
       .replace('<body class="quiet-page">', '<body>');
     if (name === 'zh/goals.html') stripped = stripped.replace('poster="../assets/', 'poster="assets/');
     if (name === 'customer.html') stripped = stripped.replace('href="index.html" aria-label="Baked Kale FDE"', 'href="index.html"');
-    assert.equal(stripped, original(name));
+    const normalizeBuildKeys = source => source.replace(/([?&]v=)[0-9A-Za-z._-]+/g, '$1BUILD');
+    assert.equal(normalizeBuildKeys(stripped), normalizeBuildKeys(original(name)));
     assert.equal((html.match(/quiet-pages\.css/g) || []).length, 1);
   });
 }
@@ -45,4 +46,9 @@ test('shared theme stays scoped and keeps selection stationary', () => {
   assert.match(css, /data-selected-plan=plus\] \.license-matrix tr > :nth-child\(2\)/);
   assert.match(css, /data-selected-plan=license\] \.license-matrix tr > :nth-child\(3\)/);
   assert.doesNotMatch(css, /url\(['"]?https?:/);
+});
+
+test('language picker accessible name contains its visible language', () => {
+  const runtime = readFileSync(path.join(root, 'gallery-ui.js'), 'utf8');
+  assert(runtime.includes('summary.setAttribute("aria-label", `${text.chooseLanguage}: ${localeNames[localeKey]}`)'));
 });
