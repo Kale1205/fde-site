@@ -1,3 +1,30 @@
+# W06 approved FAQ-first Contact — 2026-10-07
+
+## Reference and implementation
+
+- User approved `fde-w02-review-site/dist/w06-refined.png` (1024×1536), original displayed option two with the same faint News kale mark, FAQ 01 and form 02. Inspected the reference and final JA Desktop/Mobile captures together in one comparison input. Desktop reference region x0–733 and Mobile x742–1024 are presentation crops, not literal CSS viewports; compared hierarchy, grouping, materials and reading order at natural 1440/390 CSS px. No bitmap stretching or generated form imagery in the implementation.
+- EN/JA/ZH now share a forest hero with white type, the actual existing News SVG mark at opacity .065, a quiet FAQ disclosure followed by one raised ivory form surface, two Desktop field columns and one Mobile column. Existing six required fields, copy, product options, confirmation/back/send/success markup, business details, common nav/footer, head metadata and contact runtime are retained. Chinese static FAQ questions/search now work; EN/JA CMS population remains unchanged.
+- Deliberate source differences: retain the complete existing helper text, business details and shared header/footer rather than the mock's condensed copy; reuse approved common 64px Desktop / 32px Mobile title scale. The real brand mark replaces the generated approximation. No new price/License terms, dependencies, tracking, outbound submissions or extra features.
+
+## Visual iterations
+
+1. [P2] Original rows-based textarea was too tall; scoped sizing is now 200px Desktop and 160px Mobile without changing fields/content.
+2. [P2] Inherited compact-intro max-width placed the Desktop FAQ chevron mid-surface. Set the disclosure summary to full available width and re-captured all nine locale/viewports. Real Phosphor regular caret-right asset with retained MIT license is decorative/aria-hidden; native details/summary owns interaction.
+3. Final captures: `output/w06-implementation/final-{ja,en,zh}-{390,1024,1440}.jpg`. Initial/baseline captures remain separately preserved. No actionable P0/P1/P2 visual issue remains in this scoped implementation.
+
+## Verification
+
+- Chrome DevTools MCP, three locales × 390/1024/1440 CSS px: no document overflow, clipping, missing images or Console error/warning on clean reloads. Observed local CLS maximum .001031; no field/performance certification claimed. Final JA local assets all HTTP 200.
+- Native FAQ disclosure Enter toggles with visible keyboard focus. Search/question expansion works in all languages, including no-result state. Shared Mobile sheet's eight links are hit-testable above backdrop; Escape closes and returns focus to menu button.
+- JA required/invalid input, six-row confirmation, edit/back preserves input, sending-disabled state and success/reset tested. EN invalid email, confirmation and success; ZH confirmation, mocked error/retry and success tested. Synthetic fetch intercepts all contact submissions; no actual Worker POST/email sent. Expected mock-failure warning retained as test evidence, absent after reload. Production Turnstile/mail-delivery integration is unchanged and not re-certified by these mocked tests.
+- Lighthouse snapshot JA Desktop and Mobile: Accessibility, Best Practices, SEO and Agentic Browsing 100, zero failing checks. Excludes Performance; not full WCAG or physical iPhone/Safari certification.
+- 66 related Node tests pass (W01–W06 including page/copy/SEO preservation). Chinese regeneration and Contact renderer check pass; diff whitespace check passes. This static repository has no conventional build/lint script. Initial repository/sitemap validation correctly refused uncommitted indexed HTML; commit-derived lastmod verification follows the existing workflow, without bypassing that guard.
+- User's original checkout and pre-existing untracked output are preserved. W06 source remains on `preview/quiet-form-motion`; FDE push/PR/merge/publication is deferred until all-page approval. Separate owner-private review package may display a review-only notice and simulate completion without contacting email/Turnstile services.
+
+final result: passed (scoped visual/interaction QA; commit-derived repository validation recorded separately)
+
+---
+
 # W05 selected Soft Dispatch News — 2026-10-07
 
 ## Scope and visual truth

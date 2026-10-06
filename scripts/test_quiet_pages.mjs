@@ -8,6 +8,7 @@ import { renderQuietLicense } from './build_quiet_license.mjs';
 import { renderQuietDemo } from './build_quiet_demo.mjs';
 import { renderQuietGoals } from './build_quiet_goals.mjs';
 import { renderQuietNews } from './build_quiet_news.mjs';
+import { renderQuietContact } from './build_quiet_contact.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pages = ['', 'ja/', 'zh/'].flatMap(locale =>
@@ -22,6 +23,7 @@ for (const name of pages) {
     const html = readFileSync(path.join(root, name), 'utf8');
     let stripped = html
       .replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m, '')
+      .replace(/^  <script defer src="(?:\.\.\/)?quiet-contact\.js\?v=[0-9A-Za-z._-]+"><\/script>\n/m, '')
       .replace('class="quiet-page ', 'class="')
       .replace('<body class="quiet-page">', '<body>');
     if (name === 'zh/goals.html') stripped = stripped.replace('poster="../assets/', 'poster="assets/');
@@ -32,7 +34,8 @@ for (const name of pages) {
       : name.endsWith('demo.html')
         ? renderQuietDemo(original(name), name.startsWith('ja/') ? 'ja' : name.startsWith('zh/') ? 'zh' : 'en')
         : name.endsWith('goals.html') ? renderQuietGoals(original(name))
-        : name.endsWith('news.html') ? renderQuietNews(original(name)) : original(name);
+        : name.endsWith('news.html') ? renderQuietNews(original(name))
+        : name.endsWith('contact.html') ? renderQuietContact(original(name)) : original(name);
     assert.equal(normalizeBuildKeys(stripped), normalizeBuildKeys(expected));
     assert.equal((html.match(/quiet-pages\.css/g) || []).length, 1);
   });

@@ -129,6 +129,9 @@ function renderPage(name) {
     // This editorial section is not the commercial Updates product label.
     translated = translated.replace(/(<h2 id="news-updates-title"[^>]*>)[^<]+/, '$1更新信息');
   }
+  if (name === 'contact.html') {
+    translated = translated.replace('<p>02 / CONTACT FORM</p>', '<p>02 / 咨询表单</p>');
+  }
   if (name === 'goals.html') {
     // Localize the accessible label, never the actual source identifiers.
     const excerpt = /<div class="mission-code-window">[\s\S]*?<\/code><\/pre><\/div>/;
