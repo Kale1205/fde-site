@@ -1,3 +1,38 @@
+# W05 selected Soft Dispatch News — 2026-10-07
+
+## Scope and visual truth
+
+- User selected original displayed option two, not the subsequent text-only consolidated proposal. Reference: `/Users/junenature/Desktop/Share/Codex/fde-w02-review-site/dist/w05-option-2.png`, 1222×1287. Compared its Desktop x28–905 and Mobile x935–1194 regions alongside implementation in `output/w05-implementation/desktop-comparison.jpg` and `mobile-comparison.jpg`, followed by final `desktop-handoff-comparison.jpg` and `mobile-handoff-comparison.jpg` with the reference and actual in the same comparison inputs. Original reference and actual three-locale captures were inspected. The reference is an illustrated design board, not pixel-perfect browser evidence.
+- Implemented EN/JA/ZH News only: wide forest hero, white title/intro, real brand-mark watermark, large featured article left, latest and archive stacked right, quiet Instagram strip. Mobile stacks in reading order. Approved section label is アップデート情報 / Updates / 更新信息.
+- Existing articles, original article imagery, CMS fetching/sorting, fallback links, full article popup, shared menu/footer, language routes and metadata are preserved. No repeated publisher/logo byline is added. Optional article-art removal question had no response at implementation checkpoint; retained original option-two article images. Full original prose is preserved rather than adopting mock abbreviations. Article statements are historical content, not revised commercial terms.
+- Existing forest/paper/surface/sans tokens remain authoritative. Scoped `news-renewal` styling uses restrained 12–16px radii, fine borders and low shadows. Genuine `assets/baked-kale-mark.svg` is reused as a decorative white watermark at 6.5% opacity; no newly generated asset, external font, dependency, animation or tracking. Reserved feature/latest aspect ratios retain layout slots; 16/10 feature ratio accommodates existing square leaf artwork, while Mobile latest art uses a compact 3/1 strip.
+
+## Comparison history and repairs
+
+1. [P2] Existing high-specificity hero CSS initially caused white text on a paper background and later a narrow Mobile column. Scoped hero selector specificity and responsive overrides corrected both. Before evidence retained in the session; final captures and computed forest background confirm the fix.
+2. [P2] Source/CMS image rules forced a contain frame inconsistent with the selected featured presentation. Scoped cover framing at 16/10 keeps the leaf visible with padding; Mobile latest art is compact. Archive category and right-aligned date now share one row, matching the selected hierarchy.
+3. [P2] Existing article dialog allowed keyboard focus into the page. Scoped background inertness, cyclic Tab/Shift+Tab, Escape dismissal and trigger-focus restoration are verified. Other page CMS behavior remains outside the new class scope.
+4. [P2] Chinese regeneration initially reverted the new editorial heading to 更新. The locale generator now maps only this News section to 更新信息, preserving the commercial Updates product label elsewhere. All seven Chinese pages pass generation parity.
+
+## Browser and engineering evidence
+
+- Chrome DevTools MCP at EN/JA/ZH 1440, 1024 and 390 CSS px; all nine initial and polished screenshots inspected. No page overflow, broken images, Console error/warning or failed HTTP request in the checked views. Local observed CLS maximum 0.00284, not field performance certification. Final private-package JA 390/1440, EN 1440 and ZH 1024 views were rechecked after the 16/10 image adjustment. JA 320/760/761 boundary probes also have zero document overflow.
+- Featured/latest/archive each open the correct full article in all three locales; Escape closes it and restores the trigger, and modal background inertness clears. Tab/Shift+Tab stays in the article. Shared Mobile sheet's eight links are hit-testable above the backdrop; Escape restores menu focus. Private language-picker click goes from JA News to EN News within `/preview/`; other review routes remain private and Contact/Home remain existing public destinations.
+- Lighthouse snapshots: JA Desktop/Mobile, ZH Tablet and private EN Mobile each Accessibility, Best Practices, SEO and Agentic Browsing 100, zero failing checks. No Performance audit or full WCAG/physical iPhone/Safari certification is claimed.
+- 58 relevant Node tests passed, then 29 News/page-preservation tests rechecked after final source changes. JS syntax, Chinese generation and three sitemap regressions passed. Initial repository/sitemap validation required committed HTML before deriving lastmod; preserved that failure and used the existing commit-derived workflow. A check started before generation completed still saw stale dates; final sequential verification passes. Repository validation and `npm run sitemap -- --check` pass; only the three News lastmods advance to the code commit date, 2026-10-07. This static repository has no conventional build/lint command or new dependency.
+- No price/License-condition/content-JSON changes. Canonical, hreflang, robots and head markup remain identical in the source pages; only existing sitemap lastmod dates may advance through the standard workflow. User's original checkout and unrelated output are preserved. FDE push/PR/merge/publication remains deferred until all-page approval.
+
+## Handoff
+
+- Selected image implementation and design-QA skills required source/actual comparison and scoped repairs. Figma was not used: the user's selected image and existing brand assets supply the visual reference.
+- W05 implementation is ready for the user's final review; no actionable P0/P1/P2 issue remains in the checked design/interaction scope. Physical iPhone/Safari review is pending with the user.
+- FDE code checkpoint is local `e988ff259a0b9a02e80435fc887faf5cb2fccb49`; no FDE push/PR/merge/public release. Separate owner-private review source `a1f1e64a98df72d700ad064f66daf1a5faeb364d` passed all package/gallery checks and was deployed as `appgdep_6ac5786795b88191ab09387186fc4dc9`, status `succeeded`, on 2026-10-07 JST. Native URL: `https://fde-w02-design-review.kale-1999.chatgpt.site`; Japanese implementation `/preview/ja/news.html`. Audience unchanged; no recurring task or deployed-URL fetch. Existing W02–W04 actual previews and previous comparison boards remain available.
+- Space renewal, ToDo and project management overview now show original option-two adoption, thin brand watermark, approved section label, three-locale implementation/private preview and final user review pending. W01–W04 approvals, unchecked future IMS video/demo replacements, all-page merge boundary and unrelated release-governance content are preserved.
+
+final result: passed
+
+---
+
 # W04 intuitive visual journey — 2026-10-06
 
 ## Approval and reference
