@@ -5,9 +5,26 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const codeWindow=/<div class="mission-code-window">[\s\S]*?<\/code><\/pre><\/div>/;
 
+function renderJourney(source) {
+  if (source.includes('goals-journey')) return source;
+  const prefix=/<html lang="en">/.test(source)?'':'../';
+  const artwork=(name)=>`<img class="mission-art" src="${prefix}assets/${name}.png" width="1536" height="1024" alt="" loading="lazy" decoding="async">`;
+  let html=source.replace('goals-renewal"','goals-renewal goals-journey"');
+  const assets=['goals-understand-work','goals-open-system'];
+  let chapter=0;
+  html=html.replace(/<div class="mission-text">(<div class="mission-chapter-heading">[\s\S]*?<\/h2><\/div>)(<div>[\s\S]*?<\/div>)<\/div>/g,
+    (_,heading,body)=>{
+      const index=chapter++;
+      return `<span class="mission-step" aria-hidden="true">0${index+1}</span>\n        <div class="mission-text mission-visual"><div class="mission-copy">${heading}${body}</div>${artwork(assets[index])}</div>`;
+    });
+  html=html.replace(/(<section id="partnership"[^>]*>)\n        (<p class="eyebrow">[\s\S]*?<\/p>)\n        (<h2[^>]*>[\s\S]*?<\/h2>)\n        (<div class="mission-closing">[\s\S]*?<\/div><\/div>)/,
+    `$1\n        <span class="mission-step" aria-hidden="true">03</span>\n        <div class="mission-text mission-visual"><div class="mission-copy"><div class="mission-chapter-heading">$2$3</div>$4</div>${artwork('goals-partner-dialogue')}</div>`);
+  return html;
+}
+
 // Recompose existing HTML rather than substituting the mock's condensed copy.
 export function renderQuietGoals(source) {
-  if (source.includes('goals-renewal')) return source;
+  if (source.includes('goals-renewal')) return renderJourney(source);
   let html=source.replace(' mission-page"', ' mission-page goals-renewal"');
   html=html.replace(/(      <header class="mission-hero section-frame">[\s\S]*?      <\/header>)/,
     '      <div class="mission-hero-band">\n$1\n      </div>');
@@ -23,7 +40,7 @@ export function renderQuietGoals(source) {
       .replace(/(aria-label=")[^"]+/, `$1${label}`);
     html=html.replace(codeWindow,actual);
   }
-  return html;
+  return renderJourney(html);
 }
 
 if(process.argv[1]===fileURLToPath(import.meta.url)) {

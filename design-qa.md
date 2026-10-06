@@ -1,3 +1,41 @@
+# W04 intuitive visual journey — 2026-10-06
+
+## Approval and reference
+
+- User approved the latest combined visual: third-option sculptural icons with an added magnifier in 01, second-option vertical 01–03 rail and shallow real-code/native-video overlap. Implemented only EN/JA/ZH Goals. Final implementation review remains pending; all-page approval still precedes FDE GitHub push/PR/merge/public release.
+- Authoritative board: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-6380ef15-9a8e-45a9-9023-479bd552db0f.png`, 1024×1536. Desktop region x11–720, Mobile x734–1013. Opened the reference alongside `output/w04-visual-journey/ja-1440-final.jpg` (1440×3132) and `ja-390-recheck.jpg` (780×8320, CSS 390×844, DPR 2). This is an illustrated board, not a pixel-perfect browser capture.
+
+## Fidelity and assets
+
+- Three genuine RGBA artworks, 1536×1024, isolated on transparency: clipboard/box/magnifier → application; application frame with three separated green internal planes and a wrench; application between two dialogue bubbles. They reuse the approved forest/cream sculptural direction, without faux SVG or CSS artwork. Generation brief: match the selected board's materials, shapes and lighting, no text, no external logos, transparent background. Actual code/video remain real HTML/media, not generated imagery.
+- Final assets: `assets/goals-understand-work.png`, `assets/goals-open-system.png`, `assets/goals-partner-dialogue.png`. Generation sources respectively:
+  - `/Users/junenature/.codex/generated_images/01a11133-89a5-7eb0-a94f-a32902a5e632/exec-b94d300a-15ba-43d6-896b-4eea430500ed.png`
+  - `/Users/junenature/.codex/generated_images/01a11133-b7d0-79c3-94e1-7aa0ab7d6823/exec-07245d83-4c99-4fe3-8fc2-bef41830bed7.png`
+  - `/Users/junenature/.codex/generated_images/01a11133-e5de-71a1-9670-b6e04de01cc9/exec-f0621d94-8c0b-4865-a476-7cd03bc53137.png`
+- CSS rail, dots and numbers are structural chapter markers. Desktop uses illustration beside copy, Mobile places illustration above copy; 03 is artwork-left/copy-right on Desktop. The source/video overlap is 24px horizontally on Desktop/Tablet and 18px vertically on Mobile. Keyboard focus separates the overlap for source reading.
+- Preserve forest/white hero, existing type and spacing tokens, full prose, source, 12-second native recordings, transcript, responsibility note, metadata and shared nav/footer. Illustrations duplicate visible explanations, so empty alt avoids redundant narration; chapter numbers are aria-hidden. Reserved image dimensions prevent lazy-load shift. No new dependency, animation, tracking or third-party asset.
+- Intentional differences: retain complete original text, native controls and shared navigation rather than mock's condensed text; therefore the live page is longer. The existing Chinese page uses the English native recording, not an invented Chinese capture. Chapter 03 has no CTA.
+
+## Browser comparison and corrections
+
+- Initial Mobile full-page screenshot missed lazy off-screen icons; scrolled through and decoded the actual images before final capture. All three render on the paper surface without opaque backgrounds or clipping.
+- Corrected inherited centered chapter-03 heading to left alignment to match the approved board. Rechecked all nine localized viewports.
+- One off-screen automated video-play probe was interrupted by the existing visibility pause observer. Retained this failed probe in `browser-evidence.json`; repeated with the video in view, playback advanced normally. No video implementation or source changed.
+- Chrome DevTools MCP: EN/JA/ZH at 1440/1024/390 CSS px, plus JA 320/760/761 edges. All screenshots inspected; zero page overflow, loaded artwork, readable copy and correct chapter hierarchy. Mobile checks include DPR2/touch emulation. No Console errors/warnings. Confirmed actual video playback and HTTP 200/206 asset delivery. Local observed CLS maximum 0.00325; no performance/field certification implied.
+- Keyboard: shared sheet links hit-test above backdrop; Escape restores menu-button focus. Three language routes preserved. Chapter index lands at approach. Code scrolls with ArrowRight (40px), has a visible orange outline and next Tab reaches VIDEO. Transcript toggles with Enter, retaining all steps. Focused evidence `ja-390-code-focus.jpg`.
+- Lighthouse snapshots: JA Desktop/Mobile and EN/ZH Mobile Accessibility, Best Practices, SEO and Agentic Browsing 100; zero failing checks. These exclude Performance and do not establish full WCAG compliance or physical iPhone/Safari acceptance.
+
+## Engineering and handoff
+
+- 55 relevant Node tests pass, including renderer idempotency, existing prose/head/source/video/transcript parity, artwork dimensions/alpha, scoped rail/overlap and W01–W03 preservation. Chinese generation check: all seven pages current.
+- Canonical, hreflang, robots, JSON-LD and route inventory unchanged. Existing same-day Goals lastmod remains governed by the standard sitemap workflow. No price or License-condition edits.
+- User's original checkout and unrelated output preserved. Local source commit and private review deployment are recorded below after validation. No actionable P0/P1/P2 issue remains within this revision. Physical iPhone/Safari review remains with the user.
+- Product Design implementation/QA workflow kept artwork separate from structural HTML/CSS and required comparison against the selected Desktop/Mobile reference. Figma was not used because no Figma file supplied the selected design.
+
+final result: passed
+
+---
+
 # W04 approved Our Goals composition — 2026-10-06
 
 ## Scope and visual source

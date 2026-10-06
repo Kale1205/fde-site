@@ -16,7 +16,13 @@ for(const folder of ['', 'ja/', 'zh/']) {
     assert.equal(renderQuietGoals(previous),current);
     assert.equal(renderQuietGoals(current),current);
     assert.equal((current.match(/class="mission-hero-band"/g)||[]).length,1);
-    assert.equal((current.match(/class="mission-chapter-heading"/g)||[]).length,2);
+    assert.equal((current.match(/class="mission-chapter-heading"/g)||[]).length,3);
+    assert.ok(current.includes('goals-journey'));
+    assert.equal((current.match(/class="mission-step" aria-hidden="true"/g)||[]).length,3);
+    assert.equal((current.match(/class="mission-text mission-visual"/g)||[]).length,3);
+    for(const asset of ['goals-understand-work','goals-open-system','goals-partner-dialogue']) {
+      assert.ok(current.includes(`src="${folder?'../':''}assets/${asset}.png" width="1536" height="1024" alt="" loading="lazy" decoding="async"`));
+    }
     assert.match(current,/<div class="mission-proof">[\s\S]*?<figure class="mission-code">[\s\S]*?<figure class="mission-recording">/);
   });
   test(`${name}: prose and metadata are unchanged, only requested closing CTAs removed`,()=>{
@@ -39,4 +45,23 @@ test('scoped responsive media retains readable code on keyboard focus',()=>{
   assert.match(css,/\.mission-recording video \{[^}]*aspect-ratio: 9 \/ 7/);
   assert.match(css,/\.mission-partnership \.accent-line \{ color: inherit/);
   assert.doesNotMatch(css.match(/\/\* W04:[\s\S]*?(?=@media \(max-width: 1100px\) and)/)[0],/animation:/);
+});
+
+test('approved artwork has reserved intrinsic dimensions and a real alpha channel',()=>{
+  for(const name of ['understand-work','open-system','partner-dialogue']) {
+    const png=readFileSync(`assets/goals-${name}.png`);
+    assert.equal(png.subarray(1,4).toString(),'PNG');
+    assert.equal(png.readUInt32BE(16),1536);
+    assert.equal(png.readUInt32BE(20),1024);
+    assert.equal(png[25],6,'RGBA artwork, not a solid-background placeholder');
+  }
+});
+
+test('chapter rail and shallow overlap stay scoped to the selected journey',()=>{
+  const css=readFileSync('quiet-pages.css','utf8');
+  assert.match(css,/\.goals-journey \.mission-chapter:not\(:last-of-type\)::after/);
+  assert.match(css,/\.goals-journey \.mission-recording \{ margin-left: -24px/);
+  assert.match(css,/\.goals-journey \.mission-recording \{ margin: -18px 0 0 12px/);
+  assert.match(css,/\.goals-journey \.mission-partnership h2 \{[^}]*text-align: left/);
+  assert.doesNotMatch(css.match(/\/\* W04 approved visual journey:[\s\S]*?(?=@media \(max-width: 1100px\) and)/)[0],/animation:/);
 });

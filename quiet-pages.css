@@ -506,6 +506,39 @@
   .quiet-page.goals-renewal .mission-closing { margin-top: 24px; }
   .quiet-page.goals-renewal .mission-boundary { font-size: 12px; }
 }
+/* W04 approved visual journey: real sculptural artwork, structural chapter rail. */
+.quiet-page.goals-journey .mission-chapter { position: relative; padding: 76px 48px 56px 88px; }
+.quiet-page.goals-journey .mission-chapter:not(:last-of-type)::after { content: ''; position: absolute; left: 54px; top: 42px; bottom: -42px; width: 1px; background: var(--forest); pointer-events: none; }
+.quiet-page.goals-journey .mission-chapter + .mission-chapter::before { inset-inline: 88px 48px; }
+.quiet-page.goals-journey .mission-step { position: absolute; top: 30px; left: 68px; color: var(--forest); font-size: 15px; font-weight: 700; line-height: 24px; }
+.quiet-page.goals-journey .mission-step::before { content: ''; position: absolute; top: 6px; left: -19px; width: 11px; height: 11px; background: var(--forest); border-radius: 50%; }
+.quiet-page.goals-journey .mission-visual { grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: center; gap: 40px; }
+.quiet-page.goals-journey .mission-copy { min-width: 0; }
+.quiet-page.goals-journey .mission-copy > div:last-child { margin-top: 24px; padding: 0; }
+.quiet-page.goals-journey .mission-art { display: block; width: 100%; max-width: 540px; height: auto; justify-self: center; }
+.quiet-page.goals-journey .mission-partnership { text-align: left; }
+.quiet-page.goals-journey .mission-partnership .mission-art { order: -1; }
+.quiet-page.goals-journey .mission-partnership .eyebrow { text-align: left; margin: 0 0 24px; }
+.quiet-page.goals-journey .mission-partnership h2 { max-width: none; margin: 0; text-align: left; }
+.quiet-page.goals-journey .mission-closing { display: block; max-width: none; margin: 24px 0 0; }
+.quiet-page.goals-journey .mission-boundary { max-width: 800px; margin: 32px auto 0; }
+.quiet-page.goals-journey .mission-recording { margin-left: -24px; }
+.quiet-page.goals-journey .mission-recording figcaption { padding-left: 40px; }
+@media (max-width:760px) {
+  .quiet-page.goals-journey .mission-chapter { padding: 64px 22px 40px 42px; }
+  .quiet-page.goals-journey .mission-step { top: 20px; left: 41px; font-size: 14px; }
+  .quiet-page.goals-journey .mission-step::before { left: -23px; }
+  .quiet-page.goals-journey .mission-chapter:not(:last-of-type)::after { left: 23px; top: 32px; bottom: -32px; }
+  .quiet-page.goals-journey .mission-chapter + .mission-chapter::before { inset-inline: 42px 22px; }
+  .quiet-page.goals-journey .mission-visual { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  .quiet-page.goals-journey .mission-art { order: -1; width: min(100%,260px); }
+  .quiet-page.goals-journey .mission-copy > div:last-child { margin-top: 20px; }
+  .quiet-page.goals-journey .mission-partnership .eyebrow { margin-bottom: 16px; }
+  .quiet-page.goals-journey .mission-recording { margin: -18px 0 0 12px; }
+  .quiet-page.goals-journey .mission-recording figcaption { padding-left: 0; }
+  .quiet-page.goals-journey .mission-boundary { margin-top: 24px; text-align: left; }
+}
+
 @media (max-width: 1100px) and (min-width: 761px) {
   .quiet-page.demo-renewal .demo-app-grid { grid-template-columns: minmax(0,1fr) 300px; gap: 24px; }
   .quiet-page.demo-renewal .demo-operation-panel { padding: 20px; }
