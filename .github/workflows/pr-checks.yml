@@ -47,10 +47,13 @@ jobs:
         run: node scripts/test_linear_redesign.mjs
 
       - name: Approved Quiet Form home and unchanged inner-page contracts
-        run: node --test scripts/test_quiet_homepages.mjs scripts/test_quiet_pages.mjs scripts/test_quiet_form_preview.mjs scripts/test_quiet_license.mjs
+        run: node --test scripts/test_quiet_homepages.mjs scripts/test_quiet_pages.mjs scripts/test_quiet_form_preview.mjs scripts/test_quiet_license.mjs scripts/test_quiet_demo.mjs
 
       - name: Approved W02 License composition is current
         run: node scripts/build_quiet_license.mjs --check
+
+      - name: Selected W03 Demo composition is current
+        run: node scripts/build_quiet_demo.mjs --check
 
       - name: Approved multilingual homepages are current
         run: node scripts/build_quiet_homepages.mjs --check

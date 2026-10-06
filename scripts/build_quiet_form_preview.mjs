@@ -69,9 +69,14 @@ export async function renderQuietPreview(locale) {
   const c = copy[locale];
   const prefix = locale === 'en' ? '' : '../';
   const demo = await readFile(path.join(root, locales[locale], 'demo.html'), 'utf8');
-  const workspaceStart = demo.indexOf('<section class="demo-workspace"');
-  const workspaceEnd = demo.indexOf('</main>', workspaceStart);
-  const workspace = demo.slice(workspaceStart, workspaceEnd).trim();
+  // W01's approved embedded demo is a separate composition from W03's full page.
+  // Keep its current workspace unchanged when the full Demo page is renewed.
+  const renewedDemo = demo.includes('demo-renewal');
+  const workspaceSource = renewedDemo ? await readFile(path.join(root, locales[locale], 'index.html'), 'utf8') : demo;
+  const workspaceStart = workspaceSource.indexOf('<section class="demo-workspace"');
+  const workspaceEnd = workspaceSource.indexOf(renewedDemo ? '<div class="mobile-stock"' : '</main>', workspaceStart);
+  if (workspaceStart < 0 || workspaceEnd < 0) throw new Error(`Missing approved ${locale} homepage demo workspace`);
+  const workspace = workspaceSource.slice(workspaceStart, workspaceEnd).trim();
   const alternates = Object.entries(locales).map(([code, dir]) => `<link rel="alternate" hreflang="${code === 'zh' ? 'zh-CN' : code}" href="${prefix}${dir}quiet-form.html">`).join('\n');
   const languageLinks = Object.entries(locales).filter(([code]) => code !== locale).map(([code, dir]) => `<a class="locale-button" data-locale-link href="${prefix}${dir}quiet-form.html" hreflang="${code === 'zh' ? 'zh-CN' : code}" lang="${code === 'zh' ? 'zh-CN' : code}">${{en:'English',ja:'日本語',zh:'简体中文'}[code]}</a>`).join('');
   const productImage = (plus = false, hero = false) => `<img class="${hero ? 'sculpture' : 'comparison-sculpture'}" src="${prefix}assets/${plus ? 'ims-license-plus-customize' : 'ims-license-update'}.webp" alt="" width="960" height="960" ${hero ? 'fetchpriority="high"' : 'loading="lazy"'}>`;

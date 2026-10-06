@@ -1,3 +1,46 @@
+# W03 selected Demo switchboard — 2026-10-06
+
+## Scope and visual source
+
+- The user selected the third displayed W03 concept. Implemented the full Demo page in English, Japanese and Simplified Chinese; W01 home and W02 conditions remain unchanged. All pages must receive user approval before any FDE GitHub PR, merge or public release. W03 final implementation is awaiting user confirmation, not yet approved.
+- Visual source: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-1139ae6d-cdb8-4a09-9b56-60691710f85c.png`, a 1536 x 1024 illustrated Desktop/Mobile board. Desktop region x0–1182 and Mobile region x1214–1505 were compared with matching CSS viewport captures, excluding the surrounding board. This is an illustrative layout reference, not a pixel-perfect browser screenshot.
+- Evidence: `output/w03-implementation/{en,ja,zh}-{1440,1024,390}-final.jpg`. Japanese full-page captures are 1440 x 1660 and 390 x 1646, DPR 1. Clean initial states are inventory on Desktop/Tablet and operation on Mobile, with menu/guide closed and original seed stock 326/20/346. Source and both final Japanese captures were opened together; focused form evidence `ja-390-form-final.jpg` was also inspected at readable size.
+
+## Fidelity and constraints
+
+- Layout: continuous forest hero, three inventory/operation/history view buttons, warm-white workbench, Desktop inventory with a pale-sage contextual operation form, and Mobile operation-first layout. Selected-product stock sits below the action; fine rules and the existing shared header/footer provide rhythm. Table scroll is confined to named, keyboard-focusable regions, without reducing mobile text to fit.
+- Typography/colors: existing local Inter/platform-CJK stack, forest/warm-white/paper/line tokens and restrained orange stock warning. Native controls use 16px type and at least 48px height; primary actions and view controls retain visible focus. No new design system, dependency, external fonts, animation loop or copied third-party asset was introduced.
+- Assets: existing Baked Kale SVG logo and shared menu controls. No new illustration was required. The mock's generated text and commercial claims were not adopted.
+- Copy/function: existing headings, simulation notice, workflow/scope notes, platform limitations, footer copy, form labels, destinations, metadata and structured data remain. Long explanations are placed in an accessible native disclosure instead of discarded. Close Demo and Reset remain available. Original operation algorithms, seed products, stock/status rules, search, history, validation and reset are preserved.
+- Intentional deviations: immutable existing hero copy is longer than the mock; existing toolbar/Close Demo remains. Scope explanations use one native disclosure rather than new promotional cards. Reset is consistently below the workbench in all views. Original source/destination form labels and the total-stock value are retained. Desktop contextual form remains larger than the illustrative board to accommodate the original copy and usable target sizes.
+- W03 is explicitly a disconnected browser simulation, not a finished native IMS build. The user requested that the Demo body be replaced when IMS is complete; this remains an unchecked future task in Space alongside the W01 smooth-operation recording replacement.
+
+## Comparison iterations
+
+1. [P1] Existing late CSS initially overrode the forest toolbar and imposed old spacing/shadows. Scoped the W03 composition at the end of the shared stylesheet; recaptured and compared Desktop/Mobile against the selected board. Close action is legible and the forest hero is continuous.
+2. [P2] The new semantic captions were initially visible because the existing stylesheet had no visually-hidden utility. Added a W03-scoped utility, retaining both captions in the accessibility tree without extra visual clutter.
+3. [P2] First throttled Japanese Mobile Lighthouse found initial CLS 0.361 from deferred view initialization. Reserved switcher space and applied responsive pre-initialization panel defaults. Re-audit passed all checks; all three Mobile initial-load observations are now CLS 0, with maximum 0.01437 across the nine unthrottled views. This is local lab evidence, not field performance certification.
+4. Homepage renderer previously sourced its embedded demo from the full Demo HTML. Added an explicit approved-W01 source path when W03 is present, preventing the independent W03 composition from replacing/removing the W01 widget. All home body/SEO parity tests pass; homepage HTML has no diff.
+
+## Browser and engineering evidence
+
+- Chrome DevTools MCP: three locales at 1440/1024/390 CSS px, plus Japanese 320/760/761/1920 boundaries. All view switches, receive/transfer/count/ship, negative-stock prevention, same-location validation, selected-product stock, newest-first history, reset and search/empty states passed. Native keyboard Arrow/Home navigation and visible focus, shared Mobile menu/Escape, full guide disclosure and local-only simulation behavior were checked.
+- No page-level overflow or broken images in any checked view; zero Console errors/warnings and failed network requests in the nine main views. All tables have captions, column scopes and named focusable scroll regions; stable existing field labels and polite status announcements remain.
+- Homepage smoke test at 390px confirms the original embedded form still changes stock and has no W03 view controls/overflow. W01/W02 preservation is covered by the 50-test suite.
+- Final Lighthouse: Japanese Desktop/Mobile and English/Chinese Mobile have Accessibility, Best Practices, SEO and Agentic Browsing 100, zero failing checks. These audits do not include the Lighthouse Performance category, complete WCAG certification, or physical iPhone/Safari testing.
+- 50 relevant Node tests pass; existing redesign, Goals, production-commerce gate, contact routing and three sitemap regressions pass. EN/JA Demo recomposition, Chinese generation, approved home generation, JS syntax and whitespace checks pass. The repository has no conventional build/lint script. No dependencies changed.
+- Canonical/hreflang, robots, JSON-LD and route inventory are unchanged. Only the three materially changed Demo lastmod dates advance under the existing commit-derived sitemap procedure. No purchase, tracking, persistence, backend submission or authentication was added.
+
+## Handoff boundary
+
+- Design/implementation QA: no actionable P0/P1/P2 issue remains in W03. Source is saved on the existing local preview branch. No FDE push, PR, merge or production publication is authorized until all pages are approved.
+- The separate owner-private review Site includes the working three-locale Demo plus the original three concept boards and approved W02 preview. This is a private design review, not FDE production. All existing public destinations outside W02/W03 remain public links; preview locale switching remains private, and Close Demo returns to the review gallery.
+- Physical-device Safari remains to be confirmed by the user. Existing commercial-copy/price alignment between W01 and the unchanged conditions is still a separate pre-release decision; no terms were changed by this design work.
+
+final result: passed
+
+---
+
 # W02 selected product conditions design — 2026-10-06
 
 ## Scope and source visual truth
@@ -38,7 +81,8 @@
 ## Handoff and remaining limits
 
 - Design/implementation QA: no actionable P0/P1/P2 issue remains in this W02 scope. Original checkout and unrelated untracked output were preserved. Code is saved on the existing local preview branch; no GitHub push, PR, merge or FDE production publication was performed.
-- The existing private Sites gallery still contains the three original concept boards. Permission was requested separately to add an interactive EN/JA/ZH implementation preview; that addition is not yet published. Localhost is not an iPhone-accessible preview.
+- With the user's explicit approval, added the interactive EN/JA/ZH implementation to the same owner-private Sites gallery on 2026-10-06. Confirmation URL: `https://fde-w02-design-review.kale-1999.chatgpt.site`; the root links to `/preview/ja/license.html`, `/preview/license.html` and `/preview/zh/license.html`. Original concept boards remain. A separate allowlisted static bundle contains only the three conditions pages, required CSS/JS, five existing public assets, and preview-only navigation handling; the original FDE repository and production site were not published.
+- Preview-only alternate links remain inside the private Site; contact/product/news/goals/demo destinations use existing public pages. Local packaged QA verified Japanese 390px, English 1440px and Chinese 1024px: correct plan prices, localized links, no overflow, broken images or Console errors. Source commit `abceb950b045a9cd6bb88141c8b7f757b8e7eeaf` was pushed to the separate Sites repository and packaged by the native workflow. Private deployment `appgdep_6ac439df8d0c8191a8c9a6259dcdbb8b` returned `succeeded` with the URL above. Audience is unchanged and no recurring schedule was added. Temporary local gallery server was stopped after publishing. Physical iPhone/Safari remains unverified.
 - Production-content alignment is still a separate pending decision: approved homepage uses JPY and required Updates, while the unchanged conditions retain optional continuation and EN/ZH USD candidates. This design-only change does not resolve or silently alter those terms.
 
 final result: passed

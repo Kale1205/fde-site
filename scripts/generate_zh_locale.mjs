@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { renderQuietHomepage } from './build_quiet_homepages.mjs';
+import { renderQuietDemo } from './build_quiet_demo.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-translations.json'), 'utf8'));
@@ -123,7 +124,8 @@ function renderPage(name) {
   }
 
   if (name === 'contact.html') output = output.replace(/\n?<script defer src="\.\.\/faq-cms\.js[^>]*><\/script>/, '');
-  return translateMarkup(output).replace(/\n[ \t]+\n/g, '\n\n');
+  const translated = translateMarkup(output).replace(/\n[ \t]+\n/g, '\n\n');
+  return name === 'demo.html' ? renderQuietDemo(translated, 'zh') : translated;
 }
 
 mkdirSync(path.join(root, 'zh'), { recursive: true });

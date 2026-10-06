@@ -12,7 +12,7 @@ function addDemoDemandCallout(){
  const options=[['Windows','Windows'],['Mac M1','M1'],['Mac M2 or later','M2-or-later'],['iPhone / iPad','iOS-iPadOS'],['Android','Android'],['Linux','Linux'],['Other / Not sure','Other-Not-sure']];
  options.forEach(([label,value],index)=>{const a=document.createElement('a');a.href=`contact.html?source=web-demo&platform=${encodeURIComponent(value)}#contactForm`;a.textContent=label;a.rel='nofollow';demand.append(a);if(index<options.length-1)demand.append(document.createTextNode(' · '))});
  const note=document.createElement('small');note.className='demo-note';note.textContent=isJa?'Web Demoの利用可否は、各OS向けネイティブアプリの対応・正式リリース・セキュリティ検証完了を意味しません。':'Web Demo availability does not mean the corresponding native app is supported, released, or security-validated.';
- wrap.append(strong,p,demand,note);intro.appendChild(wrap);
+ wrap.append(strong,p,demand,note);(qs('[data-demo-notes]')||intro).appendChild(wrap);
 }
 function init(){
  const mt=qs('.mobile-toggle'),nav=qs('.main-nav'),header=qs('.site-header');if(mt&&nav&&header){mt.addEventListener('click',e=>{e.stopPropagation();nav.classList.toggle('open');mt.setAttribute('aria-expanded',nav.classList.contains('open')?'true':'false')});document.addEventListener('click',e=>{if(nav.classList.contains('open')&&!header.contains(e.target)){nav.classList.remove('open');mt.setAttribute('aria-expanded','false')}})}
