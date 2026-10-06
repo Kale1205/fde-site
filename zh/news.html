@@ -27,7 +27,7 @@
   <script defer src="../cms-content-ja.js?v=20260925-081759"></script>
   <link rel="stylesheet" href="../quiet-pages.css?v=20260925-081759">
 </head>
-<body class="quiet-page gallery-page gallery-subpage refined-page cms-news-page">
+<body class="quiet-page gallery-page gallery-subpage refined-page cms-news-page news-renewal">
 <a class="skip-link" href="#main-content">跳至主要内容</a>
   <div class="site-shell language-zh">
     <header class="site-header">
@@ -58,13 +58,15 @@
 
     <main id="main-content">
       <section class="page-hero compact-hero news-page-hero section-frame">
+        <img class="news-hero-mark" src="../assets/baked-kale-mark.svg" width="220" height="220" alt="" aria-hidden="true">
         <p class="eyebrow">FDE / BAKED KALE FDE</p>
         <h1>最新消息</h1>
         <p class="lede">Baked Kale FDE 的产品更新、开发记录与相关工作。</p>
       </section>
 
       <section class="content-section news-desk section-frame" aria-label="新闻报道">
-        <div class="news-desk-label news-top-label">重点消息</div>
+        <section class="news-featured" aria-labelledby="news-featured-title">
+          <h2 id="news-featured-title" class="news-desk-label news-top-label">重点消息</h2>
         <a id="cmsNewsLead" class="news-lead-story news-open" href="license.html">
           <div class="cms-lead-image cms-image-fallback"><img src="../assets/news-fallback-user.svg" alt="FDE IMS 更新为两种产品，并提供 License Updates 附加服务" loading="lazy"></div>
           <div class="news-lead-copy">
@@ -75,18 +77,23 @@
             <span class="news-read-more">查看产品详情 →</span>
           </div>
         </a>
-
-        <h2 class="news-desk-label news-section-rule">最新</h2>
+        </section>
+        <div class="news-supporting">
+          <section class="news-updates" aria-labelledby="news-updates-title">
+            <h2 id="news-updates-title" class="news-desk-label news-section-rule">更新信息</h2>
         <div id="cmsLatestList" class="news-latest-grid" aria-live="polite">
           <a class="latest-card" href="demo.html">
             <div class="cms-latest-image"><img src="https://raw.githubusercontent.com/Kale1205/fde-site/main/assets/cms/2026/08/20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png" alt="FDE IMS 开发预览可用" loading="lazy"></div>
             <div class="latest-card-copy"><small>发展/2026.08.16</small><strong>FDE IMS 开发预览可用</strong><span>查看开发预览 →</span></div>
           </a>
         </div>
-
-        <h2 class="news-desk-label news-section-rule">归档</h2>
+          </section>
+          <section class="news-archive" aria-labelledby="news-archive-title">
+            <h2 id="news-archive-title" class="news-desk-label news-section-rule">归档</h2>
         <div id="cmsNewsWire" class="news-wire-list" aria-live="polite">
           <a class="wire-row" href="index.html"><div class="wire-type">开发中</div><div class="wire-title">Baked Kale FDE 网站已更新</div><time datetime="2026-08-16">2026.08.16</time></a>
+        </div>
+          </section>
         </div>
 
         <a id="cmsInstagram" class="instagram-editorial" href="#">

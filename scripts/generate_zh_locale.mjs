@@ -125,6 +125,10 @@ function renderPage(name) {
 
   if (name === 'contact.html') output = output.replace(/\n?<script defer src="\.\.\/faq-cms\.js[^>]*><\/script>/, '');
   let translated = translateMarkup(output).replace(/\n[ \t]+\n/g, '\n\n');
+  if (name === 'news.html') {
+    // This editorial section is not the commercial Updates product label.
+    translated = translated.replace(/(<h2 id="news-updates-title"[^>]*>)[^<]+/, '$1更新信息');
+  }
   if (name === 'goals.html') {
     // Localize the accessible label, never the actual source identifiers.
     const excerpt = /<div class="mission-code-window">[\s\S]*?<\/code><\/pre><\/div>/;
