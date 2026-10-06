@@ -1,3 +1,41 @@
+# W04 approved Our Goals composition — 2026-10-06
+
+## Scope and visual source
+
+- User approved the combined W04 direction: forest/white hero, option-two chapters 01/02, option-one overlapping code/video, and a new quiet paragraph closure without chapter-03 contact/plan buttons. Implemented English, Japanese and Simplified Chinese. Implementation review remains pending; all-page approval still precedes FDE push/PR/merge/production publication.
+- Source: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-e3f39579-bbf0-46c1-b7e0-c17d016b0231.png` (1024 x 1536). Compared Desktop region x30–725 and Mobile x754–995 with matching browser captures. Opened reference, `ja-1440-polished.jpg` (1440 x 2737) and `ja-390-polished.jpg` (390 x 3489) together. Focused source/video screenshots were also inspected. Evidence is under `output/w04-implementation/`; CSS viewports are 1440 x 1000 and 390 x 844, DPR 1.
+
+## Fidelity and intentional constraints
+
+- Layout: full-width forest hero with white existing headings; two-column 01/02 on Desktop, stacked on Mobile; actual Rust source beside the actual 12-second native-development recording, overlapping 52px on Desktop, 32px on Tablet and 18px vertically on Mobile. Chapter 03 ends with original paragraphs and responsibility note, not new promotional cards or CTA buttons.
+- Typography/colors: existing Inter/platform-CJK stack, forest/warm-white/line tokens. Fine rules, restrained shadow and existing shared header/footer are retained. No new dependency, external font, design system or decorative image.
+- Existing prose, terms, metadata, JSON-LD, source paths and video assets are retained. Only chapter-03 action links are removed. Corrected the Chinese source panel's translated Rust identifiers so all three locales show the actual code rather than fictitious localized filenames/functions. The Chinese page retains the existing English native recording; there is no Chinese recording asset.
+- Intentional deviations: illustrative mock text/UI is not substituted for real material. The complete original video aspect ratio and native controls remain. Mobile overlap is shallower than the illustration to keep all source lines readable; source scroll is local, named and keyboard-focusable, and focus-within separates the overlapped video. Existing longer copy and shared navigation/footer remain. Flat forest uses the existing token instead of introducing a gradient.
+
+## Comparison iterations
+
+1. [P1] Late generic hero CSS initially overrode the green composition. Corrected scoped specificity; all nine final views show white text on forest.
+2. [P2] Video caption initially sat over the code panel. Added responsive caption clearance, retaining the visual overlap without obscured prose.
+3. [P2] Chapter-03 eyebrow initially inherited fit-content width. Made it block/auto-width so the centered closing heading and label align.
+4. [P2] Transcript retained redundant divider rules. Simplified that native disclosure surface while preserving all transcript text and keyboard behavior.
+5. Initial screenshots included a transient native-video loading indicator. Final polished captures follow verified playback, then pause; no generated animation or replacement UI was used.
+
+## Browser and engineering evidence
+
+- Chrome DevTools MCP: EN/JA/ZH at 1440/1024/390 CSS px; additional Japanese 320/760/761/1180 boundaries. No page overflow, broken image, Console error/warning or failed HTTP request. Video range responses are normal 206; actual playback advanced in Japanese Desktop/Mobile, English Mobile and Chinese Tablet. All nine views have a playable 12-second recording.
+- Keyboard checks: focused source has visible outline and reachable horizontal scroll; next Tab reaches native video controls. Transcript opens/closes with Enter. Shared Mobile menu links are hit-testable above the backdrop; Escape closes and restores focus. Language picker routes to all three localized Goals pages and closes with Escape. Shared links remain intact; chapter 03 has no links.
+- Maximum observed local unthrottled CLS is 0.00807 (JA 1024). Lighthouse snapshots for JA Desktop/Mobile and EN/ZH Mobile each score Accessibility, Best Practices, SEO and Agentic Browsing 100, zero failing checks. These are local lab observations, not Performance scores, field certification, comprehensive WCAG verification or physical iPhone/Safari testing.
+- 53 relevant Node tests pass, covering W01/W02/W03 preservation and W04 composition/prose/head/video parity. Existing Goals content, Chinese generation and W04 recomposition checks pass. Repository validation must run after the normal page-commit and commit-derived sitemap step; no lastmod bypass is permitted. Static repository has no conventional build/lint script. No dependencies changed.
+- Canonical/hreflang, robots, structured data and route inventory are unchanged. Only the three changed Goals lastmod dates are advanced through the existing sitemap workflow. No tracking, purchase, submission, backend or authentication change.
+
+## Handoff boundary
+
+- No actionable P0/P1/P2 issue remains in this W04 implementation scope. Original checkout and unrelated output are preserved. The separate owner-private review package is used for Mac/iPhone review; FDE production remains unchanged. W04 final implementation approval is still pending.
+
+final result: passed
+
+---
+
 # W03 selected Demo switchboard — 2026-10-06
 
 ## Scope and visual source

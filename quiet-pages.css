@@ -1,5 +1,5 @@
 /* Quiet Form: the approved homepage language, extended to existing pages.
-   Content, route structure and interaction scripts remain unchanged. */
+   Page-specific recomposition remains scoped to each approved renewal. */
 @font-face { font-family: Inter; src: url('assets/fonts/inter-latin-variable.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 .quiet-page {
   --paper: #faf8f4; --paper-deep: #f1eee5; --surface: #fdfcf9;
@@ -436,6 +436,76 @@
 .quiet-page.demo-renewal .ims-pre { margin-block: 16px; border-left: 2px solid var(--forest); padding: 16px 20px; background: var(--paper-deep); }
 .quiet-page.demo-renewal .ims-pre :is(strong,p,small) { font-size: 14px; }
 .quiet-page.demo-renewal .ims-pre a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
+
+/* W04: forest opening, editorial chapters, real video over its source. */
+.quiet-page.goals-renewal .mission-hero-band { background: var(--forest); color: #fff; }
+.quiet-page.goals-renewal .mission-hero-band .mission-hero { padding-block: 64px 24px; background: transparent; }
+.quiet-page.goals-renewal .mission-hero :is(h1,.accent-line,.eyebrow,.mission-lead) { color: #fff; }
+.quiet-page.goals-renewal .mission-hero h1 { max-width: 960px; font-weight: 750; }
+.quiet-page.goals-renewal .mission-index { margin-top: 36px; padding-block: 8px 0; border-top-color: #ffffff50; border-bottom: 0; }
+.quiet-page.goals-renewal .mission-index a { display: inline-flex; align-items: center; color: #fff; padding: 10px 0; }
+.quiet-page.goals-renewal .mission-index a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.quiet-page.goals-renewal .mission-hero :focus-visible { outline-color: #ffb08a; }
+.quiet-page.goals-renewal .mission-chapter { padding-block: 64px; border: 0; }
+.quiet-page.goals-renewal .mission-chapter + .mission-chapter { position: relative; }
+.quiet-page.goals-renewal .mission-chapter + .mission-chapter::before { content: ''; position: absolute; inset: 0 48px auto; height: 1px; background: var(--line); }
+.quiet-page.goals-renewal .mission-text { grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: start; gap: 64px; }
+.quiet-page.goals-renewal .mission-chapter-heading .eyebrow { margin: 0 0 24px; color: var(--forest); font-size: 12px; }
+.quiet-page.goals-renewal .mission-text h2 { margin: 0; font-weight: 700; line-height: 1.35; }
+.quiet-page.goals-renewal .mission-text > div:last-child { padding-top: 4px; }
+.quiet-page.goals-renewal .mission-proof { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: start; margin-top: 40px; isolation: isolate; }
+.quiet-page.goals-renewal .mission-code { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; align-items: stretch; gap: 24px; margin: 0; padding: 28px; border-radius: 14px; overflow: visible; }
+.quiet-page.goals-renewal .mission-code-window { order: -1; border-color: #ffffff25; background: #062e23; border-radius: 8px; }
+.quiet-page.goals-renewal .code-file { padding: 14px 18px; font-size: 11px; }
+.quiet-page.goals-renewal .code-file span { margin: 0; }
+.quiet-page.goals-renewal .mission-code pre { padding: 20px 18px; font-size: 13px; line-height: 1.7; }
+.quiet-page.goals-renewal .mission-code figcaption { max-width: 440px; }
+.quiet-page.goals-renewal .mission-code h3 { font-size: 22px; font-weight: 650; }
+.quiet-page.goals-renewal .mission-code p:not(.eyebrow) { margin-top: 12px; }
+.quiet-page.goals-renewal .mission-code small { margin-top: 16px; font-size: 12px; }
+.quiet-page.goals-renewal .mission-recording { grid-column: 2; grid-row: 1; z-index: 1; margin: 36px 0 0 -52px; min-width: 0; }
+.quiet-page.goals-renewal .mission-recording video { max-height: none; height: auto; aspect-ratio: 9 / 7; border-radius: 12px; box-shadow: 0 16px 36px #17251e24; }
+.quiet-page.goals-renewal .mission-recording figcaption { display: block; padding-left: 68px; margin-top: 20px; }
+.quiet-page.goals-renewal .mission-recording-intro { display: block; margin: 0 0 16px; }
+.quiet-page.goals-renewal .mission-recording-intro h3 { font-size: 21px; font-weight: 650; color: var(--ink); margin-bottom: 10px; }
+.quiet-page.goals-renewal .mission-recording-intro p { font-size: 14px; color: var(--body); line-height: 1.85; }
+.quiet-page.goals-renewal .mission-recording figcaption > p { margin-top: 8px; }
+.quiet-page.goals-renewal .mission-proof:focus-within { column-gap: 24px; }
+.quiet-page.goals-renewal .mission-proof:focus-within .mission-recording { margin-left: 0; }
+.quiet-page.goals-renewal .mission-transcript { margin-top: 24px; padding-block: 0; border: 0; }
+.quiet-page.goals-renewal .mission-transcript summary { min-height: 44px; cursor: pointer; }
+.quiet-page.goals-renewal .mission-partnership > .eyebrow { display: block; width: auto; color: var(--forest); text-align: center; }
+.quiet-page.goals-renewal .mission-partnership h2 { max-width: 940px; margin-inline: auto; color: var(--forest); text-align: center; font-weight: 700; }
+.quiet-page.goals-renewal .mission-partnership .accent-line { color: inherit; }
+.quiet-page.goals-renewal .mission-closing { display: block; max-width: 800px; margin: 28px auto 0; }
+.quiet-page.goals-renewal .mission-boundary { margin: 32px auto 0; text-align: center; }
+@media (max-width:1080px) {
+  .quiet-page.goals-renewal .mission-chapter + .mission-chapter::before { inset-inline: 32px; }
+  .quiet-page.goals-renewal .mission-text { gap: 40px; }
+  .quiet-page.goals-renewal .mission-code { padding: 24px; }
+  .quiet-page.goals-renewal .mission-recording { margin-left: -32px; }
+  .quiet-page.goals-renewal .mission-recording figcaption { padding-left: 48px; }
+}
+@media (max-width:760px) {
+  .quiet-page.goals-renewal .mission-hero-band .mission-hero { padding-block: 40px 20px; }
+  .quiet-page.goals-renewal .mission-index { margin-top: 24px; gap: 0; }
+  .quiet-page.goals-renewal .mission-index a + a { border-top: 1px solid #ffffff30; }
+  .quiet-page.goals-renewal .mission-chapter { padding-block: 40px; }
+  .quiet-page.goals-renewal .mission-chapter + .mission-chapter::before { inset-inline: 22px; }
+  .quiet-page.goals-renewal .mission-text { grid-template-columns: minmax(0,1fr); gap: 24px; }
+  .quiet-page.goals-renewal .mission-chapter-heading .eyebrow { margin-bottom: 16px; }
+  .quiet-page.goals-renewal .mission-proof { grid-template-columns: minmax(0,1fr); margin-top: 28px; }
+  .quiet-page.goals-renewal .mission-code { grid-column: 1; grid-row: 1; padding: 18px; gap: 20px; }
+  .quiet-page.goals-renewal .mission-code pre { padding: 18px 14px; }
+  .quiet-page.goals-renewal .mission-code figcaption { padding-bottom: 18px; }
+  .quiet-page.goals-renewal .mission-recording { grid-column: 1; grid-row: 2; margin: -18px 0 0 12px; }
+  .quiet-page.goals-renewal .mission-recording figcaption { padding-left: 0; }
+  .quiet-page.goals-renewal .mission-proof:focus-within .mission-recording { margin: 16px 0 0; }
+  .quiet-page.goals-renewal .mission-code h3 { font-size: 20px; }
+  .quiet-page.goals-renewal .mission-partnership h2 { font-size: 27px; line-height: 1.45; }
+  .quiet-page.goals-renewal .mission-closing { margin-top: 24px; }
+  .quiet-page.goals-renewal .mission-boundary { font-size: 12px; }
+}
 @media (max-width: 1100px) and (min-width: 761px) {
   .quiet-page.demo-renewal .demo-app-grid { grid-template-columns: minmax(0,1fr) 300px; gap: 24px; }
   .quiet-page.demo-renewal .demo-operation-panel { padding: 20px; }

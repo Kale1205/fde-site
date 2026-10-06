@@ -124,7 +124,14 @@ function renderPage(name) {
   }
 
   if (name === 'contact.html') output = output.replace(/\n?<script defer src="\.\.\/faq-cms\.js[^>]*><\/script>/, '');
-  const translated = translateMarkup(output).replace(/\n[ \t]+\n/g, '\n\n');
+  let translated = translateMarkup(output).replace(/\n[ \t]+\n/g, '\n\n');
+  if (name === 'goals.html') {
+    // Localize the accessible label, never the actual source identifiers.
+    const excerpt = /<div class="mission-code-window">[\s\S]*?<\/code><\/pre><\/div>/;
+    const label = translated.match(/<pre[^>]*aria-label="([^"]+)"/)[1];
+    translated = translated.replace(excerpt, output.match(excerpt)[0]
+      .replace(/(aria-label=")[^"]+/, `$1${label}`));
+  }
   return name === 'demo.html' ? renderQuietDemo(translated, 'zh') : translated;
 }
 

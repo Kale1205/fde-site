@@ -26,7 +26,7 @@
   <script defer src="../cms-content-ja.js?v=20260925-081759"></script>
   <link rel="stylesheet" href="../quiet-pages.css?v=20260925-081759">
 </head>
-<body class="quiet-page gallery-page gallery-subpage refined-page goals-page mission-page">
+<body class="quiet-page gallery-page gallery-subpage refined-page goals-page mission-page goals-renewal">
 <a class="skip-link" href="#main-content">跳至主要内容</a>
   <div class="site-shell language-zh">
     <header class="site-header">
@@ -52,43 +52,49 @@
     </header>
 
     <main id="main-content" class="gallery-page-main">
+      <div class="mission-hero-band">
       <header class="mission-hero section-frame">
         <p class="eyebrow">BAKED KALE / OUR GOALS</p>
         <h1>从实际工作出发。<br><span class="accent-line">走向属于自己的系统。</span></h1>
         <p class="mission-lead">属于您公司的系统，由您持续打造。<br>Baked Kale 正在为您打造一个可靠的起点。</p>
         <nav class="mission-index" aria-label="在本页"><a href="#fde">01 什么是 FDE？</a><a href="#approach">02 我们在做什么</a><a href="#partnership">03 我们的目标</a></nav>
       </header>
+      </div>
 
       <section id="fde" class="mission-chapter section-frame" aria-labelledby="fde-title">
-        <p class="eyebrow">01 / 什么是 FDE？</p>
-        <div class="mission-text"><h2 id="fde-title">理解现场工作。<br>打造真正有用的系统。</h2><div><p>FDE 是 Forward Deployed Engineering（前沿部署工程）的缩写：先理解现场工作如何进行，再把这种理解转化为真正有用的软件。</p><p>起点是实际工作，而不是技术本身。谁在执行？时间花在哪里？什么造成阻碍？这些问题会引导我们打造一套可以持续使用的系统。</p></div></div>
+        <div class="mission-text"><div class="mission-chapter-heading"><p class="eyebrow">01 / 什么是 FDE？</p><h2 id="fde-title">理解现场工作。<br>打造真正有用的系统。</h2></div><div><p>FDE 是 Forward Deployed Engineering（前沿部署工程）的缩写：先理解现场工作如何进行，再把这种理解转化为真正有用的软件。</p><p>起点是实际工作，而不是技术本身。谁在执行？时间花在哪里？什么造成阻碍？这些问题会引导我们打造一套可以持续使用的系统。</p></div></div>
       </section>
 
       <section id="approach" class="mission-chapter section-frame" aria-labelledby="approach-title">
-        <p class="eyebrow">02 / 我们在做什么</p>
-        <div class="mission-text"><h2 id="approach-title">一个可运行的系统。<br>以及系统背后的源代码。</h2><div><p>业务系统应该更容易导入。Baked Kale 通过提供附带源代码的系统，努力降低采用门槛。</p><p>您无需从零开始，也不必为了现成工具重塑每一项流程。可以先从一套可运行的系统出发，理解它的工作方式，再根据业务进行调整。这正是 FDE IMS License Plus 希望提供的选择。</p></div></div>
-        <figure class="mission-code">
+        <div class="mission-text"><div class="mission-chapter-heading"><p class="eyebrow">02 / 我们在做什么</p><h2 id="approach-title">一个可运行的系统。<br>以及系统背后的源代码。</h2></div><div><p>业务系统应该更容易导入。Baked Kale 通过提供附带源代码的系统，努力降低采用门槛。</p><p>您无需从零开始，也不必为了现成工具重塑每一项流程。可以先从一套可运行的系统出发，理解它的工作方式，再根据业务进行调整。这正是 FDE IMS License Plus 希望提供的选择。</p></div></div>
+        <div class="mission-proof">
+          <figure class="mission-code">
           <figcaption><p class="eyebrow">INSIDE FDE IMS</p><h3>了解界面背后的实现。</h3><p>库存为零时判定为缺货；库存等于或低于补货阈值时判定为库存偏低。拥有源代码后，您可以理解这些判断背后的规则。</p><small>IMS v1.0 开发中的执行节选. 股票状态逻辑; 换行符调整 。</small></figcaption>
-          <div class="mission-code-window"><div class="code-file">ims- domain / lib.rs (英语). <span>Rust</span></div><pre tabindex="0" aria-label="库存状态分类的Rust 代码"><code><span class="code-key">pub const fn</span> <span class="code-fn">状态</span>( on_hand_atoms: <span class="code-type">i64</span>, low_stock_threshold_atoms: <span class="code-type">i64</span>,
+          <div class="mission-code-window"><div class="code-file">ims-domain / lib.rs <span>Rust</span></div><pre tabindex="0" aria-label="库存状态分类的Rust 代码"><code><span class="code-key">pub const fn</span> <span class="code-fn">stock_state</span>(
+    on_hand_atoms: <span class="code-type">i64</span>,
+    low_stock_threshold_atoms: <span class="code-type">i64</span>,
 ) -&gt; <span class="code-type">StockState</span> {
-    <span class="code-key">若为</span> on_hand_atoms &lt;= 0 {
+    <span class="code-key">if</span> on_hand_atoms &lt;= 0 {
         StockState::OutOfStock
-    } <span class="code-key">否则如果</span> on_hand_atoms &lt;= low_stock_threshold_atoms {
+    } <span class="code-key">else if</span> on_hand_atoms &lt;= low_stock_threshold_atoms {
         StockState::LowStock
-    } <span class="code-key">其它内容</span> { StockState::Healthy } }</code></pre></div>
+    } <span class="code-key">else</span> {
+        StockState::Healthy
+    }
+}</code></pre></div>
         </figure>
-        <div class="mission-recording-intro"><h3>查看 IMS 的实际操作。</h3><p>查找商品、记录入库，再确认库存与操作历史。这是正在开发的原生应用，演示使用为本次录制单独准备的模拟数据集。</p></div>
-        <figure class="mission-recording">
+          <figure class="mission-recording">
           <video controls muted loop playsinline preload="none" width="900" height="700" poster="../assets/ims-v1-operation-en-poster.jpg" aria-label="IMS v1.0实际操作"><source src="../assets/ims-v1-operation-en.mp4" type="video/mp4"></video>
-          <figcaption><span>IMS v1.0 / 开发版本</span><p>这是从实际开发版本操作中记录的流程，不是概念动画或网页演示。画面与行为可能会在开发过程中调整。</p></figcaption>
+          <figcaption><div class="mission-recording-intro"><h3>查看 IMS 的实际操作。</h3><p>查找商品、记录入库，再确认库存与操作历史。这是正在开发的原生应用，演示使用为本次录制单独准备的模拟数据集。</p></div><span>IMS v1.0 / 开发版本</span><p>这是从实际开发版本操作中记录的流程，不是概念动画或网页演示。画面与行为可能会在开发过程中调整。</p></figcaption>
         </figure>
+        </div>
         <details class="mission-transcript"><summary>查看操作步骤</summary><ol><li>在示例库存中查找商品。</li><li>选择商品与数量，然后记录入库。</li><li>确认更新后的库存数量与操作记录。</li></ol></details>
       </section>
 
       <section id="partnership" class="mission-chapter mission-partnership section-frame" aria-labelledby="partnership-title">
         <p class="eyebrow">03 / 我们的目标</p>
         <h2 id="partnership-title">做您的系统团队。<br><span class="accent-line">也做长期陪伴您的合作伙伴。</span></h2>
-        <div class="mission-closing"><div><p>系统交付不应意味着合作关系的结束。随着业务变化并产生新的改进需求，我们希望始终是您可以信赖和咨询的伙伴。</p><p>一套您能够理解并自行持续开发的系统，以及在需要时可以商谈的合作伙伴。让两者始终触手可及，正是 Baked Kale 的目标。</p></div><div class="mission-actions"><a class="button button-primary" href="contact.html">咨询您的系统需求</a><a class="mission-plan-link" href=".././#license-plus">查看源代码方案 <span aria-hidden="true">→</span></a></div></div>
+        <div class="mission-closing"><div><p>系统交付不应意味着合作关系的结束。随着业务变化并产生新的改进需求，我们希望始终是您可以信赖和咨询的伙伴。</p><p>一套您能够理解并自行持续开发的系统，以及在需要时可以商谈的合作伙伴。让两者始终触手可及，正是 Baked Kale 的目标。</p></div></div>
         <p class="mission-boundary">FDE IMS 仍在开发中。导入协助、定制开发与维护服务的范围尚未确定。License Plus 客户需自行管理修改、更新与安全。</p>
       </section>
     </main>

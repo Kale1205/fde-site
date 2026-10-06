@@ -25,7 +25,7 @@
   <script defer src="cms-content.js?v=20260925-081759"></script>
   <link rel="stylesheet" href="quiet-pages.css?v=20260925-081759">
 </head>
-<body class="quiet-page gallery-page gallery-subpage refined-page goals-page mission-page">
+<body class="quiet-page gallery-page gallery-subpage refined-page goals-page mission-page goals-renewal">
 <a class="skip-link" href="#main-content">Skip to content</a>
   <div class="site-shell language-en">
     <header class="site-header">
@@ -50,22 +50,23 @@
     </header>
 
     <main id="main-content" class="gallery-page-main">
+      <div class="mission-hero-band">
       <header class="mission-hero section-frame">
         <p class="eyebrow">BAKED KALE / OUR GOALS</p>
         <h1>From the work you do.<br><span class="accent-line">To a system of your own.</span></h1>
         <p class="mission-lead">Your company’s system. Yours to build on.<br>Baked Kale is building a place to start.</p>
         <nav class="mission-index" aria-label="On this page"><a href="#fde">01 What is FDE?</a><a href="#approach">02 What we do</a><a href="#partnership">03 Our goal</a></nav>
       </header>
+      </div>
 
       <section id="fde" class="mission-chapter section-frame" aria-labelledby="fde-title">
-        <p class="eyebrow">01 / What is FDE?</p>
-        <div class="mission-text"><h2 id="fde-title">Understand the work.<br>Build what helps.</h2><div><p>FDE stands for Forward Deployed Engineering: understanding how work happens on the ground, then turning that understanding into software that is useful there.</p><p>The starting point is the work, not the technology. Who does it? Where does time go? What gets in the way? Those questions guide a system people can keep using.</p></div></div>
+        <div class="mission-text"><div class="mission-chapter-heading"><p class="eyebrow">01 / What is FDE?</p><h2 id="fde-title">Understand the work.<br>Build what helps.</h2></div><div><p>FDE stands for Forward Deployed Engineering: understanding how work happens on the ground, then turning that understanding into software that is useful there.</p><p>The starting point is the work, not the technology. Who does it? Where does time go? What gets in the way? Those questions guide a system people can keep using.</p></div></div>
       </section>
 
       <section id="approach" class="mission-chapter section-frame" aria-labelledby="approach-title">
-        <p class="eyebrow">02 / What we do</p>
-        <div class="mission-text"><h2 id="approach-title">A working system.<br>And the code behind it.</h2><div><p>Business software should be easier to adopt. Baked Kale aims to lower that barrier by offering systems with their source code.</p><p>You do not have to start from zero, or reshape every process around an off-the-shelf tool. Start with a working system, understand how it works, and adapt it to your business. That is the choice we are building with FDE IMS License Plus.</p></div></div>
-        <figure class="mission-code">
+        <div class="mission-text"><div class="mission-chapter-heading"><p class="eyebrow">02 / What we do</p><h2 id="approach-title">A working system.<br>And the code behind it.</h2></div><div><p>Business software should be easier to adopt. Baked Kale aims to lower that barrier by offering systems with their source code.</p><p>You do not have to start from zero, or reshape every process around an off-the-shelf tool. Start with a working system, understand how it works, and adapt it to your business. That is the choice we are building with FDE IMS License Plus.</p></div></div>
+        <div class="mission-proof">
+          <figure class="mission-code">
           <figcaption><p class="eyebrow">INSIDE FDE IMS</p><h3>Understand what is behind the screen.</h3><p>Zero stock means out of stock. At or below the reorder threshold means low stock. With the source code, the rules behind these decisions are yours to understand.</p><small>Excerpt from the IMS v1.0 implementation in development. Stock-state logic; line breaks adjusted.</small></figcaption>
           <div class="mission-code-window"><div class="code-file">ims-domain / lib.rs <span>Rust</span></div><pre tabindex="0" aria-label="Rust code for stock-state classification"><code><span class="code-key">pub const fn</span> <span class="code-fn">stock_state</span>(
     on_hand_atoms: <span class="code-type">i64</span>,
@@ -80,18 +81,18 @@
     }
 }</code></pre></div>
         </figure>
-        <div class="mission-recording-intro"><h3>See the work happen in IMS.</h3><p>Find a product, record a receipt, then check stock and history. This is the native application in development, operated with a separate synthetic dataset made for this capture.</p></div>
-        <figure class="mission-recording">
+          <figure class="mission-recording">
           <video controls muted loop playsinline preload="none" width="900" height="700" poster="assets/ims-v1-operation-en-poster.jpg" aria-label="Actual IMS v1.0 operation"><source src="assets/ims-v1-operation-en.mp4" type="video/mp4"></video>
-          <figcaption><span>IMS v1.0 / DEVELOPMENT BUILD</span><p>A sequence captured from real development-build operations, not a concept animation or the Web Demo. Screens and behavior may change during development.</p></figcaption>
+          <figcaption><div class="mission-recording-intro"><h3>See the work happen in IMS.</h3><p>Find a product, record a receipt, then check stock and history. This is the native application in development, operated with a separate synthetic dataset made for this capture.</p></div><span>IMS v1.0 / DEVELOPMENT BUILD</span><p>A sequence captured from real development-build operations, not a concept animation or the Web Demo. Screens and behavior may change during development.</p></figcaption>
         </figure>
+        </div>
         <details class="mission-transcript"><summary>Read the operation sequence</summary><ol><li>Find a product in the sample inventory.</li><li>Choose the product and quantity, then record incoming stock.</li><li>Check the updated stock level and operation history.</li></ol></details>
       </section>
 
       <section id="partnership" class="mission-chapter mission-partnership section-frame" aria-labelledby="partnership-title">
         <p class="eyebrow">03 / Our goal</p>
         <h2 id="partnership-title">Your software people.<br><span class="accent-line">Your partner, for the long run.</span></h2>
-        <div class="mission-closing"><div><p>Delivering a system should not be the end of the relationship. As your work changes and new improvements become necessary, we want to remain someone you can turn to.</p><p>A system you can understand and develop yourself. A partner you can talk to when you need one. Keeping both within reach is what Baked Kale aims for.</p></div><div class="mission-actions"><a class="button button-primary" href="contact.html">Talk about your system</a><a class="mission-plan-link" href="./#license-plus">Explore the source-code plan <span aria-hidden="true">→</span></a></div></div>
+        <div class="mission-closing"><div><p>Delivering a system should not be the end of the relationship. As your work changes and new improvements become necessary, we want to remain someone you can turn to.</p><p>A system you can understand and develop yourself. A partner you can talk to when you need one. Keeping both within reach is what Baked Kale aims for.</p></div></div>
         <p class="mission-boundary">FDE IMS is in development. The scope of implementation assistance, custom development and maintenance services is not yet defined. License Plus customers manage their own modifications, updates and security.</p>
       </section>
     </main>

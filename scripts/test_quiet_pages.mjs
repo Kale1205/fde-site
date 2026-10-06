@@ -6,6 +6,7 @@ import path from 'node:path';
 import test from 'node:test';
 import { renderQuietLicense } from './build_quiet_license.mjs';
 import { renderQuietDemo } from './build_quiet_demo.mjs';
+import { renderQuietGoals } from './build_quiet_goals.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pages = ['', 'ja/', 'zh/'].flatMap(locale =>
@@ -29,7 +30,7 @@ for (const name of pages) {
       ? renderQuietLicense(original(name), name.includes('/') ? '../' : '')
       : name.endsWith('demo.html')
         ? renderQuietDemo(original(name), name.startsWith('ja/') ? 'ja' : name.startsWith('zh/') ? 'zh' : 'en')
-        : original(name);
+        : name.endsWith('goals.html') ? renderQuietGoals(original(name)) : original(name);
     assert.equal(normalizeBuildKeys(stripped), normalizeBuildKeys(expected));
     assert.equal((html.match(/quiet-pages\.css/g) || []).length, 1);
   });
