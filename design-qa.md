@@ -981,4 +981,8 @@ Reference: the approved A01 refined board, `/private/tmp/fde-a01-review-checkout
 
 Browser sizes are Chrome emulation, not physical iPhone/Safari acceptance. CMS write verification is isolated mock evidence, not a production article publication. IMS-native release, real commerce, order lookup and the planned smooth IMS footage replacement remain outside this UI renewal.
 
+PR #86's first exact-head CI failed 21 contract assertions after the existing build-sync bot changed only dated JS/CSS query keys. Those tests now normalize only the established `file.js?v=YYYYMMDD-HHMMSS` / CSS equivalent; copy, routes, conditions and runtime behavior remain exact comparisons. A negative normalization test proves unrelated dates, prices, HTML routes and query parameters are not ignored. The failed initial run remains preserved; normal exact-head CI is required again before merge.
+
+The complete local rerun passes all 92 tests without skips after this bounded test correction. Repository validation also passes on the synchronized build.
+
 final result: passed

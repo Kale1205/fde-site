@@ -2,12 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {renderQuietContact} from './build_quiet_contact.mjs';
 import {applyReleaseNoticePolicy} from './release_notice_policy.mjs';
 
 const root=new URL('../',import.meta.url);
-const read=name=>readFileSync(new URL(name,root),'utf8');
-const original=name=>execFileSync('git',['show',`2903e6d:${name}`],{cwd:root,encoding:'utf8'});
+const read=name=>normalizeAssetBuildKeys(readFileSync(new URL(name,root),'utf8'));
+const original=name=>normalizeAssetBuildKeys(execFileSync('git',['show',`2903e6d:${name}`],{cwd:root,encoding:'utf8'}));
 for(const prefix of ['', 'ja/', 'zh/']){
   test(`${prefix}contact: approved FAQ-first composition preserves content and functionality`,()=>{
     const name=`${prefix}contact.html`,before=original(name),html=read(name);

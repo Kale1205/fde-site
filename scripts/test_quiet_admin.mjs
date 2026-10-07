@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 
 const root=new URL('../',import.meta.url),read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -18,9 +19,14 @@ test('A01 presentation is Japanese-only and keeps the existing protected runtime
   assert.match(html,/8MB以下/);
 });
 
-test('authentication, translation, CMS writes and staging lock remain byte-for-byte unchanged',()=>{
+test('authentication, translation, CMS writes and staging lock remain unchanged apart from automatic asset cache keys',()=>{
   for(const file of ['cms-admin.js','news-translation-hook.js','faq-admin-v3.js','contact-config.js','cms-admin-loader.js'])
-    assert.equal(read(file),execFileSync('git',['show',`e45a1b2:${file}`],{cwd:root,encoding:'utf8'}));
+    assert.equal(normalizeAssetBuildKeys(read(file)),normalizeAssetBuildKeys(execFileSync('git',['show',`e45a1b2:${file}`],{cwd:root,encoding:'utf8'})));
+});
+
+test('asset normalization ignores only dated JS/CSS cache keys, not content, routes or conditions',()=>{
+  assert.equal(normalizeAssetBuildKeys('contact-config.js?v=20261007-224522'), 'contact-config.js?v=BUILD');
+  for (const input of ['2026/11/01', '49,800円', 'contact.html?v=20261007-224522', 'contact-config.js?v=unexpected', 'turnstile-protection.js?mode=20261007-224522']) assert.equal(normalizeAssetBuildKeys(input), input);
 });
 
 test('presentation adapter preserves nodes/listeners and delegates selection to the original selector',()=>{

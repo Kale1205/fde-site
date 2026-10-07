@@ -4,14 +4,15 @@ import {execFileSync} from 'node:child_process';
 import test from 'node:test';
 import vm from 'node:vm';
 import {renderQuietDemo} from './build_quiet_demo.mjs';
+import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline='e13457ad75068fa753b3f6dc6705d1aa1de2a61c';
 const runtime=readFileSync(new URL('demo-v1.js',root),'utf8');
 for(const [dir,locale] of [['','en'],['ja/','ja'],['zh/','zh']]) {
   const file=`${dir}demo.html`;
-  const html=readFileSync(new URL(file,root),'utf8');
-  const before=execFileSync('git',['show',`${baseline}:${file}`],{encoding:'utf8'});
+  const html=normalizeAssetBuildKeys(readFileSync(new URL(file,root),'utf8'));
+  const before=normalizeAssetBuildKeys(execFileSync('git',['show',`${baseline}:${file}`],{encoding:'utf8'}));
   test(`${file}: selected switchboard composition is idempotent`,()=>{
     const rendered=renderQuietDemo(before,locale);
     assert.equal(renderQuietDemo(rendered,locale),rendered);
@@ -23,7 +24,7 @@ for(const [dir,locale] of [['','en'],['ja/','ja'],['zh/','zh']]) {
     assert.match(html,/class="demo-selected-product"/);
   });
   test(`${file}: copy, metadata, fields and destinations are retained`,()=>{
-    assert.equal(html.slice(0,html.indexOf('</head>')),before.slice(0,before.indexOf('</head>')) + '  <link rel="stylesheet" href="'+(dir?'../':'')+'quiet-pages.css?v=20260925-081759">\n');
+    assert.equal(html.slice(0,html.indexOf('</head>')),before.slice(0,before.indexOf('</head>')) + '  <link rel="stylesheet" href="'+(dir?'../':'')+'quiet-pages.css?v=BUILD">\n');
     const oldText=before.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
     const newText=html.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
     for(const text of before.matchAll(/>([^<>]+)</g)) {
@@ -33,7 +34,7 @@ for(const [dir,locale] of [['','en'],['ja/','ja'],['zh/','zh']]) {
     assert.ok(oldText.length>0);
     for(const id of [...before.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]))assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);
     const links=s=>[...s.matchAll(/\bhref="([^"]+)"/g)].map(m=>m[1]).sort();
-    assert.deepEqual(links(html),links(before).concat([`${dir?'../':''}quiet-pages.css?v=20260925-081759`]).sort());
+    assert.deepEqual(links(html),links(before).concat([`${dir?'../':''}quiet-pages.css?v=BUILD`]).sort());
     assert.equal((html.match(/<caption /g)||[]).length,2);
     assert.equal((html.match(/scope="col"/g)||[]).length,12);
     assert.equal((html.match(/role="region"[^>]*tabindex="0"/g)||[]).length,2);

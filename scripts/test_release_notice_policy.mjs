@@ -2,11 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {releaseCopy, applyReleaseNoticePolicy, removePurchaseStatusCopy} from './release_notice_policy.mjs';
 
 const root=new URL('../',import.meta.url);
-const read=file=>readFileSync(new URL(file,root),'utf8');
-const before=file=>execFileSync('git',['show',`d49ca55:${file}`],{cwd:root,encoding:'utf8'});
+const read=file=>normalizeAssetBuildKeys(readFileSync(new URL(file,root),'utf8'));
+const before=file=>normalizeAssetBuildKeys(execFileSync('git',['show',`d49ca55:${file}`],{cwd:root,encoding:'utf8'}));
 for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
   test(`${locale}: release/purchase notice only appears on homepage, terms and W07`,()=>{
     for(const page of ['index','license','order']) {

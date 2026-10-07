@@ -2,15 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {renderQuietNews} from './build_quiet_news.mjs';
 import {applyReleaseNoticePolicy} from './release_notice_policy.mjs';
 
 const root=new URL('../',import.meta.url);
-const read=name=>readFileSync(new URL(name,root),'utf8');
+const read=name=>normalizeAssetBuildKeys(readFileSync(new URL(name,root),'utf8'));
 const base='95fc1e5';
 for(const [prefix,heading] of [['','Updates'],['ja/','アップデート情報'],['zh/','更新信息']]){
   test(`${prefix}news: selected composition is deterministic and idempotent`,()=>{
-    const original=execFileSync('git',['show',`${base}:${prefix}news.html`],{cwd:root,encoding:'utf8'});
+    const original=normalizeAssetBuildKeys(execFileSync('git',['show',`${base}:${prefix}news.html`],{cwd:root,encoding:'utf8'}));
     const html=read(`${prefix}news.html`);
     assert.equal(html,renderQuietNews(original));
     assert.equal(renderQuietNews(html),html);

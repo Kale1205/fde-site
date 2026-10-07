@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {renderQuietCustomer,customerCopy} from './build_quiet_customer.mjs';
 import {validatePortalInput,initPortal} from '../quiet-customer.js';
 
@@ -44,5 +45,5 @@ test('no real commerce, external transmission, persistent data or HTML injection
   assert.equal(read('worker/src/index-v14.js'),execFileSync('git',['show','f95aa4d:worker/src/index-v14.js'],{cwd:root,encoding:'utf8'}));
   // A01 now has an approved presentation layer; its authentication and writes stay unchanged.
   for(const file of ['cms-admin.js','news-translation-hook.js','faq-admin-v3.js','contact-config.js','cms-admin-loader.js'])
-    assert.equal(read(file),execFileSync('git',['show',`f95aa4d:${file}`],{cwd:root,encoding:'utf8'}));
+    assert.equal(normalizeAssetBuildKeys(read(file)),normalizeAssetBuildKeys(execFileSync('git',['show',`f95aa4d:${file}`],{cwd:root,encoding:'utf8'})));
 });

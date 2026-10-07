@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {renderQuietGoals} from './build_quiet_goals.mjs';
 
 const baseline='a5f31f4';
@@ -10,8 +11,8 @@ const prose=source=>[...source.matchAll(/<(?:p|h[1-3]|small|summary|li)\b[^>]*>(
   .map(m=>m[1].replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim()).sort();
 for(const folder of ['', 'ja/', 'zh/']) {
   const name=folder+'goals.html';
-  const current=readFileSync(name,'utf8');
-  const previous=execFileSync('git',['show',`${baseline}:${name}`],{encoding:'utf8'});
+  const current=normalizeAssetBuildKeys(readFileSync(name,'utf8'));
+  const previous=normalizeAssetBuildKeys(execFileSync('git',['show',`${baseline}:${name}`],{encoding:'utf8'}));
   test(`${name}: approved structure is composed and idempotent`,()=>{
     assert.equal(renderQuietGoals(previous),current);
     assert.equal(renderQuietGoals(current),current);
