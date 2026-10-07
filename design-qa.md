@@ -985,4 +985,6 @@ PR #86's first exact-head CI failed 21 contract assertions after the existing bu
 
 The complete local rerun passes all 92 tests without skips after this bounded test correction. Repository validation also passes on the synchronized build.
 
+The build-sync validation also exposed a legacy pre-staging assertion requiring the retired modal-only `data-demo-open` control. The approved W01 uses an inline demo and a normal localized Demo link. The assertion now accepts either the original trigger or the complete approved inline contract (IMS root, demo runtime and Quiet Form class), while still requiring the Japanese relative Demo link. Backend/Turnstile/CMS staging isolation checks remain unchanged.
+
 final result: passed
