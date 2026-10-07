@@ -201,12 +201,12 @@
       "subcategory": "development",
       "translationStatus": "seeded",
       "question": {
-        "ja": "FDE IMSはどのような用途の製品ですか？",
-        "en": "What is FDE IMS intended for?"
+        "ja": "IMSはどのような用途の製品ですか？",
+        "en": "What is IMS intended for?"
       },
       "answer": {
         "ja": "小規模企業の在庫管理を支える、デスクトップ中心・ローカル運用を前提とした業務ソフトとして開発しています。完成時の機能はまだ確定していないため、本FAQでは未確定の機能を保証しません。",
-        "en": "FDE IMS is being developed as desktop-first, local-first business software intended to support inventory-related operations for small companies. The completed feature set is still under development, so this FAQ does not guarantee features that have not been formally finalized."
+        "en": "IMS is being developed as desktop-first, local-first business software intended to support inventory-related operations for small companies. The completed feature set is still under development, so this FAQ does not guarantee features that have not been formally finalized."
       },
       "keywords": {
         "ja": [
@@ -285,8 +285,8 @@
       "subcategory": "license-basics",
       "translationStatus": "seeded",
       "question": {
-        "ja": "FDE IMS Licenseの価格はいくらですか？",
-        "en": "What is the planned price of FDE IMS License?"
+        "ja": "IMS Licenseの価格はいくらですか？",
+        "en": "What is the planned price of IMS License?"
       },
       "answer": {
         "ja": "Licenseの予定価格は49,800円（買い切り）です。ソースコードは含みません。購入法人内で期限なく利用でき、購入後3か月はUpdatesを追加料金なしで利用できます。有料のUpdatesへ自動移行することはありません。",
@@ -328,7 +328,7 @@
       "subcategory": "license-basics",
       "translationStatus": "seeded",
       "question": {
-        "ja": "FDE IMS License Plusの価格と内容を教えてください",
+        "ja": "IMS License Plusの価格と内容を教えてください",
         "en": "What are the planned price and included rights for License Plus?"
       },
       "answer": {
@@ -755,12 +755,12 @@
       "subcategory": "redistribution",
       "translationStatus": "seeded",
       "question": {
-        "ja": "購入したFDE IMSを第三者へ販売できますか？",
-        "en": "Can we resell FDE IMS to a third party?"
+        "ja": "購入したIMSを第三者へ販売できますか？",
+        "en": "Can we resell IMS to a third party?"
       },
       "answer": {
-        "ja": "できません。LicenseとLicense Plusのいずれにも、FDE IMSの原版または改変版を第三者へ販売・再販売する権利は含まれません。利用権は購入法人の社内利用に限られます。",
-        "en": "No. Neither License nor License Plus includes the right to sell or resell the original or a modified version of FDE IMS to third parties. Use rights are limited to the purchasing legal entity’s internal operations."
+        "ja": "できません。LicenseとLicense Plusのいずれにも、IMSの原版または改変版を第三者へ販売・再販売する権利は含まれません。利用権は購入法人の社内利用に限られます。",
+        "en": "No. Neither License nor License Plus includes the right to sell or resell the original or a modified version of IMS to third parties. Use rights are limited to the purchasing legal entity’s internal operations."
       },
       "keywords": {
         "ja": [
@@ -796,12 +796,12 @@
       "subcategory": "redistribution",
       "translationStatus": "seeded",
       "question": {
-        "ja": "改変したFDE IMSを別の商品として販売できますか？",
-        "en": "Can we sell a modified version of FDE IMS?"
+        "ja": "改変したIMSを別の商品として販売できますか？",
+        "en": "Can we sell a modified version of IMS?"
       },
       "answer": {
-        "ja": "できません。名称・UI・機能を変更しても、FDE IMSを基にした改変版を第三者向けの商品として販売・再販売することはできません。",
-        "en": "No. Even if the name, UI or functions are changed, selling or reselling a modified product based on FDE IMS to third parties is planned to be prohibited."
+        "ja": "できません。名称・UI・機能を変更しても、IMSを基にした改変版を第三者向けの商品として販売・再販売することはできません。",
+        "en": "No. Even if the name, UI or functions are changed, selling or reselling a modified product based on IMS to third parties is planned to be prohibited."
       },
       "keywords": {
         "ja": [
@@ -841,7 +841,7 @@
         "en": "Can source code or installers be redistributed to third parties?"
       },
       "answer": {
-        "ja": "できません。License Plusで提供するソースコード、インストーラー、FDE IMSを構成するファイルは、第三者へ再配布できません。ただし、社内向けの改修に必要な範囲で、別途定める条件を守る外部委託先に開示できます。",
+        "ja": "できません。License Plusで提供するソースコード、インストーラー、IMSを構成するファイルは、第三者へ再配布できません。ただし、社内向けの改修に必要な範囲で、別途定める条件を守る外部委託先に開示できます。",
         "en": "No. Redistribution of installers, product files, or the source code supplied with License Plus is planned to be prohibited. License Plus source code may be disclosed to approved contractors only as needed for internal modification and subject to the applicable license conditions."
       },
       "keywords": {
@@ -962,12 +962,12 @@
       "subcategory": "redistribution",
       "translationStatus": "seeded",
       "question": {
-        "ja": "第三者へFDE IMSの利用権をサブライセンスできますか？",
-        "en": "Can we sublicense FDE IMS to third parties?"
+        "ja": "第三者へIMSの利用権をサブライセンスできますか？",
+        "en": "Can we sublicense IMS to third parties?"
       },
       "answer": {
-        "ja": "できません。LicenseとLicense Plusのいずれにも、購入企業が第三者へFDE IMSの利用権を独自に付与する権利は含まれません。",
-        "en": "No. Neither License nor License Plus allows the purchasing company to independently grant third parties the right to use FDE IMS."
+        "ja": "できません。LicenseとLicense Plusのいずれにも、購入企業が第三者へIMSの利用権を独自に付与する権利は含まれません。",
+        "en": "No. Neither License nor License Plus allows the purchasing company to independently grant third parties the right to use IMS."
       },
       "keywords": {
         "ja": [
@@ -1003,12 +1003,12 @@
       "subcategory": "service",
       "translationStatus": "seeded",
       "question": {
-        "ja": "FDE IMSをSaaS等として顧客へ提供できますか？",
-        "en": "Can FDE IMS be offered to customers as SaaS or a hosted service?"
+        "ja": "IMSをSaaS等として顧客へ提供できますか？",
+        "en": "Can IMS be offered to customers as SaaS or a hosted service?"
       },
       "answer": {
-        "ja": "できません。LicenseとLicense Plusのいずれも、FDE IMSそのものを第三者に利用させるSaaS、ASP、ホスティング、ソフトウェアレンタル、サービスビューロー等として提供する権利を含みません。",
-        "en": "No. Neither License nor License Plus includes the right to offer FDE IMS itself to third parties as SaaS, ASP, hosting, software rental, a service bureau, or a similar service."
+        "ja": "できません。LicenseとLicense Plusのいずれも、IMSそのものを第三者に利用させるSaaS、ASP、ホスティング、ソフトウェアレンタル、サービスビューロー等として提供する権利を含みません。",
+        "en": "No. Neither License nor License Plus includes the right to offer IMS itself to third parties as SaaS, ASP, hosting, software rental, a service bureau, or a similar service."
       },
       "keywords": {
         "ja": [
@@ -1046,12 +1046,12 @@
       "subcategory": "service",
       "translationStatus": "seeded",
       "question": {
-        "ja": "FDE IMSを社内で使い、自社の商品やサービスを顧客へ販売することはできますか？",
-        "en": "Can we use FDE IMS internally while selling our own products or services?"
+        "ja": "IMSを社内で使い、自社の商品やサービスを顧客へ販売することはできますか？",
+        "en": "Can we use IMS internally while selling our own products or services?"
       },
       "answer": {
-        "ja": "はい。FDE IMSを社内の在庫管理などに使い、自社の商品・サービスを顧客へ販売できます。できないのは、FDE IMSそのものを第三者に使わせる事業です。",
-        "en": "Yes. Using FDE IMS internally for operations such as inventory management while selling your own ordinary products or services to customers is planned to be permitted. The restriction concerns providing the IMS itself for third-party use."
+        "ja": "はい。IMSを社内の在庫管理などに使い、自社の商品・サービスを顧客へ販売できます。できないのは、IMSそのものを第三者に使わせる事業です。",
+        "en": "Yes. Using IMS internally for operations such as inventory management while selling your own ordinary products or services to customers is planned to be permitted. The restriction concerns providing the IMS itself for third-party use."
       },
       "keywords": {
         "ja": [
@@ -1298,12 +1298,12 @@
       "subcategory": "ip",
       "translationStatus": "seeded",
       "question": {
-        "ja": "改変後に、FDE IMSの原版を自社の独自開発製品と表示できますか？",
-        "en": "Can we claim the original FDE IMS was independently developed by our company?"
+        "ja": "改変後に、IMSの原版を自社の独自開発製品と表示できますか？",
+        "en": "Can we claim the original IMS was independently developed by our company?"
       },
       "answer": {
-        "ja": "できません。UIなどを変更しても、FDE IMSの原版を「自社が独自に開発した製品」と表示することはできません。",
-        "en": "No. Even when UI or other modifications are made under License Plus, the purchasing company may not falsely claim that the original FDE IMS was independently developed by it."
+        "ja": "できません。UIなどを変更しても、IMSの原版を「自社が独自に開発した製品」と表示することはできません。",
+        "en": "No. Even when UI or other modifications are made under License Plus, the purchasing company may not falsely claim that the original IMS was independently developed by it."
       },
       "keywords": {
         "ja": [
@@ -1343,8 +1343,8 @@
         "en": "Can AI coding tools be used to modify License Plus?"
       },
       "answer": {
-        "ja": "License Plusの社内改修では、入力コードを第三者のモデル学習に使わない設定・契約のAIコーディングツールを使えます。一方、FDE IMSのコードをモデル学習、ファインチューニング、第三者向け訓練、公開データセット、類似製品を再現するための学習に利用することはできません。",
-        "en": "For internal modification under License Plus, the planned policy permits AI coding tools whose settings or contract prevent submitted code from being used for third-party model training. FDE IMS code may not be used for model training, fine-tuning, third-party training, public datasets, or training intended to reproduce a similar product."
+        "ja": "License Plusの社内改修では、入力コードを第三者のモデル学習に使わない設定・契約のAIコーディングツールを使えます。一方、IMSのコードをモデル学習、ファインチューニング、第三者向け訓練、公開データセット、類似製品を再現するための学習に利用することはできません。",
+        "en": "For internal modification under License Plus, the planned policy permits AI coding tools whose settings or contract prevent submitted code from being used for third-party model training. IMS code may not be used for model training, fine-tuning, third-party training, public datasets, or training intended to reproduce a similar product."
       },
       "keywords": {
         "ja": [
@@ -1424,7 +1424,7 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "正式販売時の注文では何が表示されますか？",
-        "en": "What information is planned for a formal FDE IMS order?"
+        "en": "What information is planned for a formal IMS order?"
       },
       "answer": {
         "ja": "正式販売時の注文画面には、選択した商品、価格、購入法人、製品バージョン、利用期間、ソースコードの有無、License向けUpdates追加オプション、License Agreement / EULAを表示します。Licenseはソースコードなしの永続利用、License Plusはソースコードと社内改変権付きの永続利用です。",
@@ -1507,12 +1507,12 @@
       "subcategory": "adoption",
       "translationStatus": "seeded",
       "question": {
-        "ja": "紙・Excel・既存システムからFDE IMSへ移行できますか？",
-        "en": "Can FDE IMS replace paper, spreadsheets, or an existing inventory system?"
+        "ja": "紙・Excel・既存システムからIMSへ移行できますか？",
+        "en": "Can IMS replace paper, spreadsheets, or an existing inventory system?"
       },
       "answer": {
-        "ja": "FDE IMSは、紙やExcelでの在庫管理を分かりやすい仕組みへ移したい場合や、既存システムを見直したい小規模企業向けに開発しています。製品が自社に合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。",
-        "en": "FDE IMS is being designed for small businesses moving from paper or spreadsheets, or reviewing an existing inventory system. Product fit can be discussed now, but data-import formats, migration services, and final deployment support are not yet confirmed."
+        "ja": "IMSは、紙やExcelでの在庫管理を分かりやすい仕組みへ移したい場合や、既存システムを見直したい小規模企業向けに開発しています。製品が自社に合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。",
+        "en": "IMS is being designed for small businesses moving from paper or spreadsheets, or reviewing an existing inventory system. Product fit can be discussed now, but data-import formats, migration services, and final deployment support are not yet confirmed."
       },
       "keywords": {
         "ja": ["在庫管理", "紙", "Excel", "既存システム", "移行", "データ取り込み"],

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>FDE IMS 库存管理软件演示｜Baked Kale FDE</title>
-<meta name="description" content="尝试一个简化的FDE IMS v1.0工作流程,并附带临时样本数据:搜索库存,接收,传输,计数,飞船,以及审查移动历史.">
+  <title>IMS 库存管理软件演示｜Baked Kale FDE</title>
+<meta name="description" content="尝试一个简化的IMS v1.0工作流程,并附带临时样本数据:搜索库存,接收,传输,计数,飞船,以及审查移动历史.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://kale1205.github.io/fde-site/zh/demo.html">
   <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/demo.html">
@@ -14,18 +14,18 @@
   <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/demo.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Baked Kale FDE">
-  <meta property="og:title" content="FDE IMS 库存管理软件演示｜Baked Kale FDE">
-  <meta property="og:description" content="尝试使用临时样本数据简化FDE IMS v1.0股票工作流程.">
+  <meta property="og:title" content="IMS 库存管理软件演示｜Baked Kale FDE">
+  <meta property="og:description" content="尝试使用临时样本数据简化IMS v1.0股票工作流程.">
   <meta property="og:url" content="https://kale1205.github.io/fde-site/zh/demo.html">
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
-  <meta property="og:image:alt" content="FDE IMS inventory operations development preview by Baked Kale FDE">
+  <meta property="og:image:alt" content="IMS inventory operations development preview by Baked Kale FDE">
   <meta property="og:locale" content="en_US">
   <meta property="og:locale:alternate" content="ja_JP">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="FDE IMS 库存管理软件演示｜Baked Kale FDE">
-  <meta name="twitter:description" content="尝试使用临时样本数据简化FDE IMS v1.0股票工作流程.">
+  <meta name="twitter:title" content="IMS 库存管理软件演示｜Baked Kale FDE">
+  <meta name="twitter:description" content="尝试使用临时样本数据简化IMS v1.0股票工作流程.">
   <meta name="twitter:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
-  <meta name="twitter:image:alt" content="FDE IMS inventory operations development preview by Baked Kale FDE">
+  <meta name="twitter:image:alt" content="IMS inventory operations development preview by Baked Kale FDE">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
   <link rel="stylesheet" href="../gallery-ui.css?v=20261007-224522">
   <link rel="stylesheet" href="../gallery-pages.css?v=20261007-224522">
@@ -47,7 +47,7 @@
     <nav class="mobile-nav" id="mobile-nav" aria-label="移动端导航" hidden><a href="index.html">产品</a><a href="goals.html">我们的目标</a><a href="news.html">最新消息</a><a href="../demo.html" hreflang="en" lang="en">English</a><a href="../ja/demo.html" hreflang="ja" lang="ja">日本語</a><a href="contact.html">联系我们</a></nav>
   </header>
   <div class="demo-bar">
-    <div class="section-frame demo-toolbar"><strong>FDE IMS / v1.0 简化演示</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">关闭演示</button></div></div>
+    <div class="section-frame demo-toolbar"><strong>IMS / v1.0 简化演示</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">关闭演示</button></div></div>
   </div>
   <main class="demo-dashboard">
     <div class="demo-hero">
@@ -61,7 +61,7 @@
       <nav class="demo-view-switcher" aria-label="切换演示视图" hidden><button type="button" data-demo-view="inventory" aria-pressed="true" aria-controls="demoInventoryView demoOperationForm">库存</button><button type="button" data-demo-view="operation" aria-pressed="false" aria-controls="demoOperationForm">库存操作</button><button type="button" data-demo-view="history" aria-pressed="false" aria-controls="demoHistoryView">移动记录</button></nav>
     </section>
     </div>
-    <section class="demo-workspace section-frame" id="imsDemoRoot" aria-label="FDE IMS v1.0 样本库存工作空间">
+    <section class="demo-workspace section-frame" id="imsDemoRoot" aria-label="IMS v1.0 样本库存工作空间">
       <div class="demo-app-grid">
         <div class="demo-inventory-panel" id="demoInventoryView">
           <div class="demo-panel-head"><div><p class="eyebrow">当前库存</p><h2 id="demoInventoryTitle">各位置库存</h2></div></div>
@@ -110,7 +110,7 @@
       <div class="demo-workbench-actions"><button id="demoReset" class="button button-secondary light" type="button">重置演示</button></div>
       <details class="demo-guide" id="demoGuide"><summary id="demoGuideTitle">v1.0 简化业务流程</summary><div data-demo-notes>
       <div class="ims-pre"><strong>交互式模拟 · 非正式发布产品</strong><p>这个只浏览器的演示是V1.0工作流程的简化表示. 它不连接到IMS服务器,保存您的更改,提供认证或角色,或创建生产备份.</p></div>
-      <small class="demo-note">Baked Kale FDE 出品的 FDE IMS</small>
+      <small class="demo-note">Baked Kale FDE 出品的 IMS</small>
     <ol class="demo-flow" aria-label="简化 v1.0 工作流程">
       <li><small>01</small><strong>查找</strong><span>SKU 或条码</span></li>
       <li><small>02</small><strong>入库</strong><span>添加进货库存</span></li>
@@ -127,7 +127,7 @@
       </div></details>
     </section>
   </main>
-  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>面向小型运营团队的 FDE IMS 库存管理软件。</p><small>与临时样本数据交互预览.</small><nav class="footer-nav" aria-label="页脚导航"><a href="goals.html">我们的目标</a><a href="news.html">最新消息</a><a href="license.html">License</a><a href="contact.html">联系我们</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
+  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>面向小型运营团队的 IMS 库存管理软件。</p><small>与临时样本数据交互预览.</small><nav class="footer-nav" aria-label="页脚导航"><a href="goals.html">我们的目标</a><a href="news.html">最新消息</a><a href="license.html">License</a><a href="contact.html">联系我们</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
   <div class="toast" role="status" aria-live="polite"></div>
 </div>
 </body>

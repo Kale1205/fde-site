@@ -7,10 +7,10 @@ export const releaseCopy = {
 
 export function removePurchaseStatusCopy(text) {
   return text
-    .replaceAll('FDE IMSは正式販売前です。', '')
-    .replaceAll('FDE IMSは正式販売前のため、現時点では予定価格です。', '')
-    .replaceAll('FDE IMS is not yet formally on sale, and all USD figures', 'All USD figures')
-    .replaceAll('FDE IMS 尚未正式销售，所有美元金额', '所有美元金额')
+    .replaceAll('IMSは正式販売前です。', '')
+    .replaceAll('IMSは正式販売前のため、現時点では予定価格です。', '')
+    .replaceAll('IMS is not yet formally on sale, and all USD figures', 'All USD figures')
+    .replaceAll('IMS 尚未正式销售，所有美元金额', '所有美元金额')
     .replaceAll('まだ正式販売前のため、現在は購入対象の製品バージョンはありません。', '')
     .replaceAll(' Because the product is not yet formally on sale, there is no current purchase-version number.', '')
     .replaceAll(' Formal sales are not open.', '')

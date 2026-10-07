@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
+import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
 import test from 'node:test';
 import vm from 'node:vm';
 import {renderQuietDemo} from './build_quiet_demo.mjs';
