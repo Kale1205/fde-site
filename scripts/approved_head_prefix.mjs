@@ -7,11 +7,12 @@ export function approvedHeadPrefix(source, {jsonLd = false} = {}) {
   if (boundary < 0 || end < boundary) throw Error('Approved asset suffix missing');
   const prefix = source.slice(0, boundary);
   const openings = [...prefix.matchAll(/<script\b/gi)];
-  const blocks = [...prefix.matchAll(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi)];
+  const blocks = [...prefix.matchAll(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi)];
   if (!jsonLd && openings.length) throw Error('Unexpected script in static metadata');
   if (jsonLd) {
     if (openings.length !== 1 || blocks.length !== 1 ||
-        !blocks[0][0].startsWith('<script type="application/ld+json">')) {
+        !blocks[0][0].startsWith('<script type="application/ld+json">') ||
+        !blocks[0][0].endsWith('</script>')) {
       throw Error('Only the approved JSON-LD block may precede generated assets');
     }
     const content = blocks[0][0].slice('<script type="application/ld+json">'.length);

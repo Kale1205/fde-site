@@ -43,6 +43,8 @@ An iCloud Git index write then timed out before committing this correction. The 
 
 The non-iCloud checkout passes all 95 Node tests, repository validation, unchanged composition checks, sitemap check, three sitemap regression tests, all eight Chinese pages, staging integrity and whitespace checks. No generated HTML or sitemap change was needed.
 
+The third CodeQL scan left one finding in the metadata validator's script-end recognizer. It now recognizes all browser-tolerated end-tag attribute/whitespace forms, then requires the exact approved JSON-LD closing tag; malformed forms fail closed. Regression fixtures cover each form. No generated output changes.
+
 final result: passed (local visual and functional QA; corrected exact-head CI/security recheck pending)
 
 ---

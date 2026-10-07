@@ -22,6 +22,9 @@ test('static metadata rejects executable scripts and missing asset boundaries',(
   const home=read('index.html');
   assert.ok(approvedHeadPrefix(home,{jsonLd:true}).includes('application/ld+json'));
   assert.throws(()=>approvedHeadPrefix(home.replace('<title>','<script>unexpected</script><title>'),{jsonLd:true}),/Only the approved JSON-LD/);
+  for(const closing of ['</script >','</script\\t\\n bar>','</SCRIPT>']) {
+    assert.throws(()=>approvedHeadPrefix(home.replace('</script>',closing),{jsonLd:true}),/Only the approved JSON-LD/);
+  }
 });
 for(const prefix of ['', 'ja/', 'zh/']){
   test(`${prefix}order matches selected W07 composition and approved homepage products`,()=>{
