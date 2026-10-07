@@ -128,7 +128,7 @@
     }
 
     const originalLinks = Array.from(mobileNav.querySelectorAll("a"));
-    const byHref = (fragment) => originalLinks.find((link) => link.getAttribute("href")?.includes(fragment));
+    const byHref = (fragment) => originalLinks.find((link) => !link.hasAttribute("hreflang") && link.getAttribute("href")?.includes(fragment));
     const productLink = originalLinks[0];
     const goalsLink = byHref("goals.html");
     const newsLink = byHref("news.html");

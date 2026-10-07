@@ -24,12 +24,13 @@
 - Shared sheet: eight visible private-package links hit-testable above backdrop. Escape closes and restores trigger focus. Actual ZH→EN source language click and JA→ZH private language click stay on customer route. Private package JA form keyboard confirmation succeeded with zero external requests; private scope includes all 24 W01–W08 routes. No inquiry submitted.
 - Native Lighthouse snapshot: ZH Mobile and EN Desktop Accessibility / Best Practices / SEO / Agentic Browsing 100, zero failed audits. EN local trace observed CLS 0.00 and LCP 89ms unthrottled; not field performance, physical-device QA or full WCAG certification.
 - An initial stale native input UID was rejected after a viewport/page change. Fresh snapshot then EN form Enter check succeeded. Initial private 4178 navigation failed because its server was no longer running; restarted task-owned loopback preview and successfully checked the actual bundle. Failed evidence was not called application success.
-- 87 related Node tests passed. W08 six tests passed again after punctuation correction. Renderer idempotence, Chinese eight-page generator and JS syntax checks passed. Repository validator and final sitemap check are recorded in the W08 implementation handoff below after completion. This static repository has no separate build/lint command.
+- 87 related Node tests passed. W08 six tests passed again after punctuation correction. Renderer idempotence, Chinese eight-page generator and JS syntax checks passed. Full repository validation passed after correcting the Japanese heading without weakening rules; sitemap lastmod regression tests (3) passed. The separate final `npm run sitemap -- --check` retry timed out while Git read the existing HTML commit history (30s), so that command is not recorded as PASS. No sitemap, robots or indexed route was changed. This static repository has no separate build/lint command.
 
 ## Boundaries and handoff
 
 - No FDE push, PR, main merge, public FDE deployment, Worker activation, customer/order lookup, payment or CMS write. Existing output and original checkout preserved. Owner-private review Site is a separate preview publication; all-page user approval still precedes FDE merge/publication.
 - A01 remains Japanese-only and untouched. W08 final implementation awaits user visual confirmation. Physical iPhone Safari/other vendor engines remain user/device QA, not claimed from Chrome emulation.
+- Owner-private review publication succeeded: Site source `49606a032d4d77095db651765125876edfd49493`, deployment `appgdep_6ac624f83460819191ce527a8fa5267a`, URL `https://fde-w02-design-review.kale-1999.chatgpt.site/preview/ja/customer.html`. FDE implementation checkpoint is `e45a1b249713f386865b0eaa85f6c670a39e03b8`; this evidence-only QA addition follows that checkpoint. Space renewal, project table and unchecked ToDo were updated and read back, with final visual approval and consolidated main merge still pending.
 - No actionable P0/P1/P2 visual finding remains. Implementation checklist: review published private W08; decide A01 visual scope separately; perform consolidated approval and exact-head PR/CI review before any FDE main merge.
 
 final result: passed
@@ -950,5 +951,34 @@ Core files: goals.html, ja/goals.html, why.html, ja/why.html, gallery-pages.css,
 No deployment, merge, external announcement, analytics, tracking, inquiry submission or release authorization was performed. The new preview is http://127.0.0.1:4183/ja/goals.html (EN /goals.html); the older preview server remains untouched. Production-origin and physical Safari/iOS/Android checks are outside this local Chrome verification.
 
 Browser cleanup: the task-owned Chrome DevTools pages 9, 10 and 12 were closed; no pre-existing normal user Chrome session was targeted. Closing the remaining task-owned page 11 was attempted, but Chrome DevTools MCP refuses to close its last page. This remaining page and the tool limitation are reported in the handoff.
+
+final result: passed
+
+## 2026-10-07 final approved Quiet Form renewal and A01
+
+The approved W01–W08 compositions are implemented in English, Japanese and Simplified Chinese. A01 combines the selected forest sidebar with the selected article-list/editor workspace. Existing brand artwork, tokens and components are reused. A01 remains Japanese-only; its original authentication, GitHub writes, translation, publishing, staging lock and media handling runtimes are byte-for-byte unchanged. The presentation adapter moves original nodes and delegates article selection through the original select/change handler. No external transmission, persistent storage, tracking or new dependency was added.
+
+### Source comparison and visual corrections
+
+Reference: the approved A01 refined board, `/private/tmp/fde-a01-review-checkout.Indnek/dist/a01-refined.png`. Rendered comparison: `output/final-20261007/a01-comparison.png` plus final native Chrome captures at 1440, 1024 and 390px. The board and actual responsive implementation were opened together. The approved navigation/list/editor architecture, forest/ivory palette, restrained borders and shallow shadows match; existing longer CMS security instructions and original input names intentionally differ from the short concept copy. The source artwork is reused rather than recreated. Public page contact sheets cover eight pages, three locales and all three sizes.
+
+- P2 fixed: shared CSS specificity initially made the sidebar states and textarea inconsistent. Scoped state rules and a 260px editor minimum restore hierarchy.
+- P2 fixed: Mobile menu trigger inherited full-width styles and overlapped the brand. Explicit intrinsic width and scoped colors correct it; native dialog and Escape focus restoration pass.
+- P2 fixed: low-contrast image-preview placeholder. The existing muted token now passes Lighthouse.
+- P2 fixed: article dates and titles were unnecessarily stacked; use a compact date/title grid and an intrinsic-width new-article button.
+- P2 fixed during public regression: Mobile Contact shortcut could pick a language alternate on the Contact page. Exclude hreflang links from shortcut discovery; English/Japanese/Chinese local destinations and hit targets pass, with a new regression test.
+
+### Current verification
+
+- Native Chrome DevTools: 24 public routes × 1440/1024/390px = 72 checks. No document overflow, missing images, JavaScript errors or HTTP resource failures. One h1 per route; canonical and four language alternates retained. Maximum observed loading CLS: 0.01824 (lab snapshot, not field certification).
+- All nine locale/size License and Plus switch checks pass; prices change with selection and controls scroll away normally. Japanese amounts are 49,800 / 99,800円; English/Chinese original USD candidate amounts remain unchanged.
+- Shared Mobile sheet links are hit-testable above the backdrop in all three languages. Escape closes and restores focus. Existing three-language destinations are preserved.
+- Contact: native input → review → edit passes without sending an inquiry; FAQ expands. Demo: receiving five units and switching views passes using temporary synthetic data. W08: invalid input, local review and edit pass; no order lookup or external write is performed. Purchasing/order/payment remain disabled.
+- A01: original article selection, new article, mocked create/save/translation and FAQ switching pass; no real GitHub/CMS write occurred. Mobile dialog/tab/Escape and final Desktop/Mobile visual inspection pass with no overflow.
+- Lighthouse snapshots: A01 Desktop and Mobile Accessibility 100 / Best Practices 100. Private noindex CMS SEO 83 is unchanged in intent (no public description); no SEO expansion is made. Sample public Chinese License Desktop and Japanese/Chinese Customer Mobile score 100 for Accessibility, Best Practices and SEO.
+- 91 related Node tests pass, 0 fail/skip; repository validation, Chinese eight-page generation check, sitemap check and three sitemap tests pass. The static repository has no separate build or lint command. Earlier two A01 baseline assertions failed because they prohibited the newly approved presentation markup; narrowed normalization and protected-runtime byte comparisons replace those obsolete assertions, then the full suite passed.
+- A failed pre-commit main integration refused to overwrite the staged QA report. No merge was accepted. A transient zero-byte gallery stylesheet was recovered exactly from HEAD; its diff is empty and no tracked source is zero-byte. The original checkout's unrelated duplicate/untracked files remain untouched.
+
+Browser sizes are Chrome emulation, not physical iPhone/Safari acceptance. CMS write verification is isolated mock evidence, not a production article publication. IMS-native release, real commerce, order lookup and the planned smooth IMS footage replacement remain outside this UI renewal.
 
 final result: passed

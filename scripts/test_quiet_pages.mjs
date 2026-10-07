@@ -30,6 +30,10 @@ for (const name of pages) {
       .replace('<body class="quiet-page">', '<body>');
     if (name === 'zh/goals.html') stripped = stripped.replace('poster="../assets/', 'poster="assets/');
     if (name === 'customer.html') stripped = stripped.replace('href="index.html" aria-label="Baked Kale FDE"', 'href="index.html"');
+    // Only the approved A01 class and presentation adapter differ from its original HTML.
+    if (name === 'cms-admin.html') stripped = stripped
+      .replace('<body class="admin-renewal">','<body>')
+      .replace(',"cms-admin-view.js"','');
     const normalizeBuildKeys = source => source.replace(/([?&]v=)[0-9A-Za-z._-]+/g, '$1BUILD');
     const expected = name.endsWith('license.html')
       ? renderQuietLicense(original(name), name.includes('/') ? '../' : '')
@@ -68,4 +72,16 @@ test('shared theme stays scoped and keeps selection stationary', () => {
 test('language picker accessible name contains its visible language', () => {
   const runtime = readFileSync(path.join(root, 'gallery-ui.js'), 'utf8');
   assert(runtime.includes('summary.setAttribute("aria-label", `${text.chooseLanguage}: ${localeNames[localeKey]}`)'));
+});
+
+test('mobile shortcuts never select a language alternate as the local contact destination', () => {
+  const runtime = readFileSync(path.join(root, 'gallery-ui.js'), 'utf8');
+  const definition = runtime.match(/const byHref = ([^\n]+);/)[1];
+  for (const locale of ['en', 'ja', 'zh']) {
+    const link = (href, alternate = false) => ({ getAttribute: name => name === 'href' ? href : null, hasAttribute: name => name === 'hreflang' && alternate });
+    const localContact = link('contact.html');
+    const originalLinks = [link('index.html'), link('../contact.html', true), link('../zh/contact.html', true), localContact];
+    const find = Function('originalLinks', `return ${definition}`)(originalLinks);
+    assert.equal(find('contact.html'), localContact, locale);
+  }
 });
