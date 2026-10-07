@@ -19,12 +19,13 @@
   <meta property="og:url" content="https://kale1205.github.io/fde-site/ja/goals.html">
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
-  <link rel="stylesheet" href="../gallery-pages.css?v=20260925-081759">
-  <script defer src="../gallery-ui.js?v=20260925-081759"></script>
-  <script defer src="../cms-content-ja.js?v=20260925-081759"></script>
+  <link rel="stylesheet" href="../gallery-ui.css?v=20261007-224522">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20261007-224522">
+  <script defer src="../gallery-ui.js?v=20261007-224522"></script>
+  <script defer src="../cms-content-ja.js?v=20261007-224522"></script>
+  <link rel="stylesheet" href="../quiet-pages.css?v=20261007-224522">
 </head>
-<body class="gallery-page gallery-subpage refined-page goals-page mission-page">
+<body class="quiet-page gallery-page gallery-subpage refined-page goals-page mission-page goals-renewal goals-journey">
 <a class="skip-link" href="#main-content">本文へスキップ</a>
   <div class="site-shell language-ja">
     <header class="site-header">
@@ -49,22 +50,25 @@
     </header>
 
     <main id="main-content" class="gallery-page-main">
+      <div class="mission-hero-band">
       <header class="mission-hero section-frame">
         <p class="eyebrow">BAKED KALE / OUR GOALS</p>
         <h1>現場の課題から、<br><span class="accent-line">自社の仕組みへ</span></h1>
         <p class="mission-lead">自社で使うシステムを、自社で育てていく。<br>Baked Kaleは、その出発点をつくります。</p>
         <nav class="mission-index" aria-label="このページの内容"><a href="#fde">01 FDEとは</a><a href="#approach">02 私たちの取り組み</a><a href="#partnership">03 目指す関係</a></nav>
       </header>
+      </div>
 
       <section id="fde" class="mission-chapter section-frame" aria-labelledby="fde-title">
-        <p class="eyebrow">01 / FDEとは</p>
-        <div class="mission-text"><h2 id="fde-title">現場を知り、<br>使える仕組みに変える</h2><div><p>FDEは、Forward Deployed Engineering。現場の仕事を理解し、そこで本当に役立つソフトウェアへ落とし込む考え方です。</p><p>出発点は、技術ではなく日々の業務。誰が、何に時間を使い、どこで困っているのか。その理解を、使い続けられる仕組みにつなげます。</p></div></div>
+        <span class="mission-step" aria-hidden="true">01</span>
+        <div class="mission-text mission-visual"><div class="mission-copy"><div class="mission-chapter-heading"><p class="eyebrow">01 / FDEとは</p><h2 id="fde-title">現場を知り、<br>使える仕組みに変える</h2></div><div><p>FDEは、Forward Deployed Engineering。現場の仕事を理解し、そこで本当に役立つソフトウェアへ落とし込む考え方です。</p><p>出発点は、技術ではなく日々の業務。誰が、何に時間を使い、どこで困っているのか。その理解を、使い続けられる仕組みにつなげます。</p></div></div><img class="mission-art" src="../assets/goals-understand-work.png" width="1536" height="1024" alt="" loading="lazy" decoding="async"></div>
       </section>
 
       <section id="approach" class="mission-chapter section-frame" aria-labelledby="approach-title">
-        <p class="eyebrow">02 / 私たちの取り組み</p>
-        <div class="mission-text"><h2 id="approach-title">動くシステムと、<br>その中身を届ける</h2><div><p>業務効率化のためのシステムを、もっと導入しやすく。Baked Kaleは、ソースコード付きのシステムを提供することで、そのハードルを下げようとしています。</p><p>すべてをゼロから作るのでも、既製品に業務を合わせきるのでもなく。動く仕組みを出発点に、中身を理解し、自社の仕事に合わせて変えていく。そのための選択肢が、FDE IMS License Plusです。</p></div></div>
-        <figure class="mission-code">
+        <span class="mission-step" aria-hidden="true">02</span>
+        <div class="mission-text mission-visual"><div class="mission-copy"><div class="mission-chapter-heading"><p class="eyebrow">02 / 私たちの取り組み</p><h2 id="approach-title">動くシステムと、<br>その中身を届ける</h2></div><div><p>業務効率化のためのシステムを、もっと導入しやすく。Baked Kaleは、ソースコード付きのシステムを提供することで、そのハードルを下げようとしています。</p><p>すべてをゼロから作るのでも、既製品に業務を合わせきるのでもなく。動く仕組みを出発点に、中身を理解し、自社の仕事に合わせて変えていく。そのための選択肢が、FDE IMS License Plusです。</p></div></div><img class="mission-art" src="../assets/goals-open-system.png" width="1536" height="1024" alt="" loading="lazy" decoding="async"></div>
+        <div class="mission-proof">
+          <figure class="mission-code">
           <figcaption><p class="eyebrow">INSIDE FDE IMS</p><h3>画面の向こう側も、自分たちの手に</h3><p>在庫がゼロなら「在庫なし」。補充基準以下なら「在庫少」。こうした判定も、ソースコードを読めば仕組みがわかります。</p><small>開発中のIMS v1.0の実装より。在庫状態の判定処理を抜粋（改行のみ調整）。</small></figcaption>
           <div class="mission-code-window"><div class="code-file">ims-domain / lib.rs <span>Rust</span></div><pre tabindex="0" aria-label="在庫状態を判定するRustコード"><code><span class="code-key">pub const fn</span> <span class="code-fn">stock_state</span>(
     on_hand_atoms: <span class="code-type">i64</span>,
@@ -79,18 +83,17 @@
     }
 }</code></pre></div>
         </figure>
-        <div class="mission-recording-intro"><h3>実際のIMSで、仕事の流れを見る</h3><p>商品を探し、入庫を記録し、在庫と履歴を確認する。開発中のネイティブアプリを、撮影専用の合成サンプルデータで操作しています。</p></div>
-        <figure class="mission-recording">
+          <figure class="mission-recording">
           <video controls muted loop playsinline preload="none" width="900" height="700" poster="../assets/ims-v1-operation-ja-poster.jpg" aria-label="IMS v1.0の実際の操作例"><source src="../assets/ims-v1-operation-ja.mp4" type="video/mp4"></video>
-          <figcaption><span>IMS v1.0 / DEVELOPMENT BUILD</span><p>開発版の実操作を連続キャプチャで紹介。完成イメージやWeb Demoではありません。画面・仕様は開発に伴い変更されます。</p></figcaption>
+          <figcaption><div class="mission-recording-intro"><h3>実際のIMSで、仕事の流れを見る</h3><p>商品を探し、入庫を記録し、在庫と履歴を確認する。開発中のネイティブアプリを、撮影専用の合成サンプルデータで操作しています。</p></div><span>IMS v1.0 / DEVELOPMENT BUILD</span><p>開発版の実操作を連続キャプチャで紹介。完成イメージやWeb Demoではありません。画面・仕様は開発に伴い変更されます。</p></figcaption>
         </figure>
+        </div>
         <details class="mission-transcript"><summary>操作の流れを文章で読む</summary><ol><li>サンプル在庫から商品を探す。</li><li>対象商品と数量を指定し、入庫を記録する。</li><li>更新された在庫数と操作履歴を確認する。</li></ol></details>
       </section>
 
       <section id="partnership" class="mission-chapter mission-partnership section-frame" aria-labelledby="partnership-title">
-        <p class="eyebrow">03 / 目指す関係</p>
-        <h2 id="partnership-title">あなたのシステム屋であり、<br><span class="accent-line">パートナーであり続ける</span></h2>
-        <div class="mission-closing"><div><p>システムを届けることを、関係の終わりにしない。業務の変化や、次に必要になる改善にも目を向けながら、長く相談できる存在でありたいと考えています。</p><p>使う人が仕組みを理解し、自分たちで育てられること。そして、必要なときには相談できる相手がいること。その両方を大切にするのが、Baked Kaleの目標です。</p></div><div class="mission-actions"><a class="button button-primary" href="contact.html">取り組みについて相談する</a><a class="mission-plan-link" href="./#license-plus">ソースコード付きプランを見る <span aria-hidden="true">→</span></a></div></div>
+        <span class="mission-step" aria-hidden="true">03</span>
+        <div class="mission-text mission-visual"><div class="mission-copy"><div class="mission-chapter-heading"><p class="eyebrow">03 / 目指す関係</p><h2 id="partnership-title">あなたのシステム屋であり、<br><span class="accent-line">パートナーであり続ける</span></h2></div><div class="mission-closing"><div><p>システムを届けることを、関係の終わりにしない。業務の変化や、次に必要になる改善にも目を向けながら、長く相談できる存在でありたいと考えています。</p><p>使う人が仕組みを理解し、自分たちで育てられること。そして、必要なときには相談できる相手がいること。その両方を大切にするのが、Baked Kaleの目標です。</p></div></div></div><img class="mission-art" src="../assets/goals-partner-dialogue.png" width="1536" height="1024" alt="" loading="lazy" decoding="async"></div>
         <p class="mission-boundary">FDE IMSは現在開発中です。導入支援・開発代行・保守サービスの提供範囲は未確定です。License Plus購入後の改修・更新・セキュリティ管理は購入者が担います。</p>
       </section>
     </main>

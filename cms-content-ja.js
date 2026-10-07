@@ -4,6 +4,7 @@
   let stripIndex = 0;
   let stripTimer = null;
   let lastNewsTrigger = null;
+  let restoreNewsShell = null;
   let reloadTimers = [];
   const LANG = document.documentElement.lang.startsWith('zh') ? 'zh-CN' : 'ja';
   const UI = LANG === 'zh-CN' ? {
@@ -131,6 +132,14 @@
     lastNewsTrigger = trigger instanceof HTMLElement ? trigger : document.activeElement;
     content.innerHTML = `<div class="news-article-meta">${esc(dateLabel(item.date))} / ${esc(categoryLabel(item.category))}</div><h2 id="newsArticleTitle">${esc(pick(item.title))}</h2>${newsImage(item, 'news-article-image')}<div class="news-article-body">${esc(pick(item.body)).replace(/\n/g, '<br>')}</div>`;
     modal.hidden = false;
+    if (document.body.classList.contains('news-renewal') && !restoreNewsShell) {
+      const shell = document.querySelector('.site-shell');
+      if (shell) {
+        const wasInert = shell.inert;
+        shell.inert = true;
+        restoreNewsShell = () => { shell.inert = wasInert; };
+      }
+    }
     document.body.classList.add('news-modal-open');
     modal.querySelector('.news-article-close')?.focus();
   }
@@ -139,6 +148,8 @@
     const modal = document.getElementById('newsArticleModal');
     if (!modal || modal.hidden) return;
     modal.hidden = true;
+    restoreNewsShell?.();
+    restoreNewsShell = null;
     document.body.classList.remove('news-modal-open');
     const trigger = lastNewsTrigger;
     lastNewsTrigger = null;
@@ -164,7 +175,7 @@
       wire.innerHTML = `<p class="news-empty">${UI.noArchive}</p>`;
       return;
     }
-    wire.innerHTML = items.map(item => `<button class="wire-row news-open" type="button" data-news-id="${attr(item.id)}"><div class="wire-type">${esc(categoryLabel(item.category))}</div><div class="wire-title">${esc(pick(item.title))}</div><time datetime="${attr(item.date)}">${esc(dateLabel(item.date))}</time></button>`).join('');
+    wire.innerHTML = items.map(item => `<button class="wire-row news-open" type="button" data-news-id="${attr(item.id)}"><div class="wire-type">${esc(categoryLabel(item.category))}</div><div class="wire-title">${esc(pick(item.title))}</div><time datetime="${attr(item.date)}">${esc(dateLabel(item.date))}</time>${document.body.classList.contains('news-renewal') ? `<span class="wire-read-more">${UI.read}</span>` : ''}</button>`).join('');
   }
 
   function renderInstagram() {
@@ -248,5 +259,13 @@
 
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') closeArticle();
+    const modal = document.getElementById('newsArticleModal');
+    if (event.key === 'Tab' && document.body.classList.contains('news-renewal') && modal && !modal.hidden) {
+      const controls = [...modal.querySelectorAll('a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])')];
+      const first = controls[0];
+      const last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }
   });
 })();

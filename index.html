@@ -20,11 +20,6 @@
 <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
-<link rel="stylesheet" href="gallery-ui.css?v=20260925-081759">
-<script defer src="gallery-ui.js?v=20260925-081759">
-</script>
-<script defer src="cms-content.js?v=20260925-081759">
-</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -35,14 +30,19 @@
       "name": "Baked Kale FDE",
       "alternateName": "Baked Kale",
       "url": "https://kale1205.github.io/fde-site/",
-      "logo": {"@type": "ImageObject", "url": "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg"}
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg"
+      }
     },
     {
       "@type": "WebSite",
       "@id": "https://kale1205.github.io/fde-site/#website",
       "name": "Baked Kale FDE | FDE IMS",
       "url": "https://kale1205.github.io/fde-site/",
-      "publisher": {"@id": "https://kale1205.github.io/fde-site/#organization"}
+      "publisher": {
+        "@id": "https://kale1205.github.io/fde-site/#organization"
+      }
     },
     {
       "@type": "WebPage",
@@ -50,8 +50,12 @@
       "name": "FDE IMS Inventory Software | Baked Kale FDE",
       "url": "https://kale1205.github.io/fde-site/",
       "inLanguage": "en",
-      "isPartOf": {"@id": "https://kale1205.github.io/fde-site/#website"},
-      "about": {"@id": "https://kale1205.github.io/fde-site/#fde-ims"}
+      "isPartOf": {
+        "@id": "https://kale1205.github.io/fde-site/#website"
+      },
+      "about": {
+        "@id": "https://kale1205.github.io/fde-site/#fde-ims"
+      }
     },
     {
       "@type": "SoftwareApplication",
@@ -62,447 +66,120 @@
       "applicationSubCategory": "Inventory management software",
       "creativeWorkStatus": "In development",
       "description": "Inventory management software in development from Baked Kale FDE for small businesses moving from paper, spreadsheets, or an existing system.",
-      "featureList": ["Inventory list and search", "Receive stock", "Ship stock", "Low-stock status"],
-      "audience": {"@type": "BusinessAudience", "audienceType": "Small businesses"},
-      "provider": {"@id": "https://kale1205.github.io/fde-site/#organization"}
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://kale1205.github.io/fde-site/#faq-en",
-      "mainEntity": [
-        {"@type": "Question", "name": "Can I purchase FDE IMS now?", "acceptedAnswer": {"@type": "Answer", "text": "No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available."}},
-        {"@type": "Question", "name": "Can I try the product workflow?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The simplified v1.0 demo uses sample data and lets you search inventory and try temporary Receive, Transfer, Count, and Ship actions."}},
-        {"@type": "Question", "name": "Where can I review detailed terms or ask a question?", "acceptedAnswer": {"@type": "Answer", "text": "Review the License page for the current planned terms, review each plan above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."}},
-        {"@type": "Question", "name": "Is FDE IMS intended for teams using paper or spreadsheets?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."}},
-        {"@type": "Question", "name": "Can Baked Kale FDE migrate or import data from an existing system?", "acceptedAnswer": {"@type": "Answer", "text": "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."}}
-      ]
+      "featureList": [
+        "Inventory list and search",
+        "Receive stock",
+        "Ship stock",
+        "Low-stock status"
+      ],
+      "audience": {
+        "@type": "BusinessAudience",
+        "audienceType": "Small businesses"
+      },
+      "provider": {
+        "@id": "https://kale1205.github.io/fde-site/#organization"
+      }
     }
   ]
 }
 </script>
+<link rel="stylesheet" href="gallery-ui.css?v=20261007-224522">
+<link rel="stylesheet" href="quiet-form.css?v=20261007-224522">
+<script defer src="gallery-ui.js?v=20261007-224522"></script>
+<script defer src="demo-v1.js?v=20261007-224522"></script>
+<script defer src="quiet-form.js?v=20261007-224522"></script>
 </head>
-<body class="gallery-page source-home">
+<body class="gallery-page quiet-home">
 <a class="skip-link" href="#main-content">Skip to content</a>
 <div class="site-shell language-en">
 <header class="site-header">
-<a class="brand" href="./" aria-label="Baked Kale FDE home">
-<img alt="Baked Kale FDE" src="assets/baked-kale-logo.svg" width="980" height="240">
-</a>
-<nav class="desktop-nav" aria-label="Primary navigation">
-<a href="#product" aria-current="page">Product</a>
-<a href="goals.html">Our Goals</a>
-<a href="news.html">News</a>
-</nav>
-<div class="header-actions">
-<a class="locale-button" data-locale-link href="ja/" hreflang="ja" lang="ja">日本語</a><a class="locale-button" href="zh/" hreflang="zh-CN" lang="zh-CN">简体中文</a>
-<a class="header-contact" href="contact.html">Contact us<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z">
-</path>
-</svg>
-</a>
-<button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z">
-</path>
-</svg>
-</button>
-</div>
-<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden>
-<a href="#product" aria-current="page">Product</a>
-<a href="goals.html">Our Goals</a>
-<a href="news.html">News</a>
-<a href="ja/" hreflang="ja" lang="ja">日本語</a><a href="zh/" hreflang="zh-CN" lang="zh-CN">简体中文</a>
-<a href="contact.html">Contact us</a>
-</nav>
+<a class="brand" href="./" aria-label="Baked Kale FDE"><img src="assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a>
+<nav class="desktop-nav" aria-label="Open menu"><a href="#plans">Products</a><a href="demo.html">Demo</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="contact.html">Contact</a></nav>
+<div class="header-actions"><a class="locale-button" data-locale-link href="ja/" hreflang="ja" lang="ja">日本語</a><a class="locale-button" data-locale-link href="zh/" hreflang="zh-CN" lang="zh-CN">简体中文</a><button class="menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
+<nav class="mobile-nav" id="mobile-nav" aria-label="Open menu" hidden><a href="#plans">Products</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="contact.html">Contact</a></nav>
 </header>
 <main id="main-content">
-
-<section class="hero section-frame" id="product">
-<img class="lab-background" src="assets/night-lab-20260915.webp" width="1672" height="941" alt="" fetchpriority="high">
-<div class="hero-copy">
-<p class="status-line">FDE IMS — IN DEVELOPMENT</p>
-<h1 class="source-heading">
-<span>Your company’s system.</span>
-<span class="accent-line">Yours to build on.</span>
-</h1>
-<p class="hero-lead">You don’t have to start from zero. Take an inventory system and its source code as your starting point. Shape it around the way your team works.</p>
-<div class="hero-actions"><a class="button button-primary" href="#license-plus">Explore the source-code plan</a><a class="button button-secondary" href="demo.html" data-demo-open>Try the demo</a></div>
-<small class="development-note">In development. USD prices are unapproved candidates pending final international pricing; purchasing is not available.</small>
-
-</div>
-<div class="hero-visual">
-
-
-
-<div class="product-window" id="preview-panel">
-<aside class="product-rail" aria-label="Product preview tools">
-<div>
-<button type="button" class="active" aria-label="Preview tool 1" aria-pressed="true">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M120,56v48a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V56A16,16,0,0,1,56,40h48A16,16,0,0,1,120,56Zm80-16H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm-96,96H56a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,104,136Zm96,0H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,200,136Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="Preview tool 2" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M223.68,66.15,135.68,18h0a15.88,15.88,0,0,0-15.36,0l-88,48.17a16,16,0,0,0-8.32,14v95.64a16,16,0,0,0,8.32,14l88,48.17a15.88,15.88,0,0,0,15.36,0l88-48.17a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,32h0l80.34,44L128,120,47.66,76ZM40,90l80,43.78v85.79L40,175.82Zm96,129.57V133.82L216,90v85.78Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="Preview tool 3" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M168,152a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,152Zm-8-40H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm56-64V216a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V48A16,16,0,0,1,56,32H92.26a47.92,47.92,0,0,1,71.48,0H200A16,16,0,0,1,216,48ZM96,64h64a32,32,0,0,0-64,0ZM200,48H173.25A47.93,47.93,0,0,1,176,64v8a8,8,0,0,1-8,8H88a8,8,0,0,1-8-8V64a47.93,47.93,0,0,1,2.75-16H56V216H200Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="Preview tool 4" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M255.42,117l-14-35A15.93,15.93,0,0,0,226.58,72H192V64a8,8,0,0,0-8-8H32A16,16,0,0,0,16,72V184a16,16,0,0,0,16,16H49a32,32,0,0,0,62,0h50a32,32,0,0,0,62,0h17a16,16,0,0,0,16-16V120A7.94,7.94,0,0,0,255.42,117ZM192,88h34.58l9.6,24H192ZM32,72H176v64H32ZM80,208a16,16,0,1,1,16-16A16,16,0,0,1,80,208Zm81-24H111a32,32,0,0,0-62,0H32V152H176v12.31A32.11,32.11,0,0,0,161,184Zm31,24a16,16,0,1,1,16-16A16,16,0,0,1,192,208Zm48-24H223a32.06,32.06,0,0,0-31-24V128h48Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="Preview tool 5" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z">
-</path>
-</svg>
-</button>
-</div>
-</aside>
-<div class="product-content">
-<div class="product-heading">
-<div>
-<p>FDE IMS</p>
-<h2>Development preview</h2>
-</div>
-<span>
-<i>
-</i>PREVIEW</span>
-</div>
-<div class="metric-grid">
-<article>
-<span>Items</span>
-<strong>5</strong>
-</article>
-<article>
-<span>Low stock</span>
-<strong class="orange">1</strong>
-<em>Needs attention</em>
-</article>
-<article>
-<span>Status</span>
-<strong class="status-preview">PREVIEW</strong>
-</article>
-</div>
-<div class="inventory-table" role="region" aria-label="Sample inventory">
-<div class="inventory-row inventory-head">
-<span>Product</span>
-<span>SKU</span>
-<span>Stock</span>
-<span>Status</span>
-</div>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>P</i>Paper Cup 12oz</span>
-<span>PC-1204</span>
-<strong>326</strong>
-<span class="stock-ok">OK</span>
-</button>
-<button class="inventory-row selected" type="button" aria-current="true">
-<span class="product-name">
-<i>L</i>Label Roll</span>
-<span>LR-0041</span>
-<strong>18</strong>
-<span class="stock-low">Low stock</span>
-</button>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>T</i>Thermal Paper</span>
-<span>TP-3011</span>
-<strong>41</strong>
-<span class="stock-ok">OK</span>
-</button>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>P</i>Packing Tape</span>
-<span>PT-5002</span>
-<strong>94</strong>
-<span class="stock-ok">OK</span>
-</button>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>B</i>Bubble Mailer</span>
-<span>BM-2501</span>
-<strong>210</strong>
-<span class="stock-ok">OK</span>
-</button>
-</div>
-<div class="product-footer">
-<p>Sample interface. Data is for demonstration only.</p>
-<div>
-<button type="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z">
-</path>
-</svg>Receive</button>
-<button class="ship-button" type="button">Ship<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z">
-</path>
-</svg>
-</button>
-</div>
-</div>
-</div>
-</div>
-
-</div>
+<section class="quiet-hero" id="product" aria-labelledby="hero-title">
+<div class="section-frame">
+<p class="release-line" data-release-notice><span aria-hidden="true">—</span><span>Releases November 1, 2026<span class="release-availability">Not yet available for purchase.</span></span></p>
+<h1 id="hero-title"><span>Your own system.</span><span>Not from scratch.</span></h1><p class="quiet-lead">An inventory system and its source code. A starting point for the way your company works.</p>
+<div class="quiet-actions"><a class="button" href="#license-plus">Explore the source-code plan <span aria-hidden="true">→</span></a><a class="quiet-text-link" href="#motion-demo">Try the demo <span aria-hidden="true">→</span></a></div>
+<div class="sculpture-pair">
+<figure><img class="sculpture" src="assets/ims-license-update.webp" alt="" width="960" height="960" fetchpriority="high"><figcaption><h2><span>FDE IMS</span> <span>License</span></h2><p>Keep moving with the latest IMS.</p></figcaption></figure>
+<figure><img class="sculpture" src="assets/ims-license-plus-customize.webp" alt="" width="960" height="960" fetchpriority="high"><figcaption><h2><span>FDE IMS</span> <span>License Plus</span></h2><p>Make it yours. Make it your company’s app.</p></figcaption></figure>
+</div></div>
 </section>
-<section class="story-section section-frame" id="story">
-<div class="section-intro"><p>01 / THE STARTING POINT</p>
-<h2>What if your team<br>built its own system?</h2>
-<span>Adapt your work to a product. Wait for a feature. Build everything from scratch. There’s another starting point: a working system, with the source code to make it your own.</span></div>
+<section class="quiet-plans section-frame" id="plans" aria-labelledby="plan-title">
+<h2 class="quiet-heading" id="plan-title">Two starting points.</h2>
+<table class="quiet-comparison"><caption class="visually-hidden">Compare products</caption>
+<thead><tr><th scope="col"><div class="plan-top"><img class="comparison-sculpture" src="assets/ims-license-update.webp" alt="" width="960" height="960" loading="lazy"><h3><span>FDE IMS</span> <span>License</span></h3><p>Start. Organize. Keep working.</p><strong class="plan-price">¥49,800</strong><a href="license.html#comparison">Review terms <span aria-hidden="true">→</span></a></div></th>
+<th scope="col" id="license-plus"><div class="plan-top"><img class="comparison-sculpture" src="assets/ims-license-plus-customize.webp" alt="" width="960" height="960" loading="lazy"><h3><span>FDE IMS</span> <span>License Plus</span></h3><p>See it. Change it. Build on it.</p><strong class="plan-price">¥99,800</strong><a href="license.html#comparison">Review terms <span aria-hidden="true">→</span></a></div></th></tr></thead>
+<tbody><tr><td><span aria-hidden="true">✓</span>One-time purchase</td><td><span aria-hidden="true">✓</span>One-time purchase</td></tr>
+<tr><td><span aria-hidden="true">—</span>No source code</td><td><span aria-hidden="true">✓</span>Complete source code</td></tr>
+<tr><td><span aria-hidden="true">—</span>No internal modification</td><td><span aria-hidden="true">✓</span>Internal modification</td></tr>
+<tr><td><span aria-hidden="true">✓</span>Our Updates<br>Monthly subscription required</td><td><span aria-hidden="true">—</span>Not eligible for our Updates<br>Purchaser updates and manages</td></tr></tbody></table>
+<div class="updates-strip"><strong>License Updates</strong><span>First 3 months included</span><span>Months 4–6 <strong>¥4,900/mo</strong></span><span>Month 7 onward <strong>¥9,800/mo</strong></span></div>
+<p class="updates-note">When Updates ends, you can keep using your existing version.</p>
 </section>
-<section class="operating-comparison section-frame" id="operating-model-comparison" aria-labelledby="operating-model-title">
-<header class="comparison-intro">
-<p class="lab-label">COMPARISON / OPERATING MODEL</p>
-<h2 id="operating-model-title">Excel, SaaS, or a system you can shape?</h2>
-<p>Inventory management can begin with Excel or spreadsheets, move to cloud inventory management, or run as a system managed by your own company. FDE IMS License Plus is being developed as another option: a source-code inventory system that a purchasing legal entity can modify for its own operations and plans to run on a customer-managed server.</p>
-</header>
-<div class="comparison-table-scroll" role="region" aria-labelledby="operating-model-title" tabindex="0">
-<table class="comparison-table">
-<caption>Common differences in ownership, operation, and room for change</caption>
-<thead>
-<tr><th scope="col">Comparison item</th><th scope="col">Excel / spreadsheets</th><th scope="col">Typical cloud inventory SaaS</th><th scope="col" class="fde-column">FDE IMS License Plus</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">Inventory-specific interface</th><td><span class="comparison-symbol partial" aria-hidden="true">△</span>Build your own</td><td><span class="comparison-symbol positive" aria-hidden="true">○</span>Commonly included</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>Included</td></tr>
-<tr><th scope="row">Changes for your operations</th><td><span class="comparison-symbol positive" aria-hidden="true">○</span>Formulas / macros</td><td><span class="comparison-symbol partial" aria-hidden="true">△</span>Settings / APIs</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>Internal source changes</td></tr>
-<tr><th scope="row">System source code</th><td><span class="comparison-symbol neutral" aria-hidden="true">—</span>Not applicable</td><td><span class="comparison-symbol negative" aria-hidden="true">×</span>Usually not supplied</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>Full source code</td></tr>
-<tr><th scope="row">Pricing model</th><td><span class="comparison-symbol partial" aria-hidden="true">△</span>Depends on software</td><td><span class="comparison-symbol partial" aria-hidden="true">△</span>Subscription common</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>One-time purchase</td></tr>
-<tr><th scope="row">Operating infrastructure</th><td><span class="comparison-symbol partial" aria-hidden="true">△</span>Depends on setup</td><td><span class="comparison-symbol partial" aria-hidden="true">△</span>Vendor infrastructure common</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>Customer-managed server</td></tr>
-<tr><th scope="row">Update and security responsibility</th><td><span class="comparison-symbol positive" aria-hidden="true">○</span>Managed by your team</td><td><span class="comparison-symbol positive" aria-hidden="true">○</span>Provider-managed platform</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>Managed by purchaser</td></tr>
-</tbody>
-</table>
-</div>
+<section class="quiet-demo section-frame" id="motion-demo" aria-labelledby="demo-title">
+<header class="demo-section-heading"><div><h2 class="quiet-heading" id="demo-title">Get a feel for IMS.</h2><p>Public demo · Sample data</p></div><a class="quiet-text-link" href="demo.html">Open the full demo <span aria-hidden="true">→</span></a></header>
+<div class="motion-toolbar"><ol class="motion-steps"><li data-motion-step="0"><span aria-hidden="true">01</span>Choose a product</li><li data-motion-step="1"><span aria-hidden="true">02</span>Record receive</li><li data-motion-step="2"><span aria-hidden="true">03</span>Stock updated</li></ol><button class="motion-toggle" type="button" aria-controls="imsDemoRoot" data-play="Play example" data-pause="Pause" data-replay="Replay example">Play example</button></div>
+<section class="demo-workspace" id="imsDemoRoot" aria-label="FDE IMS v1.0 sample inventory workspace">
+      <div class="demo-kpis">
+        <div class="demo-kpi"><small>Active products</small><strong id="kpiItems">6</strong></div>
+        <div class="demo-kpi"><small>Low stock</small><strong id="kpiLow">1</strong></div>
+        <div class="demo-kpi"><small>Out of stock</small><strong id="kpiOut">1</strong></div>
+        <div class="demo-kpi"><small>Demo actions</small><strong id="kpiActions">0</strong></div>
+      </div>
+      <div class="demo-app-grid">
+        <div class="demo-inventory-panel">
+          <div class="demo-panel-head"><div><p class="eyebrow">CURRENT INVENTORY</p><h2>Stock by location</h2></div><button id="demoReset" class="button button-secondary light" type="button">Reset demo</button></div>
+          <label class="demo-search-label" for="demoSearch">Search products</label>
+          <input id="demoSearch" class="faq-search" type="search" placeholder="Product, SKU, or barcode" autocomplete="off">
+          <div class="demo-table-wrap">
+            <table class="demo-table">
+              <thead><tr><th>Product</th><th>Main / A-01</th><th>Osaka / B-02</th><th>Total</th><th>Health</th><th></th></tr></thead>
+              <tbody id="inventoryBody"></tbody>
+            </table>
+          </div>
+          <p class="demo-empty" id="demoEmpty" hidden>No matching products.</p>
+        </div>
+        <form class="demo-operation-panel" id="demoOperationForm">
+          <p class="eyebrow">SIMULATED STOCK COMMAND</p>
+          <h2>Record an operation</h2>
+          <label for="demoOperation">Operation</label>
+          <select id="demoOperation" name="operation">
+            <option value="receive">Receive</option>
+            <option value="transfer">Transfer</option>
+            <option value="count">Count</option>
+            <option value="ship">Ship</option>
+          </select>
+          <label for="demoProduct">Product</label>
+          <select id="demoProduct" name="product"></select>
+          <div id="demoSourceField"><label for="demoSource">Source location</label><select id="demoSource" name="source"></select></div>
+          <div id="demoDestinationField"><label for="demoDestination">Destination location</label><select id="demoDestination" name="destination"></select></div>
+          <label for="demoQuantity" id="demoQuantityLabel">Quantity received</label>
+          <input id="demoQuantity" name="quantity" type="number" min="1" step="1" value="5" inputmode="numeric" required>
+          <p class="demo-field-help" id="demoOperationHelp">Adds stock to the selected destination.</p>
+          <button class="button button-primary" id="demoApply" type="submit">Record receive</button>
+          <p class="demo-result" id="demoResult" role="status" aria-live="polite">Choose an operation to update the temporary sample inventory.</p>
+        </form>
+      </div>
+      <section class="demo-history" aria-labelledby="demoHistoryTitle">
+        <div class="demo-panel-head"><div><p class="eyebrow">APPEND-ONLY PREVIEW</p><h2 id="demoHistoryTitle">Recent movement history</h2></div><small>Latest first</small></div>
+        <div class="demo-table-wrap"><table class="demo-table demo-history-table"><thead><tr><th>Time</th><th>Operation</th><th>Product</th><th>Location</th><th>Change</th><th>Reference</th></tr></thead><tbody id="demoHistoryBody"></tbody></table></div>
+      </section>
+      <div class="demo-scope-grid">
+        <div><strong>Included in this simulation</strong><p>SKU/barcode search, Receive, Transfer, Count, Ship, non-negative stock, three-state inventory health, and movement history.</p></div>
+        <div><strong>Only available in the real product</strong><p>Server authority, sign-in and roles, signed Local/LAN communication, audit controls, CSV import/export, and encrypted backup/restore.</p></div>
+      </div>
+      <p class="demo-note">This preview uses synthetic sample data in page memory only. Refreshing or resetting the page discards every change.</p>
+    </section>
+<div class="mobile-stock" aria-label="Selected product stock"><strong data-mobile-product>PC-1204</strong><dl><div><dt>Main / A-01</dt><dd data-mobile-main>326</dd></div><div><dt>Osaka / B-02</dt><dd data-mobile-osaka>20</dd></div><div><dt>Total</dt><dd data-mobile-total>346</dd></div></dl></div>
+<p class="sample-note">Sample data runs only in this page. Resetting discards your changes.</p><p class="visually-hidden" id="motion-announcement" role="status" aria-live="polite"></p>
 </section>
-<section class="offers section-frame" id="plans">
-<header class="offers-heading section-intro"><p>02 / USE IT. BUILD ON IT.</p><h2>A license to use.<br>The source to build on.</h2><span>One product. Two ways to begin. Choose License Plus to develop and adapt it for your own team.</span></header>
-<div class="offer-stack">
-<article class="offer-card orange">
-<div class="offer-number">
-<span>OFFER</span>
-<strong>01</strong>
-</div>
-<div class="offer-main">
-<h3>FDE IMS License</h3>
-<p class="offer-model">PERPETUAL INTERNAL USE / NO SOURCE CODE</p>
-<p class="offer-summary">For teams that want to use the product as it is, with a one-time purchase and a version they can keep.</p>
-<p class="plan-core">Perpetual product use / No source code</p>
-</div>
-<div class="offer-price">
-<span>UNAPPROVED USD CANDIDATE</span>
-<strong>$349</strong>
-<em>/ ONE-TIME</em>
-<small>Updates included for months 1–3</small>
-<a href="license.html">Review plan terms<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z">
-</path>
-</svg>
-</a>
-</div>
-<details class="offer-disclosure">
-<summary>Operation, updates &amp; license terms<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<div class="offer-detail-grid">
-<div>
-<h4>Included rights</h4>
-<ul>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>Perpetual internal use by one legal entity</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>First 3 months of Updates included</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>Months 4–6: optional Updates at the $31/month candidate price; month 7 onward: $62/month candidate</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>The purchased version remains available if Updates is not continued</li>
-</ul>
-</div>
-<div>
-<h4>Responsibility &amp; limits</h4>
-<ul>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>Source code and source-level modification are not included</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>No automatic paid conversion; resale, redistribution, and sublicensing are prohibited</li>
-</ul>
-</div>
-</div>
-</details>
-</article>
-<article class="offer-card forest" id="license-plus">
-<div class="offer-number">
-<span>OFFER</span>
-<strong>02</strong>
-</div>
-<div class="offer-main">
-<h3>FDE IMS License Plus</h3>
-<p class="offer-model">SOURCE CODE + PERPETUAL INTERNAL USE</p>
-<p class="offer-summary">For teams that want to develop and adapt their own system, starting with source code and technical documentation.</p>
-<p class="plan-core">Full source code / Internal modification &amp; integration</p>
-</div>
-<div class="offer-price">
-<span>UNAPPROVED USD CANDIDATE</span>
-<strong>$699</strong>
-<em>/ ONE-TIME</em>
-<small>Self-managed; the License Updates add-on is not included or available for Plus</small>
-<a href="license.html">Review Plus terms<span aria-hidden="true">→</span></a>
-</div>
-<details class="offer-disclosure">
-<summary>Operation, updates &amp; license terms<span class="disclosure-mark" aria-hidden="true">⌄</span></summary>
-<div class="offer-detail-grid">
-<div>
-<h4>Included rights</h4>
-<ul>
-<li><span class="check-mark" aria-hidden="true">✓</span>Full source code included</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>Perpetual internal use</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>Internal modification and integration permitted</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>Build, deployment, database, API, and backup/restore documentation planned</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>Customer-server/self-hosted operation planned</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>Approved external-developer assistance permitted</li>
-</ul>
-</div>
-<div>
-<h4>Responsibility &amp; limits</h4>
-<ul>
-<li><span class="check-mark" aria-hidden="true">✓</span>No included Updates entitlement</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>Purchaser manages updates and security</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>Resale, redistribution, and sublicensing are prohibited</li>
-</ul>
-</div>
-</div>
-</details>
-</article>
-</div>
-<p class="plan-footnote" id="compare">USD prices are unapproved candidates. Purchasing is not available. Review each plan’s operation, updates and license terms above.</p>
-<p class="plan-footnote" id="security">Deployment assistance, development services and support scope are not yet confirmed. License Plus updates and security are managed by the purchaser.</p>
-</section>
-
-
-<section class="site-paths section-frame" aria-labelledby="beyond-product-title">
-<div class="section-intro compact">
-<p>03 / WHY WE BUILD</p>
-<h2 id="beyond-product-title">One operating idea, carried across the site.</h2>
-<span>Read why FDE starts with real work, how Baked Kale FDE turns recurring problems into products, and what is changing now.</span>
-</div>
-<div class="site-paths-grid">
-<a href="goals.html"><small>01 / OUR GOALS</small><h3>Our Goals</h3><p>What FDE means, why we offer source code, and the partner we aim to be.</p><b aria-hidden="true">↗</b></a>
-<a href="news.html"><small>02 / CURRENT</small><h3>News</h3><p>Product decisions, development previews, and the latest Baked Kale FDE updates.</p><b aria-hidden="true">↗</b></a>
-</div>
-</section>
-<section class="news-strip gallery-news-strip" aria-label="Latest news">
-<a href="news.html">
-<b>Latest</b>
-<span>Loading the latest update</span>
-<span>View news →</span>
-</a>
-</section>
-<section class="faq-section section-frame" id="faq">
-<div class="section-intro compact">
-<p>04 / FAQ</p>
-<h2>Next steps without repeating the fine print.</h2>
-</div>
-<div class="faq-list">
-<details open="">
-<summary>
-<span>01</span>
-<strong>Can I purchase FDE IMS now?</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<p>No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available.</p>
-</details>
-<details>
-<summary>
-<span>02</span>
-<strong>Can I try the product workflow?</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<p>Yes. The simplified v1.0 demo uses sample data and lets you search inventory and try temporary Receive, Transfer, Count, and Ship actions.</p>
-</details>
-<details>
-<summary>
-<span>03</span>
-<strong>Where can I review detailed terms or ask a question?</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<p>Review the License page for the current planned terms, review each plan above for the responsibility split, or open Contact for the searchable FAQ and inquiry form.</p>
-</details>
-<details>
-<summary>
-<span>04</span>
-<strong>Is FDE IMS intended for teams using paper or spreadsheets?</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
-</summary>
-<p>Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record.</p>
-</details>
-<details>
-<summary>
-<span>05</span>
-<strong>Can Baked Kale FDE migrate or import data from an existing system?</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
-</summary>
-<p>Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales.</p>
-</details>
-</div>
-</section>
-<section class="contact-section section-frame" id="contact">
-<div>
-<p>BAKED KALE FDE / FDE IMS</p>
-<h2>Your system starts here.<br>Make it your own.</h2>
-<span>Explore the demo, then consider what your team could build with the source. FDE IMS is in development; purchasing is not available.</span>
-</div>
-<div class="contact-actions"><a class="button contact-preview" href="#license-plus">Explore the source-code plan</a><a class="button contact-link" href="demo.html" data-demo-open>Try the demo</a></div>
-</section>
+<section class="quiet-news section-frame"><div><h2 class="quiet-heading">Where Baked Kale is now.</h2><p>Follow the development of Baked Kale<br>in our latest news.</p></div><a class="button" href="news.html">Read the news <span aria-hidden="true">→</span></a></section>
 </main>
-<footer class="site-footer section-frame">
-<img alt="Baked Kale FDE" src="assets/baked-kale-logo.svg" width="980" height="240">
-<div>
-<p>Practical business software for small operations.</p>
-<nav class="footer-links" aria-label="Footer navigation"><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="license.html">License</a><a href="contact.html">Contact</a></nav>
+<footer class="site-footer section-frame"><a href="./"><img src="assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="#plans">Products</a><a href="demo.html">Demo</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="contact.html">Contact</a></nav><small>© 2026 Baked Kale FDE</small></footer>
 </div>
-<span>© 2026 Baked Kale FDE</span>
-</footer>
-<div class="toast " role="status" aria-live="polite">
-</div>
-</div>
-</body>
-</html>
+</body></html>

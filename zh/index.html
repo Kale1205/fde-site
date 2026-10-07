@@ -21,11 +21,6 @@
 <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-<link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
-<script defer src="../gallery-ui.js?v=20260925-081759">
-</script>
-<script defer src="../cms-content-ja.js?v=20260925-081759">
-</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,14 +31,19 @@
       "name": "Baked Kale FDE",
       "alternateName": "Baked Kale",
       "url": "https://kale1205.github.io/fde-site/",
-      "logo": {"@type": "ImageObject", "url": "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg"}
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg"
+      }
     },
     {
       "@type": "WebSite",
       "@id": "https://kale1205.github.io/fde-site/#website",
       "name": "Baked Kale FDE | FDE IMS",
       "url": "https://kale1205.github.io/fde-site/",
-      "publisher": {"@id": "https://kale1205.github.io/fde-site/#organization"}
+      "publisher": {
+        "@id": "https://kale1205.github.io/fde-site/#organization"
+      }
     },
     {
       "@type": "WebPage",
@@ -51,8 +51,12 @@
       "name": "FDE IMS Inventory Software | Baked Kale FDE",
       "url": "https://kale1205.github.io/fde-site/",
       "inLanguage": "zh-CN",
-      "isPartOf": {"@id": "https://kale1205.github.io/fde-site/#website"},
-      "about": {"@id": "https://kale1205.github.io/fde-site/#fde-ims"}
+      "isPartOf": {
+        "@id": "https://kale1205.github.io/fde-site/#website"
+      },
+      "about": {
+        "@id": "https://kale1205.github.io/fde-site/#fde-ims"
+      }
     },
     {
       "@type": "SoftwareApplication",
@@ -63,448 +67,120 @@
       "applicationSubCategory": "Inventory management software",
       "creativeWorkStatus": "开发中",
       "description": "Inventory management software in development from Baked Kale FDE for small businesses moving from paper, spreadsheets, or an existing system.",
-      "featureList": ["Inventory list and search", "Receive stock", "Ship stock", "Low-stock status"],
-      "audience": {"@type": "BusinessAudience", "audienceType": "Small businesses"},
-      "provider": {"@id": "https://kale1205.github.io/fde-site/#organization"}
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://kale1205.github.io/fde-site/#faq-en",
-      "mainEntity": [
-        {"@type": "Question", "name": "Can I purchase FDE IMS now?", "acceptedAnswer": {"@type": "Answer", "text": "No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available."}},
-        {"@type": "Question", "name": "Can I try the product workflow?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The simplified v1.0 demo uses sample data and lets you search inventory and try temporary Receive, Transfer, Count, and Ship actions."}},
-        {"@type": "Question", "name": "Where can I review detailed terms or ask a question?", "acceptedAnswer": {"@type": "Answer", "text": "Review the License page for the current planned terms, review each plan above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."}},
-        {"@type": "Question", "name": "Is FDE IMS intended for teams using paper or spreadsheets?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."}},
-        {"@type": "Question", "name": "Can Baked Kale FDE migrate or import data from an existing system?", "acceptedAnswer": {"@type": "Answer", "text": "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."}}
-      ]
+      "featureList": [
+        "Inventory list and search",
+        "Receive stock",
+        "Ship stock",
+        "Low-stock status"
+      ],
+      "audience": {
+        "@type": "BusinessAudience",
+        "audienceType": "Small businesses"
+      },
+      "provider": {
+        "@id": "https://kale1205.github.io/fde-site/#organization"
+      }
     }
   ]
 }
 </script>
+<link rel="stylesheet" href="../gallery-ui.css?v=20261007-224522">
+<link rel="stylesheet" href="../quiet-form.css?v=20261007-224522">
+<script defer src="../gallery-ui.js?v=20261007-224522"></script>
+<script defer src="../demo-v1.js?v=20261007-224522"></script>
+<script defer src="../quiet-form.js?v=20261007-224522"></script>
 </head>
-<body class="gallery-page source-home">
-<a class="skip-link" href="#main-content">跳至主要内容</a>
+<body class="gallery-page quiet-home">
+<a class="skip-link" href="#main-content">跳至正文</a>
 <div class="site-shell language-zh">
 <header class="site-header">
-<a class="brand" href="./" aria-label="Baked Kale FDE 首页">
-<img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg" width="980" height="240">
-</a>
-<nav class="desktop-nav" aria-label="主导航">
-<a href="#product" aria-current="page">产品</a>
-<a href="goals.html">我们的目标</a>
-<a href="news.html">最新消息</a>
-</nav>
-<div class="header-actions">
-<a class="locale-button" data-locale-link href="../" hreflang="en" lang="en">English</a><a class="locale-button" href="../ja/" hreflang="ja" lang="ja">日本語</a>
-
-<a class="header-contact" href="contact.html">联系我们<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z">
-</path>
-</svg>
-</a>
-<button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="打开菜单">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z">
-</path>
-</svg>
-</button>
-</div>
-<nav class="mobile-nav" id="mobile-nav" aria-label="移动端导航" hidden>
-<a href="#product" aria-current="page">产品</a>
-<a href="goals.html">我们的目标</a>
-<a href="news.html">最新消息</a>
-
-<a href="../" hreflang="en" lang="en">English</a><a href="../ja/" hreflang="ja" lang="ja">日本語</a><a href="contact.html">联系我们</a>
-</nav>
+<a class="brand" href="./" aria-label="Baked Kale FDE"><img src="../assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a>
+<nav class="desktop-nav" aria-label="打开菜单"><a href="#plans">产品</a><a href="demo.html">演示</a><a href="goals.html">Our Goals</a><a href="news.html">动态</a><a href="contact.html">联系我们</a></nav>
+<div class="header-actions"><a class="locale-button" data-locale-link href="../" hreflang="en" lang="en">English</a><a class="locale-button" data-locale-link href="../ja/" hreflang="ja" lang="ja">日本語</a><button class="menu-button" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
+<nav class="mobile-nav" id="mobile-nav" aria-label="打开菜单" hidden><a href="#plans">产品</a><a href="goals.html">Our Goals</a><a href="news.html">动态</a><a href="contact.html">联系我们</a></nav>
 </header>
 <main id="main-content">
-
-<section class="hero section-frame" id="product">
-<img class="lab-background" src="../assets/night-lab-20260915.webp" width="1672" height="941" alt="" fetchpriority="high">
-<div class="hero-copy">
-<p class="status-line">FDE IMS — 开发中</p>
-<h1 class="source-heading">
-<span>属于您公司的系统。</span>
-<span class="accent-line">由您持续打造。</span>
-</h1>
-<p class="hero-lead">不必从零开始。以库存管理系统及其源代码为起点，再根据团队的实际工作方式持续调整。</p>
-<div class="hero-actions"><a class="button button-primary" href="#license-plus">查看源代码方案</a><a class="button button-secondary" href="demo.html" data-demo-open>体验演示</a></div>
-<small class="development-note">产品仍在开发中。美元价格为尚未批准的候选价格，需等待最终国际定价；目前暂不开放购买。</small>
-
-</div>
-<div class="hero-visual">
-
-
-
-<div class="product-window" id="preview-panel">
-<aside class="product-rail" aria-label="产品预览工具">
-<div>
-<button type="button" class="active" aria-label="预览工具 1" aria-pressed="true">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M120,56v48a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V56A16,16,0,0,1,56,40h48A16,16,0,0,1,120,56Zm80-16H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm-96,96H56a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,104,136Zm96,0H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,200,136Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="预览工具 2" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M223.68,66.15,135.68,18h0a15.88,15.88,0,0,0-15.36,0l-88,48.17a16,16,0,0,0-8.32,14v95.64a16,16,0,0,0,8.32,14l88,48.17a15.88,15.88,0,0,0,15.36,0l88-48.17a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,32h0l80.34,44L128,120,47.66,76ZM40,90l80,43.78v85.79L40,175.82Zm96,129.57V133.82L216,90v85.78Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="预览工具 3" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M168,152a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,152Zm-8-40H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm56-64V216a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V48A16,16,0,0,1,56,32H92.26a47.92,47.92,0,0,1,71.48,0H200A16,16,0,0,1,216,48ZM96,64h64a32,32,0,0,0-64,0ZM200,48H173.25A47.93,47.93,0,0,1,176,64v8a8,8,0,0,1-8,8H88a8,8,0,0,1-8-8V64a47.93,47.93,0,0,1,2.75-16H56V216H200Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="预览工具 4" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M255.42,117l-14-35A15.93,15.93,0,0,0,226.58,72H192V64a8,8,0,0,0-8-8H32A16,16,0,0,0,16,72V184a16,16,0,0,0,16,16H49a32,32,0,0,0,62,0h50a32,32,0,0,0,62,0h17a16,16,0,0,0,16-16V120A7.94,7.94,0,0,0,255.42,117ZM192,88h34.58l9.6,24H192ZM32,72H176v64H32ZM80,208a16,16,0,1,1,16-16A16,16,0,0,1,80,208Zm81-24H111a32,32,0,0,0-62,0H32V152H176v12.31A32.11,32.11,0,0,0,161,184Zm31,24a16,16,0,1,1,16-16A16,16,0,0,1,192,208Zm48-24H223a32.06,32.06,0,0,0-31-24V128h48Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="预览工具 5" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z">
-</path>
-</svg>
-</button>
-</div>
-</aside>
-<div class="product-content">
-<div class="product-heading">
-<div>
-<p>FDE IMS</p>
-<h2>开发预览</h2>
-</div>
-<span>
-<i>
-</i>预览</span>
-</div>
-<div class="metric-grid">
-<article>
-<span>商品数</span>
-<strong>5</strong>
-</article>
-<article>
-<span>库存偏低</span>
-<strong class="orange">1</strong>
-<em>需要处理</em>
-</article>
-<article>
-<span>状态</span>
-<strong class="status-preview">预览</strong>
-</article>
-</div>
-<div class="inventory-table" role="region" aria-label="库存样本">
-<div class="inventory-row inventory-head">
-<span>产品</span>
-<span>SKU</span>
-<span>库存</span>
-<span>状态</span>
-</div>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>P</i>Paper Cup 12oz</span>
-<span>PC-1204</span>
-<strong>326</strong>
-<span class="stock-ok">正常</span>
-</button>
-<button class="inventory-row selected" type="button" aria-current="true">
-<span class="product-name">
-<i>L</i>Label Roll</span>
-<span>LR-0041</span>
-<strong>18</strong>
-<span class="stock-low">库存偏低</span>
-</button>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>T</i>Thermal Paper</span>
-<span>TP-3011</span>
-<strong>41</strong>
-<span class="stock-ok">正常</span>
-</button>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>P</i>Packing Tape</span>
-<span>PT-5002</span>
-<strong>94</strong>
-<span class="stock-ok">正常</span>
-</button>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>B</i>Bubble Mailer</span>
-<span>BM-2501</span>
-<strong>210</strong>
-<span class="stock-ok">正常</span>
-</button>
-</div>
-<div class="product-footer">
-<p>示例界面。数据仅用于演示。</p>
-<div>
-<button type="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z">
-</path>
-</svg>入库</button>
-<button class="ship-button" type="button">出库<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z">
-</path>
-</svg>
-</button>
-</div>
-</div>
-</div>
-</div>
-
-</div>
+<section class="quiet-hero" id="product" aria-labelledby="hero-title">
+<div class="section-frame">
+<p class="release-line" data-release-notice><span aria-hidden="true">—</span><span>2026年11月1日发布<span class="release-availability">目前尚不可购买。</span></span></p>
+<h1 id="hero-title"><span>开发自己的系统，</span><span>不必从零开始。</span></h1><p class="quiet-lead">以库存管理系统和源代码为起点，打造适合自己业务的工作方式。</p>
+<div class="quiet-actions"><a class="button" href="#license-plus">查看含源代码的方案 <span aria-hidden="true">→</span></a><a class="quiet-text-link" href="#motion-demo">体验演示 <span aria-hidden="true">→</span></a></div>
+<div class="sculpture-pair">
+<figure><img class="sculpture" src="../assets/ims-license-update.webp" alt="" width="960" height="960" fetchpriority="high"><figcaption><h2><span>FDE IMS</span> <span>License</span></h2><p>持续更新，使用最新版 IMS。</p></figcaption></figure>
+<figure><img class="sculpture" src="../assets/ims-license-plus-customize.webp" alt="" width="960" height="960" fetchpriority="high"><figcaption><h2><span>FDE IMS</span> <span>License Plus</span></h2><p>亲手改造，成为自己公司的应用。</p></figcaption></figure>
+</div></div>
 </section>
-<section class="story-section section-frame" id="story">
-<div class="section-intro"><p>01 / THE STARTING POINT</p>
-<h2>如果您的团队<br>也能打造自己的系统？</h2>
-<span>让业务迁就产品、等待所需功能，或从零开始开发，并不是仅有的选择。还可以从一套可运行的系统与源代码出发，把它逐步变成真正属于自己的系统。</span></div>
+<section class="quiet-plans section-frame" id="plans" aria-labelledby="plan-title">
+<h2 class="quiet-heading" id="plan-title">两种起点。</h2>
+<table class="quiet-comparison"><caption class="visually-hidden">产品对比</caption>
+<thead><tr><th scope="col"><div class="plan-top"><img class="comparison-sculpture" src="../assets/ims-license-update.webp" alt="" width="960" height="960" loading="lazy"><h3><span>FDE IMS</span> <span>License</span></h3><p>开始使用，理顺流程，持续运作。</p><strong class="plan-price">¥49,800</strong><a href="license.html#comparison">查看条件 <span aria-hidden="true">→</span></a></div></th>
+<th scope="col" id="license-plus"><div class="plan-top"><img class="comparison-sculpture" src="../assets/ims-license-plus-customize.webp" alt="" width="960" height="960" loading="lazy"><h3><span>FDE IMS</span> <span>License Plus</span></h3><p>看得见，改得了，用着不断完善。</p><strong class="plan-price">¥99,800</strong><a href="license.html#comparison">查看条件 <span aria-hidden="true">→</span></a></div></th></tr></thead>
+<tbody><tr><td><span aria-hidden="true">✓</span>一次性购买</td><td><span aria-hidden="true">✓</span>一次性购买</td></tr>
+<tr><td><span aria-hidden="true">—</span>不含源代码</td><td><span aria-hidden="true">✓</span>完整源代码</td></tr>
+<tr><td><span aria-hidden="true">—</span>不允许内部修改</td><td><span aria-hidden="true">✓</span>允许内部修改</td></tr>
+<tr><td><span aria-hidden="true">✓</span>官方 Updates<br>须订阅月度服务</td><td><span aria-hidden="true">—</span>不适用官方 Updates<br>由购买方更新和管理</td></tr></tbody></table>
+<div class="updates-strip"><strong>License Updates</strong><span>含最初3个月</span><span>第4–6个月 <strong>¥4,900/月</strong></span><span>第7个月起 <strong>¥9,800/月</strong></span></div>
+<p class="updates-note">停止 Updates 后，仍可继续使用已有版本。</p>
 </section>
-<section class="operating-comparison section-frame" id="operating-model-comparison" aria-labelledby="operating-model-title">
-<header class="comparison-intro">
-<p class="lab-label">COMPARISON / 运行与所有</p>
-<h2 id="operating-model-title">Excel、SaaS，还是可以自行调整的系统？</h2>
-<p>库存管理可以从 Excel 或电子表格开始，也可以采用云端库存管理，或使用由企业自行管理的系统。FDE IMS License Plus 正在作为另一种选择开发：购买法人可根据自身业务修改这套附带源代码的库存管理系统，并计划在客户管理的服务器上运行。</p>
-</header>
-<div class="comparison-table-scroll" role="region" aria-labelledby="operating-model-title" tabindex="0">
-<table class="comparison-table">
-<caption>所有方式、运行方式与可修改范围的常见差异</caption>
-<thead>
-<tr><th scope="col">比较项目</th><th scope="col">Excel / 电子表格</th><th scope="col">一般的云端库存管理 SaaS</th><th scope="col" class="fde-column">FDE IMS License Plus</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">库存管理专用界面</th><td><span class="comparison-symbol partial" aria-hidden="true">△</span>自行设计</td><td><span class="comparison-symbol positive" aria-hidden="true">○</span>通常提供</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>包含</td></tr>
-<tr><th scope="row">适配自身业务</th><td><span class="comparison-symbol positive" aria-hidden="true">○</span>函数 / 宏</td><td><span class="comparison-symbol partial" aria-hidden="true">△</span>设置 / API</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>内部修改源代码</td></tr>
-<tr><th scope="row">系统源代码</th><td><span class="comparison-symbol neutral" aria-hidden="true">—</span>不适用</td><td><span class="comparison-symbol negative" aria-hidden="true">×</span>通常不提供</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>完整源代码</td></tr>
-<tr><th scope="row">计费方式</th><td><span class="comparison-symbol partial" aria-hidden="true">△</span>取决于软件</td><td><span class="comparison-symbol partial" aria-hidden="true">△</span>常见订阅制</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>一次性购买</td></tr>
-<tr><th scope="row">运行基础设施</th><td><span class="comparison-symbol partial" aria-hidden="true">△</span>取决于配置</td><td><span class="comparison-symbol partial" aria-hidden="true">△</span>通常使用服务商基础设施</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>客户自管服务器</td></tr>
-<tr><th scope="row">更新与安全责任</th><td><span class="comparison-symbol positive" aria-hidden="true">○</span>由企业自行管理</td><td><span class="comparison-symbol positive" aria-hidden="true">○</span>平台由服务商管理</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>由购买方管理</td></tr>
-</tbody>
-</table>
-</div>
+<section class="quiet-demo section-frame" id="motion-demo" aria-labelledby="demo-title">
+<header class="demo-section-heading"><div><h2 class="quiet-heading" id="demo-title">亲手体验 IMS。</h2><p>公开演示 · 示例数据</p></div><a class="quiet-text-link" href="demo.html">打开完整演示 <span aria-hidden="true">→</span></a></header>
+<div class="motion-toolbar"><ol class="motion-steps"><li data-motion-step="0"><span aria-hidden="true">01</span>选择商品</li><li data-motion-step="1"><span aria-hidden="true">02</span>记录入库</li><li data-motion-step="2"><span aria-hidden="true">03</span>更新库存</li></ol><button class="motion-toggle" type="button" aria-controls="imsDemoRoot" data-play="播放操作示例" data-pause="暂停" data-replay="重新播放">播放操作示例</button></div>
+<section class="demo-workspace" id="imsDemoRoot" aria-label="FDE IMS v1.0 样本库存工作空间">
+      <div class="demo-kpis">
+        <div class="demo-kpi"><small>有效商品</small><strong id="kpiItems">6</strong></div>
+        <div class="demo-kpi"><small>库存偏低</small><strong id="kpiLow">1</strong></div>
+        <div class="demo-kpi"><small>缺货</small><strong id="kpiOut">1</strong></div>
+        <div class="demo-kpi"><small>演示操作</small><strong id="kpiActions">0</strong></div>
+      </div>
+      <div class="demo-app-grid">
+        <div class="demo-inventory-panel">
+          <div class="demo-panel-head"><div><p class="eyebrow">当前库存</p><h2>各位置库存</h2></div><button id="demoReset" class="button button-secondary light" type="button">重置演示</button></div>
+          <label class="demo-search-label" for="demoSearch">搜索商品</label>
+          <input id="demoSearch" class="faq-search" type="search" placeholder="SKU或条码产品" autocomplete="off">
+          <div class="demo-table-wrap">
+            <table class="demo-table">
+              <thead><tr><th>产品</th><th>主机 / A-01</th><th>大阪 / B-02</th><th>共计</th><th>库存状态</th><th></th></tr></thead>
+              <tbody id="inventoryBody"></tbody>
+            </table>
+          </div>
+          <p class="demo-empty" id="demoEmpty" hidden>没有匹配的产品。</p>
+        </div>
+        <form class="demo-operation-panel" id="demoOperationForm">
+          <p class="eyebrow">模拟库存操作</p>
+          <h2>记录操作</h2>
+          <label for="demoOperation">操作</label>
+          <select id="demoOperation" name="operation">
+            <option value="receive">入库</option>
+            <option value="transfer">调拨</option>
+            <option value="count">盘点</option>
+            <option value="ship">出库</option>
+          </select>
+          <label for="demoProduct">产品</label>
+          <select id="demoProduct" name="product"></select>
+          <div id="demoSourceField"><label for="demoSource">来源位置</label><select id="demoSource" name="source"></select></div>
+          <div id="demoDestinationField"><label for="demoDestination">目标位置</label><select id="demoDestination" name="destination"></select></div>
+          <label for="demoQuantity" id="demoQuantityLabel">实收数量</label>
+          <input id="demoQuantity" name="quantity" type="number" min="1" step="1" value="5" inputmode="numeric" required>
+          <p class="demo-field-help" id="demoOperationHelp">将股票添加到选定的目的地。</p>
+          <button class="button button-primary" id="demoApply" type="submit">收到记录</button>
+          <p class="demo-result" id="demoResult" role="status" aria-live="polite">选择更新临时样本清单的操作 。</p>
+        </form>
+      </div>
+      <section class="demo-history" aria-labelledby="demoHistoryTitle">
+        <div class="demo-panel-head"><div><p class="eyebrow">追加式记录预览</p><h2 id="demoHistoryTitle">最近库存变动记录</h2></div><small>首次提交</small></div>
+        <div class="demo-table-wrap"><table class="demo-table demo-history-table"><thead><tr><th>时间</th><th>操作</th><th>产品</th><th>地点</th><th>变动</th><th>参考</th></tr></thead><tbody id="demoHistoryBody"></tbody></table></div>
+      </section>
+      <div class="demo-scope-grid">
+        <div><strong>包括在模拟中</strong><p>SKU/条码搜索,接收,转移,计数,船舶,非负存量,三态库存健康,移动历史.</p></div>
+        <div><strong>仅供实际产品使用</strong><p>服务器权限,登录和角色,签名本地/局域网通信,审计控制,CSV进出口,加密备份/备份.</p></div>
+      </div>
+      <p class="demo-note">此预览仅在页面内存中使用合成样本数据. 刷新或重置页面会丢弃每个更改 。</p>
+    </section>
+<div class="mobile-stock" aria-label="所选商品库存"><strong data-mobile-product>PC-1204</strong><dl><div><dt>总部 / A-01</dt><dd data-mobile-main>326</dd></div><div><dt>大阪 / B-02</dt><dd data-mobile-osaka>20</dd></div><div><dt>合计</dt><dd data-mobile-total>346</dd></div></dl></div>
+<p class="sample-note">示例数据仅在当前页面中运行。重置后，所有更改都会消失。</p><p class="visually-hidden" id="motion-announcement" role="status" aria-live="polite"></p>
 </section>
-<section class="offers section-frame" id="plans">
-<header class="offers-heading section-intro"><p>02 / USE IT. BUILD ON IT.</p><h2>获得使用许可。<br>获得持续开发的源代码。</h2><span>同一产品，两种起点。选择 License Plus，以便团队自行开发并调整系统。</span></header>
-<div class="offer-stack">
-<article class="offer-card orange">
-<div class="offer-number">
-<span>OFFER</span>
-<strong>01</strong>
-</div>
-<div class="offer-main">
-<h3>FDE IMS License</h3>
-<p class="offer-model">永久内部使用/无源代码</p>
-<p class="offer-summary">适合希望按现有功能使用产品，并通过一次性购买长期保留该版本的团队。</p>
-<p class="plan-core">永久产品使用/无源代码</p>
-</div>
-<div class="offer-price">
-<span>UNAPPROVED USD CANDIDATE</span>
-<strong>$349</strong>
-<em>/ ONE-TIME</em>
-<small>包含第 1 至第 3 个月的 Updates</small>
-<a href="license.html">查看方案条件<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z">
-</path>
-</svg>
-</a>
-</div>
-<details class="offer-disclosure">
-<summary>Operation, updates &amp; license terms<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<div class="offer-detail-grid">
-<div>
-<h4>包括权利</h4>
-<ul>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>一个法律实体的长期内部使用</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>包括头三个月的更新</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>4-6个月:可选 按31美元/月候选价格价格提供最新资料;其后7个月:62美元/月候选价格</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>如果不继续更新,购买的版本仍然可用</li>
-</ul>
-</div>
-<div>
-<h4>Responsibility &amp; limits</h4>
-<ul>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>不包括源代码和源级修改</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>禁止自动有偿转换;禁止转售、再分配和再许可</li>
-</ul>
-</div>
-</div>
-</details>
-</article>
-<article class="offer-card forest" id="license-plus">
-<div class="offer-number">
-<span>OFFER</span>
-<strong>02</strong>
-</div>
-<div class="offer-main">
-<h3>FDE IMS License Plus</h3>
-<p class="offer-model">源代码+永久内部使用</p>
-<p class="offer-summary">适合希望以源代码与技术文档为起点，持续开发并调整自有系统的团队。</p>
-<p class="plan-core">Full source code / Internal modification &amp; integration</p>
-</div>
-<div class="offer-price">
-<span>UNAPPROVED USD CANDIDATE</span>
-<strong>$699</strong>
-<em>/ ONE-TIME</em>
-<small>由购买方自行管理；不包含且无法追加 License Updates</small>
-<a href="license.html">查看 Plus 条件<span aria-hidden="true">→</span></a>
-</div>
-<details class="offer-disclosure">
-<summary>Operation, updates &amp; license terms<span class="disclosure-mark" aria-hidden="true">⌄</span></summary>
-<div class="offer-detail-grid">
-<div>
-<h4>包括权利</h4>
-<ul>
-<li><span class="check-mark" aria-hidden="true">✓</span>包含完整源代码</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>长期内部使用</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>允许内部修改和整合</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>计划建立、部署、数据库、API和备份/备份文件</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>客户服务器/自营业务计划</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>核准的外部开发中国家援助</li>
-</ul>
-</div>
-<div>
-<h4>Responsibility &amp; limits</h4>
-<ul>
-<li><span class="check-mark" aria-hidden="true">✓</span>未包括更新应享权利</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>购买者管理更新和安全</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>禁止转售、再分配和分License</li>
-</ul>
-</div>
-</div>
-</details>
-</article>
-</div>
-<p class="plan-footnote" id="compare">美元价格仍是未经批准的候选价格，目前暂不开放购买。请查看上方各方案的运营、更新与 License 条件。</p>
-<p class="plan-footnote" id="security">部署协助、开发服务与支持范围尚未确定。License Plus 的更新与安全由购买方管理。</p>
-</section>
-
-
-<section class="site-paths section-frame" aria-labelledby="beyond-product-title">
-<div class="section-intro compact">
-<p>03 / WHY WE BUILD</p>
-<h2 id="beyond-product-title">一个操作点子,传遍现场</h2>
-<span>了解 FDE 为何从真实工作出发、Baked Kale FDE 如何把反复出现的问题转化为产品，以及目前正在发生的变化。</span>
-</div>
-<div class="site-paths-grid">
-<a href="goals.html"><small>01 / OUR GOALS</small><h3>我们的目标</h3><p>了解 FDE、我们提供源代码的原因，以及我们希望成为怎样的合作伙伴。</p><b aria-hidden="true">↗</b></a>
-<a href="news.html"><small>02 / CURRENT</small><h3>最新消息</h3><p>查看产品决策、开发预览与 Baked Kale FDE 的最新动态。</p><b aria-hidden="true">↗</b></a>
-</div>
-</section>
-<section class="news-strip gallery-news-strip" aria-label="最近新闻">
-<a href="news.html">
-<b>最新</b>
-<span>正在装入最新更新</span>
-<span>查看新闻_</span>
-</a>
-</section>
-<section class="faq-section section-frame" id="faq">
-<div class="section-intro compact">
-<p>04 / FAQ</p>
-<h2>明确下一步，不重复冗长条款。</h2>
-</div>
-<div class="faq-list">
-<details open="">
-<summary>
-<span>01</span>
-<strong>现在可以购买 FDE IMS 吗？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<p>否。FDE IMS仍在开发中. 所示的美元价格在最后国际定价之前是未经批准的候选价格,尚无法购买。</p>
-</details>
-<details>
-<summary>
-<span>02</span>
-<strong>可以体验产品的操作流程吗？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<p>对 简化的 v1.0 演示使用样本数据, 并允许您搜索目录并尝试临时接收、 传输、 计算和 Ship 动作 。</p>
-</details>
-<details>
-<summary>
-<span>03</span>
-<strong>在哪里查看详细条件或提出问题？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<p>审查当前计划条款的许可页,审查以上每项计划以划分责任,或开放可搜索的FAQ和查询表的联系人.</p>
-</details>
-<details>
-<summary>
-<span>04</span>
-<strong>FDE IMS 是否适合正在使用纸质记录或电子表格的团队？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
-</summary>
-<p>对 FDE IMS是为希望从纸质或电子表格转向更清晰的接收、储存和船舶记录的小企业设计的。</p>
-</details>
-<details>
-<summary>
-<span>05</span>
-<strong>Baked Kale FDE 可以迁移或导入现有系统的数据吗？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
-</summary>
-<p>尚未确认。 将在正式销售前确定数据进口格式、迁移服务和部署支持。</p>
-</details>
-</div>
-</section>
-<section class="contact-section section-frame" id="contact">
-<div>
-<p>BAKED KALE FDE / FDE IMS</p>
-<h2>您的系统，从这里开始。<br>把它变成真正适合您的系统。</h2>
-<span>先体验演示，再思考团队能基于源代码打造怎样的系统。FDE IMS 仍在开发中，目前暂不开放购买。</span>
-</div>
-<div class="contact-actions"><a class="button contact-preview" href="#license-plus">查看源代码方案</a><a class="button contact-link" href="demo.html" data-demo-open>体验演示</a></div>
-</section>
+<section class="quiet-news section-frame"><div><h2 class="quiet-heading">Baked Kale 的此刻。</h2><p>在最新动态中，<br>了解 Baked Kale 的开发进展。</p></div><a class="button" href="news.html">查看动态 <span aria-hidden="true">→</span></a></section>
 </main>
-<footer class="site-footer section-frame">
-<img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg" width="980" height="240">
-<div>
-<p>面向小型运营团队的实用业务软件。</p>
-<nav class="footer-links" aria-label="页脚导航"><a href="goals.html">我们的目标</a><a href="news.html">最新消息</a><a href="license.html">License</a><a href="contact.html">联系我们</a></nav>
+<footer class="site-footer section-frame"><a href="./"><img src="../assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="#plans">产品</a><a href="demo.html">演示</a><a href="goals.html">Our Goals</a><a href="news.html">动态</a><a href="contact.html">联系我们</a></nav><small>© 2026 Baked Kale FDE</small></footer>
 </div>
-<span>© 2026 Baked Kale FDE</span>
-</footer>
-<div class="toast " role="status" aria-live="polite">
-</div>
-</div>
-</body>
-</html>
+</body></html>

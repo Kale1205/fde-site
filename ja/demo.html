@@ -26,13 +26,14 @@
   <meta name="twitter:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:image:alt" content="Baked Kale FDEによるFDE IMS在庫管理の開発プレビュー">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
-  <link rel="stylesheet" href="../gallery-pages.css?v=20260925-081759">
-  <script defer src="../gallery-ui.js?v=20260925-081759"></script>
-  <script defer src="../demo-v1.js?v=20260925-081759"></script>
-  <script defer src="../site.js?v=20260925-081759"></script>
+  <link rel="stylesheet" href="../gallery-ui.css?v=20261007-224522">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20261007-224522">
+  <script defer src="../gallery-ui.js?v=20261007-224522"></script>
+  <script defer src="../demo-v1.js?v=20261007-224522"></script>
+  <script defer src="../site.js?v=20261007-224522"></script>
+  <link rel="stylesheet" href="../quiet-pages.css?v=20261007-224522">
 </head>
-<body class="gallery-page gallery-subpage demo-page demo-app">
+<body class="quiet-page gallery-page gallery-subpage demo-page demo-app demo-renewal">
 <div class="site-shell language-ja">
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="Baked Kale FDE ホーム"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"></a>
@@ -46,37 +47,33 @@
   <div class="demo-bar">
     <div class="section-frame demo-toolbar"><strong>FDE IMS / v1.0 簡易デモ</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">デモを閉じる</button></div></div>
   </div>
-  <main class="demo-dashboard section-frame">
-    <section class="section-intro compact demo-intro">
+  <main class="demo-dashboard">
+    <div class="demo-hero">
+    <section class="section-frame section-intro compact demo-intro">
       <p>V1.0 SIMPLIFIED WORKFLOW / 一時データ</p>
       <h1>基本の在庫業務を試す</h1>
       <span>サンプル商品を使い、入庫・移動・棚卸・出庫を行いながら、在庫状態と移動履歴の変化を確認できます。</span>
-      <div class="ims-pre"><strong>操作シミュレーション · 正式版製品ではありません</strong><p>このブラウザ専用デモは、v1.0の操作を簡略化したものです。IMSサーバーへの接続、変更内容の保存、ログイン・権限管理、本番用バックアップは行いません。</p></div>
-      <small class="demo-note">FDE IMS by Baked Kale FDE</small>
+
+
+      <p class="demo-simulation-label">操作シミュレーション · 正式版製品ではありません</p>
+      <nav class="demo-view-switcher" aria-label="デモ画面の切り替え" hidden><button type="button" data-demo-view="inventory" aria-pressed="true" aria-controls="demoInventoryView demoOperationForm">在庫</button><button type="button" data-demo-view="operation" aria-pressed="false" aria-controls="demoOperationForm">在庫操作</button><button type="button" data-demo-view="history" aria-pressed="false" aria-controls="demoHistoryView">移動履歴</button></nav>
     </section>
-    <ol class="demo-flow" aria-label="v1.0の簡易業務フロー">
-      <li><small>01</small><strong>検索</strong><span>SKU・バーコード</span></li>
-      <li><small>02</small><strong>入庫</strong><span>入荷在庫を追加</span></li>
-      <li><small>03</small><strong>移動</strong><span>保管場所間で移す</span></li>
-      <li><small>04</small><strong>棚卸</strong><span>実在庫を確定</span></li>
-      <li><small>05</small><strong>出庫</strong><span>マイナス在庫を防止</span></li>
-      <li><small>06</small><strong>確認</strong><span>在庫状態・履歴</span></li>
-    </ol>
-    <section class="demo-workspace" id="imsDemoRoot" aria-label="FDE IMS v1.0サンプル在庫画面">
+    </div>
+    <section class="demo-workspace section-frame" id="imsDemoRoot" aria-label="FDE IMS v1.0サンプル在庫画面">
+      <div class="demo-app-grid">
+        <div class="demo-inventory-panel" id="demoInventoryView">
+          <div class="demo-panel-head"><div><p class="eyebrow">CURRENT INVENTORY</p><h2 id="demoInventoryTitle">保管場所別の在庫</h2></div></div>
       <div class="demo-kpis">
         <div class="demo-kpi"><small>有効商品</small><strong id="kpiItems">6</strong></div>
         <div class="demo-kpi"><small>要補充</small><strong id="kpiLow">1</strong></div>
         <div class="demo-kpi"><small>在庫切れ</small><strong id="kpiOut">1</strong></div>
         <div class="demo-kpi"><small>デモ操作</small><strong id="kpiActions">0</strong></div>
       </div>
-      <div class="demo-app-grid">
-        <div class="demo-inventory-panel">
-          <div class="demo-panel-head"><div><p class="eyebrow">CURRENT INVENTORY</p><h2>保管場所別の在庫</h2></div><button id="demoReset" class="button button-secondary light" type="button">デモをリセット</button></div>
           <label class="demo-search-label" for="demoSearch">商品を検索</label>
           <input id="demoSearch" class="faq-search" type="search" placeholder="商品名・SKU・バーコード" autocomplete="off">
-          <div class="demo-table-wrap">
-            <table class="demo-table">
-              <thead><tr><th>商品</th><th>本社 / A-01</th><th>大阪 / B-02</th><th>合計</th><th>在庫状態</th><th></th></tr></thead>
+          <div class="demo-table-wrap" role="region" aria-labelledby="demoInventoryTitle" tabindex="0">
+            <table class="demo-table"><caption class="sr-only">保管場所別の在庫</caption>
+              <thead><tr><th scope="col">商品</th><th scope="col">本社 / A-01</th><th scope="col">大阪 / B-02</th><th scope="col">合計</th><th scope="col">在庫状態</th><th scope="col">選択</th></tr></thead>
               <tbody id="inventoryBody"></tbody>
             </table>
           </div>
@@ -101,17 +98,31 @@
           <p class="demo-field-help" id="demoOperationHelp">選択した移動先へ在庫を追加します</p>
           <button class="button button-primary" id="demoApply" type="submit">入庫を記録</button>
           <p class="demo-result" id="demoResult" role="status" aria-live="polite">操作を選び、一時的なサンプル在庫を更新できます</p>
+          <div class="demo-selected-product" aria-live="off"><small data-demo-selected-label>商品</small><strong data-demo-selected-name></strong><small data-demo-selected-sku></small><dl><div><dt>本社 / A-01</dt><dd data-demo-selected-stock="0"></dd></div><div><dt>大阪 / B-02</dt><dd data-demo-selected-stock="1"></dd></div><div><dt>合計</dt><dd data-demo-selected-stock="2"></dd></div></dl></div>
         </form>
       </div>
-      <section class="demo-history" aria-labelledby="demoHistoryTitle">
+      <section class="demo-history" id="demoHistoryView" aria-labelledby="demoHistoryTitle">
         <div class="demo-panel-head"><div><p class="eyebrow">APPEND-ONLY PREVIEW</p><h2 id="demoHistoryTitle">最近の移動履歴</h2></div><small>新しい順</small></div>
-        <div class="demo-table-wrap"><table class="demo-table demo-history-table"><thead><tr><th>時刻</th><th>操作</th><th>商品</th><th>保管場所</th><th>増減</th><th>参照</th></tr></thead><tbody id="demoHistoryBody"></tbody></table></div>
+        <div class="demo-table-wrap" role="region" aria-labelledby="demoHistoryTitle" tabindex="0"><table class="demo-table demo-history-table"><caption class="sr-only">最近の移動履歴</caption><thead><tr><th scope="col">時刻</th><th scope="col">操作</th><th scope="col">商品</th><th scope="col">保管場所</th><th scope="col">増減</th><th scope="col">参照</th></tr></thead><tbody id="demoHistoryBody"></tbody></table></div>
       </section>
+      <div class="demo-workbench-actions"><button id="demoReset" class="button button-secondary light" type="button">デモをリセット</button></div>
+      <details class="demo-guide" id="demoGuide"><summary id="demoGuideTitle">v1.0の簡易業務フロー</summary><div data-demo-notes>
+      <div class="ims-pre"><strong>操作シミュレーション · 正式版製品ではありません</strong><p>このブラウザ専用デモは、v1.0の操作を簡略化したものです。IMSサーバーへの接続、変更内容の保存、ログイン・権限管理、本番用バックアップは行いません。</p></div>
+      <small class="demo-note">FDE IMS by Baked Kale FDE</small>
+    <ol class="demo-flow" aria-label="v1.0の簡易業務フロー">
+      <li><small>01</small><strong>検索</strong><span>SKU・バーコード</span></li>
+      <li><small>02</small><strong>入庫</strong><span>入荷在庫を追加</span></li>
+      <li><small>03</small><strong>移動</strong><span>保管場所間で移す</span></li>
+      <li><small>04</small><strong>棚卸</strong><span>実在庫を確定</span></li>
+      <li><small>05</small><strong>出庫</strong><span>マイナス在庫を防止</span></li>
+      <li><small>06</small><strong>確認</strong><span>在庫状態・履歴</span></li>
+    </ol>
       <div class="demo-scope-grid">
         <div><strong>このシミュレーションで試せること</strong><p>SKU・バーコード検索、入庫、移動、棚卸、出庫、マイナス在庫の防止、3段階の在庫状態、移動履歴</p></div>
         <div><strong>実製品だけに含まれること</strong><p>サーバーによる確定、ログイン・権限、署名付きLocal/LAN通信、監査制御、CSV入出力、暗号化バックアップ・復元</p></div>
       </div>
       <p class="demo-note">このデモでは合成サンプルデータをページ内メモリだけで使用します。再読み込みまたはリセットですべての変更が消えます。</p>
+      </div></details>
     </section>
   </main>
   <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>小規模な現場向けのFDE IMS在庫管理ソフト</p><small>サンプルデータによる操作プレビュー</small><nav class="footer-nav" aria-label="フッターナビゲーション"><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="license.html">License</a><a href="contact.html">お問い合わせ</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>

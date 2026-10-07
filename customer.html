@@ -3,64 +3,56 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Customer Portal Preview | Baked Kale FDE</title>
-  <meta name="description" content="The Baked Kale FDE customer portal is not available while FDE IMS is in development.">
+  <title>Customer Portal | Baked Kale FDE</title>
+  <meta name="description" content="Your FDE IMS order information, in one place.">
   <meta name="robots" content="noindex,follow">
-  <link rel="stylesheet" href="styles.css?v=20260925-081759">
-  <link rel="stylesheet" href="refinements.css?v=20260925-081759">
-  <link rel="stylesheet" href="polish.css?v=20260925-081759">
-  <link rel="stylesheet" href="editorial.css?v=20260925-081759">
-  <link rel="stylesheet" href="responsive.css?v=20260925-081759">
-  <link rel="stylesheet" href="brand-green.css?v=20260925-081759">
-  <link rel="stylesheet" href="customer.css?v=20260925-081759">
+  <link rel="canonical" href="https://kale1205.github.io/fde-site/customer.html">
+  <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/customer.html">
+  <link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/customer.html">
+  <link rel="alternate" hreflang="zh-CN" href="https://kale1205.github.io/fde-site/zh/customer.html">
+  <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/customer.html">
   <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
-  <script defer src="site.js?v=20260925-081759"></script>
+  <link rel="stylesheet" href="gallery-ui.css?v=20261007-224522">
+  <link rel="stylesheet" href="quiet-pages.css?v=20261007-224522">
+  <script defer src="gallery-ui.js?v=20261007-224522"></script>
+  <script type="module" src="quiet-customer.js?v=20261007-224522"></script>
 </head>
-<body class="customer-page">
-  <header class="site-header">
-    <div class="shell header-inner">
-      <a class="brand" href="index.html"><span>Baked Kale FDE</span><small>FDE IMS</small></a>
-      <button class="mobile-toggle" aria-label="Menu" aria-expanded="false">☰</button>
-      <nav class="main-nav"><a href="index.html">Products</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="contact.html">Contact</a></nav>
-    </div>
-  </header>
-  <main>
-    <section class="page-hero customer-hero">
-      <div class="shell">
-        <div class="eyebrow">Customer Portal / PRE-RELEASE</div>
-        <h1 class="display">Customer portal is not available yet</h1>
-        <p class="lede">FDE IMS is in development. Ordering, payment confirmation, fulfillment, and customer status lookup are disabled.</p>
-      </div>
+<body class="quiet-page gallery-page customer-renewal">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<div class="site-shell language-en">
+<header class="site-header">
+<a class="brand" href="./" aria-label="Baked Kale FDE"><img src="assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a>
+<nav class="desktop-nav" aria-label="Open menu"><a href="index.html#plans">Products</a><a href="demo.html">Demo</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="contact.html">Contact</a></nav>
+<div class="header-actions"><a class="locale-button" data-locale-link href="ja/customer.html" hreflang="ja" lang="ja">日本語</a><a class="locale-button" data-locale-link href="zh/customer.html" hreflang="zh-CN" lang="zh-CN">简体中文</a><button class="menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
+<nav class="mobile-nav" id="mobile-nav" aria-label="Open menu" hidden><a href="index.html#plans">Products</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="contact.html">Contact</a></nav>
+</header>
+<main id="main-content">
+  <section class="portal-hero section-frame" aria-labelledby="portal-title">
+    <img class="portal-hero-mark" src="assets/baked-kale-mark.svg" width="360" height="360" alt="" aria-hidden="true">
+    <p class="eyebrow">CUSTOMER PORTAL</p><h1 id="portal-title">Your order.<br>One place.</h1><p class="portal-lead">Keep your Order ID and order email address together with your quotation, payment and delivery information.</p>
+  </section>
+  <div class="portal-document section-frame">
+    <section class="portal-input-surface" aria-labelledby="portal-form-title">
+      <div class="portal-form-intro"><span class="portal-icon"><img src="assets/phosphor-file-text.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h2 id="portal-form-title">Order information</h2><p>Enter the details shown on your quotation or order confirmation.</p></div></div>
+      <form id="portal-form" novalidate aria-describedby="portal-privacy">
+        <div class="portal-fields">
+          <div class="portal-field"><label for="portal-order">Order ID</label><input id="portal-order" type="text" required maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" pattern="[Bb][Kk]-[0-9]{8}-[A-Fa-f0-9]{8}" aria-describedby="portal-order-hint"><p class="portal-hint" id="portal-order-hint">Example: BK-20261101-1234ABCD</p><p class="portal-error" id="portal-order-error" hidden>Enter an Order ID in the format BK-YYYYMMDD-XXXXXXXX.</p></div>
+          <div class="portal-field"><label for="portal-email">Order email address</label><input id="portal-email" type="email" required maxlength="254" autocomplete="email" autocapitalize="none" spellcheck="false"><p class="portal-error" id="portal-email-error" hidden>Enter a valid email address.</p></div>
+        </div>
+        <div class="portal-form-actions"><p id="portal-privacy">This preview checks your input on this page only. Nothing is sent or saved.</p><button class="button button-primary" type="submit">Review details<img src="assets/phosphor-arrow-right.svg" width="24" height="24" alt="" aria-hidden="true"></button></div>
+      </form>
+      <section id="portal-review" aria-labelledby="portal-review-title" hidden tabindex="-1">
+        <h3 id="portal-review-title">Review your details</h3><p>These are your entered details, not a retrieved order or payment status.</p><dl><div><dt>Order ID</dt><dd id="portal-review-order"></dd></div><div><dt>Order email address</dt><dd id="portal-review-email"></dd></div></dl><button class="button button-secondary" id="portal-edit" type="button">Edit details</button>
+      </section>
+      <p class="sr-only" id="portal-announcement" role="status" aria-live="polite"></p>
     </section>
-    <section class="section white">
-      <div class="customer-shell">
-        <article class="customer-card">
-          <div class="customer-note">
-            <strong>IN DEVELOPMENT</strong>
-            <p>No Order ID or payment information can be checked on this page. We will enable the portal only after the commercial terms and sales flow are finalized.</p>
-          </div>
-        </article>
-        <aside class="customer-help">
-          <h2>What becomes available after launch</h2>
-          <ul>
-            <li>Order and quotation status (planned)</li>
-            <li>Payment confirmation (planned)</li>
-            <li>Delivery or cancellation status (planned)</li>
-          </ul>
-          <p>For product or plan questions, use the Contact page.</p>
-          <a class="button" href="contact.html">Contact us</a>
-        </aside>
-      </div>
+    <section class="portal-information" aria-labelledby="portal-information-title">
+      <h2 id="portal-information-title">Your order at a glance</h2><ul><li><span class="portal-icon"><img src="assets/phosphor-file-text.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h3>Quotation & order</h3><p>Keep your quotation and order confirmation together.</p></div></li><li><span class="portal-icon"><img src="assets/phosphor-credit-card.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h3>Payment</h3><p>Refer to the payment instructions and confirmation email.</p></div></li><li><span class="portal-icon"><img src="assets/phosphor-truck.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h3>Delivery</h3><p>Keep delivery information and any cancellation correspondence together.</p></div></li></ul>
+      <p class="portal-contact-note">For product or plan questions, get in touch.</p><a class="button button-primary" href="contact.html">Contact us<img src="assets/phosphor-arrow-right.svg" width="24" height="24" alt="" aria-hidden="true"></a>
     </section>
-  </main>
-  <footer class="site-footer">
-    <div class="shell">
-      <div class="footer-grid">
-        <div><div class="footer-brand">Baked Kale FDE</div><p>FDE IMS</p></div>
-        <div><div class="footer-title">Menu</div><a href="index.html">Products</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="contact.html">Contact</a></div>
-      </div>
-      <div class="copyright">© 2026 Baked Kale FDE.</div>
-    </div>
-  </footer>
+  </div>
+</main>
+<footer class="site-footer section-frame"><a href="./"><img src="assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="index.html#plans">Products</a><a href="demo.html">Demo</a><a href="goals.html">Our Goals</a><a href="news.html">News</a><a href="contact.html">Contact</a></nav><small>© 2026 Baked Kale FDE</small></footer>
+</div>
 </body>
 </html>

@@ -19,12 +19,13 @@
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="gallery-ui.css?v=20260925-081759">
-  <link rel="stylesheet" href="gallery-pages.css?v=20260925-081759">
-  <link rel="stylesheet" href="license.css?v=20260925-081759">
-  <script defer src="gallery-ui.js?v=20260925-081759"></script>
+  <link rel="stylesheet" href="gallery-ui.css?v=20261007-224522">
+  <link rel="stylesheet" href="gallery-pages.css?v=20261007-224522">
+  <link rel="stylesheet" href="license.css?v=20261007-224522">
+  <script defer src="gallery-ui.js?v=20261007-224522"></script>
+  <link rel="stylesheet" href="quiet-pages.css?v=20261007-224522">
 </head>
-<body class="gallery-page gallery-subpage license-page" data-selected-plan="plus">
+<body class="quiet-page gallery-page gallery-subpage license-page license-renewal" data-selected-plan="plus">
 <div class="site-shell language-en">
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="Baked Kale FDE home"><img alt="Baked Kale FDE" src="assets/baked-kale-logo.svg"></a>
@@ -37,15 +38,6 @@
   </header>
   <main id="main-content">
     <div class="license-document">
-      <aside class="license-index" aria-label="On this page">
-        <p class="license-index-label">PLAN POLICY</p>
-        <a href="#comparison" data-index="01">Plans and scope</a>
-        <a href="#deliverables" data-index="02">Deliverables</a>
-        <a href="#internal-use" data-index="03">Internal use</a>
-        <a href="#updates" data-index="04">Updates and maintenance</a>
-        <a href="#conditions" data-index="05">Conditions</a>
-      </aside>
-
       <article class="license-content">
         <header class="license-intro" id="comparison">
           <p class="license-eyebrow">PLAN POLICY / IN DEVELOPMENT</p>
@@ -53,14 +45,24 @@
           <p class="license-lede">Choose the product that matches how your team wants to use and maintain FDE IMS. Both are one-time purchases for perpetual internal use by one legal entity.</p>
         </header>
 
+        <section class="license-decision" aria-label="Selected product" data-license-summary>
         <div class="license-plan-switcher" role="group" aria-label="Displayed product">
-          <button type="button" data-license-plan="license" aria-pressed="false">License</button>
-          <button type="button" data-license-plan="plus" aria-pressed="true">License Plus</button>
+          <button type="button" data-license-plan="license" aria-pressed="false"><img src="assets/ims-license-update.webp" alt="" width="32" height="32">License</button>
+          <button type="button" data-license-plan="plus" aria-pressed="true"><img src="assets/ims-license-plus-customize.webp" alt="" width="32" height="32">License Plus</button>
         </div>
+          <figure class="license-spotlight-art" aria-hidden="true">
+            <img data-license-art="license" src="assets/ims-license-update.webp" alt="" width="960" height="960" decoding="async">
+            <img data-license-art="plus" src="assets/ims-license-plus-customize.webp" alt="" width="960" height="960" decoding="async" fetchpriority="high">
+          </figure>
+          <div><p class="decision-label">Selected product</p><strong data-license-name>License Plus</strong></div>
+          <div class="license-decision-price"><p class="decision-label">Candidate total</p><strong data-license-price>$699</strong><small>one-time USD candidate</small></div>
+          <div class="license-decision-responsibility"><p class="decision-label">Primary responsibility</p><ul data-license-points><li>Full source code included</li><li>Internal modification permitted</li><li>Updates and security managed by purchaser</li></ul></div>
+          <a class="button button-primary" href="contact.html">Ask about these terms</a>
+        </section>
 
         <div class="license-matrix-region" role="region" aria-labelledby="license-matrix-en" tabindex="0">
           <table class="license-matrix">
-            <caption id="license-matrix-en" class="sr-only">Planned License and License Plus comparison</caption>
+            <caption id="license-matrix-en">Planned License and License Plus comparison</caption>
             <thead><tr><th scope="col">Item</th><th scope="col"><strong>License</strong><small>one-time</small></th><th scope="col"><strong>License Plus</strong><small>one-time</small></th></tr></thead>
             <tbody>
               <tr><th scope="row">Price (USD candidate)</th><td>$349</td><td>$699</td></tr>
@@ -72,51 +74,44 @@
           </table>
         </div>
 
-        <p class="license-note"><strong>Draft product policy.</strong> FDE IMS is still in development. Every USD amount is an unapproved candidate pending final international pricing. Final commercial terms and the License Agreement / EULA will be presented before purchasing is enabled.</p>
-
-        <section class="license-decision" aria-label="Selected product" data-license-summary>
-          <div><p class="decision-label">Selected product</p><strong data-license-name>License Plus</strong></div>
-          <div class="license-decision-price"><p class="decision-label">Candidate total</p><strong data-license-price>$699</strong><small>one-time USD candidate</small></div>
-          <div class="license-decision-responsibility"><p class="decision-label">Primary responsibility</p><ul data-license-points><li>Full source code included</li><li>Internal modification permitted</li><li>Updates and security managed by purchaser</li></ul></div>
-          <a class="button button-primary" href="contact.html">Ask about these terms</a>
-        </section>
-
-        <h2 class="license-callout">Internal use ≠ resale or redistribution</h2>
-        <p class="license-boundary">These products are for internal business use. Customers may use FDE IMS while selling their ordinary products or services, but may not sell, sublicense, host, or redistribute FDE IMS itself.</p>
+        <p class="license-note" data-release-notice><strong>Releases November 1, 2026. Not yet available for purchase.</strong><br><strong>Draft product policy.</strong> FDE IMS is still in development. Every USD amount is an unapproved candidate pending final international pricing. Final commercial terms and the License Agreement / EULA will be presented before purchasing is enabled.</p>
 
         <div class="license-details">
           <details id="deliverables" open>
             <summary><span class="license-detail-index">02</span><strong>Deliverables</strong></summary>
             <div class="license-detail-body">
-              <div><h3>License</h3><p>Perpetual internal use by one purchasing legal entity. Source code and source-level modification rights are not included. The first three months of Updates-equivalent service are included.</p></div>
-              <div><h3>License Plus</h3><p>Planned for perpetual internal use with full source, internal customization, technical documentation, and customer-server/self-hosted operation. The License Updates add-on is not included or available for Plus.</p></div>
+              <div><h2>License</h2><p>Perpetual internal use by one purchasing legal entity. Source code and source-level modification rights are not included. The first three months of Updates-equivalent service are included.</p></div>
+              <div><h2>License Plus</h2><p>Planned for perpetual internal use with full source, internal customization, technical documentation, and customer-server/self-hosted operation. The License Updates add-on is not included or available for Plus.</p></div>
             </div>
           </details>
 
           <details id="internal-use">
             <summary><span class="license-detail-index">03</span><strong>Internal use</strong></summary>
             <div class="license-detail-body">
-              <div><h3>What License Plus allows</h3><ul><li>Inspect, edit, extend, and integrate the full source for internal use</li><li>Use internally modified versions</li><li>Engage an external developer under confidentiality and the same restrictions</li><li>Use planned build, deployment, database, API, and backup/restore documentation</li></ul></div>
-              <div><h3>What no plan grants</h3><ul><li>No sale or resale of original or modified versions</li><li>No unauthorized transfer, sublicensing, or redistribution of product files</li><li>No public repositories, websites, social media, or public file shares</li><li>No third-party SaaS, rental, hosting, or service-bureau provision</li></ul></div>
+              <div><h2>What License Plus allows</h2><ul><li>Inspect, edit, extend, and integrate the full source for internal use</li><li>Use internally modified versions</li><li>Engage an external developer under confidentiality and the same restrictions</li><li>Use planned build, deployment, database, API, and backup/restore documentation</li></ul></div>
+              <div><h2>What no plan grants</h2><ul><li>No sale or resale of original or modified versions</li><li>No unauthorized transfer, sublicensing, or redistribution of product files</li><li>No public repositories, websites, social media, or public file shares</li><li>No third-party SaaS, rental, hosting, or service-bureau provision</li></ul></div>
             </div>
           </details>
 
           <details id="updates">
             <summary><span class="license-detail-index">04</span><strong>Updates and maintenance</strong></summary>
             <div class="license-detail-body">
-              <div><h3>License Updates</h3><p>Months 1–3 are included. Optional continuation requires explicit opt-in at the $31/month USD candidate price for months 4–6 and $62/month from month 7. The purchased version remains available if Updates is not continued.</p></div>
-              <div><h3>License Plus responsibility</h3><p>The purchaser manages source changes, functionality, compatibility, and security. Updates is not a third product and cannot be added to License Plus.</p></div>
+              <div><h2>License Updates</h2><p>Months 1–3 are included. Optional continuation requires explicit opt-in at the $31/month USD candidate price for months 4–6 and $62/month from month 7. The purchased version remains available if Updates is not continued.</p></div>
+              <div><h2>License Plus responsibility</h2><p>The purchaser manages source changes, functionality, compatibility, and security. Updates is not a third product and cannot be added to License Plus.</p></div>
             </div>
           </details>
 
           <details id="conditions">
             <summary><span class="license-detail-index">05</span><strong>Conditions</strong></summary>
             <div class="license-detail-body">
-              <div><h3>Legal entity and notices</h3><p>Each product covers the purchasing legal entity. Parent companies, subsidiaries, affiliates, and other separate legal entities generally require their own plan. Intellectual-property ownership is not transferred, and copyright, license, and third-party notices must remain.</p></div>
-              <div><h3>AI, OSS, and self-hosting</h3><p>Internal AI tools may be used only when submitted code is excluded from third-party model training. Model training and public datasets are prohibited. Self-hosting, supported environments, deployment, SLA, tax, refunds, migration, and delivery details remain under development or review.</p></div>
+              <div><h2>Legal entity and notices</h2><p>Each product covers the purchasing legal entity. Parent companies, subsidiaries, affiliates, and other separate legal entities generally require their own plan. Intellectual-property ownership is not transferred, and copyright, license, and third-party notices must remain.</p></div>
+              <div><h2>AI, OSS, and self-hosting</h2><p>Internal AI tools may be used only when submitted code is excluded from third-party model training. Model training and public datasets are prohibited. Self-hosting, supported environments, deployment, SLA, tax, refunds, migration, and delivery details remain under development or review.</p></div>
             </div>
           </details>
         </div>
+
+        <h2 class="license-callout">Internal use ≠ resale or redistribution</h2>
+        <p class="license-boundary">These products are for internal business use. Customers may use FDE IMS while selling their ordinary products or services, but may not sell, sublicense, host, or redistribute FDE IMS itself.</p>
 
       </article>
     </div>

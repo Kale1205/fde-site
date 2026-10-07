@@ -20,17 +20,19 @@
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
-  <link rel="stylesheet" href="../gallery-pages.css?v=20260925-081759">
-  <link rel="stylesheet" href="../faq-v38.css?v=20260925-081759">
+  <link rel="stylesheet" href="../gallery-ui.css?v=20261007-224522">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20261007-224522">
+  <link rel="stylesheet" href="../faq-v38.css?v=20261007-224522">
   <noscript><style>.faq-a{display:block}.faq-q{cursor:default}.faq-plus{display:none}</style></noscript>
-  <script defer src="../gallery-ui.js?v=20260925-081759"></script>
-  <script defer src="../contact-config.js?v=20260925-081759"></script>
-  <script defer src="../contact-direct.js?v=20260925-081759"></script>
-  <script defer src="../faq-policy-merge.js?v=20260925-081759"></script>
+  <script defer src="../gallery-ui.js?v=20261007-224522"></script>
+  <script defer src="../contact-config.js?v=20261007-224522"></script>
+  <script defer src="../contact-direct.js?v=20261007-224522"></script>
+  <script defer src="../faq-policy-merge.js?v=20261007-224522"></script>
 
+  <link rel="stylesheet" href="../quiet-pages.css?v=20261007-224522">
+  <script defer src="../quiet-contact.js?v=20261007-224522"></script>
 </head>
-<body class="gallery-page gallery-subpage refined-page contact-page">
+<body class="quiet-page gallery-page gallery-subpage refined-page contact-page contact-renewal">
 <a class="skip-link" href="#main-content">跳至主要内容</a>
 <div class="site-shell language-zh">
   <header class="site-header">
@@ -49,12 +51,37 @@
     </nav>
   </header>
   <main id="main-content">
-    <section class="page-hero compact-hero section-frame">
+    <section class="page-hero compact-hero contact-page-hero section-frame">
+      <img class="contact-hero-mark" src="../assets/baked-kale-mark.svg" width="280" height="280" alt="" aria-hidden="true">
       <div class="section-intro compact"><p>库存管理软件 / BAKED KALE FDE</p><h1>咨询导入或迁移至 FDE IMS</h1><span>请告诉我们您是否使用纸张、电子表格或现有的库存系统。 现在可以讨论产品适配;迁移服务,支持的文件格式,最终部署范围尚未确定.</span></div>
+    </section>
+    <section class="content-section contact-faq-section section-frame">
+      <details class="faq-shell contact-faq">
+        <summary class="section-intro compact"><p>01 / FAQ</p><h2>联系前，先查看常见问题。</h2><span>搜索产品、许可、更新、安全与可用性相关问题。</span><img class="contact-faq-chevron" src="../assets/phosphor-caret-right.svg" width="24" height="24" alt="" aria-hidden="true"></summary>
+        <input id="faqSearch" aria-label="搜索常见问题" class="faq-search" type="search" autocomplete="off" placeholder="搜索问答或关键词">
+        <div id="cmsFaqList">
+          <article class="faq-item" data-faq-id="license-updates-difference">
+            <button class="faq-q" type="button" aria-expanded="false"><span>License 与 License Plus 有什么区别？</span><span class="faq-plus">＋</span></button>
+            <div class="faq-path"><span>状态</span><span>产品方案</span></div>
+            <div class="faq-a">License 为一次性购买，不含源代码，可永久用于购买法人内部，并包含前三个月的 Updates；之后可选择继续购买 License 专用的 Updates 附加服务。License Plus 同样为一次性购买，包含源代码与内部修改权，更新和安全由购买方负责。Updates 不是第三种产品方案，也不适用于 License Plus。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-plus-price">
+            <button class="faq-q" type="button" aria-expanded="false"><span>License Plus 的预定价格与包含权利是什么？</span><span class="faq-plus">＋</span></button>
+            <div class="faq-path"><span>License</span><span>License 基本条件</span></div>
+            <div class="faq-a">一次性美元候选价格为 699 美元。计划包含购买法人的永久内部使用权、完整源代码、内部修改权、技术文档以及客户服务器自托管运行。该方案不含 Updates 权利，更新与安全由购买方负责。所有美元金额均为等待最终国际定价的未批准候选价格。</div>
+          </article>
+          <article class="faq-item" data-faq-id="inventory-adoption-migration-fit">
+            <button class="faq-q" type="button" aria-expanded="false"><span>FDE IMS 可以替代纸张、电子表格或现有库存系统吗？</span><span class="faq-plus">＋</span></button>
+            <div class="faq-path"><span>产品</span><span>导入评估</span></div>
+            <div class="faq-a">FDE IMS 面向希望从纸张或电子表格迁移，或正在重新评估现有库存系统的小型企业。现在可以讨论产品适配性，但数据导入格式、迁移服务与最终部署支持范围尚未确定。</div>
+          </article>
+        </div><div id="faqEmpty" class="faq-empty" hidden>未找到匹配的问题。</div>
+      </details>
     </section>
     <section class="content-section contact-form-section section-frame">
       <div class="form-wrap">
-        <div class="section-intro compact"><p>01 / 咨询表单</p><h2>给我们留言。</h2><span class="section-copy">所有字段均为必填。发送前可以确认填写内容。</span></div>
+        <div class="contact-surface">
+        <div class="section-intro compact"><p>02 / 咨询表单</p><h2>给我们留言。</h2><span class="section-copy">所有字段均为必填。发送前可以确认填写内容。</span></div>
         <form id="contactForm" class="contact-form form-panel" novalidate>
           <div class="field"><label for="name">姓名</label><input id="name" name="name" required autocomplete="name"></div>
           <div class="field"><label for="company">公司 / 法人名称</label><input id="company" name="company" required autocomplete="organization"></div>
@@ -73,6 +100,7 @@
         <section id="inquiryComplete" class="inquiry-state inquiry-complete form-panel" hidden aria-live="polite">
           <div class="state-icon" aria-hidden="true">✓</div><h2>已发送</h2><p>谢谢 我们将审查您的留言,并通过电子邮件作出答复。</p><a class="button button-primary dark" href="index.html">返回产品</a>
         </section>
+        </div>
         <section class="business-profile">
           <div class="business-profile-head"><div class="section-intro compact"><p>企业信息</p><h2 class="business-profile-title">Baked Kale FDE / FDE IMS</h2></div></div>
           <div class="business-profile-grid">
@@ -84,36 +112,9 @@
         </section>
       </div>
     </section>
-    <section class="content-section section-frame">
-      <details class="faq-shell contact-faq">
-        <summary class="section-intro compact"><p>02 / FAQ</p><h2>联系前，先查看常见问题。</h2><span>搜索产品、许可、更新、安全与可用性相关问题。</span></summary>
-        <input id="faqSearch" aria-label="搜索常见问题" class="faq-search" type="search" autocomplete="off" placeholder="搜索问答或关键词">
-        <div id="cmsFaqList">
-          <article class="faq-item" data-faq-id="ims-sale-status">
-            <button class="faq-q" type="button" aria-expanded="false"><span>现在可以购买 FDE IMS 吗？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>状态</span><span>开发中</span></div>
-            <div class="faq-a">不可以。FDE IMS 目前仍在开发中，尚未正式销售。页面显示的是预定价格。正式销售时间、产品版本与详细更新政策将在确定后公布。</div>
-          </article>
-          <article class="faq-item" data-faq-id="license-updates-difference">
-            <button class="faq-q" type="button" aria-expanded="false"><span>License 与 License Plus 有什么区别？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>状态</span><span>产品方案</span></div>
-            <div class="faq-a">License 为一次性购买，不含源代码，可永久用于购买法人内部，并包含前三个月的 Updates；之后可选择继续购买 License 专用的 Updates 附加服务。License Plus 同样为一次性购买，包含源代码与内部修改权，更新和安全由购买方负责。Updates 不是第三种产品方案，也不适用于 License Plus。</div>
-          </article>
-          <article class="faq-item" data-faq-id="license-plus-price">
-            <button class="faq-q" type="button" aria-expanded="false"><span>License Plus 的预定价格与包含权利是什么？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>License</span><span>License 基本条件</span></div>
-            <div class="faq-a">一次性美元候选价格为 699 美元。计划包含购买法人的永久内部使用权、完整源代码、内部修改权、技术文档以及客户服务器自托管运行。该方案不含 Updates 权利，更新与安全由购买方负责。FDE IMS 尚未正式销售，所有美元金额均为等待最终国际定价的未批准候选价格。</div>
-          </article>
-          <article class="faq-item" data-faq-id="inventory-adoption-migration-fit">
-            <button class="faq-q" type="button" aria-expanded="false"><span>FDE IMS 可以替代纸张、电子表格或现有库存系统吗？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>产品</span><span>导入评估</span></div>
-            <div class="faq-a">FDE IMS 面向希望从纸张或电子表格迁移，或正在重新评估现有库存系统的小型企业。现在可以讨论产品适配性，但数据导入格式、迁移服务与最终部署支持范围尚未确定。</div>
-          </article>
-        </div><div id="faqEmpty" class="faq-empty" hidden>未找到匹配的问题。</div>
-      </details>
-    </section>
+
   </main>
-  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>面向小型运营团队的 FDE IMS 库存管理软件。</p><small>FDE IMS正在开发中. 采购不可用。</small><nav class="footer-nav" aria-label="页脚导航"><a href="goals.html">我们的目标</a><a href="news.html">最新消息</a><a href="license.html">License</a><a href="contact.html">联系我们</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
+  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>面向小型运营团队的 FDE IMS 库存管理软件。</p><nav class="footer-nav" aria-label="页脚导航"><a href="goals.html">我们的目标</a><a href="news.html">最新消息</a><a href="license.html">License</a><a href="contact.html">联系我们</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
   <div class="toast" role="status" aria-live="polite"></div>
 </div>
 </body>

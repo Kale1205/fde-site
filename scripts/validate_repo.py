@@ -143,10 +143,10 @@ INDEXED_PAGE_NAMES = {
     "index.html", "goals.html", "news.html", "contact.html",
     "license.html", "demo.html",
 }
-EN_PAGES = INDEXED_PAGE_NAMES | {"order.html"}
+EN_PAGES = INDEXED_PAGE_NAMES | {"order.html", "customer.html"}
 JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
 ZH_PAGES = {f"zh/{name}" for name in EN_PAGES}
-ROOT_ONLY_PUBLIC = {"customer.html"}
+ROOT_ONLY_PUBLIC = set()
 ALL_PUBLIC = EN_PAGES | JA_PAGES | ZH_PAGES | ROOT_ONLY_PUBLIC
 
 for prefix in ("", "ja/", "zh/"):
@@ -324,6 +324,29 @@ for locale, fields in indexed_seo_values.items():
                 fail(f"indexed {locale} pages have duplicate {field} {duplicate_value!r}: {', '.join(sorted(pages))}")
 
 # Search and AI discovery must be grounded in visible, bilingual product facts.
+QUIET_HOMEPAGES = {
+    rel for rel in ("index.html", "ja/index.html", "zh/index.html")
+    if 'class="gallery-page quiet-home"' in public_source_text.get(rel, "")
+}
+# The approved Quiet Form home has its own explicit contracts; inner-page
+# commercial policies below remain untouched by this design-only renewal.
+quiet_home_markers = {
+    "index.html": ("Your own system. Not from scratch.", "Two starting points.", "Monthly subscription required", "Purchaser updates and manages", "When Updates ends, you can keep using your existing version.", "Releases November 1, 2026"),
+    "ja/index.html": ("自社開発は、 ゼロからじゃなくていい。", "出発点は2つ", "月額契約必須", "購入者が更新・管理", "Updates終了後も、既存バージョンは利用できます。", "2026年11月1日リリース"),
+    "zh/index.html": ("开发自己的系统， 不必从零开始。", "两种起点。", "须订阅月度服务", "由购买方更新和管理", "停止 Updates 后，仍可继续使用已有版本。", "2026年11月1日发布"),
+}
+for rel in sorted(QUIET_HOMEPAGES):
+    visible = public_visible_text[rel]
+    source = public_source_text[rel]
+    for marker in quiet_home_markers[rel] + ("¥49,800", "¥99,800", "¥4,900", "¥9,800", "FDE IMS", "License", "License Plus"):
+        if marker not in visible:
+            fail(f"{rel}: approved Quiet Form content missing: {marker}")
+    for marker in ('id="product"', 'id="plans"', 'id="license-plus"', 'id="motion-demo"', 'id="imsDemoRoot"', 'class="quiet-comparison"', 'scope="col"', 'quiet-form.css', 'quiet-form.js', 'demo-v1.js', 'license.html#comparison', 'goals.html', 'news.html', 'contact.html'):
+        if marker not in source:
+            fail(f"{rel}: approved Quiet Form structure/runtime missing: {marker}")
+    if "quiet-form.html" in source or "FAQPage" in source:
+        fail(f"{rel}: normal homepage must not retain preview URLs or invisible FAQ schema")
+
 search_markers = {
     "index.html": (
         "Your company’s system. Yours to build on.",
@@ -341,6 +364,8 @@ search_markers = {
     ),
 }
 for rel, markers in search_markers.items():
+    if rel in QUIET_HOMEPAGES:
+        continue
     visible = public_visible_text.get(rel, "")
     for marker in markers:
         if marker not in visible:
@@ -437,7 +462,8 @@ structured_faq_pairs = {
         ("既存システムのデータを移行・取り込みできますか？", "現在は未確定です。対応するファイル形式、データ移行、導入支援の範囲は、正式販売前にご案内します。"),
     ),
 }
-for rel, expected_pairs in structured_faq_pairs.items():
+for rel in ("index.html", "ja/index.html", "zh/index.html"):
+    expected_pairs = structured_faq_pairs.get(rel, ())
     source = public_source_text.get(rel, "")
     scripts = re.findall(r'<script\s+type="application/ld\+json">\s*(.*?)\s*</script>', source, re.DOTALL | re.IGNORECASE)
     if len(scripts) != 1:
@@ -450,7 +476,10 @@ for rel, expected_pairs in structured_faq_pairs.items():
         continue
     graph = graph_document.get("@graph", [])
     types = {item.get("@type") for item in graph if isinstance(item, dict)}
-    for required_type in ("Organization", "WebSite", "WebPage", "SoftwareApplication", "FAQPage"):
+    required_types = ("Organization", "WebSite", "WebPage", "SoftwareApplication")
+    if rel not in QUIET_HOMEPAGES:
+        required_types += ("FAQPage",)
+    for required_type in required_types:
         if required_type not in types:
             fail(f"{rel}: JSON-LD graph missing {required_type}")
     organizations = [item for item in graph if isinstance(item, dict) and item.get("@type") == "Organization"]
@@ -464,6 +493,10 @@ for rel, expected_pairs in structured_faq_pairs.items():
     if "Offer" in json.dumps(graph_document, ensure_ascii=False):
         fail(f"{rel}: JSON-LD must not claim an Offer while commerce and USD pricing are unapproved")
     faq_nodes = [item for item in graph if isinstance(item, dict) and item.get("@type") == "FAQPage"]
+    if rel in QUIET_HOMEPAGES:
+        if faq_nodes:
+            fail(f"{rel}: FAQ schema must not claim FAQs absent from the approved layout")
+        continue
     entities = faq_nodes[0].get("mainEntity", []) if len(faq_nodes) == 1 else []
     actual_pairs = tuple((item.get("name"), item.get("acceptedAnswer", {}).get("text")) for item in entities)
     if actual_pairs != expected_pairs:
@@ -476,6 +509,9 @@ for rel, expected_pairs in structured_faq_pairs.items():
 # Japanese editorial headings are short labels, except the approved homepage statement.
 JA_SENTENCE_HEADINGS = {
     ("ja/index.html", "h1", "自社で使うシステムを、 自社で育てていく。"),
+    ("ja/index.html", "h1", "自社開発は、ゼロからじゃなくていい。"),
+    ("ja/index.html", "h2", "触ってわかる、IMS。"),
+    ("ja/index.html", "h2", "Baked Kaleの現在地。"),
 }
 for rel in sorted(JA_PAGES):
     for tag, heading in public_heading_text.get(rel, []):
@@ -492,6 +528,23 @@ PUBLIC_PRICE_PAGES = (
     "index.html", "license.html", "order.html",
     "ja/index.html", "ja/license.html", "ja/order.html",
 )
+QUIET_ORDER_PAGES = {
+    rel for rel in ("order.html", "ja/order.html", "zh/order.html")
+    if 'order-renewal' in public_source_text.get(rel, "")
+}
+# Approved W07 follows the all-locale JPY homepage, not the legacy USD book.
+# Keep the old price-book checks intact for non-renewed commercial pages.
+for rel in sorted(QUIET_ORDER_PAGES):
+    source = public_source_text.get(rel, "")
+    for marker in ("¥49,800", "¥99,800", "¥4,900", "¥9,800", "JPY", "License Updates", "noindex,follow", 'class="order-process-rail"'):
+        if marker not in source:
+            fail(f"{rel}: approved W07 fact missing: {marker}")
+    found = set(re.findall(r"¥([\d,]+)", source))
+    if found != {"49,800", "99,800", "4,900", "9,800"}:
+        fail(f"{rel}: W07 JPY price book drift")
+    if re.search(r"<form\b|stripe\.com|\$\s*\d", source):
+        fail(f"{rel}: W07 must remain a static, purchase-disabled notice")
+PUBLIC_PRICE_PAGES = tuple(rel for rel in PUBLIC_PRICE_PAGES if rel not in QUIET_HOMEPAGES and rel not in QUIET_ORDER_PAGES)
 CONTENT_PLAN_NAME_PATTERNS = {
     "License": re.compile(r"(?<![A-Za-z0-9])License(?![A-Za-z0-9]|\s+Plus)"),
     "License Plus": re.compile(r"(?<![A-Za-z0-9])License Plus(?![A-Za-z0-9])"),
@@ -538,6 +591,8 @@ homepage_plan_facts = {
     },
 }
 for rel, plans in homepage_plan_facts.items():
+    if rel in QUIET_HOMEPAGES:
+        continue
     source = public_source_text.get(rel, "")
     plans_start = source.find('id="plans"')
     plans_end = source.find('id="compare"', plans_start + 1)
@@ -600,12 +655,14 @@ for rel in PUBLIC_PRICE_PAGES:
 currency_disclosure_markers = {
     "index.html": "UNAPPROVED USD CANDIDATE",
     "license.html": "unapproved candidate",
-    "order.html": "unapproved candidates",
+    "order.html": "JPY",
     "ja/index.html": "日本円",
     "ja/license.html": "日本円",
     "ja/order.html": "JPY",
 }
 for rel, marker in currency_disclosure_markers.items():
+    if rel in QUIET_HOMEPAGES:
+        continue
     if marker not in public_source_text.get(rel, ""):
         fail(f"{rel}: explicit public price-book currency is missing: {marker}")
 
@@ -620,6 +677,8 @@ required_markers = {
     "ja/contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
 }
 for rel, markers in required_markers.items():
+    if rel in QUIET_HOMEPAGES:
+        continue
     path = ROOT / rel
     if not path.exists():
         continue
@@ -631,7 +690,7 @@ for rel, markers in required_markers.items():
 # Core Contact FAQs and News items must remain present in raw HTML so crawlers
 # and users without JavaScript receive useful product facts before CMS hydration.
 static_contact_faq_ids = {
-    "ims-sale-status", "license-updates-difference", "license-plus-price",
+    "license-updates-difference", "license-plus-price",
     "inventory-adoption-migration-fit",
 }
 for rel in ("contact.html", "ja/contact.html"):
@@ -641,7 +700,7 @@ for rel in ("contact.html", "ja/contact.html"):
     fragment = source[start:end] if start >= 0 and end > start else ""
     ids = set(re.findall(r'data-faq-id=["\']([^"\']+)["\']', fragment, re.IGNORECASE))
     if not static_contact_faq_ids.issubset(ids) or len(plain_html_text(fragment)) < 500:
-        fail(f"{rel}: static Contact FAQ fallback must contain the four core product FAQs")
+        fail(f"{rel}: static Contact FAQ fallback must contain the three core product FAQs")
 
 static_news_titles = {
     "news.html": "FDE IMS updated to two products plus a License Updates add-on",
@@ -663,19 +722,20 @@ for rel, expected_title in static_news_titles.items():
     if "wire-row" not in wire_fragment or not plain_html_text(wire_fragment):
         fail(f"{rel}: static News archive fallback is missing")
 
-# The customer portal must remain a non-interactive pre-release notice until
-# the two-product payment catalog, add-on entitlements, and fulfillment flow have been reviewed.
-customer_portal = ROOT / "customer.html"
-if not customer_portal.exists():
-    fail("customer.html is missing")
-else:
-    customer_text = customer_portal.read_text(encoding="utf-8")
-    for retired in ('customer.js', 'contact-config.js', 'id="statusForm"'):
+# W08 is an editable, local-only input review. Real lookup/payment stays gated.
+for prefix in ("", "ja/", "zh/"):
+    rel = f"{prefix}customer.html"
+    customer_text = public_source_text.get(rel, "")
+    for retired in ('src="customer.js', 'src="../customer.js', 'contact-config.js', 'id="statusForm"', 'FDE_CONTACT_API'):
         if retired in customer_text:
-            fail(f"customer.html: pre-release portal must not load active lookup/payment runtime: {retired}")
-    for marker in ("Customer portal / PRE-RELEASE", "customer portal is not available yet", "payment confirmation", "disabled"):
-        if marker.lower() not in customer_text.lower():
-            fail(f"customer.html: pre-release portal notice missing: {marker}")
+            fail(f"{rel}: must not load active lookup/payment runtime: {retired}")
+    for marker in ('noindex,follow', 'customer-renewal', 'quiet-customer.js', 'id="portal-form"', 'id="portal-review"', 'id="portal-privacy"'):
+        if marker not in customer_text:
+            fail(f"{rel}: local input review marker missing: {marker}")
+portal_runtime = (ROOT / "quiet-customer.js").read_text(encoding="utf-8")
+for forbidden in ('fetch(', 'XMLHttpRequest', 'sendBeacon', 'localStorage', 'sessionStorage', 'status_lookup', 'innerHTML', 'FDE_CONTACT_API'):
+    if forbidden in portal_runtime:
+        fail(f"quiet-customer.js: local-only input boundary violated: {forbidden}")
 
 pre_release_sales_pages = {
     "order.html": ("noindex", "not yet available for purchase", "Orders cannot be completed yet"),
@@ -695,6 +755,8 @@ for rel, markers in {
     "ja/index.html": ("開発中", "購入機能はまだ利用できません"),
 }.items():
     visible = public_visible_text.get(rel, "")
+    if rel in QUIET_HOMEPAGES:
+        continue
     for marker in markers:
         if marker.lower() not in visible.lower():
             fail(f"{rel}: public pre-release notice missing: {marker}")

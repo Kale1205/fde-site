@@ -6,8 +6,8 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (name) => fs.readFileSync(path.join(root, name), "utf8");
 let firstCode;
-for (const lang of ["en", "ja"]) {
-  const prefix = lang === "ja" ? "ja/" : "";
+for (const lang of ["en", "ja", "zh"]) {
+  const prefix = lang === "en" ? "" : `${lang}/`;
   const html = read(prefix + "goals.html");
   for (const id of ["fde", "approach", "partnership"]) {
     assert.equal((html.match(new RegExp('id="' + id + '"', "g")) || []).length, 1);
@@ -23,14 +23,17 @@ for (const lang of ["en", "ja"]) {
   for (const state of ["OutOfStock", "LowStock", "Healthy"]) assert.ok(code.includes(state));
   assert.ok(/<video[^>]*controls[^>]*muted[^>]*loop[^>]*playsinline[^>]*preload="none"/.test(html));
   assert.ok(html.includes('class="mission-transcript"'));
-  const media = fs.readFileSync(path.join(root, "assets/ims-v1-operation-" + lang + ".mp4"));
+  const mediaLang = lang === "zh" ? "en" : lang;
+  const media = fs.readFileSync(path.join(root, "assets/ims-v1-operation-" + mediaLang + ".mp4"));
   assert.ok(media.length > 1000, "Video must contain encoded media");
   assert.ok(media.subarray(0, 40).includes(Buffer.from("ftyp")), "Expected MP4 container");
-  assert.ok(fs.statSync(path.join(root, "assets/ims-v1-operation-" + lang + "-poster.jpg")).size > 1000);
-  const redirect = read(prefix + "why.html");
+  assert.ok(fs.statSync(path.join(root, "assets/ims-v1-operation-" + mediaLang + "-poster.jpg")).size > 1000);
+  const redirect = lang === "zh" ? null : read(prefix + "why.html");
+  if (redirect) {
   assert.ok(redirect.includes('content="0;url=goals.html#fde"'));
   assert.ok(redirect.includes('content="noindex,follow"'));
   assert.ok(redirect.includes('/' + prefix + 'goals.html"'));
+  }
 }
 assert.ok(!read("sitemap.xml").includes("/why.html"));
 assert.ok(read("gallery-ui.js").includes("prefers-reduced-motion: reduce"));

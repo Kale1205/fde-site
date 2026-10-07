@@ -1,3 +1,501 @@
+# W08 Quiet Access customer input preview — 2026-10-07
+
+## Source and intentional changes
+
+- Selected displayed option **1**, verified against `fde-w02-review-site/dist/w08-prompts.json`: **Quiet Access**, `w08-option-1.png` (1024×1536). Original image retained; local copy `output/w08-implementation/source-option-1.png`.
+- W08 uses the forest band, faint genuine kale mark, soft ivory surface and document/payment/delivery icon rows. User explicitly changed the warning-only concept into an editable screen and approved EN/JA/ZH. Removed pre-release/unavailable headings, development notice and planned suffixes. The original generated board did not include a form; the form and review/error states extend the approved W06 input style instead of pretending to be literal image content.
+- Added JA/ZH `customer.html` routes; all three have static localized copy, reciprocal canonical/hreflang and noindex,follow. No new indexed sitemap route, JSON-LD, analytics or dependency. Approved W01–W07 navigation, font, tokens, footer and Mobile sheet reused. The board's approximate logo and gradient texture are not copied; genuine assets and the existing forest/paper tokens remain the source of truth.
+- Order ID/email inputs support validation → local review → edit. The button says Review details, not Check status. Privacy and review text clearly identify local entered information, not retrieved customer data. Nothing is sent or persisted. Legacy customer.js is not loaded; Worker production commerce guard and A01 Japanese CMS are byte-preserved against f95aa4d.
+
+## Visual comparisons and iterations
+
+- Before captures: `output/w08-implementation/w08-before-{1440,1024,390}.png`. Initial JA capture `w08-first-ja390.png` and confirmation `w08-review-ja390.png` retained.
+- Final native Chrome captures: `output/w08-implementation/final-{en,ja,zh}-{1440,1024,390}.png`. Viewports 1440×960, 1024×960 and 390×844, DPR1. EN full-page captures are 1440×1836 and 390×1898; JA final Mobile is approximately 390×1816. Source board crops are presentation, not literal CSS dimensions: mobile x727–1024 is normalized to 390px; Desktop x0–715 is compared at proportional content scale, with no invented pixel-perfect viewport assertion.
+- Source and implementation opened together in one comparison input; normalized Mobile comparison rendered and inspected as `output/w08-implementation/comparison.html`, native capture `comparison.png`. Full composition plus readable hero, form, icon rows, CTA and footer inspected. Approved content changes intentionally change page length/region proportions.
+- [P2, fixed] Initial new library payment/truck assets were black beside forest document art. Recolored only their fill to #073e2c, preserving original Phosphor regular path geometry. Post-fix nine-view captures show consistent icons. Real sources: `https://raw.githubusercontent.com/phosphor-icons/core/main/assets/regular/credit-card.svg` and `truck.svg`, existing MIT license retained.
+- [P2, fixed] Initial hidden errors were referenced in aria-describedby, so accessible descriptions included errors before submission. Initial descriptions now contain only the order-format hint; runtime associates an error only when invalid. Native fresh snapshot verifies no premature email error and submitted error focus is correct.
+- Repository validation found a Japanese full stop on the new h1. Removed it in renderer and JA HTML without changing validation rules; re-rendered and recaptured JA 1440/1024/390.
+- Typography: local Inter + established JA/ZH/system fallback, display 36–76px, body 16–17px, input 16px, clear weight hierarchy; no tiny text or ellipsis hiding input. Spacing: shared 1280px frame, 48/22px gutters, two Desktop input columns / one Mobile column, 64/32px document gap and unboxed rows. Colors: existing forest/paper/surface tokens, restrained shadow/borders, orange focus. Image quality: genuine SVG mark/logo, reserved dimensions, sharp library SVG icons; zero broken images. Copy: three manually authored locales with the same input/confirmation boundaries and no unavailable warning. All five required fidelity surfaces inspected.
+
+## Browser and functional evidence
+
+- All nine locale/width combinations: no document overflow, no broken images; both inputs enabled with 16px font. Console warning/error lists empty for EN/JA/ZH clean loads; all observed 13 per-locale asset/document requests HTTP200.
+- JA invalid submit, valid lower-case normalization, focus to confirmation and edit-back tested. EN Desktop and ZH Mobile real keyboard Enter submit succeeded. Confirmation output uses textContent; no simulated payment/order status. Form unit fixture confirms validation focus, safe text rendering and preserved values on edit.
+- Shared sheet: eight visible private-package links hit-testable above backdrop. Escape closes and restores trigger focus. Actual ZH→EN source language click and JA→ZH private language click stay on customer route. Private package JA form keyboard confirmation succeeded with zero external requests; private scope includes all 24 W01–W08 routes. No inquiry submitted.
+- Native Lighthouse snapshot: ZH Mobile and EN Desktop Accessibility / Best Practices / SEO / Agentic Browsing 100, zero failed audits. EN local trace observed CLS 0.00 and LCP 89ms unthrottled; not field performance, physical-device QA or full WCAG certification.
+- An initial stale native input UID was rejected after a viewport/page change. Fresh snapshot then EN form Enter check succeeded. Initial private 4178 navigation failed because its server was no longer running; restarted task-owned loopback preview and successfully checked the actual bundle. Failed evidence was not called application success.
+- 87 related Node tests passed. W08 six tests passed again after punctuation correction. Renderer idempotence, Chinese eight-page generator and JS syntax checks passed. Full repository validation passed after correcting the Japanese heading without weakening rules; sitemap lastmod regression tests (3) passed. The separate final `npm run sitemap -- --check` retry timed out while Git read the existing HTML commit history (30s), so that command is not recorded as PASS. No sitemap, robots or indexed route was changed. This static repository has no separate build/lint command.
+
+## Boundaries and handoff
+
+- No FDE push, PR, main merge, public FDE deployment, Worker activation, customer/order lookup, payment or CMS write. Existing output and original checkout preserved. Owner-private review Site is a separate preview publication; all-page user approval still precedes FDE merge/publication.
+- A01 remains Japanese-only and untouched. W08 final implementation awaits user visual confirmation. Physical iPhone Safari/other vendor engines remain user/device QA, not claimed from Chrome emulation.
+- Owner-private review publication succeeded: Site source `49606a032d4d77095db651765125876edfd49493`, deployment `appgdep_6ac624f83460819191ce527a8fa5267a`, URL `https://fde-w02-design-review.kale-1999.chatgpt.site/preview/ja/customer.html`. FDE implementation checkpoint is `e45a1b249713f386865b0eaa85f6c670a39e03b8`; this evidence-only QA addition follows that checkpoint. Space renewal, project table and unchecked ToDo were updated and read back, with final visual approval and consolidated main merge still pending.
+- No actionable P0/P1/P2 visual finding remains. Implementation checklist: review published private W08; decide A01 visual scope separately; perform consolidated approval and exact-head PR/CI review before any FDE main merge.
+
+CodeQL reported seven new high findings in offline composition/test string operations. Titles and table labels now use restricted capture groups instead of generic tag stripping; head recomposition removes scripts case-insensitively until stable; newline replacement covers every occurrence. Copy extraction repeats until stable. Negative tests cover uppercase and re-formed executable tags. No production HTML, price, copy, authentication or feature change is intended. The failed initial security scan is retained; the corrected exact head must pass CodeQL before merge.
+
+The corrected local suite passes all 94 tests, zero skips. An initial in-flight run still loaded the first version of the new copy-extraction fixture, and also reported a transient Chinese release-notice mismatch during iCloud reads. The corrected fixture and an unchanged readback of all three Chinese release notices pass on the full rerun; no release copy or condition was altered.
+
+The second security scan reduced findings to three but still rejected regex-based script filtering. Homepage/order builders now recompose the known generated asset suffix from an approved static metadata prefix, reject unexpected executable scripts before that boundary, and permit only the validated JSON-LD block on the homepage. Legacy order favicons are retained explicitly. Negative tests cover uppercase, whitespace/malformed closing tags, extra scripts and missing boundaries. No dependency was added and production output remains byte-identical. All 95 related tests pass without skips.
+
+An iCloud Git index write then timed out before committing this correction. The original folders and source were preserved. A fresh checkout outside iCloud was created from the already-pushed exact PR head; only the four correction files and this evidence were transferred for normal validation and push. Local repository/sitemap history checks in the original iCloud worktree also timed out; those attempts are failures, not passes.
+
+The non-iCloud checkout passes all 95 Node tests, repository validation, unchanged composition checks, sitemap check, three sitemap regression tests, all eight Chinese pages, staging integrity and whitespace checks. No generated HTML or sitemap change was needed.
+
+The third CodeQL scan left one finding in the metadata validator's script-end recognizer. It now recognizes all browser-tolerated end-tag attribute/whitespace forms, then requires the exact approved JSON-LD closing tag; malformed forms fail closed. Regression fixtures cover each form. No generated output changes.
+
+final result: passed (local visual and functional QA; corrected exact-head CI/security recheck pending)
+
+---
+
+# W07 approved combined Order — 2026-10-07
+
+## Source, composition and boundaries
+
+- Approved target: `fde-w02-review-site/dist/w07-refined.png`, 1024×1536. Desktop x0–726 and Mobile x738–1024 are board presentation crops, not literal CSS viewports. Inspected source and actual captures together, then a normalized 390px Mobile side-by-side comparison (`output/w07-implementation/comparison.html`). Final captures: `final-{ja,en,zh}-{390,1024,1440}.png` in that directory; original and initial failed captures are retained. Actual source art replaces generated approximations; complete readable copy and the approved shared header/footer account for the longer Mobile page.
+- EN/JA/ZH `order.html` now use option-one forest hero, genuine faint brand mark and unboxed product display, with option-two connected purchase-process rail (horizontal Desktop, vertical Mobile). Exact product names, taglines, illustrations, JPY prices and release line are extracted from each approved homepage. Updates is required for License, first three months included, ¥4,900/month for months 4–6 and ¥9,800/month from month 7; ending Updates retains the existing version. Plus remains purchaser-managed and outside our Updates. These are user-approved commercial alignment changes, not incidental copy invention.
+- Existing canonical/hreflang/meta descriptions and noindex,follow remain unchanged. No checkout, form, payment runtime, analytics, new external request or dependency is introduced. Source renderer is idempotent and emits ordinary HTML. No new indexed route, schema, sitemap or robots change. Primary terms/contact/product links and locale switching retain their destinations.
+- Genuine Phosphor regular user, package, file-text, warning-circle, check, minus and arrow-right assets reuse the existing MIT license; path geometry comes unchanged from `https://raw.githubusercontent.com/phosphor-icons/core/main/assets/regular/{name}.svg`, only fill uses the existing forest token value. No handcrafted icon drawings. Warning uses the library outline rather than the source mock's orange bitmap; JPY is explicitly disclosed beside prices.
+
+## Iterations and verification
+
+1. [P1] Inherited hero rule initially put white type on white; scoped specificity restores forest and post-fix captures confirm it.
+2. [P2] Legacy order-page class duplicated the brand and stacked the footer. Removed obsolete class while retaining gallery/quiet-page common components; final captures confirm one logo and consistent footer.
+3. [P2] Hidden definition-list value was initially visible. Scoped sr-only rule hides it visually while preserving accessible semantics. Final captures confirmed Updates rows have no duplicate visible text.
+4. Capture-only issue: one screenshot preceded async image paint. Awaited all image decodes and two animation frames, then recaptured all nine views. License Plus art is visible in final evidence; no missing asset was concealed.
+- Chrome DevTools MCP: JA/EN/ZH at 390, 1024 and 1440 CSS px, all loaded images, zero document overflow and zero Console error/warning. All observed asset/document requests were HTTP 200; observed local CLS 0 in these nine loads (not field-performance certification).
+- Shared Mobile sheet's eight links are above the backdrop and hit-testable. Escape closes it and restores trigger focus; actual language-picker click navigates JA Order to EN Order, not Home. Keyboard/accessibility and static link integrity verified without submitting anything.
+- Lighthouse snapshot: JA Mobile and ZH Desktop Accessibility, Best Practices, SEO and Agentic Browsing 100, no failed checks. Does not certify full WCAG, Performance or physical iPhone/Safari behavior.
+- 70 related Node tests pass, covering W01–W07 including source preservation and approved Order facts. Order renderer check, `git diff --check`, `npm run sitemap -- --check` and `npm run validate` pass. First validation retained a legacy USD-price-book failure; narrowed the new approved JPY Order branch with explicit price and static/purchase-disabled invariants, keeping legacy commercial-page checks intact. No conventional build/lint script exists in this static repository.
+- Original checkout and pre-existing output are preserved. FDE source remains local on `preview/quiet-form-motion`; no FDE push, PR, merge, sales activation or actual production publication. Owner-private review packaging is separate. W08 Customer stays unchanged until design selection; English-only route and missing JA/ZH routes require a separate decision.
+
+## Final handoff
+
+- Verified implementation checkpoint `68499cd3dec673cca6990faa815ea60d30c96ecb`, no FDE push. Contact email-routing regression also passes (71 related tests including the prior 70). Private-package English 320/760/761 boundary probes have no overflow and correct one/three-column rail transitions. Focused terms CTA has a visible orange 3px outline; actual Enter navigates to private English License. JA terms click and ZH locale routes also remain private.
+- Existing owner-only audience retained. Sites source `bf2a828f72a410cb831ac6fd1dcc6671fb6ac55d` was pushed and archive-built by the native source workflow; deployment `appgdep_6ac596c509d481919874282052fb3661` returned `succeeded` at `https://fde-w02-design-review.kale-1999.chatgpt.site` on 2026-10-07T00:48:24Z. This is the separate private review site, not FDE production. `/w07-complete.html` links all three actual Order previews; prior galleries/preview safety remain preserved. No deployed-URL fetch or recurring task was used.
+- W08 generated exactly three independent image boards, shown in current-chat arrival order and retained as `dist/w08-option-{1,2,3}.png` in the review Site; full prompts and actual attached source references are in `dist/w08-prompts.json`. `/w08.html` Mobile/Desktop/board and 1/2/3 controls work at 390/1024/1440; actual keyboard selects option 3; no overflow, Console errors or failed requests. Gallery Accessibility/Best Practices/Agentic Browsing 100; SEO 80 from missing private-gallery description, not public SEO regression. Generated extra decorative slogan/approximated logos are explicitly not implementation copy/assets. `customer.html` remains untouched awaiting selection; JA/ZH new routes and CMS remain separate scope decisions.
+- Space renewal page (sequence 22), ToDo (62) and project table (104) all saved successfully and targeted readback confirmed W07 implementation/W08 selection state, correcting the earlier stale W06 status. Original other-page history, future IMS demo replacements, all-page-before-merge agreement and unrelated release/governance conditions are preserved.
+
+final result: passed (scoped W07 implementation, private handoff and Space sync; W08 design selection pending)
+
+---
+
+# W06 approved FAQ-first Contact — 2026-10-07
+
+## Reference and implementation
+
+- User approved `fde-w02-review-site/dist/w06-refined.png` (1024×1536), original displayed option two with the same faint News kale mark, FAQ 01 and form 02. Inspected the reference and final JA Desktop/Mobile captures together in one comparison input. Desktop reference region x0–733 and Mobile x742–1024 are presentation crops, not literal CSS viewports; compared hierarchy, grouping, materials and reading order at natural 1440/390 CSS px. No bitmap stretching or generated form imagery in the implementation.
+- EN/JA/ZH now share a forest hero with white type, the actual existing News SVG mark at opacity .065, a quiet FAQ disclosure followed by one raised ivory form surface, two Desktop field columns and one Mobile column. Existing six required fields, copy, product options, confirmation/back/send/success markup, business details, common nav/footer, head metadata and contact runtime are retained. Chinese static FAQ questions/search now work; EN/JA CMS population remains unchanged.
+- Deliberate source differences: retain the complete existing helper text, business details and shared header/footer rather than the mock's condensed copy; reuse approved common 64px Desktop / 32px Mobile title scale. The real brand mark replaces the generated approximation. No new price/License terms, dependencies, tracking, outbound submissions or extra features.
+
+## Visual iterations
+
+1. [P2] Original rows-based textarea was too tall; scoped sizing is now 200px Desktop and 160px Mobile without changing fields/content.
+2. [P2] Inherited compact-intro max-width placed the Desktop FAQ chevron mid-surface. Set the disclosure summary to full available width and re-captured all nine locale/viewports. Real Phosphor regular caret-right asset with retained MIT license is decorative/aria-hidden; native details/summary owns interaction.
+3. Final captures: `output/w06-implementation/final-{ja,en,zh}-{390,1024,1440}.jpg`. Initial/baseline captures remain separately preserved. No actionable P0/P1/P2 visual issue remains in this scoped implementation.
+
+## Verification
+
+- Chrome DevTools MCP, three locales × 390/1024/1440 CSS px: no document overflow, clipping, missing images or Console error/warning on clean reloads. Observed local CLS maximum .001031; no field/performance certification claimed. Final JA local assets all HTTP 200.
+- Native FAQ disclosure Enter toggles with visible keyboard focus. Search/question expansion works in all languages, including no-result state. Shared Mobile sheet's eight links are hit-testable above backdrop; Escape closes and returns focus to menu button.
+- JA required/invalid input, six-row confirmation, edit/back preserves input, sending-disabled state and success/reset tested. EN invalid email, confirmation and success; ZH confirmation, mocked error/retry and success tested. Synthetic fetch intercepts all contact submissions; no actual Worker POST/email sent. Expected mock-failure warning retained as test evidence, absent after reload. Production Turnstile/mail-delivery integration is unchanged and not re-certified by these mocked tests.
+- Lighthouse snapshot JA Desktop and Mobile: Accessibility, Best Practices, SEO and Agentic Browsing 100, zero failing checks. Excludes Performance; not full WCAG or physical iPhone/Safari certification.
+- 66 related Node tests pass (W01–W06 including page/copy/SEO preservation). Chinese regeneration and Contact renderer check pass; diff whitespace check passes. This static repository has no conventional build/lint script. Initial repository/sitemap validation correctly refused uncommitted indexed HTML; commit-derived lastmod verification follows the existing workflow, without bypassing that guard.
+- User's original checkout and pre-existing untracked output are preserved. W06 source remains on `preview/quiet-form-motion`; FDE push/PR/merge/publication is deferred until all-page approval. Separate owner-private review package may display a review-only notice and simulate completion without contacting email/Turnstile services.
+
+## Final source and private handoff
+
+- Contact implementation checkpoint `b783cd7f30d356b3e0e83db386e7899d5ac69c9a`. Contact email-routing test also passes (67 related Node tests total). JS syntax checks pass. Two commit-history reads exceeded the existing 30-second Git guard; retained both failures, warmed the same history with read-only Git log/rev-list, then the normal sequential `npm run sitemap`, `npm run sitemap -- --check`, `npm run validate` and three sitemap regression tests all passed. Did not weaken validation or change timeouts. Only EN/JA/ZH Contact lastmod advances from 2026-10-05 to 2026-10-07; canonical/hreflang/robots/JSON-LD and other dates stay unchanged.
+- Owner-private review source `fb464f80d71bea5fe8138c6a94d2aaf89b049a6b` passed gallery/package checks, was pushed and packaged from that exact source by the native Sites workflow. Archive-backed deployment `appgdep_6ac58cc923c481918457337be44f2599` returned `succeeded` at `https://fde-w02-design-review.kale-1999.chatgpt.site` on 2026-10-07T00:05:46Z. Existing audience preserved; no recurring task or deployed-URL fetch. `/w06-complete.html` links all three actual previews; local private-package tests confirm no Worker/Turnstile request, successful simulated completion, correct locale routes, no overflow or Console errors.
+- W07 three independent image concepts were displayed in generated-result order and saved as `fde-w02-review-site/dist/w07-option-{1,2,3}.png`; exact built-in prompts/references in `dist/w07-prompts.json`. `/w07.html` has iPhone-friendly 1/2/3 and Mobile/Desktop/board controls, tested at 390/1024/1440, loaded images, no overflow, Console error or failed request; keyboard selection works. Gallery Lighthouse Accessibility/Best Practices 100; SEO 80 from the private review gallery's absent description, not an FDE SEO change. W07 order source/price/conditions/purchase-disabled state remains untouched; images are design-only pending selection, using the current source and approved W06 style as actual attached references. Generated icon/text inaccuracies are explicitly excluded from implementation: retain the existing approved artwork/prose.
+- Space renewal, project table and ToDo writes returned native internal errors. Renewal readback showed unchanged content; no Space completion is claimed. Pending guarded drafts are preserved in untracked `output/w06-implementation/space-update-pending.json`; reread/reconcile before any retry. No unrelated governance rows or future demo replacement tasks changed.
+
+final result: passed (scoped site implementation and repository QA; Space synchronization blocked by connector save errors)
+
+---
+
+# W05 selected Soft Dispatch News — 2026-10-07
+
+## Scope and visual truth
+
+- User selected original displayed option two, not the subsequent text-only consolidated proposal. Reference: `/Users/junenature/Desktop/Share/Codex/fde-w02-review-site/dist/w05-option-2.png`, 1222×1287. Compared its Desktop x28–905 and Mobile x935–1194 regions alongside implementation in `output/w05-implementation/desktop-comparison.jpg` and `mobile-comparison.jpg`, followed by final `desktop-handoff-comparison.jpg` and `mobile-handoff-comparison.jpg` with the reference and actual in the same comparison inputs. Original reference and actual three-locale captures were inspected. The reference is an illustrated design board, not pixel-perfect browser evidence.
+- Implemented EN/JA/ZH News only: wide forest hero, white title/intro, real brand-mark watermark, large featured article left, latest and archive stacked right, quiet Instagram strip. Mobile stacks in reading order. Approved section label is アップデート情報 / Updates / 更新信息.
+- Existing articles, original article imagery, CMS fetching/sorting, fallback links, full article popup, shared menu/footer, language routes and metadata are preserved. No repeated publisher/logo byline is added. Optional article-art removal question had no response at implementation checkpoint; retained original option-two article images. Full original prose is preserved rather than adopting mock abbreviations. Article statements are historical content, not revised commercial terms.
+- Existing forest/paper/surface/sans tokens remain authoritative. Scoped `news-renewal` styling uses restrained 12–16px radii, fine borders and low shadows. Genuine `assets/baked-kale-mark.svg` is reused as a decorative white watermark at 6.5% opacity; no newly generated asset, external font, dependency, animation or tracking. Reserved feature/latest aspect ratios retain layout slots; 16/10 feature ratio accommodates existing square leaf artwork, while Mobile latest art uses a compact 3/1 strip.
+
+## Comparison history and repairs
+
+1. [P2] Existing high-specificity hero CSS initially caused white text on a paper background and later a narrow Mobile column. Scoped hero selector specificity and responsive overrides corrected both. Before evidence retained in the session; final captures and computed forest background confirm the fix.
+2. [P2] Source/CMS image rules forced a contain frame inconsistent with the selected featured presentation. Scoped cover framing at 16/10 keeps the leaf visible with padding; Mobile latest art is compact. Archive category and right-aligned date now share one row, matching the selected hierarchy.
+3. [P2] Existing article dialog allowed keyboard focus into the page. Scoped background inertness, cyclic Tab/Shift+Tab, Escape dismissal and trigger-focus restoration are verified. Other page CMS behavior remains outside the new class scope.
+4. [P2] Chinese regeneration initially reverted the new editorial heading to 更新. The locale generator now maps only this News section to 更新信息, preserving the commercial Updates product label elsewhere. All seven Chinese pages pass generation parity.
+
+## Browser and engineering evidence
+
+- Chrome DevTools MCP at EN/JA/ZH 1440, 1024 and 390 CSS px; all nine initial and polished screenshots inspected. No page overflow, broken images, Console error/warning or failed HTTP request in the checked views. Local observed CLS maximum 0.00284, not field performance certification. Final private-package JA 390/1440, EN 1440 and ZH 1024 views were rechecked after the 16/10 image adjustment. JA 320/760/761 boundary probes also have zero document overflow.
+- Featured/latest/archive each open the correct full article in all three locales; Escape closes it and restores the trigger, and modal background inertness clears. Tab/Shift+Tab stays in the article. Shared Mobile sheet's eight links are hit-testable above the backdrop; Escape restores menu focus. Private language-picker click goes from JA News to EN News within `/preview/`; other review routes remain private and Contact/Home remain existing public destinations.
+- Lighthouse snapshots: JA Desktop/Mobile, ZH Tablet and private EN Mobile each Accessibility, Best Practices, SEO and Agentic Browsing 100, zero failing checks. No Performance audit or full WCAG/physical iPhone/Safari certification is claimed.
+- 58 relevant Node tests passed, then 29 News/page-preservation tests rechecked after final source changes. JS syntax, Chinese generation and three sitemap regressions passed. Initial repository/sitemap validation required committed HTML before deriving lastmod; preserved that failure and used the existing commit-derived workflow. A check started before generation completed still saw stale dates; final sequential verification passes. Repository validation and `npm run sitemap -- --check` pass; only the three News lastmods advance to the code commit date, 2026-10-07. This static repository has no conventional build/lint command or new dependency.
+- No price/License-condition/content-JSON changes. Canonical, hreflang, robots and head markup remain identical in the source pages; only existing sitemap lastmod dates may advance through the standard workflow. User's original checkout and unrelated output are preserved. FDE push/PR/merge/publication remains deferred until all-page approval.
+
+## Handoff
+
+- Selected image implementation and design-QA skills required source/actual comparison and scoped repairs. Figma was not used: the user's selected image and existing brand assets supply the visual reference.
+- W05 implementation is ready for the user's final review; no actionable P0/P1/P2 issue remains in the checked design/interaction scope. Physical iPhone/Safari review is pending with the user.
+- FDE code checkpoint is local `e988ff259a0b9a02e80435fc887faf5cb2fccb49`; no FDE push/PR/merge/public release. Separate owner-private review source `a1f1e64a98df72d700ad064f66daf1a5faeb364d` passed all package/gallery checks and was deployed as `appgdep_6ac5786795b88191ab09387186fc4dc9`, status `succeeded`, on 2026-10-07 JST. Native URL: `https://fde-w02-design-review.kale-1999.chatgpt.site`; Japanese implementation `/preview/ja/news.html`. Audience unchanged; no recurring task or deployed-URL fetch. Existing W02–W04 actual previews and previous comparison boards remain available.
+- Space renewal, ToDo and project management overview now show original option-two adoption, thin brand watermark, approved section label, three-locale implementation/private preview and final user review pending. W01–W04 approvals, unchecked future IMS video/demo replacements, all-page merge boundary and unrelated release-governance content are preserved.
+
+final result: passed
+
+---
+
+# W04 intuitive visual journey — 2026-10-06
+
+## Approval and reference
+
+- User approved the latest combined visual: third-option sculptural icons with an added magnifier in 01, second-option vertical 01–03 rail and shallow real-code/native-video overlap. Implemented only EN/JA/ZH Goals. Final implementation review remains pending; all-page approval still precedes FDE GitHub push/PR/merge/public release.
+- Authoritative board: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-6380ef15-9a8e-45a9-9023-479bd552db0f.png`, 1024×1536. Desktop region x11–720, Mobile x734–1013. Opened the reference alongside `output/w04-visual-journey/ja-1440-final.jpg` (1440×3132) and `ja-390-recheck.jpg` (780×8320, CSS 390×844, DPR 2). This is an illustrated board, not a pixel-perfect browser capture.
+
+## Fidelity and assets
+
+- Three genuine RGBA artworks, 1536×1024, isolated on transparency: clipboard/box/magnifier → application; application frame with three separated green internal planes and a wrench; application between two dialogue bubbles. They reuse the approved forest/cream sculptural direction, without faux SVG or CSS artwork. Generation brief: match the selected board's materials, shapes and lighting, no text, no external logos, transparent background. Actual code/video remain real HTML/media, not generated imagery.
+- Final assets: `assets/goals-understand-work.png`, `assets/goals-open-system.png`, `assets/goals-partner-dialogue.png`. Generation sources respectively:
+  - `/Users/junenature/.codex/generated_images/01a11133-89a5-7eb0-a94f-a32902a5e632/exec-b94d300a-15ba-43d6-896b-4eea430500ed.png`
+  - `/Users/junenature/.codex/generated_images/01a11133-b7d0-79c3-94e1-7aa0ab7d6823/exec-07245d83-4c99-4fe3-8fc2-bef41830bed7.png`
+  - `/Users/junenature/.codex/generated_images/01a11133-e5de-71a1-9670-b6e04de01cc9/exec-f0621d94-8c0b-4865-a476-7cd03bc53137.png`
+- CSS rail, dots and numbers are structural chapter markers. Desktop uses illustration beside copy, Mobile places illustration above copy; 03 is artwork-left/copy-right on Desktop. The source/video overlap is 24px horizontally on Desktop/Tablet and 18px vertically on Mobile. Keyboard focus separates the overlap for source reading.
+- Preserve forest/white hero, existing type and spacing tokens, full prose, source, 12-second native recordings, transcript, responsibility note, metadata and shared nav/footer. Illustrations duplicate visible explanations, so empty alt avoids redundant narration; chapter numbers are aria-hidden. Reserved image dimensions prevent lazy-load shift. No new dependency, animation, tracking or third-party asset.
+- Intentional differences: retain complete original text, native controls and shared navigation rather than mock's condensed text; therefore the live page is longer. The existing Chinese page uses the English native recording, not an invented Chinese capture. Chapter 03 has no CTA.
+
+## Browser comparison and corrections
+
+- Initial Mobile full-page screenshot missed lazy off-screen icons; scrolled through and decoded the actual images before final capture. All three render on the paper surface without opaque backgrounds or clipping.
+- Corrected inherited centered chapter-03 heading to left alignment to match the approved board. Rechecked all nine localized viewports.
+- One off-screen automated video-play probe was interrupted by the existing visibility pause observer. Retained this failed probe in `browser-evidence.json`; repeated with the video in view, playback advanced normally. No video implementation or source changed.
+- Chrome DevTools MCP: EN/JA/ZH at 1440/1024/390 CSS px, plus JA 320/760/761 edges. All screenshots inspected; zero page overflow, loaded artwork, readable copy and correct chapter hierarchy. Mobile checks include DPR2/touch emulation. No Console errors/warnings. Confirmed actual video playback and HTTP 200/206 asset delivery. Local observed CLS maximum 0.00325; no performance/field certification implied.
+- Keyboard: shared sheet links hit-test above backdrop; Escape restores menu-button focus. Three language routes preserved. Chapter index lands at approach. Code scrolls with ArrowRight (40px), has a visible orange outline and next Tab reaches VIDEO. Transcript toggles with Enter, retaining all steps. Focused evidence `ja-390-code-focus.jpg`.
+- Lighthouse snapshots: JA Desktop/Mobile and EN/ZH Mobile Accessibility, Best Practices, SEO and Agentic Browsing 100; zero failing checks. These exclude Performance and do not establish full WCAG compliance or physical iPhone/Safari acceptance.
+
+## Engineering and handoff
+
+- 55 relevant Node tests pass, including renderer idempotency, existing prose/head/source/video/transcript parity, artwork dimensions/alpha, scoped rail/overlap and W01–W03 preservation. Chinese generation check: all seven pages current.
+- Canonical, hreflang, robots, JSON-LD and route inventory unchanged. Existing same-day Goals lastmod remains governed by the standard sitemap workflow. No price or License-condition edits.
+- User's original checkout and unrelated output preserved. Source implementation committed locally as `11b6166932c4824db07663a49aa92d1c6300d44e`. Repository validation, same-day sitemap/check and all three sitemap regressions pass; no conventional build/lint exists in this static repository. No actionable P0/P1/P2 issue remains within this revision. Physical iPhone/Safari review remains with the user.
+- Private package retested at JA 390, EN 1440 and ZH 1024: all artwork and actual playback loaded, no overflow, Console warning/error or HTTP error. Gallery includes all three language links and latest selected board; source image link corrected to match it. Language routes remain within `/preview/`; unrelated destinations retain public locale links.
+- Native Sites workflow pushed only the separate review Site at `449a9cb7ab6d5b3fe2459f3f12fa0624ad20f6c6`, packaged from that exact source. Owner-private deployment `appgdep_6ac4ef79b7c08191baa374b344f13824` returned `succeeded` at `https://fde-w02-design-review.kale-1999.chatgpt.site` on 2026-10-06T12:54:39Z. Japanese implementation: `/preview/ja/goals.html`. Existing owner-only audience preserved; no recurring task added. Initial expired credential and transient index-lock contention were resolved without removing locks or changing user files; checks were retained. No deployed-URL fetch, FDE GitHub push/PR/merge or FDE production release occurred.
+- Product Design implementation/QA workflow kept artwork separate from structural HTML/CSS and required comparison against the selected Desktop/Mobile reference. Figma was not used because no Figma file supplied the selected design.
+- Space renewal, project overview and unchecked ToDo updated with this combined-design approval, three-locale implementation and final implementation review pending; targeted readback confirms all six changed blocks and table layout preservation. Existing W01/W03 replacement tasks and release-governance content are untouched.
+
+final result: passed
+
+---
+
+# W04 approved Our Goals composition — 2026-10-06
+
+## Scope and visual source
+
+- User approved the combined W04 direction: forest/white hero, option-two chapters 01/02, option-one overlapping code/video, and a new quiet paragraph closure without chapter-03 contact/plan buttons. Implemented English, Japanese and Simplified Chinese. Implementation review remains pending; all-page approval still precedes FDE push/PR/merge/production publication.
+- Source: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-e3f39579-bbf0-46c1-b7e0-c17d016b0231.png` (1024 x 1536). Compared Desktop region x30–725 and Mobile x754–995 with matching browser captures. Opened reference, `ja-1440-polished.jpg` (1440 x 2737) and `ja-390-polished.jpg` (390 x 3489) together. Focused source/video screenshots were also inspected. Evidence is under `output/w04-implementation/`; CSS viewports are 1440 x 1000 and 390 x 844, DPR 1.
+
+## Fidelity and intentional constraints
+
+- Layout: full-width forest hero with white existing headings; two-column 01/02 on Desktop, stacked on Mobile; actual Rust source beside the actual 12-second native-development recording, overlapping 52px on Desktop, 32px on Tablet and 18px vertically on Mobile. Chapter 03 ends with original paragraphs and responsibility note, not new promotional cards or CTA buttons.
+- Typography/colors: existing Inter/platform-CJK stack, forest/warm-white/line tokens. Fine rules, restrained shadow and existing shared header/footer are retained. No new dependency, external font, design system or decorative image.
+- Existing prose, terms, metadata, JSON-LD, source paths and video assets are retained. Only chapter-03 action links are removed. Corrected the Chinese source panel's translated Rust identifiers so all three locales show the actual code rather than fictitious localized filenames/functions. The Chinese page retains the existing English native recording; there is no Chinese recording asset.
+- Intentional deviations: illustrative mock text/UI is not substituted for real material. The complete original video aspect ratio and native controls remain. Mobile overlap is shallower than the illustration to keep all source lines readable; source scroll is local, named and keyboard-focusable, and focus-within separates the overlapped video. Existing longer copy and shared navigation/footer remain. Flat forest uses the existing token instead of introducing a gradient.
+
+## Comparison iterations
+
+1. [P1] Late generic hero CSS initially overrode the green composition. Corrected scoped specificity; all nine final views show white text on forest.
+2. [P2] Video caption initially sat over the code panel. Added responsive caption clearance, retaining the visual overlap without obscured prose.
+3. [P2] Chapter-03 eyebrow initially inherited fit-content width. Made it block/auto-width so the centered closing heading and label align.
+4. [P2] Transcript retained redundant divider rules. Simplified that native disclosure surface while preserving all transcript text and keyboard behavior.
+5. Initial screenshots included a transient native-video loading indicator. Final polished captures follow verified playback, then pause; no generated animation or replacement UI was used.
+
+## Browser and engineering evidence
+
+- Chrome DevTools MCP: EN/JA/ZH at 1440/1024/390 CSS px; additional Japanese 320/760/761/1180 boundaries. No page overflow, broken image, Console error/warning or failed HTTP request. Video range responses are normal 206; actual playback advanced in Japanese Desktop/Mobile, English Mobile and Chinese Tablet. All nine views have a playable 12-second recording.
+- Keyboard checks: focused source has visible outline and reachable horizontal scroll; next Tab reaches native video controls. Transcript opens/closes with Enter. Shared Mobile menu links are hit-testable above the backdrop; Escape closes and restores focus. Language picker routes to all three localized Goals pages and closes with Escape. Shared links remain intact; chapter 03 has no links.
+- Maximum observed local unthrottled CLS is 0.00807 (JA 1024). Lighthouse snapshots for JA Desktop/Mobile and EN/ZH Mobile each score Accessibility, Best Practices, SEO and Agentic Browsing 100, zero failing checks. These are local lab observations, not Performance scores, field certification, comprehensive WCAG verification or physical iPhone/Safari testing.
+- 53 relevant Node tests pass, covering W01/W02/W03 preservation and W04 composition/prose/head/video parity. Existing Goals content, Chinese generation, W04 recomposition, JS syntax, repository validation, sitemap check and all three sitemap regression tests pass. Initial validation correctly rejected uncommitted indexed HTML; committed page content before advancing the three Goals lastmod dates under the standard workflow. Static repository has no conventional build/lint script. No dependencies changed.
+- Canonical/hreflang, robots, structured data and route inventory are unchanged. Only the three changed Goals lastmod dates are advanced through the existing sitemap workflow. No tracking, purchase, submission, backend or authentication change.
+
+## Handoff boundary
+
+- No actionable P0/P1/P2 issue remains in this W04 implementation scope. Original checkout and unrelated output are preserved. The separate owner-private review package is used for Mac/iPhone review; FDE production remains unchanged. W04 final implementation approval is still pending.
+- Packaged preview repeated actual playback and locale routes in JA 390, EN 1440 and ZH 1024 with no overflow, broken images, Console errors or failed HTTP requests. W02/W03/W04 preview-language links remain private; home/news/contact links retain public locale destinations. The 390px review gallery exposes all three implementation links and retains the approved image and original concepts.
+- Native Sites workflow pushed only the separate review repository at `cc3e5c868034b9cb1faa6e93b464e253383c781f`, packaged from that exact state. The allowlisted bundle records FDE source `d552d31`. Owner-private deployment `appgdep_6ac4d696750081919a3a267982b8c549` returned `succeeded` at `https://fde-w02-design-review.kale-1999.chatgpt.site`; working Japanese route is `/preview/ja/goals.html`. Existing audience remained owner-only. No deployed-URL fetch was needed after confirmed native deployment, and no FDE GitHub push/PR/merge/public release occurred.
+- Space renewal, ToDo and project-management records show W04 design approved on 2026-10-06, three-locale implementation verified, final implementation review pending. W01–W03 approval and the deferred W01/W03 native replacement tasks remain unchanged.
+
+final result: passed
+
+---
+
+# W03 selected Demo switchboard — 2026-10-06
+
+## Scope and visual source
+
+- The user selected the third displayed W03 concept. Implemented the full Demo page in English, Japanese and Simplified Chinese; W01 home and W02 conditions remain unchanged. The user approved the W03 final implementation on 2026-10-06 and requested the next page. All pages must receive user approval before any FDE GitHub PR, merge or public release.
+- Visual source: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-1139ae6d-cdb8-4a09-9b56-60691710f85c.png`, a 1536 x 1024 illustrated Desktop/Mobile board. Desktop region x0–1182 and Mobile region x1214–1505 were compared with matching CSS viewport captures, excluding the surrounding board. This is an illustrative layout reference, not a pixel-perfect browser screenshot.
+- Evidence: `output/w03-implementation/{en,ja,zh}-{1440,1024,390}-final.jpg`. Japanese full-page captures are 1440 x 1660 and 390 x 1646, DPR 1. Clean initial states are inventory on Desktop/Tablet and operation on Mobile, with menu/guide closed and original seed stock 326/20/346. Source and both final Japanese captures were opened together; focused form evidence `ja-390-form-final.jpg` was also inspected at readable size.
+
+## Fidelity and constraints
+
+- Layout: continuous forest hero, three inventory/operation/history view buttons, warm-white workbench, Desktop inventory with a pale-sage contextual operation form, and Mobile operation-first layout. Selected-product stock sits below the action; fine rules and the existing shared header/footer provide rhythm. Table scroll is confined to named, keyboard-focusable regions, without reducing mobile text to fit.
+- Typography/colors: existing local Inter/platform-CJK stack, forest/warm-white/paper/line tokens and restrained orange stock warning. Native controls use 16px type and at least 48px height; primary actions and view controls retain visible focus. No new design system, dependency, external fonts, animation loop or copied third-party asset was introduced.
+- Assets: existing Baked Kale SVG logo and shared menu controls. No new illustration was required. The mock's generated text and commercial claims were not adopted.
+- Copy/function: existing headings, simulation notice, workflow/scope notes, platform limitations, footer copy, form labels, destinations, metadata and structured data remain. Long explanations are placed in an accessible native disclosure instead of discarded. Close Demo and Reset remain available. Original operation algorithms, seed products, stock/status rules, search, history, validation and reset are preserved.
+- Intentional deviations: immutable existing hero copy is longer than the mock; existing toolbar/Close Demo remains. Scope explanations use one native disclosure rather than new promotional cards. Reset is consistently below the workbench in all views. Original source/destination form labels and the total-stock value are retained. Desktop contextual form remains larger than the illustrative board to accommodate the original copy and usable target sizes.
+- W03 is explicitly a disconnected browser simulation, not a finished native IMS build. The user requested that the Demo body be replaced when IMS is complete; this remains an unchecked future task in Space alongside the W01 smooth-operation recording replacement.
+
+## Comparison iterations
+
+1. [P1] Existing late CSS initially overrode the forest toolbar and imposed old spacing/shadows. Scoped the W03 composition at the end of the shared stylesheet; recaptured and compared Desktop/Mobile against the selected board. Close action is legible and the forest hero is continuous.
+2. [P2] The new semantic captions were initially visible because the existing stylesheet had no visually-hidden utility. Added a W03-scoped utility, retaining both captions in the accessibility tree without extra visual clutter.
+3. [P2] First throttled Japanese Mobile Lighthouse found initial CLS 0.361 from deferred view initialization. Reserved switcher space and applied responsive pre-initialization panel defaults. Re-audit passed all checks; all three Mobile initial-load observations are now CLS 0, with maximum 0.01437 across the nine unthrottled views. This is local lab evidence, not field performance certification.
+4. Homepage renderer previously sourced its embedded demo from the full Demo HTML. Added an explicit approved-W01 source path when W03 is present, preventing the independent W03 composition from replacing/removing the W01 widget. All home body/SEO parity tests pass; homepage HTML has no diff.
+
+## Browser and engineering evidence
+
+- Chrome DevTools MCP: three locales at 1440/1024/390 CSS px, plus Japanese 320/760/761/1920 boundaries. All view switches, receive/transfer/count/ship, negative-stock prevention, same-location validation, selected-product stock, newest-first history, reset and search/empty states passed. Native keyboard Arrow/Home navigation and visible focus, shared Mobile menu/Escape, full guide disclosure and local-only simulation behavior were checked.
+- No page-level overflow or broken images in any checked view; zero Console errors/warnings and failed network requests in the nine main views. All tables have captions, column scopes and named focusable scroll regions; stable existing field labels and polite status announcements remain.
+- Homepage smoke test at 390px confirms the original embedded form still changes stock and has no W03 view controls/overflow. W01/W02 preservation is covered by the 50-test suite.
+- Final Lighthouse: Japanese Desktop/Mobile and English/Chinese Mobile have Accessibility, Best Practices, SEO and Agentic Browsing 100, zero failing checks. These audits do not include the Lighthouse Performance category, complete WCAG certification, or physical iPhone/Safari testing.
+- 50 relevant Node tests pass; existing redesign, Goals, production-commerce gate, contact routing and three sitemap regressions pass. EN/JA Demo recomposition, Chinese generation, approved home generation, JS syntax and whitespace checks pass. The repository has no conventional build/lint script. No dependencies changed.
+- Canonical/hreflang, robots, JSON-LD and route inventory are unchanged. Only the three materially changed Demo lastmod dates advance under the existing commit-derived sitemap procedure. No purchase, tracking, persistence, backend submission or authentication was added.
+
+## Handoff boundary
+
+- Design/implementation QA: no actionable P0/P1/P2 issue remains in W03. Source is saved on the existing local preview branch. No FDE push, PR, merge or production publication is authorized until all pages are approved.
+- The separate owner-private review Site includes the working three-locale Demo plus the original three concept boards and approved W02 preview. This is a private design review, not FDE production. All existing public destinations outside W02/W03 remain public links; preview locale switching remains private, and Close Demo returns to the review gallery.
+- Packaged preview QA repeated the stock workflow at Japanese 390px, English 1440px and Chinese 1024px with no overflow or Console errors. Three language-picker destinations remain within the private preview, all generated platform-contact links retain their public locale/query/hash, and the actual Close Demo click returns to the gallery with option three selected. The native Sites workflow pushed only its separate review repository at `a063c3c2f5349ec25f07e3f3b40adcaff3680e79`; its allowlisted preview records FDE source `c5d0600`. Owner-private deployment `appgdep_6ac44425aca081919d2cd93f52b78c20` returned `succeeded` at `https://fde-w02-design-review.kale-1999.chatgpt.site`; working Japanese URL is `/preview/ja/demo.html`. Audience was unchanged. No deployed-URL fetch was required after the confirmed native deployment.
+- Space renewal, ToDo and project management records now show W01–W03 approved and W04 Our Goals in visual exploration. FDE production remains unpublished. IMS-completion replacement stays unchecked; no recurring schedule was created.
+- Physical-device Safari remains to be confirmed by the user. Existing commercial-copy/price alignment between W01 and the unchanged conditions is still a separate pre-release decision; no terms were changed by this design work.
+
+final result: passed
+
+---
+
+# W02 selected product conditions design — 2026-10-06
+
+## Scope and source visual truth
+
+- The user selected option two of the three W02 concepts. Implemented only the English, Japanese and Simplified Chinese product conditions pages. The approved homepage and the other page compositions are unchanged in this continuation.
+- Source: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-bd92ac57-7159-4f37-84e0-70e8e36c6092.png`, a 1024 x 1536 illustrated board with labeled Desktop 1440 and Mobile 390 regions. This is an illustrative composition, not a 1:1 browser capture. Its desktop/mobile regions were compared at the corresponding CSS widths, excluding the surrounding labels/canvas; no pixel-perfect claim is made.
+- Implementation: `output/w02-implementation/{en,ja,zh}-{1440,1024,390}-final.jpg`. Japanese full-page captures are 1440 x 2393 and 390 x 2713 pixels, DPR 1, at CSS viewports 1440 x 1000 and 390 x 844. Default state is License Plus, first detail open, menu closed. Source and both final Japanese captures were opened in the same comparison input, alongside English Mobile and Chinese Tablet.
+- Focused evidence: `output/w02-implementation/ja-390-table-final.jpg` (346 x 485). Table headings, symbols, prices and row labels were compared with the source table; the main captures also allow readable inspection of the selector, price, art, CTA and typography.
+
+## Fidelity surfaces and intentional constraints
+
+- Typography: existing local Inter/platform-CJK sans stack and existing page text remain authoritative. Large left-aligned heading, selected product/price hierarchy, 16px desktop and 15px mobile table text, and consistent accordion/body rhythm replace the prior document-index layout. Long existing English/Chinese conditions wrap naturally rather than being shortened.
+- Rhythm: pale-sage desktop spotlight with large product artwork on the left and selection/price/responsibility/action on the right. Mobile stacks a compact selector, artwork, selected price and action. Fine horizontal rules and one restrained accordion surface follow the selected composition. The selector and price remain static in document flow.
+- Colors: reuse forest green, warm white, paper and line tokens, and the existing pale-sage summary surface. No external font, new design system, decorative background, large gradient or dependency was added.
+- Assets: reuse the two previously approved update/customization sculptures and brand logo. Their transparent canvases were accounted for in display sizing; assets were not redrawn, raster-edited or replaced by code-native shapes. The selected product artwork follows the existing selected-plan state.
+- Copy: prices, responsibility lists, disclaimer, agreement conditions, IDs, CTA destinations, head metadata and JSON-LD are unchanged. Removed only the redundant in-page index; its destination IDs remain. Existing condition headings now use sequential h2 rather than h3 after the layout change. The original caption is visible as the comparison title. The mock's new instructional copy and commercial phrasing were not adopted.
+- Intentional deviations: mobile uses a horizontally scrollable native table with a sticky row-label column instead of the mock's very small three-column text. Selecting a product aligns its column into view; both columns remain available by scrolling and in the accessibility tree. Native list bullets remain for the responsibility list. The existing shared header/menu and footer are retained, rather than cloning the mock's header or adding duplicated controls.
+
+## Comparison history and fixes
+
+1. [P2] Initial artwork was undersized and responsibility text too muted. Increased desktop image allocation to 500px and mobile artwork to 260px inside a 210px layout slot; restored ink text. Source and revised Desktop/Mobile captures were compared together.
+2. [P2] Initial Mobile table showed License while Plus was selected. Added bounded, W02-only scroll alignment on selection and sticky row headings, keeping text readable. Before: `output/w02-implementation/ja-390-before.jpg`; after: final full-page/table captures.
+3. [P2] The sticky header's transparent background allowed a scrolling product heading to overlap the row-label heading. Corrected selector specificity so its surface is opaque. Focused final table capture shows clean separation.
+4. [P2] Moving the boundary heading below the details exposed an h1-to-h3 heading jump (initial Lighthouse Accessibility 98). Converted existing detail headings to h2 without changing their wording or appearance. All four repeated Lighthouse audits have zero failing checks.
+5. [P2] At the extra 320px edge, the fixed 552px table could leave a product column partly behind the sticky label. The min-width now adapts below 390px. At 320px the 140px label and 136px selected column fit the complete 276px region; at 390px the complete 206px selected column fits beside the label.
+
+## Browser and engineering verification
+
+- Chrome DevTools MCP: all three locales at 1440, 1024 and 390 CSS px, DPR 1. License/Plus switching updates the visible artwork, price and responsibility. No document overflow, broken images, Console errors/warnings or failed HTTP requests in the nine checked views. CTA locale destinations remain correct. Evidence: `output/w02-implementation/browser-evidence.json`.
+- Scroll check in all nine views: selector moves with the document and is not sticky. Mobile table contains all three semantic columns, caption, column/row scopes, accessible text for symbols and a named keyboard-focusable scroll region.
+- Keyboard: Japanese Mobile License/Plus activated with Enter, native detail summary toggled with Enter. Shared mobile-menu links are hit-testable above the backdrop; Escape closes the sheet and returns focus. Its three language links target the current localized License routes. No actual contact submission or authenticated flow was executed.
+- Observed local CLS maximum 0.00105 across the nine unthrottled checks. This is local lab evidence, not field performance certification. Existing reduced-motion CSS remains active by contract; no new looping motion was introduced.
+- Final Lighthouse snapshot: Japanese Desktop/Mobile and English/Chinese Mobile each have Accessibility, Best Practices, SEO and Agentic Browsing 100; zero failing checks. Performance was not a Lighthouse category in these audits. Physical iPhone/Safari remains unverified.
+- Repository validation, 40 relevant Node tests, three sitemap regressions, Chinese generation check, approved homepage generation check, W02 recomposition check, browser JS syntax and whitespace checks pass. The repository has no conventional build or lint command for this static frontend. No dependency changes.
+- The initial validator rejected page-specific asset build keys; the renderer now respects the existing shared `build-version.txt` contract. Before any production release, use the normal repository-wide asset-version procedure. No isolated build-key exception was introduced.
+- Sitemap route inventory, canonical/hreflang, robots and JSON-LD remain unchanged. Only the three substantively changed License lastmod dates advance to 2026-10-06 under the existing commit-derived generator.
+
+## Handoff and remaining limits
+
+- Design/implementation QA: no actionable P0/P1/P2 issue remains in this W02 scope. Original checkout and unrelated untracked output were preserved. Code is saved on the existing local preview branch; no GitHub push, PR, merge or FDE production publication was performed.
+- With the user's explicit approval, added the interactive EN/JA/ZH implementation to the same owner-private Sites gallery on 2026-10-06. Confirmation URL: `https://fde-w02-design-review.kale-1999.chatgpt.site`; the root links to `/preview/ja/license.html`, `/preview/license.html` and `/preview/zh/license.html`. Original concept boards remain. A separate allowlisted static bundle contains only the three conditions pages, required CSS/JS, five existing public assets, and preview-only navigation handling; the original FDE repository and production site were not published.
+- Preview-only alternate links remain inside the private Site; contact/product/news/goals/demo destinations use existing public pages. Local packaged QA verified Japanese 390px, English 1440px and Chinese 1024px: correct plan prices, localized links, no overflow, broken images or Console errors. Source commit `abceb950b045a9cd6bb88141c8b7f757b8e7eeaf` was pushed to the separate Sites repository and packaged by the native workflow. Private deployment `appgdep_6ac439df8d0c8191a8c9a6259dcdbb8b` returned `succeeded` with the URL above. Audience is unchanged and no recurring schedule was added. Temporary local gallery server was stopped after publishing. Physical iPhone/Safari remains unverified.
+- Production-content alignment is still a separate pending decision: approved homepage uses JPY and required Updates, while the unchanged conditions retain optional continuation and EN/ZH USD candidates. This design-only change does not resolve or silently alter those terms.
+
+final result: passed
+
+---
+
+# All-page Quiet Form application — 2026-10-05
+
+## Scope and source
+
+- The user confirmed the working second Quiet Form homepage on Mac and requested the same design across all English, Japanese and Simplified Chinese pages.
+- Applied the approved home to normal `index.html`, `ja/index.html` and `zh/index.html`, rather than relying on a local route alias. The approved homepage body is shared with the preview renderer; only preview navigation URLs are normalized. Existing inner-page text, conditions, prices, links, scripts and SEO remain unchanged, verified against the baseline (build keys normalized).
+- Coverage: seven primary page types in all three locales (21 URLs), plus the existing English customer portal and Japanese private CMS admin (23 URLs). Redirect-only routes, ownership verification and historical review documents were not turned into new pages. No new locale variants of those auxiliary surfaces were created.
+- Visual truth: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-d95ac91a-322a-4653-82e2-4233f173829e.png` (948 x 1660 illustrated Desktop 1440 / Mobile 390 board), with the user-approved interactive preview as the exact implementation reference. The board and normal-page screenshots were opened together. Normal/preview body equivalence tests provide exact structural parity beyond the illustrative board.
+
+## Fidelity and iteration
+
+- Fonts: all 69 checked views use the same Inter/platform-CJK sans stack. Existing code snippets retain a purposeful monospace face. Heading scale, line height and wrapping remain the approved home hierarchy adapted to longer inner-page text.
+- Rhythm: existing 1280px frames, 48/32/22px gutters, restrained 10–12px surfaces, fine borders and raised/inset controls are shared. News and Contact retain the user's permitted card treatment; Goals and License retain their editorial/document structure.
+- Colors: forest green and warm white remain primary, orange remains a restrained existing accent. No old lab photo, decorative blob, serif display style or new external font dependency was added to the normal home.
+- Assets: reuse the approved two product sculptures, brand logo, real IMS operation recording and existing News imagery. No new asset generation, copied third-party artwork or simulated native-application image was required.
+- Copy: normal home uses the previously approved three-language copy verbatim. Inner-page copy and commercial facts were preserved. No unsolicited copy rewrite or translated condition change was made.
+- [P2] The Mobile License table initially showed the License column while Plus was selected. Updated only the small-screen CSS to show the selected plan's column. Desktop/Tablet retain side-by-side comparison; all nine locale/size switch checks have corresponding existing summary prices. Post-fix evidence: `output/quiet-pages/native-postfix-{en,ja,zh}-license-390.jpg`; reopened and visually inspected the Japanese capture.
+- [P2] Lighthouse identified the existing language picker's visible language missing from its accessible name. Added the current language to the existing accessible label, without changing visible wording. Re-audits have zero failing checks.
+- Intentional deviations from the static board: functioning demo controls and selected-stock readout, native video controls, existing page-specific copy, and contextual inner-page actions. These are approved/live product constraints, not substituted design concepts.
+
+## Browser evidence
+
+- Chrome DevTools MCP: all 23 URLs at 1440, 1024 and 390 CSS px, height 844, DPR 1 (69 navigations). Zero document overflow, broken images, console errors or failed HTTP requests. Metrics: `output/quiet-pages/native-layout-metrics.json`. Additional EN/JA/zh Home and License checks at 320px also pass.
+- Saved fresh normal-page screenshots: `output/quiet-pages/native-*`. Nine home captures cover all locales/sizes; representative inner-page captures cover Desktop and Mobile. Japanese home captures are 1440 x 3656 and 390 x 3187 pixels; they were visually compared with the source's corresponding content regions, not browser/device chrome. Focused checks cover the actual mobile plan header, row labels and prices, form labels/fields, News cards, logo/menu controls, and real Goals media. Illustrative board scale is not treated as pixel-perfect screenshot evidence.
+- Menu: all three home locales' mobile-sheet links are hit-testable above the backdrop; Escape closes and restores focus. Language routes resolve to the normal home routes, not `quiet-form.html`.
+- Plans: License and Plus selection, corresponding price and static switcher checked in all three locales at all three target sizes; native keyboard Enter additionally tested on Japanese Mobile License.
+- Demo: actual form receive in every home locale changes Osaka 20 to 25 and total 346 to 351. No server data, persistence, purchase or external submission is used.
+- Goals real recording: 12-second, 900 x 700 video played and sought to three seconds with readyState 4, no media/console error. Loaded-frame capture: `output/quiet-pages/native-ja-goals-playing-390.jpg` (the immediate navigation captures may show a transient loading indicator).
+- Lighthouse snapshot post-fix: Japanese home Desktop/Mobile, English/Chinese home Mobile and Japanese License Mobile all have Accessibility, Best Practices, SEO and Agentic Browsing 100; zero failing checks. Results: `output/quiet-pages/native-lighthouse-postfix.json`. These are local automated checks, not complete WCAG certification or physical-device evidence.
+- Homepage local CLS observed at EN/JA/zh Desktop/Mobile: maximum 0.00084. This is unthrottled local lab evidence, not field CWV.
+
+## Verification and files
+
+- Repository validation, 30 Quiet Form/preservation tests, existing redesign/Goals/production-commerce gate contracts, three sitemap regression tests, Chinese generation check, normal homepage generation check, JS syntax and diff whitespace checks pass. No conventional build/lint script or new dependency was introduced.
+- Normal-home titles, descriptions, canonical/hreflang and Organization/WebSite/WebPage/SoftwareApplication entities are preserved. Removed only homepage FAQPage entities, because the approved home has no visible FAQ section; Contact FAQs and their structured data are untouched. No Offer or purchase capability was added. Sitemap route topology and robots remain unchanged; three home lastmods updated to their substantive commit date.
+- Files for this continuation: the three `index.html` files, existing `quiet-form.css`/preview renderer and its three outputs, `quiet-pages.css`, `gallery-ui.js`, `scripts/build_quiet_homepages.mjs`, `scripts/generate_zh_locale.mjs`, `scripts/test_quiet_homepages.mjs`, existing Quiet Form/inner-page/redesign tests, `scripts/validate_repo.py`, `.github/workflows/pr-checks.yml`, sitemap manifest/XML and this report. Prior inner-page implementation remains part of the same worktree.
+
+## Limits and handoff
+
+- Local server now serves normal pages at `http://127.0.0.1:4176/` without `--quiet-form`, in a detached loopback-only process. It remains available on this Mac while that process runs; it is not public hosting and does not survive a Mac restart.
+- No push, PR, merge, production deployment, new tracking, backend submission or authentication test was performed. Existing unrelated files and the original checkout were preserved.
+- Public-release content alignment remains a separate decision: approved home requires License Updates and displays JPY across locales; the unchanged inner conditions describe optional continuation, and EN/ZH retain their USD price book. Do not publish this branch before resolving those differences. The current request is design-only.
+- No actionable P0/P1/P2 visual mismatch remains in the verified design scope. Physical Safari/iPhone and authenticated flows remain unverified.
+
+final result: passed
+
+---
+
+# Preview recovery and selected-design confirmation — 2026-10-05
+
+- The user reconfirmed the second final Quiet Form board. The visual truth remains `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-d95ac91a-322a-4653-82e2-4233f173829e.png`; no different concept was substituted.
+- The reported unavailable local preview was reproduced: port 4176 refused connections. Restarted the existing server in a detached process on loopback only, retaining `--quiet-form`. Verified the process was reparented to PID 1 and remained listening after subsequent tool calls. This does not make the preview reachable from an iPhone or survive a Mac restart.
+- Browser fetches returned HTTP 200 for all 23 review URLs (three homepages plus the 20 inner pages). Chrome rendered the Japanese homepage at 1440 and 390 CSS pixels, DPR 1; the recovered mobile capture and 948 x 1660 source board were opened together inline. Composition, typography, forest/warm-white palette, real product assets and existing copy remain consistent with the selected second board; the previously approved interactive demo deliberately differs from the static board. Existing disk captures remain `output/quiet-form/ja-1440-v2-final.jpg` and `output/quiet-form/ja-390-v2-final.jpg`; the recovery captures were returned inline, not saved over those files.
+- Japanese News, License and Contact were re-opened at 390 pixels: theme loaded, no document overflow, no broken images, shared sans-serif headings. No design/copy changes were necessary for this selected-concept confirmation. No publication, merge, external hosting or backend submission was performed.
+- Resolved finding: [P0] stopped local preview; fixed by restarting outside the turn-owned session. Final result: passed for local preview recovery and selected-concept confirmation. Physical-device/iPhone access remains a separate hosting requirement.
+
+# Design QA — Quiet Form remaining-page renewal, 2026-10-05
+
+## Scope and visual reference
+
+- User instruction: unify the remaining pages with the approved homepage; design only, no copy or commercial-policy changes.
+- Worktree: `fde-site-quiet-form`, branch `preview/quiet-form-motion`; the original checkout and its unrelated duplicate/untracked files were left intact.
+- Approved source: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-d95ac91a-322a-4653-82e2-4233f173829e.png`, the second Quiet Form board (Desktop 1440 / Mobile 390). It and rendered contact/news captures were inspected together. Differences in copy and page structure are deliberate: this is a shared visual-language implementation, not a clone of the homepage layout.
+- Shared source: existing `quiet-form.css`, gallery palette, local Inter font, existing logos, CMS images, real IMS recording, and existing navigation/interaction code. No new raster artwork, dependency, framework, Figma file or generated application image was needed.
+- Coverage: 20 existing URLs / 8 page types. License, Demo, Our Goals, News, Contact and Order in English, Japanese and Simplified Chinese; existing English-only Customer Portal and Japanese CMS admin. No new locale or SEO page was created. Removed Decision Guide destinations stay removed.
+
+## Implementation
+
+- `quiet-pages.css` is one scoped extension of existing tokens: forest green, warm white, restrained orange focus, sans-serif hierarchy, consistent 1280px frames, 48/32/22px page gutters, thin rules and subtle raised/inset controls.
+- Every targeted HTML document loads that stylesheet last and gains the `quiet-page` body class. Existing copy, IDs, links, prices, conditions, forms, metadata, structured data and script references remain intact.
+- News and Contact use restrained raised surfaces, as the user allowed for these page types. Goals retains its real code excerpt and native operation video. Demo retains every existing tool, notice, table and history; no homepage-only hiding rules are applied.
+- Product selectors and selected-plan summary are static, not sticky. The mobile comparison scrolls in a named, keyboard-focusable region, with 14px text and a sticky row-heading column. At 390px, the 344px region contains a 560px table; at its right edge, the 112px heading and 224px Plus column both fit without overlap.
+- Two minimal display/accessibility repairs: Chinese video poster path now resolves to the same existing asset; the customer logo link has an accessible name matching its existing text. Chinese generator handles `poster` references so regeneration preserves the correction.
+- `scripts/dev-server.mjs --quiet-form` is an opt-in local-review alias for the three home routes. It serves the approved preview without changing public `index.html` files or navigation links. Default serving is unchanged. Review command: `npm run dev -- --host 127.0.0.1 --port 4176 --quiet-form`.
+- Sitemap route inventory and alternates are unchanged. Repository-required commit-derived lastmod dates are refreshed only for the 15 modified indexed inner pages.
+
+## Iterations
+
+| Priority | Finding | Resolution |
+| --- | --- | --- |
+| P2 | Old serif typography, archive-paper texture and hard offset shadows conflicted with the approved top. | Shared sans typography, warm-white surfaces, matched spacing and soft elevation; reference and rendered pages inspected together. |
+| P2 | Inherited customer hero artwork and mobile mark-only logo remained after the first pass. | Removed decorative pseudo-elements and reused the existing full brand logo at desktop/mobile sizes. |
+| P2 | Light demo-bar background inherited white text. | Explicit forest text restores readable contrast. |
+| P2 | The initial mobile table showed mostly row labels and only part of License. | Narrower sticky label column lets an entire product column remain readable at either horizontal edge. |
+| P2 | Four vertically stacked demo KPIs consumed excess mobile space. | A two-by-two grid retains all four values and readable labels. |
+| P2 | Customer logo's CSS-hidden text left an unnamed link. | Added an aria-label using existing brand copy; final Accessibility rose from 95 to 100. |
+| P2 | Chinese Goals video poster requested a nonexistent localized asset path. | Corrected the path and generator; poster returns 200, MP4 range returns 206 and existing 900×700 / 12s recording plays and seeks. |
+
+## Browser evidence
+
+- Chrome DevTools MCP, all 20 URLs × 1440 / 1024 / 390 CSS pixels, DPR 1, height 844: 60 full-page screenshots and layout measurements. Additional 320 / 768 / 820 / 1920 checks across all 8 representative page types found no page-level overflow.
+- Saved baseline: `output/quiet-pages/before-*.jpg`; final matrix: `final-*.jpg`; later License/Goals fixes: `postfix-*.jpg`. Full-page captures are real browser screenshots. Header, typography, surfaces, tables, forms, mobile stacking and representative locale line breaks were visually inspected.
+- All 60 measurements have document scroll width equal to viewport width, no broken img elements and the same heading/control font stack. Measured local CLS spans 0–0.0811. This is local lab evidence, not field performance or iPhone/Safari certification.
+- Console/network matrix: no new script errors or failing assets. The sole observed resource failure was the pre-existing Chinese poster; after correction all three locale/width Goals rechecks have no console errors. Expected inner scrolling in data tables and code panes is not page overflow.
+- License selection and corresponding existing prices were verified across all three locales and widths. Desktop native click and mobile Enter activation also verified selection. No price was rewritten.
+- Each locale's Demo passed receive (20→25 in Osaka), transfer, count, ship, insufficient-stock error with no mutation, no-match search, and reset to 326 / 20 / 346, action count 0.
+- Contact required-field validation, confirmation, edit-back and retained input were verified in every locale using disposable local sample text. Turnstile was stubbed only in the browser verification document to avoid external challenge loading; no final Send click or POST was performed.
+- Existing mobile sheet links remain hit-testable above the backdrop; Escape closes it and restores visible focus to the menu button. News article opens, scrolls internally, and closes with Escape. Locale navigation remains sourced from unchanged alternate links.
+- Admin authentication, uploads, CMS mutations, customer status lookup, orders, payments and real contact delivery were not performed.
+
+## Automated validation
+
+- `node --test scripts/test_quiet_pages.mjs scripts/test_quiet_form_preview.mjs`: 26/26 passed. Preservation test compares the 20 HTML files against baseline `e13457ad75068fa753b3f6dc6705d1aa1de2a61c`, allowing only theme link/body class, corrected poster path and customer logo aria-label. Public home content, robots, translation dictionary, sitemap topology and canonical/hreflang/JSON-LD content are preserved.
+- `npm run validate`: passed after matching the existing asset build key and updating required commit-derived lastmods.
+- `python3 scripts/generate_sitemap.py --check`: passed; `node scripts/generate_zh_locale.mjs --check`: all seven Chinese pages current.
+- `python3 -m unittest discover -s scripts -p 'test_sitemap_lastmod.py'`: 3/3 passed.
+- JavaScript syntax and both staged/unstaged diff whitespace checks: passed. This static repository has no separate build or lint script.
+- Existing Our Goals content/media, source-led redesign and production pre-release commerce-gate test scripts: 3/3 passed; the commerce test exercises the local worker with synthetic Requests, not external purchases.
+- Lighthouse snapshot: Accessibility 100 and Best Practices 100 on all 20 mobile pages. Public-page SEO scores are 100. CMS SEO 83 reflects its unchanged missing description on a noindex administration page.
+- Existing unscored Lighthouse warnings remain outside this design-only scope: locale picker accessible label does not contain the current locale text, and Demo's final action column has an empty source header. Scores of 100 are not full WCAG certification; no interaction or visible copy was changed to silence those inherited warnings.
+
+## Changed-file inventory and boundaries
+
+- Page HTML: `{license,demo,goals,news,contact,order}.html` plus each `ja/` and `zh/` counterpart; `customer.html`, `cms-admin.html`.
+- Shared UI: `quiet-pages.css`.
+- Local preview and verification: `scripts/dev-server.mjs`, `scripts/generate_zh_locale.mjs`, `scripts/test_quiet_pages.mjs`, `design-qa.md`.
+- Generated SEO dates: `sitemap-lastmod.json`, `sitemap.xml`.
+- Prior approved homepage assets/preview files remain preserved and were not rewritten in this task.
+- The earlier homepage preview's commercial copy and release/currency choices are not propagated to existing inner pages in this design-only request. Public rollout still requires content alignment decisions separately.
+- No push, PR, merge or deployment was performed. Local 127.0.0.1 preview is available on this Mac only and is not an iPhone-shareable public URL. Physical-device Safari and authenticated/back-end flows remain unverified.
+
+No actionable P0/P1/P2 visual regression remains in the checked design scope.
+
+final result: passed
+
+---
+
+# Design QA — Quiet Form dynamic homepage preview, 2026-10-05
+
+## Scope and visual source
+
+- Local preview only: `quiet-form.html`, `ja/quiet-form.html`, and `zh/quiet-form.html`. The public homepages, license terms, demo engine, canonical URLs, sitemap, robots.txt, and JSON-LD are unchanged. Preview documents explicitly use `noindex,nofollow`.
+- Approved source: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-d95ac91a-322a-4653-82e2-4233f173829e.png` (948 × 1660), the user's second final Quiet Form board, containing Desktop 1440 and Mobile 390 layouts. The source and final rendered Japanese desktop/mobile captures were inspected together; English mobile and Chinese tablet were also visually inspected.
+- Final real-browser captures: `output/quiet-form/{ja,en,zh}-{1440,1024,390}-v2-final.jpg`, exact CSS viewport widths at DPR 1, height 844. Additional overflow checks covered 320 and 768px. These are Chrome screenshots, not generated presentation images.
+- Two generated transparent product assets faithfully follow the approved board: an ivory inventory sculpture with a green update arrow for License; a larger customizable application sculpture with a wrench for Plus. They were generated as individual cutouts, visually inspected, and optimized to 960 × 960 WebP (about 94KB combined). They do not contain copied Apple artwork, code symbols, text labels, or a generated application screenshot.
+- Figma was not needed for this image-selected implementation. Existing gallery tokens, logo, mobile navigation, local font, and the actual public demo engine were reused; no framework or dependency was added.
+
+## Iterations and fidelity
+
+| Priority | Finding | Resolution and evidence |
+| --- | --- | --- |
+| P1 | A purely decorative demo would imply inventory changes without actually performing them. | Reused `demo-v1.js` and the existing form. The finite sequence chooses a product, selects Osaka, enters five units, and submits the real receive operation. Osaka changes 20 → 25 and total 346 → 351. No second stock model, server connection, persistence, or telemetry was introduced. |
+| P2 | Japanese hero text left an isolated final character on narrow screens. | Controlled the two headline lines and mobile sizing; final 390px capture has balanced lines without clipping. |
+| P2 | Header language placement and the footer logo's inherited height diverged from the selected board. | Scoped navigation positioning and explicit logo dimensions corrected alignment and removed the blank footer box. |
+| P2 | A transparent product image's box extended outside its tablet column. | Bounded image and column dimensions; all nine final locale/width combinations have document scroll width equal to viewport width and no unintended out-of-bounds elements. |
+| P2 | Hiding the mobile inventory table also hid its reset button. | Moved the existing reset control into the compact toolbar at mobile widths without replacing its event listeners. Selected-stock totals below the form reflect the actual rendered inventory row. |
+| P2 | Automatic motion needed accessible stopping and reduced-motion behavior. | Added pause/replay, stop on manual interaction, offscreen/hidden-tab pausing, and no automatic playback under reduced motion. Explicit reduced-motion playback applies the operation immediately. Keyboard focus is visible; the inherited bottom sheet makes background content inert and restores focus after Escape. |
+| P2 | Original sculpture files were disproportionately heavy. | Replaced large PNG delivery with alpha WebP. Local final trace reports LCP 350ms and CLS 0.00; these are unthrottled local lab values, not production or physical-device performance claims. |
+
+- Type, color, and hierarchy: calm forest hero, warm white surfaces, existing Inter/platform locale fonts, restrained raised controls, a centered two-product comparison, and the approved headings and release date.
+- Imagery: update-cycle and app-customization sculptures remain the hero and comparison anchors. Plus has a larger silhouette; neither icon uses code brackets.
+- Functional departures from the static board are deliberate: explicit play/reset controls, minimum 44px control targets, a searchable desktop inventory table, a readable mobile selected-stock summary, and real success/error states. The compact bottom-sheet menu appears only when opened, rather than being permanently displayed as in the source board's demonstration state.
+- Existing navigation and locale destinations remain actual HTML links. Both terms links use the existing comparison anchor rather than inventing an unsupported query-based selection behavior.
+
+## Validation evidence
+
+- Chrome DevTools MCP: Japanese, English, and Simplified Chinese at 1440, 1024, and 390px. Final matrix: zero broken images, zero page overflow, and zero console warnings/errors. Loaded assets returned successfully; the preview introduces no third-party requests or data submissions.
+- Actual demo operations: receive, transfer, stock count, shipment, insufficient-stock error (no mutation), reset, and empty search. Receive was additionally checked in every locale/width combination. Motion completion, pause, offscreen stopping, reduced-motion behavior, native Tab focus, and bottom-sheet Escape/focus restoration were checked.
+- Lighthouse snapshot audits: Accessibility 100 and Best Practices 100 for Japanese desktop/mobile and English/Chinese mobile. Preview SEO 83 is expected from intentional noindex and omitted preview description; it is not a public-site SEO regression. These checks are not a full WCAG certification.
+- Repository validation passed; preview static/semantic/link tests passed 4/4; sitemap lastmod tests passed 3/3; JavaScript syntax checks passed; diff whitespace checks passed. The repository has no separate conventional build or lint script.
+
+## Publication boundary
+
+No actionable P0, P1, or P2 visual/runtime issue remains in the checked preview states. iPhone and other physical devices have not been tested; 390px touch emulation is browser evidence only. This local address is not reachable from the user's iPhone. A shareable preview requires a separate publishing step.
+
+The preview shows the user-approved November 1, 2026 release date and Japanese-yen amounts in all three languages. It includes required License Updates and continued use of the existing version after Updates end. Public commercial pages still have their earlier conditions and international price presentation; before public rollout, those pages and localized currency presentation must be aligned and release authorization confirmed. Passing design QA does not authorize sales or publication.
+
+final result: passed
+
+---
+
 # Design QA — Homepage comparison refinement, 2026-09-24
 
 ## Source and rendered comparison
@@ -465,5 +963,40 @@ Core files: goals.html, ja/goals.html, why.html, ja/why.html, gallery-pages.css,
 No deployment, merge, external announcement, analytics, tracking, inquiry submission or release authorization was performed. The new preview is http://127.0.0.1:4183/ja/goals.html (EN /goals.html); the older preview server remains untouched. Production-origin and physical Safari/iOS/Android checks are outside this local Chrome verification.
 
 Browser cleanup: the task-owned Chrome DevTools pages 9, 10 and 12 were closed; no pre-existing normal user Chrome session was targeted. Closing the remaining task-owned page 11 was attempted, but Chrome DevTools MCP refuses to close its last page. This remaining page and the tool limitation are reported in the handoff.
+
+final result: passed
+
+## 2026-10-07 final approved Quiet Form renewal and A01
+
+The approved W01–W08 compositions are implemented in English, Japanese and Simplified Chinese. A01 combines the selected forest sidebar with the selected article-list/editor workspace. Existing brand artwork, tokens and components are reused. A01 remains Japanese-only; its original authentication, GitHub writes, translation, publishing, staging lock and media handling runtimes are byte-for-byte unchanged. The presentation adapter moves original nodes and delegates article selection through the original select/change handler. No external transmission, persistent storage, tracking or new dependency was added.
+
+### Source comparison and visual corrections
+
+Reference: the approved A01 refined board, `/private/tmp/fde-a01-review-checkout.Indnek/dist/a01-refined.png`. Rendered comparison: `output/final-20261007/a01-comparison.png` plus final native Chrome captures at 1440, 1024 and 390px. The board and actual responsive implementation were opened together. The approved navigation/list/editor architecture, forest/ivory palette, restrained borders and shallow shadows match; existing longer CMS security instructions and original input names intentionally differ from the short concept copy. The source artwork is reused rather than recreated. Public page contact sheets cover eight pages, three locales and all three sizes.
+
+- P2 fixed: shared CSS specificity initially made the sidebar states and textarea inconsistent. Scoped state rules and a 260px editor minimum restore hierarchy.
+- P2 fixed: Mobile menu trigger inherited full-width styles and overlapped the brand. Explicit intrinsic width and scoped colors correct it; native dialog and Escape focus restoration pass.
+- P2 fixed: low-contrast image-preview placeholder. The existing muted token now passes Lighthouse.
+- P2 fixed: article dates and titles were unnecessarily stacked; use a compact date/title grid and an intrinsic-width new-article button.
+- P2 fixed during public regression: Mobile Contact shortcut could pick a language alternate on the Contact page. Exclude hreflang links from shortcut discovery; English/Japanese/Chinese local destinations and hit targets pass, with a new regression test.
+
+### Current verification
+
+- Native Chrome DevTools: 24 public routes × 1440/1024/390px = 72 checks. No document overflow, missing images, JavaScript errors or HTTP resource failures. One h1 per route; canonical and four language alternates retained. Maximum observed loading CLS: 0.01824 (lab snapshot, not field certification).
+- All nine locale/size License and Plus switch checks pass; prices change with selection and controls scroll away normally. Japanese amounts are 49,800 / 99,800円; English/Chinese original USD candidate amounts remain unchanged.
+- Shared Mobile sheet links are hit-testable above the backdrop in all three languages. Escape closes and restores focus. Existing three-language destinations are preserved.
+- Contact: native input → review → edit passes without sending an inquiry; FAQ expands. Demo: receiving five units and switching views passes using temporary synthetic data. W08: invalid input, local review and edit pass; no order lookup or external write is performed. Purchasing/order/payment remain disabled.
+- A01: original article selection, new article, mocked create/save/translation and FAQ switching pass; no real GitHub/CMS write occurred. Mobile dialog/tab/Escape and final Desktop/Mobile visual inspection pass with no overflow.
+- Lighthouse snapshots: A01 Desktop and Mobile Accessibility 100 / Best Practices 100. Private noindex CMS SEO 83 is unchanged in intent (no public description); no SEO expansion is made. Sample public Chinese License Desktop and Japanese/Chinese Customer Mobile score 100 for Accessibility, Best Practices and SEO.
+- 91 related Node tests pass, 0 fail/skip; repository validation, Chinese eight-page generation check, sitemap check and three sitemap tests pass. The static repository has no separate build or lint command. Earlier two A01 baseline assertions failed because they prohibited the newly approved presentation markup; narrowed normalization and protected-runtime byte comparisons replace those obsolete assertions, then the full suite passed.
+- A failed pre-commit main integration refused to overwrite the staged QA report. No merge was accepted. A transient zero-byte gallery stylesheet was recovered exactly from HEAD; its diff is empty and no tracked source is zero-byte. The original checkout's unrelated duplicate/untracked files remain untouched.
+
+Browser sizes are Chrome emulation, not physical iPhone/Safari acceptance. CMS write verification is isolated mock evidence, not a production article publication. IMS-native release, real commerce, order lookup and the planned smooth IMS footage replacement remain outside this UI renewal.
+
+PR #86's first exact-head CI failed 21 contract assertions after the existing build-sync bot changed only dated JS/CSS query keys. Those tests now normalize only the established `file.js?v=YYYYMMDD-HHMMSS` / CSS equivalent; copy, routes, conditions and runtime behavior remain exact comparisons. A negative normalization test proves unrelated dates, prices, HTML routes and query parameters are not ignored. The failed initial run remains preserved; normal exact-head CI is required again before merge.
+
+The complete local rerun passes all 92 tests without skips after this bounded test correction. Repository validation also passes on the synchronized build.
+
+The build-sync validation also exposed a legacy pre-staging assertion requiring the retired modal-only `data-demo-open` control. The approved W01 uses an inline demo and a normal localized Demo link. The assertion now accepts either the original trigger or the complete approved inline contract (IMS root, demo runtime and Quiet Form class), while still requiring the Japanese relative Demo link. Backend/Turnstile/CMS staging isolation checks remain unchanged.
 
 final result: passed

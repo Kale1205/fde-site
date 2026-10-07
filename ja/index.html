@@ -20,11 +20,6 @@
 <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-<link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
-<script defer src="../gallery-ui.js?v=20260925-081759">
-</script>
-<script defer src="../cms-content-ja.js?v=20260925-081759">
-</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -35,14 +30,19 @@
       "name": "Baked Kale FDE",
       "alternateName": "Baked Kale",
       "url": "https://kale1205.github.io/fde-site/",
-      "logo": {"@type": "ImageObject", "url": "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg"}
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg"
+      }
     },
     {
       "@type": "WebSite",
       "@id": "https://kale1205.github.io/fde-site/#website",
       "name": "Baked Kale FDE | FDE IMS",
       "url": "https://kale1205.github.io/fde-site/",
-      "publisher": {"@id": "https://kale1205.github.io/fde-site/#organization"}
+      "publisher": {
+        "@id": "https://kale1205.github.io/fde-site/#organization"
+      }
     },
     {
       "@type": "WebPage",
@@ -50,8 +50,12 @@
       "name": "FDE IMS 在庫管理ソフト | Baked Kale FDE",
       "url": "https://kale1205.github.io/fde-site/ja/",
       "inLanguage": "ja",
-      "isPartOf": {"@id": "https://kale1205.github.io/fde-site/#website"},
-      "about": {"@id": "https://kale1205.github.io/fde-site/#fde-ims"}
+      "isPartOf": {
+        "@id": "https://kale1205.github.io/fde-site/#website"
+      },
+      "about": {
+        "@id": "https://kale1205.github.io/fde-site/#fde-ims"
+      }
     },
     {
       "@type": "SoftwareApplication",
@@ -62,451 +66,120 @@
       "applicationSubCategory": "在庫管理ソフト",
       "creativeWorkStatus": "開発中",
       "description": "Baked Kale FDEが、紙・Excel・既存システムからの見直しを考える小規模企業向けに開発している在庫管理ソフトです。",
-      "featureList": ["在庫一覧と検索", "入庫記録", "出庫記録", "在庫不足の表示"],
-      "audience": {"@type": "BusinessAudience", "audienceType": "小規模企業"},
-      "provider": {"@id": "https://kale1205.github.io/fde-site/#organization"}
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://kale1205.github.io/fde-site/#faq-ja",
-      "mainEntity": [
-        {"@type": "Question", "name": "FDE IMSは今すぐ購入できますか？", "acceptedAnswer": {"@type": "Answer", "text": "いいえ。FDE IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。"}},
-        {"@type": "Question", "name": "製品の操作を試せますか？", "acceptedAnswer": {"@type": "Answer", "text": "はい。v1.0簡易デモではサンプルデータを使い、在庫検索と一時的な入庫・移動・棚卸・出庫操作を試せます。"}},
-        {"@type": "Question", "name": "詳しい条件の確認や質問はどこでできますか？", "acceptedAnswer": {"@type": "Answer", "text": "現在の予定条件はLicenseページ、責任分担は各プランの利用条件で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。"}},
-        {"@type": "Question", "name": "紙やExcelで在庫管理している会社にも向いていますか？", "acceptedAnswer": {"@type": "Answer", "text": "はい。紙やExcelから、入庫・在庫確認・出庫をひとつの分かりやすい記録へ移したい小規模企業向けに開発しています。"}},
-        {"@type": "Question", "name": "既存システムのデータを移行・取り込みできますか？", "acceptedAnswer": {"@type": "Answer", "text": "現在は未確定です。対応するファイル形式、データ移行、導入支援の範囲は、正式販売前にご案内します。"}}
-      ]
+      "featureList": [
+        "在庫一覧と検索",
+        "入庫記録",
+        "出庫記録",
+        "在庫不足の表示"
+      ],
+      "audience": {
+        "@type": "BusinessAudience",
+        "audienceType": "小規模企業"
+      },
+      "provider": {
+        "@id": "https://kale1205.github.io/fde-site/#organization"
+      }
     }
   ]
 }
 </script>
+<link rel="stylesheet" href="../gallery-ui.css?v=20261007-224522">
+<link rel="stylesheet" href="../quiet-form.css?v=20261007-224522">
+<script defer src="../gallery-ui.js?v=20261007-224522"></script>
+<script defer src="../demo-v1.js?v=20261007-224522"></script>
+<script defer src="../quiet-form.js?v=20261007-224522"></script>
 </head>
-<body class="gallery-page source-home">
+<body class="gallery-page quiet-home">
 <a class="skip-link" href="#main-content">本文へ移動</a>
 <div class="site-shell language-ja">
 <header class="site-header">
-<a class="brand" href="./" aria-label="Baked Kale FDE ホーム">
-<img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg" width="980" height="240">
-</a>
-<nav class="desktop-nav" aria-label="主要ナビゲーション">
-<a href="#product" aria-current="page">製品</a>
-<a href="goals.html">Our Goals</a>
-<a href="news.html">お知らせ</a>
-</nav>
-<div class="header-actions">
-<a class="locale-button" data-locale-link href="../" hreflang="en" lang="en">English</a><a class="locale-button" href="../zh/" hreflang="zh-CN" lang="zh-CN">简体中文</a>
-<a class="header-contact" href="contact.html">お問い合わせ<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z">
-</path>
-</svg>
-</a>
-<button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="メニューを開く">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z">
-</path>
-</svg>
-</button>
-</div>
-<nav class="mobile-nav" id="mobile-nav" aria-label="モバイルナビゲーション" hidden>
-<a href="#product" aria-current="page">製品</a>
-<a href="goals.html">Our Goals</a>
-<a href="news.html">お知らせ</a>
-<a href="../" hreflang="en" lang="en">English</a><a href="../zh/" hreflang="zh-CN" lang="zh-CN">简体中文</a>
-<a href="contact.html">お問い合わせ</a>
-</nav>
+<a class="brand" href="./" aria-label="Baked Kale FDE"><img src="../assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a>
+<nav class="desktop-nav" aria-label="メニューを開く"><a href="#plans">製品</a><a href="demo.html">デモ</a><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="contact.html">お問い合わせ</a></nav>
+<div class="header-actions"><a class="locale-button" data-locale-link href="../" hreflang="en" lang="en">English</a><a class="locale-button" data-locale-link href="../zh/" hreflang="zh-CN" lang="zh-CN">简体中文</a><button class="menu-button" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
+<nav class="mobile-nav" id="mobile-nav" aria-label="メニューを開く" hidden><a href="#plans">製品</a><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="contact.html">お問い合わせ</a></nav>
 </header>
 <main id="main-content">
-
-<section class="hero section-frame" id="product">
-<img class="lab-background" src="../assets/night-lab-20260915.webp" width="1672" height="941" alt="" fetchpriority="high">
-<div class="hero-copy">
-<p class="status-line">FDE IMS — 開発中</p>
-<h1 class="source-heading">
-<span>自社で使うシステムを、</span>
-<span class="accent-line">自社で育てていく。</span>
-</h1>
-<p class="hero-lead">ゼロからすべてを作る必要はありません。在庫管理システムとそのソースコードを出発点に、自社の業務に合う仕組みへ。</p>
-<div class="hero-actions"><a class="button button-primary" href="#license-plus">ソースコード付きプランを見る</a><a class="button button-secondary" href="demo.html" data-demo-open>デモで動きを確かめる</a></div>
-<small class="development-note">現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。</small>
-
-</div>
-<div class="hero-visual">
-
-
-
-<div class="product-window" id="preview-panel">
-<aside class="product-rail" aria-label="プレビュー操作">
-<div>
-<button type="button" class="active" aria-label="プレビューツール 1" aria-pressed="true">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M120,56v48a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V56A16,16,0,0,1,56,40h48A16,16,0,0,1,120,56Zm80-16H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm-96,96H56a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,104,136Zm96,0H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,200,136Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="プレビューツール 2" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M223.68,66.15,135.68,18h0a15.88,15.88,0,0,0-15.36,0l-88,48.17a16,16,0,0,0-8.32,14v95.64a16,16,0,0,0,8.32,14l88,48.17a15.88,15.88,0,0,0,15.36,0l88-48.17a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,32h0l80.34,44L128,120,47.66,76ZM40,90l80,43.78v85.79L40,175.82Zm96,129.57V133.82L216,90v85.78Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="プレビューツール 3" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M168,152a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,152Zm-8-40H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm56-64V216a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V48A16,16,0,0,1,56,32H92.26a47.92,47.92,0,0,1,71.48,0H200A16,16,0,0,1,216,48ZM96,64h64a32,32,0,0,0-64,0ZM200,48H173.25A47.93,47.93,0,0,1,176,64v8a8,8,0,0,1-8,8H88a8,8,0,0,1-8-8V64a47.93,47.93,0,0,1,2.75-16H56V216H200Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="プレビューツール 4" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M255.42,117l-14-35A15.93,15.93,0,0,0,226.58,72H192V64a8,8,0,0,0-8-8H32A16,16,0,0,0,16,72V184a16,16,0,0,0,16,16H49a32,32,0,0,0,62,0h50a32,32,0,0,0,62,0h17a16,16,0,0,0,16-16V120A7.94,7.94,0,0,0,255.42,117ZM192,88h34.58l9.6,24H192ZM32,72H176v64H32ZM80,208a16,16,0,1,1,16-16A16,16,0,0,1,80,208Zm81-24H111a32,32,0,0,0-62,0H32V152H176v12.31A32.11,32.11,0,0,0,161,184Zm31,24a16,16,0,1,1,16-16A16,16,0,0,1,192,208Zm48-24H223a32.06,32.06,0,0,0-31-24V128h48Z">
-</path>
-</svg>
-</button>
-<button type="button" class="" aria-label="プレビューツール 5" aria-pressed="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z">
-</path>
-</svg>
-</button>
-</div>
-</aside>
-<div class="product-content">
-<div class="product-heading">
-<div>
-<p>FDE IMS</p>
-<h2>開発プレビュー</h2>
-</div>
-<span>
-<i>
-</i>プレビュー</span>
-</div>
-<div class="metric-grid">
-<article>
-<span>商品数</span>
-<strong>5</strong>
-</article>
-<article>
-<span>要補充</span>
-<strong class="orange">1</strong>
-<em>要確認</em>
-</article>
-<article>
-<span>状態</span>
-<strong class="status-preview">プレビュー</strong>
-</article>
-</div>
-<div class="inventory-table" role="region" aria-label="サンプル在庫">
-<div class="inventory-row inventory-head">
-<span>商品</span>
-<span>SKU</span>
-<span>在庫</span>
-<span>状態</span>
-</div>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>P</i>紙コップ 12oz</span>
-<span>PC-1204</span>
-<strong>326</strong>
-<span class="stock-ok">正常</span>
-</button>
-<button class="inventory-row selected" type="button" aria-current="true">
-<span class="product-name">
-<i>L</i>ラベルロール</span>
-<span>LR-0041</span>
-<strong>18</strong>
-<span class="stock-low">要補充</span>
-</button>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>T</i>感熱紙</span>
-<span>TP-3011</span>
-<strong>41</strong>
-<span class="stock-ok">正常</span>
-</button>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>P</i>梱包テープ</span>
-<span>PT-5002</span>
-<strong>94</strong>
-<span class="stock-ok">正常</span>
-</button>
-<button class="inventory-row " type="button">
-<span class="product-name">
-<i>B</i>クッション封筒</span>
-<span>BM-2501</span>
-<strong>210</strong>
-<span class="stock-ok">正常</span>
-</button>
-</div>
-<div class="product-footer">
-<p>開発中のIMSを想定した操作イメージです。データはサンプルです。</p>
-<div>
-<button type="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z">
-</path>
-</svg>入庫</button>
-<button class="ship-button" type="button">出庫<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z">
-</path>
-</svg>
-</button>
-</div>
-</div>
-</div>
-</div>
-
-</div>
+<section class="quiet-hero" id="product" aria-labelledby="hero-title">
+<div class="section-frame">
+<p class="release-line" data-release-notice><span aria-hidden="true">—</span><span>2026年11月1日リリース<span class="release-availability">現在は購入できません。</span></span></p>
+<h1 id="hero-title"><span>自社開発は、</span><span>ゼロからじゃなくていい。</span></h1><p class="quiet-lead">在庫管理システムとソースコードを、自社の業務に合う仕組みの出発点に。</p>
+<div class="quiet-actions"><a class="button" href="#license-plus">ソースコード付きプランを見る <span aria-hidden="true">→</span></a><a class="quiet-text-link" href="#motion-demo">デモを見る <span aria-hidden="true">→</span></a></div>
+<div class="sculpture-pair">
+<figure><img class="sculpture" src="../assets/ims-license-update.webp" alt="" width="960" height="960" fetchpriority="high"><figcaption><h2><span>FDE IMS</span> <span>License</span></h2><p>最新版へ、更新し続ける。</p></figcaption></figure>
+<figure><img class="sculpture" src="../assets/ims-license-plus-customize.webp" alt="" width="960" height="960" fetchpriority="high"><figcaption><h2><span>FDE IMS</span> <span>License Plus</span></h2><p>自分で変えて、自社だけのアプリへ。</p></figcaption></figure>
+</div></div>
 </section>
-<section class="story-section section-frame" id="story">
-<div class="section-intro"><p>01 / 自社開発の出発点</p>
-<h2>自社の業務に合う<br>システムを、<br>自社で作ってみませんか？</h2>
-<span>既製品に業務を合わせる。欲しい機能を待つ。ゼロから開発する。その間に、動くシステムのソースコードから始める選択肢があります。</span></div>
+<section class="quiet-plans section-frame" id="plans" aria-labelledby="plan-title">
+<h2 class="quiet-heading" id="plan-title">出発点は2つ</h2>
+<table class="quiet-comparison"><caption class="visually-hidden">製品の比較</caption>
+<thead><tr><th scope="col"><div class="plan-top"><img class="comparison-sculpture" src="../assets/ims-license-update.webp" alt="" width="960" height="960" loading="lazy"><h3><span>FDE IMS</span> <span>License</span></h3><p>はじめる、整える、使い続ける。</p><strong class="plan-price">¥49,800</strong><a href="license.html#comparison">条件を確認 <span aria-hidden="true">→</span></a></div></th>
+<th scope="col" id="license-plus"><div class="plan-top"><img class="comparison-sculpture" src="../assets/ims-license-plus-customize.webp" alt="" width="960" height="960" loading="lazy"><h3><span>FDE IMS</span> <span>License Plus</span></h3><p>見える、変えられる、育てていける。</p><strong class="plan-price">¥99,800</strong><a href="license.html#comparison">条件を確認 <span aria-hidden="true">→</span></a></div></th></tr></thead>
+<tbody><tr><td><span aria-hidden="true">✓</span>買い切り</td><td><span aria-hidden="true">✓</span>買い切り</td></tr>
+<tr><td><span aria-hidden="true">—</span>ソースコードなし</td><td><span aria-hidden="true">✓</span>ソースコード一式</td></tr>
+<tr><td><span aria-hidden="true">—</span>社内向け改変なし</td><td><span aria-hidden="true">✓</span>社内向け改変</td></tr>
+<tr><td><span aria-hidden="true">✓</span>当社Updates<br>月額契約必須</td><td><span aria-hidden="true">—</span>当社Updates対象外<br>購入者が更新・管理</td></tr></tbody></table>
+<div class="updates-strip"><strong>License Updates</strong><span>最初の3か月は含む</span><span>4〜6か月目 <strong>¥4,900/月</strong></span><span>7か月目以降 <strong>¥9,800/月</strong></span></div>
+<p class="updates-note">Updates終了後も、既存バージョンは利用できます。</p>
 </section>
-<section class="operating-comparison section-frame" id="operating-model-comparison" aria-labelledby="operating-model-title">
-<header class="comparison-intro">
-<p class="lab-label">COMPARISON / 運用と所有</p>
-<h2 id="operating-model-title">Excel・SaaS・FDE IMSの違い</h2>
-<p>在庫管理の方法は、Excelやスプレッドシート、クラウド型在庫管理、自社で管理するシステムなどさまざまです。FDE IMS License Plusは、ソースコードを取得し、自社の業務に合わせて変更しながら、顧客管理サーバーで運用する選択肢として開発しています。</p>
-</header>
-<div class="comparison-table-scroll" role="region" aria-labelledby="operating-model-title" tabindex="0">
-<table class="comparison-table">
-<caption>所有方法・運用方法・変更できる範囲の一般的な違い</caption>
-<thead>
-<tr><th scope="col">項目</th><th scope="col">Excel / スプレッドシート</th><th scope="col">一般的なクラウド型在庫管理SaaS</th><th scope="col" class="fde-column">FDE IMS License Plus</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">在庫管理専用UI</th><td><span class="comparison-symbol partial" aria-hidden="true">△</span>自社で設計</td><td><span class="comparison-symbol positive" aria-hidden="true">○</span>提供されることが多い</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>在庫管理UIを提供</td></tr>
-<tr><th scope="row">自社業務への変更</th><td><span class="comparison-symbol positive" aria-hidden="true">○</span>関数・マクロ等</td><td><span class="comparison-symbol partial" aria-hidden="true">△</span>設定・APIの範囲</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>社内向け改変</td></tr>
-<tr><th scope="row">システムのソースコード</th><td><span class="comparison-symbol neutral" aria-hidden="true">—</span>対象外</td><td><span class="comparison-symbol negative" aria-hidden="true">×</span>通常は非提供</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>ソースコード一式</td></tr>
-<tr><th scope="row">料金モデル</th><td><span class="comparison-symbol partial" aria-hidden="true">△</span>ソフト・契約による</td><td><span class="comparison-symbol partial" aria-hidden="true">△</span>月額・年額が多い</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>買い切り</td></tr>
-<tr><th scope="row">運用基盤</th><td><span class="comparison-symbol partial" aria-hidden="true">△</span>構成による</td><td><span class="comparison-symbol partial" aria-hidden="true">△</span>ベンダー基盤が多い</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>自社サーバー運用</td></tr>
-<tr><th scope="row">更新・セキュリティ</th><td><span class="comparison-symbol positive" aria-hidden="true">○</span>自社で管理</td><td><span class="comparison-symbol positive" aria-hidden="true">○</span>提供者が基盤を管理</td><td class="fde-column"><span class="comparison-symbol positive" aria-hidden="true">○</span>購入者が管理</td></tr>
-</tbody>
-</table>
-</div>
+<section class="quiet-demo section-frame" id="motion-demo" aria-labelledby="demo-title">
+<header class="demo-section-heading"><div><h2 class="quiet-heading" id="demo-title">触ってわかる、IMS。</h2><p>公開デモ・サンプルデータ</p></div><a class="quiet-text-link" href="demo.html">デモを広く使う <span aria-hidden="true">→</span></a></header>
+<div class="motion-toolbar"><ol class="motion-steps"><li data-motion-step="0"><span aria-hidden="true">01</span>商品を選ぶ</li><li data-motion-step="1"><span aria-hidden="true">02</span>入庫を記録</li><li data-motion-step="2"><span aria-hidden="true">03</span>在庫に反映</li></ol><button class="motion-toggle" type="button" aria-controls="imsDemoRoot" data-play="操作例を再生" data-pause="一時停止" data-replay="もう一度見る">操作例を再生</button></div>
+<section class="demo-workspace" id="imsDemoRoot" aria-label="FDE IMS v1.0サンプル在庫画面">
+      <div class="demo-kpis">
+        <div class="demo-kpi"><small>有効商品</small><strong id="kpiItems">6</strong></div>
+        <div class="demo-kpi"><small>要補充</small><strong id="kpiLow">1</strong></div>
+        <div class="demo-kpi"><small>在庫切れ</small><strong id="kpiOut">1</strong></div>
+        <div class="demo-kpi"><small>デモ操作</small><strong id="kpiActions">0</strong></div>
+      </div>
+      <div class="demo-app-grid">
+        <div class="demo-inventory-panel">
+          <div class="demo-panel-head"><div><p class="eyebrow">CURRENT INVENTORY</p><h2>保管場所別の在庫</h2></div><button id="demoReset" class="button button-secondary light" type="button">デモをリセット</button></div>
+          <label class="demo-search-label" for="demoSearch">商品を検索</label>
+          <input id="demoSearch" class="faq-search" type="search" placeholder="商品名・SKU・バーコード" autocomplete="off">
+          <div class="demo-table-wrap">
+            <table class="demo-table">
+              <thead><tr><th>商品</th><th>本社 / A-01</th><th>大阪 / B-02</th><th>合計</th><th>在庫状態</th><th></th></tr></thead>
+              <tbody id="inventoryBody"></tbody>
+            </table>
+          </div>
+          <p class="demo-empty" id="demoEmpty" hidden>該当する商品はありません</p>
+        </div>
+        <form class="demo-operation-panel" id="demoOperationForm">
+          <p class="eyebrow">SIMULATED STOCK COMMAND</p>
+          <h2>在庫操作を記録</h2>
+          <label for="demoOperation">操作</label>
+          <select id="demoOperation" name="operation">
+            <option value="receive">入庫</option>
+            <option value="transfer">移動</option>
+            <option value="count">棚卸</option>
+            <option value="ship">出庫</option>
+          </select>
+          <label for="demoProduct">商品</label>
+          <select id="demoProduct" name="product"></select>
+          <div id="demoSourceField"><label for="demoSource">移動元</label><select id="demoSource" name="source"></select></div>
+          <div id="demoDestinationField"><label for="demoDestination">移動先</label><select id="demoDestination" name="destination"></select></div>
+          <label for="demoQuantity" id="demoQuantityLabel">入庫数量</label>
+          <input id="demoQuantity" name="quantity" type="number" min="1" step="1" value="5" inputmode="numeric" required>
+          <p class="demo-field-help" id="demoOperationHelp">選択した移動先へ在庫を追加します</p>
+          <button class="button button-primary" id="demoApply" type="submit">入庫を記録</button>
+          <p class="demo-result" id="demoResult" role="status" aria-live="polite">操作を選び、一時的なサンプル在庫を更新できます</p>
+        </form>
+      </div>
+      <section class="demo-history" aria-labelledby="demoHistoryTitle">
+        <div class="demo-panel-head"><div><p class="eyebrow">APPEND-ONLY PREVIEW</p><h2 id="demoHistoryTitle">最近の移動履歴</h2></div><small>新しい順</small></div>
+        <div class="demo-table-wrap"><table class="demo-table demo-history-table"><thead><tr><th>時刻</th><th>操作</th><th>商品</th><th>保管場所</th><th>増減</th><th>参照</th></tr></thead><tbody id="demoHistoryBody"></tbody></table></div>
+      </section>
+      <div class="demo-scope-grid">
+        <div><strong>このシミュレーションで試せること</strong><p>SKU・バーコード検索、入庫、移動、棚卸、出庫、マイナス在庫の防止、3段階の在庫状態、移動履歴</p></div>
+        <div><strong>実製品だけに含まれること</strong><p>サーバーによる確定、ログイン・権限、署名付きLocal/LAN通信、監査制御、CSV入出力、暗号化バックアップ・復元</p></div>
+      </div>
+      <p class="demo-note">このデモでは合成サンプルデータをページ内メモリだけで使用します。再読み込みまたはリセットですべての変更が消えます。</p>
+    </section>
+<div class="mobile-stock" aria-label="選択商品の在庫"><strong data-mobile-product>PC-1204</strong><dl><div><dt>本社 / A-01</dt><dd data-mobile-main>326</dd></div><div><dt>大阪 / B-02</dt><dd data-mobile-osaka>20</dd></div><div><dt>合計</dt><dd data-mobile-total>346</dd></div></dl></div>
+<p class="sample-note">サンプルデータはページ内だけで動きます。リセットすると変更は消えます。</p><p class="visually-hidden" id="motion-announcement" role="status" aria-live="polite"></p>
 </section>
-<section class="offers section-frame" id="plans">
-<header class="offers-heading section-intro"><p>02 / 使う。育てる。</p><h2>使うためのライセンス<br>育てるためのソースコード</h2><span>同じ製品から、2つの始め方。自社で開発・改修するなら、License Plus。</span></header>
-<div class="offer-stack">
-<article class="offer-card orange">
-<div class="offer-number">
-<span>OFFER</span>
-<strong>01</strong>
-</div>
-<div class="offer-main">
-<h3>FDE IMS License</h3>
-<p class="offer-model">買い切り / 永続利用 / ソースコードなし</p>
-<p class="offer-summary">そのまま使いたい方へ。買い切りで導入し、購入済みのバージョンを使い続ける選択肢です。</p>
-<p class="plan-core">製品の永続利用 / ソースコードなし</p>
-</div>
-<div class="offer-price">
-<span>予定価格</span>
-<strong>49,800円</strong>
-<em>/ 買い切り</em>
-<small>購入後1〜3か月はUpdatesを含む</small>
-<a href="license.html">プラン条件を見る<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z">
-</path>
-</svg>
-</a>
-</div>
-<details class="offer-disclosure">
-<summary>購入後の運用・更新と利用条件<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<div class="offer-detail-grid">
-<div>
-<h4>含まれる権利</h4>
-<ul>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>購入した1法人内で期限なく利用</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>購入後3か月はUpdatesを含む</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>継続しなくても購入済みバージョンは利用可能</li>
-</ul>
-</div>
-<div>
-<h4>責任と制限</h4>
-<ul>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>ソースコードとソースレベルの改変権は含まない</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z">
-</path>
-</svg>有料契約へ自動移行しない</li>
-<li>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"></path>
-</svg>再販売・再配布は禁止</li>
-</ul>
-</div>
-</div>
-</details>
-</article>
-<article class="offer-card forest" id="license-plus">
-<div class="offer-number">
-<span>OFFER</span>
-<strong>02</strong>
-</div>
-<div class="offer-main">
-<h3>FDE IMS License Plus</h3>
-<p class="offer-model">買い切り / ソースコード / 社内改変</p>
-<p class="offer-summary">自社で開発・改修したい方へ。ソースコードと技術資料を出発点に、自社に合う仕組みへ育てる選択肢です。</p>
-<p class="plan-core">ソースコード一式 / 社内向け改変・連携</p>
-</div>
-<div class="offer-price">
-<span>予定価格</span>
-<strong>99,800円</strong>
-<em>/ 買い切り</em>
-<small>購入者が自社管理。License向けUpdates追加オプションの対象外</small>
-<a href="license.html">Plus条件を見る<span aria-hidden="true">→</span></a>
-</div>
-<details class="offer-disclosure">
-<summary>購入後の運用・更新と利用条件<span class="disclosure-mark" aria-hidden="true">⌄</span></summary>
-<div class="offer-detail-grid">
-<div>
-<h4>含まれる権利</h4>
-<ul>
-<li><span class="check-mark" aria-hidden="true">✓</span>ソースコード一式</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>購入法人内での永続利用</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>社内向けの改変・連携</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>構築・導入・データベース・API・バックアップ／復元資料を提供予定</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>顧客管理サーバーでの自社運用を予定</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>条件を満たす外部開発者への委託</li>
-</ul>
-</div>
-<div>
-<h4>責任と制限</h4>
-<ul>
-<li><span class="check-mark" aria-hidden="true">✓</span>Updates特典は含まない</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>更新・セキュリティは購入者が管理</li>
-<li><span class="check-mark" aria-hidden="true">✓</span>再販売・再配布・サブライセンスは禁止</li>
-</ul>
-</div>
-</div>
-</details>
-</article>
-</div>
-<p class="plan-footnote" id="compare">日本円の予定価格です。購入機能はまだ利用できません。利用範囲・更新条件は各プランの「購入後の運用・更新と利用条件」で確認できます。</p>
-<p class="plan-footnote" id="security">導入支援・開発代行・保守サービスの提供範囲は未確定です。License Plusの更新・セキュリティは購入者が管理します。</p>
-</section>
-
-
-<section class="site-paths section-frame" aria-labelledby="beyond-product-title">
-<div class="section-intro compact">
-<p>03 / 私たちの考え方</p>
-<h2 id="beyond-product-title">製品を支える、Baked Kale FDEの考え方</h2>
-<span>現場から始める理由、繰り返す課題を製品へ変える考え方、現在の開発状況をご覧いただけます。</span>
-</div>
-<div class="site-paths-grid">
-<a href="goals.html"><small>01 / OUR GOALS</small><h3>Our Goals</h3><p>FDEの考え方と、ソースコード付きシステムを届ける私たちの目標。</p><b aria-hidden="true">↗</b></a>
-<a href="news.html"><small>02 / 現在</small><h3>お知らせ</h3><p>製品方針、開発プレビュー、Baked Kale FDEの最新情報。</p><b aria-hidden="true">↗</b></a>
-</div>
-</section>
-<section class="news-strip gallery-news-strip" aria-label="最新情報">
-<a href="news.html">
-<b>Latest</b>
-<span>最新情報を読み込み中</span>
-<span>お知らせを見る →</span>
-</a>
-</section>
-<section class="faq-section section-frame" id="faq">
-<div class="section-intro compact">
-<p>04 / FAQ</p>
-<h2>気になる点を、すぐに確認</h2>
-</div>
-<div class="faq-list">
-<details open="">
-<summary>
-<span>01</span>
-<strong>FDE IMSは今すぐ購入できますか？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<p>いいえ。FDE IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。</p>
-</details>
-<details>
-<summary>
-<span>02</span>
-<strong>製品の操作を試せますか？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<p>はい。v1.0簡易デモではサンプルデータを使い、在庫検索と一時的な入庫・移動・棚卸・出庫操作を試せます。</p>
-</details>
-<details>
-<summary>
-<span>03</span>
-<strong>詳しい条件の確認や質問はどこでできますか？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
-</path>
-</svg>
-</summary>
-<p>現在の予定条件はLicenseページ、責任分担は各プランの利用条件で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。</p>
-</details>
-<details>
-<summary>
-<span>04</span>
-<strong>紙やExcelで在庫管理している会社にも向いていますか？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
-</summary>
-<p>はい。紙やExcelから、入庫・在庫確認・出庫をひとつの分かりやすい記録へ移したい小規模企業向けに開発しています。</p>
-</details>
-<details>
-<summary>
-<span>05</span>
-<strong>既存システムのデータを移行・取り込みできますか？</strong>
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
-</summary>
-<p>現在は未確定です。対応するファイル形式、データ移行、導入支援の範囲は、正式販売前にご案内します。</p>
-</details>
-</div>
-</section>
-<section class="contact-section section-frame" id="contact">
-<div>
-<p>BAKED KALE FDE / FDE IMS</p>
-<h2>自社のシステムを育てる<br>その出発点に</h2>
-<span>まずはデモで動きを確かめ、ソースコードから始める自社開発を検討してみませんか。FDE IMSは開発中です。購入機能はまだ利用できません。</span>
-</div>
-<div class="contact-actions"><a class="button contact-preview" href="#license-plus">ソースコード付きプランを見る</a><a class="button contact-link" href="demo.html" data-demo-open>デモで動きを確かめる</a></div>
-</section>
+<section class="quiet-news section-frame"><div><h2 class="quiet-heading">Baked Kaleの現在地。</h2><p>Baked Kaleの開発について、<br>お知らせをご覧いただけます。</p></div><a class="button" href="news.html">お知らせを見る <span aria-hidden="true">→</span></a></section>
 </main>
-<footer class="site-footer section-frame">
-<img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg" width="980" height="240">
-<div>
-<p>小規模企業の実務に合わせた業務ソフトウェア。</p>
-<nav class="footer-links" aria-label="フッターナビゲーション"><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="license.html">License</a><a href="contact.html">お問い合わせ</a></nav>
+<footer class="site-footer section-frame"><a href="./"><img src="../assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="#plans">製品</a><a href="demo.html">デモ</a><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="contact.html">お問い合わせ</a></nav><small>© 2026 Baked Kale FDE</small></footer>
 </div>
-<span>© 2026 Baked Kale FDE</span>
-</footer>
-<div class="toast " role="status" aria-live="polite">
-</div>
-</div>
-</body>
-</html>
+</body></html>

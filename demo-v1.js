@@ -117,6 +117,26 @@ const health=product=>{
 let products=[];
 let movements=[];
 let actionCount=0;
+const workbench=document.body.classList.contains('demo-renewal');
+const viewButtons=workbench?$$('[data-demo-view]'):[];
+const compactView=window.matchMedia('(max-width: 760px)');
+let selectedView=compactView.matches?'operation':'inventory';
+let viewChosen=false;
+
+function syncView(){
+ if(!workbench)return;
+ root.dataset.demoView=selectedView;
+ $('#demoInventoryView').hidden=selectedView!=='inventory';
+ $('#demoHistoryView').hidden=selectedView!=='history';
+ $('#demoOperationForm').hidden=selectedView==='history'||(selectedView==='inventory'&&compactView.matches);
+ viewButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.demoView===selectedView)));
+}
+
+function chooseView(value){
+ selectedView=value;
+ viewChosen=true;
+ syncView();
+}
 
 const elements={
  items:$('#kpiItems'),low:$('#kpiLow'),out:$('#kpiOut'),actions:$('#kpiActions'),
@@ -155,13 +175,13 @@ function renderInventory(){
  const visible=products.filter(product=>[productName(product),product.sku,product.barcode].join(' ').toLocaleLowerCase(lang==='ja'?'ja-JP':'en-US').includes(query));
  elements.inventory.innerHTML=visible.map(product=>{
   const state=health(product);
-  return `<tr>
+  return `<tr${workbench?` data-selected="${product.id===elements.product.value}"`:''}>
    <td><strong>${escapeHtml(productName(product))}</strong><small>${escapeHtml(product.sku)} · ${escapeHtml(product.barcode)}</small></td>
    <td>${product.stock.main.toLocaleString()}</td>
    <td>${product.stock.osaka.toLocaleString()}</td>
    <td><strong>${totalStock(product).toLocaleString()}</strong></td>
    <td><span class="demo-health demo-health-${state.className}">${escapeHtml(state.label)}</span></td>
-   <td><button class="mini-btn" type="button" data-demo-product="${escapeHtml(product.id)}">${escapeHtml(text.use)}</button></td>
+   <td><button class="mini-btn" type="button" data-demo-product="${escapeHtml(product.id)}"${workbench?` aria-pressed="${product.id===elements.product.value}"`:''}>${escapeHtml(text.use)}</button></td>
   </tr>`;
  }).join('');
  elements.empty.hidden=visible.length>0;
@@ -169,10 +189,21 @@ function renderInventory(){
  $$('[data-demo-product]',elements.inventory).forEach(button=>button.addEventListener('click',()=>{
   const product=products.find(item=>item.id===button.dataset.demoProduct);
   elements.product.value=product.id;
+  if(workbench){renderSelectedProduct();renderInventory();if(compactView.matches)chooseView('operation');}
   setResult(format(text.choose,{product:productName(product)}));
   elements.operation.focus({preventScroll:true});
   elements.form.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
  }));
+}
+
+function renderSelectedProduct(){
+ if(!workbench)return;
+ const product=products.find(item=>item.id===elements.product.value);
+ $('[data-demo-selected-name]').textContent=productName(product);
+ $('[data-demo-selected-sku]').textContent=`${product.sku} · ${product.barcode}`;
+ [product.stock.main,product.stock.osaka,totalStock(product)].forEach((value,index)=>{
+  $(`[data-demo-selected-stock="${index}"]`).textContent=value.toLocaleString();
+ });
 }
 
 function movementLocation(movement){
@@ -201,6 +232,7 @@ function render(){
  renderKpis();
  renderInventory();
  renderHistory();
+ renderSelectedProduct();
 }
 
 function syncOperationFields(){
@@ -301,6 +333,24 @@ function initialize(){
  elements.search.addEventListener('input',renderInventory);
  elements.form.addEventListener('submit',submitOperation);
  elements.reset.addEventListener('click',resetDemo);
+ if(workbench){
+  elements.product.addEventListener('change',()=>{renderInventory();renderSelectedProduct();});
+  viewButtons.forEach((button,index)=>{
+   button.addEventListener('click',()=>chooseView(button.dataset.demoView));
+   button.addEventListener('keydown',event=>{
+    let next;
+    if(event.key==='ArrowRight')next=(index+1)%viewButtons.length;
+    if(event.key==='ArrowLeft')next=(index+viewButtons.length-1)%viewButtons.length;
+    if(event.key==='Home')next=0;
+    if(event.key==='End')next=viewButtons.length-1;
+    if(next===undefined)return;
+    event.preventDefault();viewButtons[next].focus();chooseView(viewButtons[next].dataset.demoView);
+   });
+  });
+  compactView.addEventListener('change',()=>{if(!viewChosen)selectedView=compactView.matches?'operation':'inventory';syncView();});
+  $('.demo-view-switcher').hidden=false;
+  syncView();
+ }
  syncOperationFields();
  render();
 }

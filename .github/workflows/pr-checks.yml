@@ -46,6 +46,18 @@ jobs:
       - name: Linear-inspired redesign contracts
         run: node scripts/test_linear_redesign.mjs
 
+      - name: Approved multilingual Quiet Form pages and CMS presentation contracts
+        run: node --test scripts/test_quiet_homepages.mjs scripts/test_quiet_pages.mjs scripts/test_quiet_form_preview.mjs scripts/test_quiet_license.mjs scripts/test_quiet_demo.mjs scripts/test_quiet_goals.mjs scripts/test_quiet_news.mjs scripts/test_quiet_contact.mjs scripts/test_quiet_order.mjs scripts/test_quiet_customer.mjs scripts/test_release_notice_policy.mjs scripts/test_quiet_admin.mjs
+
+      - name: Approved W02 License composition is current
+        run: node scripts/build_quiet_license.mjs --check
+
+      - name: Selected W03 Demo composition is current
+        run: node scripts/build_quiet_demo.mjs --check
+
+      - name: Approved multilingual homepages are current
+        run: node scripts/build_quiet_homepages.mjs --check
+
       - name: Chinese license locale is current
         run: node scripts/generate_zh_locale.mjs --check
 

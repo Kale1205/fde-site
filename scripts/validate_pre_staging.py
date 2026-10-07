@@ -27,7 +27,11 @@ if en_demo and not re.search(r'<html\s+lang=["\']en["\']', en_demo, re.I):
     fail("demo.html must be English source")
 if ja_demo and not re.search(r'<html\s+lang=["\']ja["\']', ja_demo, re.I):
     fail("ja/demo.html must be Japanese source")
-if ja_home and ('href="demo.html"' not in ja_home or 'data-demo-open' not in ja_home):
+has_inline_demo = ('id="imsDemoRoot"' in ja_home
+                   and 'src="../demo-v1.js' in ja_home
+                   and 'quiet-home' in ja_home)
+if ja_home and ('href="demo.html"' not in ja_home
+                or not ('data-demo-open' in ja_home or has_inline_demo)):
     fail("ja/index.html must open the Japanese demo")
 if "../demo.html" in site_js:
     fail("site.js must not route Japanese pages back to the English demo")

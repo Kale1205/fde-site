@@ -27,13 +27,14 @@
   <meta name="twitter:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:image:alt" content="FDE IMS inventory operations development preview by Baked Kale FDE">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
-  <link rel="stylesheet" href="../gallery-pages.css?v=20260925-081759">
-  <script defer src="../gallery-ui.js?v=20260925-081759"></script>
-  <script defer src="../demo-v1.js?v=20260925-081759"></script>
-  <script defer src="../site.js?v=20260925-081759"></script>
+  <link rel="stylesheet" href="../gallery-ui.css?v=20261007-224522">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20261007-224522">
+  <script defer src="../gallery-ui.js?v=20261007-224522"></script>
+  <script defer src="../demo-v1.js?v=20261007-224522"></script>
+  <script defer src="../site.js?v=20261007-224522"></script>
+  <link rel="stylesheet" href="../quiet-pages.css?v=20261007-224522">
 </head>
-<body class="gallery-page gallery-subpage demo-page demo-app">
+<body class="quiet-page gallery-page gallery-subpage demo-page demo-app demo-renewal">
 <div class="site-shell language-zh">
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="Baked Kale FDE 首页"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"></a>
@@ -48,37 +49,33 @@
   <div class="demo-bar">
     <div class="section-frame demo-toolbar"><strong>FDE IMS / v1.0 简化演示</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">关闭演示</button></div></div>
   </div>
-  <main class="demo-dashboard section-frame">
-    <section class="section-intro compact demo-intro">
+  <main class="demo-dashboard">
+    <div class="demo-hero">
+    <section class="section-frame section-intro compact demo-intro">
       <p>V1.0 简化流程 / 临时数据</p>
       <h1>体验核心库存流程</h1>
       <span>使用样品产品接收、转移、清点和船舶库存,然后审查产生的库存健康和移动历史。</span>
-      <div class="ims-pre"><strong>交互式模拟 · 非正式发布产品</strong><p>这个只浏览器的演示是V1.0工作流程的简化表示. 它不连接到IMS服务器,保存您的更改,提供认证或角色,或创建生产备份.</p></div>
-      <small class="demo-note">Baked Kale FDE 出品的 FDE IMS</small>
+
+
+      <p class="demo-simulation-label">交互式模拟 · 非正式发布产品</p>
+      <nav class="demo-view-switcher" aria-label="切换演示视图" hidden><button type="button" data-demo-view="inventory" aria-pressed="true" aria-controls="demoInventoryView demoOperationForm">库存</button><button type="button" data-demo-view="operation" aria-pressed="false" aria-controls="demoOperationForm">库存操作</button><button type="button" data-demo-view="history" aria-pressed="false" aria-controls="demoHistoryView">移动记录</button></nav>
     </section>
-    <ol class="demo-flow" aria-label="简化 v1.0 工作流程">
-      <li><small>01</small><strong>查找</strong><span>SKU 或条码</span></li>
-      <li><small>02</small><strong>入库</strong><span>添加进货库存</span></li>
-      <li><small>03</small><strong>调拨</strong><span>在地点之间移动</span></li>
-      <li><small>04</small><strong>盘点</strong><span>确认实际库存</span></li>
-      <li><small>05</small><strong>出库</strong><span>防止负存量</span></li>
-      <li><small>06</small><strong>查看记录</strong><span>卫生和历史</span></li>
-    </ol>
-    <section class="demo-workspace" id="imsDemoRoot" aria-label="FDE IMS v1.0 样本库存工作空间">
+    </div>
+    <section class="demo-workspace section-frame" id="imsDemoRoot" aria-label="FDE IMS v1.0 样本库存工作空间">
+      <div class="demo-app-grid">
+        <div class="demo-inventory-panel" id="demoInventoryView">
+          <div class="demo-panel-head"><div><p class="eyebrow">当前库存</p><h2 id="demoInventoryTitle">各位置库存</h2></div></div>
       <div class="demo-kpis">
         <div class="demo-kpi"><small>有效商品</small><strong id="kpiItems">6</strong></div>
         <div class="demo-kpi"><small>库存偏低</small><strong id="kpiLow">1</strong></div>
         <div class="demo-kpi"><small>缺货</small><strong id="kpiOut">1</strong></div>
         <div class="demo-kpi"><small>演示操作</small><strong id="kpiActions">0</strong></div>
       </div>
-      <div class="demo-app-grid">
-        <div class="demo-inventory-panel">
-          <div class="demo-panel-head"><div><p class="eyebrow">当前库存</p><h2>各位置库存</h2></div><button id="demoReset" class="button button-secondary light" type="button">重置演示</button></div>
           <label class="demo-search-label" for="demoSearch">搜索商品</label>
           <input id="demoSearch" class="faq-search" type="search" placeholder="SKU或条码产品" autocomplete="off">
-          <div class="demo-table-wrap">
-            <table class="demo-table">
-              <thead><tr><th>产品</th><th>主机 / A-01</th><th>大阪 / B-02</th><th>共计</th><th>库存状态</th><th></th></tr></thead>
+          <div class="demo-table-wrap" role="region" aria-labelledby="demoInventoryTitle" tabindex="0">
+            <table class="demo-table"><caption class="sr-only">各位置库存</caption>
+              <thead><tr><th scope="col">产品</th><th scope="col">主机 / A-01</th><th scope="col">大阪 / B-02</th><th scope="col">共计</th><th scope="col">库存状态</th><th scope="col">选择</th></tr></thead>
               <tbody id="inventoryBody"></tbody>
             </table>
           </div>
@@ -103,17 +100,31 @@
           <p class="demo-field-help" id="demoOperationHelp">将股票添加到选定的目的地。</p>
           <button class="button button-primary" id="demoApply" type="submit">收到记录</button>
           <p class="demo-result" id="demoResult" role="status" aria-live="polite">选择更新临时样本清单的操作 。</p>
+          <div class="demo-selected-product" aria-live="off"><small data-demo-selected-label>商品</small><strong data-demo-selected-name></strong><small data-demo-selected-sku></small><dl><div><dt>主机 / A-01</dt><dd data-demo-selected-stock="0"></dd></div><div><dt>大阪 / B-02</dt><dd data-demo-selected-stock="1"></dd></div><div><dt>共计</dt><dd data-demo-selected-stock="2"></dd></div></dl></div>
         </form>
       </div>
-      <section class="demo-history" aria-labelledby="demoHistoryTitle">
+      <section class="demo-history" id="demoHistoryView" aria-labelledby="demoHistoryTitle">
         <div class="demo-panel-head"><div><p class="eyebrow">追加式记录预览</p><h2 id="demoHistoryTitle">最近库存变动记录</h2></div><small>首次提交</small></div>
-        <div class="demo-table-wrap"><table class="demo-table demo-history-table"><thead><tr><th>时间</th><th>操作</th><th>产品</th><th>地点</th><th>变动</th><th>参考</th></tr></thead><tbody id="demoHistoryBody"></tbody></table></div>
+        <div class="demo-table-wrap" role="region" aria-labelledby="demoHistoryTitle" tabindex="0"><table class="demo-table demo-history-table"><caption class="sr-only">最近库存变动记录</caption><thead><tr><th scope="col">时间</th><th scope="col">操作</th><th scope="col">产品</th><th scope="col">地点</th><th scope="col">变动</th><th scope="col">参考</th></tr></thead><tbody id="demoHistoryBody"></tbody></table></div>
       </section>
+      <div class="demo-workbench-actions"><button id="demoReset" class="button button-secondary light" type="button">重置演示</button></div>
+      <details class="demo-guide" id="demoGuide"><summary id="demoGuideTitle">v1.0 简化业务流程</summary><div data-demo-notes>
+      <div class="ims-pre"><strong>交互式模拟 · 非正式发布产品</strong><p>这个只浏览器的演示是V1.0工作流程的简化表示. 它不连接到IMS服务器,保存您的更改,提供认证或角色,或创建生产备份.</p></div>
+      <small class="demo-note">Baked Kale FDE 出品的 FDE IMS</small>
+    <ol class="demo-flow" aria-label="简化 v1.0 工作流程">
+      <li><small>01</small><strong>查找</strong><span>SKU 或条码</span></li>
+      <li><small>02</small><strong>入库</strong><span>添加进货库存</span></li>
+      <li><small>03</small><strong>调拨</strong><span>在地点之间移动</span></li>
+      <li><small>04</small><strong>盘点</strong><span>确认实际库存</span></li>
+      <li><small>05</small><strong>出库</strong><span>防止负存量</span></li>
+      <li><small>06</small><strong>查看记录</strong><span>卫生和历史</span></li>
+    </ol>
       <div class="demo-scope-grid">
         <div><strong>包括在模拟中</strong><p>SKU/条码搜索,接收,转移,计数,船舶,非负存量,三态库存健康,移动历史.</p></div>
         <div><strong>仅供实际产品使用</strong><p>服务器权限,登录和角色,签名本地/局域网通信,审计控制,CSV进出口,加密备份/备份.</p></div>
       </div>
       <p class="demo-note">此预览仅在页面内存中使用合成样本数据. 刷新或重置页面会丢弃每个更改 。</p>
+      </div></details>
     </section>
   </main>
   <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>面向小型运营团队的 FDE IMS 库存管理软件。</p><small>与临时样本数据交互预览.</small><nav class="footer-nav" aria-label="页脚导航"><a href="goals.html">我们的目标</a><a href="news.html">最新消息</a><a href="license.html">License</a><a href="contact.html">联系我们</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>

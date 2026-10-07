@@ -84,7 +84,7 @@
       picker.className = "locale-picker";
       const summary = document.createElement("summary");
       summary.className = "locale-picker-button";
-      summary.setAttribute("aria-label", text.chooseLanguage);
+      summary.setAttribute("aria-label", `${text.chooseLanguage}: ${localeNames[localeKey]}`);
       summary.innerHTML = `<span>${localeNames[localeKey]}</span><span class="locale-picker-chevron" aria-hidden="true">⌄</span>`;
       const menu = document.createElement("div");
       menu.className = "locale-picker-menu";
@@ -128,7 +128,7 @@
     }
 
     const originalLinks = Array.from(mobileNav.querySelectorAll("a"));
-    const byHref = (fragment) => originalLinks.find((link) => link.getAttribute("href")?.includes(fragment));
+    const byHref = (fragment) => originalLinks.find((link) => !link.hasAttribute("hreflang") && link.getAttribute("href")?.includes(fragment));
     const productLink = originalLinks[0];
     const goalsLink = byHref("goals.html");
     const newsLink = byHref("news.html");
@@ -294,6 +294,14 @@
         item.textContent = point;
         return item;
       }));
+      // Keep the selected column visible without shrinking the mobile comparison.
+      // Only the table scrolls; the selector and summary remain in normal flow.
+      if (document.body.classList.contains("license-renewal") && window.matchMedia("(max-width: 760px)").matches) {
+        const region = document.querySelector(".license-matrix-region");
+        requestAnimationFrame(() => {
+          region.scrollLeft = key === "plus" ? region.scrollWidth - region.clientWidth : 0;
+        });
+      }
     };
     planButtons.forEach((button) => button.addEventListener("click", () => selectPlan(button.dataset.licensePlan)));
     selectPlan("plus");

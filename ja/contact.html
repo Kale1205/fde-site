@@ -19,17 +19,19 @@
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
-  <link rel="stylesheet" href="../gallery-pages.css?v=20260925-081759">
-  <link rel="stylesheet" href="../faq-v38.css?v=20260925-081759">
+  <link rel="stylesheet" href="../gallery-ui.css?v=20261007-224522">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20261007-224522">
+  <link rel="stylesheet" href="../faq-v38.css?v=20261007-224522">
   <noscript><style>.faq-a{display:block}.faq-q{cursor:default}.faq-plus{display:none}</style></noscript>
-  <script defer src="../gallery-ui.js?v=20260925-081759"></script>
-  <script defer src="../contact-config.js?v=20260925-081759"></script>
-  <script defer src="../contact-direct.js?v=20260925-081759"></script>
-  <script defer src="../faq-policy-merge.js?v=20260925-081759"></script>
-  <script defer src="../faq-cms.js?v=20260925-081759"></script>
+  <script defer src="../gallery-ui.js?v=20261007-224522"></script>
+  <script defer src="../contact-config.js?v=20261007-224522"></script>
+  <script defer src="../contact-direct.js?v=20261007-224522"></script>
+  <script defer src="../faq-policy-merge.js?v=20261007-224522"></script>
+  <script defer src="../faq-cms.js?v=20261007-224522"></script>
+  <link rel="stylesheet" href="../quiet-pages.css?v=20261007-224522">
+  <script defer src="../quiet-contact.js?v=20261007-224522"></script>
 </head>
-<body class="gallery-page gallery-subpage refined-page contact-page">
+<body class="quiet-page gallery-page gallery-subpage refined-page contact-page contact-renewal">
 <a class="skip-link" href="#main-content">本文へスキップ</a>
 <div class="site-shell language-ja">
   <header class="site-header">
@@ -47,12 +49,37 @@
     </nav>
   </header>
   <main id="main-content">
-    <section class="page-hero compact-hero section-frame">
+    <section class="page-hero compact-hero contact-page-hero section-frame">
+      <img class="contact-hero-mark" src="../assets/baked-kale-mark.svg" width="280" height="280" alt="" aria-hidden="true">
       <div class="section-intro compact"><p>在庫管理ソフト / BAKED KALE FDE</p><h1>FDE IMSの導入・移行を相談する</h1><span>紙・Excel・既存システムのどれで管理しているかをお知らせください。製品が合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。</span></div>
+    </section>
+    <section class="content-section contact-faq-section section-frame">
+      <details class="faq-shell contact-faq">
+        <summary class="section-intro compact"><p>01 / FAQ</p><h2>お問い合わせの前に</h2><span>製品、各プラン、セキュリティ、提供時期について、よくある質問を検索できます。</span><img class="contact-faq-chevron" src="../assets/phosphor-caret-right.svg" width="24" height="24" alt="" aria-hidden="true"></summary>
+        <input id="faqSearch" aria-label="よくある質問を検索" class="faq-search" type="search" autocomplete="off" placeholder="質問・回答・関連語から検索">
+        <div id="cmsFaqList">
+          <article class="faq-item" data-faq-id="license-updates-difference">
+            <button class="faq-q" type="button" aria-expanded="false"><span>LicenseとLicense Plusの違いは何ですか？</span><span class="faq-plus">＋</span></button>
+            <div class="faq-path"><span>提供状況</span><span>商品構成</span></div>
+            <div class="faq-a">Licenseは、ソースコードを含まない買い切り型で、購入法人内で永続利用できます。購入後3か月はUpdatesを含み、その後はLicense専用の追加オプションとして任意継続できます。License Plusは、ソースコードと社内改変権を含む買い切り型で、更新・セキュリティは購入者が管理します。Updatesは第3の製品プランではなく、License Plusは対象外です。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-plus-price">
+            <button class="faq-q" type="button" aria-expanded="false"><span>FDE IMS License Plusの価格と内容を教えてください</span><span class="faq-plus">＋</span></button>
+            <div class="faq-path"><span>License</span><span>基本情報</span></div>
+            <div class="faq-a">License Plusの予定価格は99,800円（買い切り）です。購入法人内で期限なく利用でき、ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。Updates特典はなく、更新・セキュリティは購入者が管理します。</div>
+          </article>
+          <article class="faq-item" data-faq-id="inventory-adoption-migration-fit">
+            <button class="faq-q" type="button" aria-expanded="false"><span>紙・Excel・既存システムからFDE IMSへ移行できますか？</span><span class="faq-plus">＋</span></button>
+            <div class="faq-path"><span>製品</span><span>導入・移行</span></div>
+            <div class="faq-a">FDE IMSは、紙やExcelでの在庫管理を分かりやすい仕組みへ移したい場合や、既存システムを見直したい小規模企業向けに開発しています。製品が自社に合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。</div>
+          </article>
+        </div><div id="faqEmpty" class="faq-empty" hidden>該当する質問が見つかりませんでした。</div>
+      </details>
     </section>
     <section class="content-section contact-form-section section-frame">
       <div class="form-wrap">
-        <div class="section-intro compact"><p>01 / お問い合わせフォーム</p><h2>お問い合わせ内容を入力</h2><span class="section-copy">すべて必須です。入力内容は次の画面で確認できます。</span></div>
+        <div class="contact-surface">
+        <div class="section-intro compact"><p>02 / お問い合わせフォーム</p><h2>お問い合わせ内容を入力</h2><span class="section-copy">すべて必須です。入力内容は次の画面で確認できます。</span></div>
         <form id="contactForm" class="contact-form form-panel" novalidate>
           <div class="field"><label for="name">お名前</label><input id="name" name="name" required autocomplete="name"></div>
           <div class="field"><label for="company">会社名・法人名</label><input id="company" name="company" required autocomplete="organization"></div>
@@ -71,6 +98,7 @@
         <section id="inquiryComplete" class="inquiry-state inquiry-complete form-panel" hidden aria-live="polite">
           <div class="state-icon" aria-hidden="true">✓</div><h2>送信しました</h2><p>お問い合わせありがとうございます。内容を確認のうえ、メールで返信します。</p><a class="button button-primary dark" href="index.html">製品ページへ戻る</a>
         </section>
+        </div>
         <section class="business-profile">
           <div class="business-profile-head"><div class="section-intro compact"><p>事業者情報</p><h2 class="business-profile-title">Baked Kale FDE / FDE IMS</h2></div></div>
           <div class="business-profile-grid">
@@ -82,36 +110,9 @@
         </section>
       </div>
     </section>
-    <section class="content-section section-frame">
-      <details class="faq-shell contact-faq">
-        <summary class="section-intro compact"><p>02 / FAQ</p><h2>お問い合わせの前に</h2><span>製品、各プラン、セキュリティ、提供時期について、よくある質問を検索できます。</span></summary>
-        <input id="faqSearch" aria-label="よくある質問を検索" class="faq-search" type="search" autocomplete="off" placeholder="質問・回答・関連語から検索">
-        <div id="cmsFaqList">
-          <article class="faq-item" data-faq-id="ims-sale-status">
-            <button class="faq-q" type="button" aria-expanded="false"><span>FDE IMSは現在購入できますか？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>提供状況</span><span>開発状況</span></div>
-            <div class="faq-a">いいえ。FDE IMSは現在開発中で、正式販売前です。現在サイトに掲載している価格は予定価格です。販売開始時期、製品バージョン、詳しい更新方針は、決まり次第お知らせします。</div>
-          </article>
-          <article class="faq-item" data-faq-id="license-updates-difference">
-            <button class="faq-q" type="button" aria-expanded="false"><span>LicenseとLicense Plusの違いは何ですか？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>提供状況</span><span>商品構成</span></div>
-            <div class="faq-a">Licenseは、ソースコードを含まない買い切り型で、購入法人内で永続利用できます。購入後3か月はUpdatesを含み、その後はLicense専用の追加オプションとして任意継続できます。License Plusは、ソースコードと社内改変権を含む買い切り型で、更新・セキュリティは購入者が管理します。Updatesは第3の製品プランではなく、License Plusは対象外です。</div>
-          </article>
-          <article class="faq-item" data-faq-id="license-plus-price">
-            <button class="faq-q" type="button" aria-expanded="false"><span>FDE IMS License Plusの価格と内容を教えてください</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>License</span><span>基本情報</span></div>
-            <div class="faq-a">License Plusの予定価格は99,800円（買い切り）です。購入法人内で期限なく利用でき、ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。Updates特典はなく、更新・セキュリティは購入者が管理します。FDE IMSは正式販売前です。</div>
-          </article>
-          <article class="faq-item" data-faq-id="inventory-adoption-migration-fit">
-            <button class="faq-q" type="button" aria-expanded="false"><span>紙・Excel・既存システムからFDE IMSへ移行できますか？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>製品</span><span>導入・移行</span></div>
-            <div class="faq-a">FDE IMSは、紙やExcelでの在庫管理を分かりやすい仕組みへ移したい場合や、既存システムを見直したい小規模企業向けに開発しています。製品が自社に合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。</div>
-          </article>
-        </div><div id="faqEmpty" class="faq-empty" hidden>該当する質問が見つかりませんでした。</div>
-      </details>
-    </section>
+
   </main>
-  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>小規模な現場のためのFDE IMS在庫管理ソフト。</p><small>FDE IMSは開発中です。現在は購入できません。</small><nav class="footer-nav" aria-label="フッターナビゲーション"><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="license.html">License</a><a href="contact.html">お問い合わせ</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
+  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>小規模な現場のためのFDE IMS在庫管理ソフト。</p><nav class="footer-nav" aria-label="フッターナビゲーション"><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="license.html">License</a><a href="contact.html">お問い合わせ</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
   <div class="toast" role="status" aria-live="polite"></div>
 </div>
 </body>
