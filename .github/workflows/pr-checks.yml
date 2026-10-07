@@ -53,7 +53,9 @@ jobs:
         run: node scripts/build_quiet_license.mjs --check
 
       - name: IMS product and Baked Kale operator naming contracts
-        run: node --test scripts/test_product_naming.mjs
+        run: |
+          node --test scripts/test_product_naming.mjs
+          python scripts/test_static_news_validation.py
 
       - name: Selected W03 Demo composition is current
         run: node scripts/build_quiet_demo.mjs --check

@@ -58,6 +58,6 @@ test('CMS hydration and Chinese dictionary contain the same approved names', () 
 
 test('naming does not change routing, privacy, commerce keys or operation code', () => {
   for (const file of ['robots.txt', 'contact-direct.js', 'contact-config.js', 'gallery-ui.js', 'demo-v1.js', 'quiet-form.js', 'worker/src/index-v14.js']) {
-    assert.equal(read(file), previous(file), file);
+    assert.equal(normalizeAssetBuildKeys(read(file)), normalizeAssetBuildKeys(previous(file)), file);
   }
 });

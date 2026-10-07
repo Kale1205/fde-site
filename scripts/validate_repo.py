@@ -4,6 +4,7 @@ import json
 import re
 import sys
 from urllib.parse import urlsplit
+from static_news_validation import complete_static_news_lead
 
 from sitemap_config import (
     SitemapStateError,
@@ -715,7 +716,8 @@ for rel, expected_title in static_news_titles.items():
     lead_fragment = source[lead_start:latest_start] if lead_start >= 0 and latest_start > lead_start else ""
     latest_fragment = source[latest_start:wire_start] if latest_start >= 0 and wire_start > latest_start else ""
     wire_fragment = source[wire_start:instagram_start] if wire_start >= 0 and instagram_start > wire_start else ""
-    if expected_title not in plain_html_text(lead_fragment) or len(plain_html_text(lead_fragment)) < 350:
+    required_news_terms = ("License", "License Plus", "Updates", "ソースコード" if rel.startswith("ja/") else "source code")
+    if not complete_static_news_lead(source, expected_title, required_news_terms):
         fail(f"{rel}: static News lead fallback is missing or insubstantial")
     if "latest-card" not in latest_fragment or not plain_html_text(latest_fragment):
         fail(f"{rel}: static News latest fallback is missing")
