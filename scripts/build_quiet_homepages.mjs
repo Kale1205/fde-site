@@ -13,8 +13,14 @@ export async function renderQuietHomepage(locale) {
   const version = (await readFile(path.join(root, 'build-version.txt'), 'utf8')).trim();
   // Keep each existing title, description, canonical, hreflang and entity IDs.
   let head = source.slice(0, source.indexOf('</head>'));
-  head = head.replace(/<script\b[^>]*\bdefer\b[^>]*>[\s\S]*?<\/script>\s*/gi, '');
-  head = head.replace(/<link\b[^>]*rel="stylesheet"[^>]*>\s*/gi, '');
+  // Trusted repository markup only. Repeat removals so adjacent fragments
+  // cannot re-form an executable tag; this is not a general HTML sanitizer.
+  let previousHead;
+  do {
+    previousHead = head;
+    head = head.replace(/<script\b[^>]*\bdefer\b[^>]*>[\s\S]*?<\/script>\s*/gi, '');
+    head = head.replace(/<link\b[^>]*rel="stylesheet"[^>]*>\s*/gi, '');
+  } while (head !== previousHead);
   head = head.replace(/(<script type="application\/ld\+json">)\s*([\s\S]*?)(<\/script>)/, (_, open, json, close) => {
     const data = JSON.parse(json);
     // The approved layout has no FAQ section. Never advertise invisible FAQs.

@@ -8,7 +8,17 @@ import {renderQuietGoals} from './build_quiet_goals.mjs';
 const baseline='a5f31f4';
 const head=source=>source.match(/<head>[\s\S]*?<\/head>/)[0];
 const prose=source=>[...source.matchAll(/<(?:p|h[1-3]|small|summary|li)\b[^>]*>([\s\S]*?)<\/(?:p|h[1-3]|small|summary|li)>/g)]
-  .map(m=>m[1].replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim()).sort();
+  .map(m=>{
+    let text=m[1],previous;
+    do {
+      previous=text;
+      text=text.replace(/<[^>]*>/g,'');
+    } while(text!==previous);
+    return text.replace(/\s+/g,' ').trim();
+  }).sort();
+test('copy extraction retains nested inline text without markup',()=>{
+  assert.deepEqual(prose('<p>before <span><strong>after</strong></span></p>'),['before after']);
+});
 for(const folder of ['', 'ja/', 'zh/']) {
   const name=folder+'goals.html';
   const current=normalizeAssetBuildKeys(readFileSync(name,'utf8'));

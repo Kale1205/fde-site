@@ -33,7 +33,11 @@
 - Owner-private review publication succeeded: Site source `49606a032d4d77095db651765125876edfd49493`, deployment `appgdep_6ac624f83460819191ce527a8fa5267a`, URL `https://fde-w02-design-review.kale-1999.chatgpt.site/preview/ja/customer.html`. FDE implementation checkpoint is `e45a1b249713f386865b0eaa85f6c670a39e03b8`; this evidence-only QA addition follows that checkpoint. Space renewal, project table and unchecked ToDo were updated and read back, with final visual approval and consolidated main merge still pending.
 - No actionable P0/P1/P2 visual finding remains. Implementation checklist: review published private W08; decide A01 visual scope separately; perform consolidated approval and exact-head PR/CI review before any FDE main merge.
 
-final result: passed
+CodeQL reported seven new high findings in offline composition/test string operations. Titles and table labels now use restricted capture groups instead of generic tag stripping; head recomposition removes scripts case-insensitively until stable; newline replacement covers every occurrence. Copy extraction repeats until stable. Negative tests cover uppercase and re-formed executable tags. No production HTML, price, copy, authentication or feature change is intended. The failed initial security scan is retained; the corrected exact head must pass CodeQL before merge.
+
+The corrected local suite passes all 94 tests, zero skips. An initial in-flight run still loaded the first version of the new copy-extraction fixture, and also reported a transient Chinese release-notice mismatch during iCloud reads. The corrected fixture and an unchanged readback of all three Chinese release notices pass on the full rerun; no release copy or condition was altered.
+
+final result: passed (local visual and functional QA; exact-head CI/security recheck pending)
 
 ---
 

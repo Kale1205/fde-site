@@ -40,7 +40,7 @@ ${header}
 <main id="main-content">
   <section class="portal-hero section-frame" aria-labelledby="portal-title">
     <img class="portal-hero-mark" src="${prefix}assets/baked-kale-mark.svg" width="360" height="360" alt="" aria-hidden="true">
-    <p class="eyebrow">CUSTOMER PORTAL</p><h1 id="portal-title">${t.hero.replace('\n','<br>')}</h1><p class="portal-lead">${t.lead}</p>
+    <p class="eyebrow">CUSTOMER PORTAL</p><h1 id="portal-title">${t.hero.replaceAll('\n','<br>')}</h1><p class="portal-lead">${t.lead}</p>
   </section>
   <div class="portal-document section-frame">
     <section class="portal-input-surface" aria-labelledby="portal-form-title">

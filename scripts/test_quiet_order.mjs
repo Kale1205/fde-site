@@ -4,6 +4,14 @@ import {readFileSync,existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {renderQuietOrder} from './build_quiet_order.mjs';
 const root=new URL('../',import.meta.url),read=n=>readFileSync(new URL(n,root),'utf8');
+test('head recomposition removes uppercase and re-formed executable tags',()=>{
+  const page=read('order.html'),home=read('index.html');
+  const fixture=page.replace('</head>','<ScRiPt>UNEXPECTED_UPPERCASE</sCrIpT><scr<script>UNEXPECTED_INNER</script>ipt>UNEXPECTED_REFORMED</script></head>');
+  const output=renderQuietOrder(fixture,home);
+  assert.doesNotMatch(output,/UNEXPECTED_/);
+  assert.equal((output.match(/<script\b/gi)||[]).length,1);
+  assert.equal(output,page);
+});
 for(const prefix of ['', 'ja/', 'zh/']){
   test(`${prefix}order matches selected W07 composition and approved homepage products`,()=>{
     const page=read(prefix+'order.html'),home=read(prefix+'index.html');

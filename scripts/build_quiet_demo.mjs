@@ -28,9 +28,9 @@ export function renderQuietDemo(source, locale='en') {
   const flow = take(/    <ol class="demo-flow"[\s\S]*?    <\/ol>/);
   const kpis = take(/      <div class="demo-kpis">[\s\S]*?\n      <\/div>/);
   const reset = take(/<button id="demoReset"[\s\S]*?<\/button>/);
-  const inventoryTitle = take(/<h2>[^<]+<\/h2>/).replace(/<\/?h2>/g,'');
-  const historyTitle = take(/<h2 id="demoHistoryTitle">[^<]+<\/h2>/).replace(/<[^>]+>/g,'');
-  const stockHeadings = take(/<thead><tr><th>[^<]+<\/th>[\s\S]*?<\/tr><\/thead>/).match(/<th>([^<]*)<\/th>/g).slice(1,4).map(th=>th.replace(/<[^>]+>/g,''));
+  const inventoryTitle = source.match(/<h2>([^<]+)<\/h2>/)[1];
+  const historyTitle = source.match(/<h2 id="demoHistoryTitle">([^<]+)<\/h2>/)[1];
+  const stockHeadings = [...take(/<thead><tr><th>[^<]+<\/th>[\s\S]*?<\/tr><\/thead>/).matchAll(/<th>([^<]*)<\/th>/g)].slice(1,4).map(match=>match[1]);
   const summary = `<div class="demo-selected-product" aria-live="off"><small data-demo-selected-label>${text.selected}</small><strong data-demo-selected-name></strong><small data-demo-selected-sku></small><dl>${stockHeadings.map((label,i)=>`<div><dt>${label}</dt><dd data-demo-selected-stock="${i}"></dd></div>`).join('')}</dl></div>`;
   const nav = `<nav class="demo-view-switcher" aria-label="${text.views}" hidden><button type="button" data-demo-view="inventory" aria-pressed="true" aria-controls="demoInventoryView demoOperationForm">${text.inventory}</button><button type="button" data-demo-view="operation" aria-pressed="false" aria-controls="demoOperationForm">${text.operation}</button><button type="button" data-demo-view="history" aria-pressed="false" aria-controls="demoHistoryView">${text.history}</button></nav>`;
   const hero = intro.replace(notice,'').replace(brandNote,'').replace('    </section>', `      <p class="demo-simulation-label">${notice.match(/<strong>([^<]+)<\/strong>/)[1]}</p>\n      ${nav}\n    </section>`).replace('section-intro compact demo-intro','section-frame section-intro compact demo-intro');
