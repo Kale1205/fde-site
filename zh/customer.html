@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>客户门户 | Baked Kale FDE</title>
+  <meta name="description" content="集中查看 FDE IMS 订单相关信息。">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://kale1205.github.io/fde-site/zh/customer.html">
+  <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/customer.html">
+  <link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/customer.html">
+  <link rel="alternate" hreflang="zh-CN" href="https://kale1205.github.io/fde-site/zh/customer.html">
+  <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/customer.html">
+  <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
+  <link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
+  <link rel="stylesheet" href="../quiet-pages.css?v=20260925-081759">
+  <script defer src="../gallery-ui.js?v=20260925-081759"></script>
+  <script type="module" src="../quiet-customer.js?v=20260925-081759"></script>
+</head>
+<body class="quiet-page gallery-page customer-renewal">
+<a class="skip-link" href="#main-content">跳转到正文</a>
+<div class="site-shell language-zh">
+<header class="site-header">
+<a class="brand" href="./" aria-label="Baked Kale FDE"><img src="../assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a>
+<nav class="desktop-nav" aria-label="打开菜单"><a href="index.html#plans">产品</a><a href="demo.html">演示</a><a href="goals.html">Our Goals</a><a href="news.html">动态</a><a href="contact.html">联系我们</a></nav>
+<div class="header-actions"><a class="locale-button" data-locale-link href="../customer.html" hreflang="en" lang="en">English</a><a class="locale-button" data-locale-link href="../ja/customer.html" hreflang="ja" lang="ja">日本語</a><button class="menu-button" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
+<nav class="mobile-nav" id="mobile-nav" aria-label="打开菜单" hidden><a href="index.html#plans">产品</a><a href="goals.html">Our Goals</a><a href="news.html">动态</a><a href="contact.html">联系我们</a></nav>
+</header>
+<main id="main-content">
+  <section class="portal-hero section-frame" aria-labelledby="portal-title">
+    <img class="portal-hero-mark" src="../assets/baked-kale-mark.svg" width="360" height="360" alt="" aria-hidden="true">
+    <p class="eyebrow">CUSTOMER PORTAL</p><h1 id="portal-title">订单信息，<br>集中查看。</h1><p class="portal-lead">将订单编号、下单邮箱与报价、付款和交付资料放在一起核对。</p>
+  </section>
+  <div class="portal-document section-frame">
+    <section class="portal-input-surface" aria-labelledby="portal-form-title">
+      <div class="portal-form-intro"><span class="portal-icon"><img src="../assets/phosphor-file-text.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h2 id="portal-form-title">订单信息</h2><p>请输入报价单或订单确认邮件中注明的信息。</p></div></div>
+      <form id="portal-form" novalidate aria-describedby="portal-privacy">
+        <div class="portal-fields">
+          <div class="portal-field"><label for="portal-order">订单编号</label><input id="portal-order" type="text" required maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" pattern="[Bb][Kk]-[0-9]{8}-[A-Fa-f0-9]{8}" aria-describedby="portal-order-hint"><p class="portal-hint" id="portal-order-hint">示例：BK-20261101-1234ABCD</p><p class="portal-error" id="portal-order-error" hidden>请按 BK-YYYYMMDD-XXXXXXXX 格式输入订单编号。</p></div>
+          <div class="portal-field"><label for="portal-email">下单时使用的邮箱</label><input id="portal-email" type="email" required maxlength="254" autocomplete="email" autocapitalize="none" spellcheck="false"><p class="portal-error" id="portal-email-error" hidden>请输入有效的邮箱地址。</p></div>
+        </div>
+        <div class="portal-form-actions"><p id="portal-privacy">此预览仅在当前页面核对输入内容，不会发送或保存。</p><button class="button button-primary" type="submit">核对输入信息<img src="../assets/phosphor-arrow-right.svg" width="24" height="24" alt="" aria-hidden="true"></button></div>
+      </form>
+      <section id="portal-review" aria-labelledby="portal-review-title" hidden tabindex="-1">
+        <h3 id="portal-review-title">核对输入信息</h3><p>这里显示的是您输入的信息，并非查询到的订单或付款状态。</p><dl><div><dt>订单编号</dt><dd id="portal-review-order"></dd></div><div><dt>下单时使用的邮箱</dt><dd id="portal-review-email"></dd></div></dl><button class="button button-secondary" id="portal-edit" type="button">修改输入信息</button>
+      </section>
+      <p class="sr-only" id="portal-announcement" role="status" aria-live="polite"></p>
+    </section>
+    <section class="portal-information" aria-labelledby="portal-information-title">
+      <h2 id="portal-information-title">订单相关信息</h2><ul><li><span class="portal-icon"><img src="../assets/phosphor-file-text.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h3>报价与订单</h3><p>集中查看报价单和订单确认邮件。</p></div></li><li><span class="portal-icon"><img src="../assets/phosphor-credit-card.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h3>付款</h3><p>参照付款说明和确认邮件。</p></div></li><li><span class="portal-icon"><img src="../assets/phosphor-truck.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h3>交付</h3><p>整理交付通知及取消订单的相关邮件。</p></div></li></ul>
+      <p class="portal-contact-note">如有产品或方案方面的问题，欢迎联系我们。</p><a class="button button-primary" href="contact.html">联系我们<img src="../assets/phosphor-arrow-right.svg" width="24" height="24" alt="" aria-hidden="true"></a>
+    </section>
+  </div>
+</main>
+<footer class="site-footer section-frame"><a href="./"><img src="../assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="index.html#plans">产品</a><a href="demo.html">演示</a><a href="goals.html">Our Goals</a><a href="news.html">动态</a><a href="contact.html">联系我们</a></nav><small>© 2026 Baked Kale FDE</small></footer>
+</div>
+</body>
+</html>

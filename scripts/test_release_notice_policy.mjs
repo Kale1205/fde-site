@@ -41,5 +41,9 @@ test('CMS hydration cannot restore purchase-unavailable FAQ or suffixes',()=>{
     assert.deepEqual(item,expected,'All other FAQ questions, terms, prices and search keys are preserved');
   }
   assert.equal(read('content/faq-policy-additions.json'),before('content/faq-policy-additions.json'));
-  assert.equal(read('customer.html'),before('customer.html'),'Customer lookup remains disabled');
+  for(const prefix of ['', 'ja/', 'zh/']) {
+    const portal=read(`${prefix}customer.html`);
+    assert.ok(portal.includes('quiet-customer.js'));
+    assert.doesNotMatch(portal,/(?:src=")[^"]*(?:\/|\")customer\.js|contact-config\.js|id="statusForm"/);
+  }
 });

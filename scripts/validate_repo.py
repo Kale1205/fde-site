@@ -143,10 +143,10 @@ INDEXED_PAGE_NAMES = {
     "index.html", "goals.html", "news.html", "contact.html",
     "license.html", "demo.html",
 }
-EN_PAGES = INDEXED_PAGE_NAMES | {"order.html"}
+EN_PAGES = INDEXED_PAGE_NAMES | {"order.html", "customer.html"}
 JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
 ZH_PAGES = {f"zh/{name}" for name in EN_PAGES}
-ROOT_ONLY_PUBLIC = {"customer.html"}
+ROOT_ONLY_PUBLIC = set()
 ALL_PUBLIC = EN_PAGES | JA_PAGES | ZH_PAGES | ROOT_ONLY_PUBLIC
 
 for prefix in ("", "ja/", "zh/"):
@@ -722,19 +722,20 @@ for rel, expected_title in static_news_titles.items():
     if "wire-row" not in wire_fragment or not plain_html_text(wire_fragment):
         fail(f"{rel}: static News archive fallback is missing")
 
-# The customer portal must remain a non-interactive pre-release notice until
-# the two-product payment catalog, add-on entitlements, and fulfillment flow have been reviewed.
-customer_portal = ROOT / "customer.html"
-if not customer_portal.exists():
-    fail("customer.html is missing")
-else:
-    customer_text = customer_portal.read_text(encoding="utf-8")
-    for retired in ('customer.js', 'contact-config.js', 'id="statusForm"'):
+# W08 is an editable, local-only input review. Real lookup/payment stays gated.
+for prefix in ("", "ja/", "zh/"):
+    rel = f"{prefix}customer.html"
+    customer_text = public_source_text.get(rel, "")
+    for retired in ('src="customer.js', 'src="../customer.js', 'contact-config.js', 'id="statusForm"', 'FDE_CONTACT_API'):
         if retired in customer_text:
-            fail(f"customer.html: pre-release portal must not load active lookup/payment runtime: {retired}")
-    for marker in ("Customer portal / PRE-RELEASE", "customer portal is not available yet", "payment confirmation", "disabled"):
-        if marker.lower() not in customer_text.lower():
-            fail(f"customer.html: pre-release portal notice missing: {marker}")
+            fail(f"{rel}: must not load active lookup/payment runtime: {retired}")
+    for marker in ('noindex,follow', 'customer-renewal', 'quiet-customer.js', 'id="portal-form"', 'id="portal-review"', 'id="portal-privacy"'):
+        if marker not in customer_text:
+            fail(f"{rel}: local input review marker missing: {marker}")
+portal_runtime = (ROOT / "quiet-customer.js").read_text(encoding="utf-8")
+for forbidden in ('fetch(', 'XMLHttpRequest', 'sendBeacon', 'localStorage', 'sessionStorage', 'status_lookup', 'innerHTML', 'FDE_CONTACT_API'):
+    if forbidden in portal_runtime:
+        fail(f"quiet-customer.js: local-only input boundary violated: {forbidden}")
 
 pre_release_sales_pages = {
     "order.html": ("noindex", "not yet available for purchase", "Orders cannot be completed yet"),

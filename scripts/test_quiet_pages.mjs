@@ -10,11 +10,12 @@ import { renderQuietGoals } from './build_quiet_goals.mjs';
 import { renderQuietNews } from './build_quiet_news.mjs';
 import { renderQuietContact } from './build_quiet_contact.mjs';
 import { renderQuietOrder } from './build_quiet_order.mjs';
+import { renderQuietCustomer } from './build_quiet_customer.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pages = ['', 'ja/', 'zh/'].flatMap(locale =>
-  ['license', 'demo', 'goals', 'news', 'contact', 'order'].map(name => `${locale}${name}.html`)
-).concat(['customer.html', 'cms-admin.html']);
+  ['license', 'demo', 'goals', 'news', 'contact', 'order', 'customer'].map(name => `${locale}${name}.html`)
+).concat(['cms-admin.html']);
 // Baseline for this design-only renewal; overridable for future approved copy updates.
 const baseline = process.env.QUIET_PAGES_BASE || 'e13457ad75068fa753b3f6dc6705d1aa1de2a61c';
 const original = name => execFileSync('git', ['show', `${baseline}:${name}`], { cwd: root, encoding: 'utf8' });
@@ -37,7 +38,8 @@ for (const name of pages) {
         : name.endsWith('goals.html') ? renderQuietGoals(original(name))
         : name.endsWith('news.html') ? renderQuietNews(original(name))
         : name.endsWith('contact.html') ? renderQuietContact(original(name))
-        : name.endsWith('order.html') ? renderQuietOrder(original(name),readFileSync(path.join(root,name.replace('order.html','index.html')),'utf8')).replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m,'').replace('class="quiet-page ','class="') : original(name);
+        : name.endsWith('order.html') ? renderQuietOrder(original(name),readFileSync(path.join(root,name.replace('order.html','index.html')),'utf8')).replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m,'').replace('class="quiet-page ','class="')
+        : name.endsWith('customer.html') ? renderQuietCustomer(name.startsWith('ja/')?'ja':name.startsWith('zh/')?'zh':'en',readFileSync(path.join(root,name.replace('customer.html','index.html')),'utf8')).replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m,'').replace('class="quiet-page ','class="') : original(name);
     assert.equal(normalizeBuildKeys(stripped), normalizeBuildKeys(expected));
     assert.equal((html.match(/quiet-pages\.css/g) || []).length, 1);
   });

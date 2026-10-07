@@ -4,6 +4,7 @@ import path from 'node:path';
 import { renderQuietHomepage } from './build_quiet_homepages.mjs';
 import { renderQuietDemo } from './build_quiet_demo.mjs';
 import { renderQuietOrder } from './build_quiet_order.mjs';
+import { renderQuietCustomer } from './build_quiet_customer.mjs';
 import { applyReleaseNoticePolicy, removePurchaseStatusCopy, releaseCopy } from './release_notice_policy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -21,6 +22,7 @@ const pages = [
   'contact.html',
   'news.html',
   'order.html',
+  'customer.html',
 ];
 
 const canonicalFor = (name, locale = '') => {
@@ -158,7 +160,9 @@ for (const name of pages) {
     ? await renderQuietHomepage('zh')
     : name === 'order.html' && readFileSync(path.join(root,name),'utf8').includes('order-renewal')
       ? renderQuietOrder(readFileSync(path.join(root,'zh',name),'utf8'),await renderQuietHomepage('zh'))
-      : renderPage(name);
+      : name === 'customer.html'
+        ? renderQuietCustomer('zh',readFileSync(path.join(root,'zh/index.html'),'utf8'))
+        : renderPage(name);
   const outputPath = path.join(root, 'zh', name);
   if (process.argv.includes('--check')) {
     let current = '';

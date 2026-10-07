@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>顧客ポータル | Baked Kale FDE</title>
+  <meta name="description" content="FDE IMSの注文情報を、ひとつの場所に。">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://kale1205.github.io/fde-site/ja/customer.html">
+  <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/customer.html">
+  <link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/customer.html">
+  <link rel="alternate" hreflang="zh-CN" href="https://kale1205.github.io/fde-site/zh/customer.html">
+  <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/customer.html">
+  <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
+  <link rel="stylesheet" href="../gallery-ui.css?v=20260925-081759">
+  <link rel="stylesheet" href="../quiet-pages.css?v=20260925-081759">
+  <script defer src="../gallery-ui.js?v=20260925-081759"></script>
+  <script type="module" src="../quiet-customer.js?v=20260925-081759"></script>
+</head>
+<body class="quiet-page gallery-page customer-renewal">
+<a class="skip-link" href="#main-content">本文へ移動</a>
+<div class="site-shell language-ja">
+<header class="site-header">
+<a class="brand" href="./" aria-label="Baked Kale FDE"><img src="../assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a>
+<nav class="desktop-nav" aria-label="メニューを開く"><a href="index.html#plans">製品</a><a href="demo.html">デモ</a><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="contact.html">お問い合わせ</a></nav>
+<div class="header-actions"><a class="locale-button" data-locale-link href="../customer.html" hreflang="en" lang="en">English</a><a class="locale-button" data-locale-link href="../zh/customer.html" hreflang="zh-CN" lang="zh-CN">简体中文</a><button class="menu-button" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
+<nav class="mobile-nav" id="mobile-nav" aria-label="メニューを開く" hidden><a href="index.html#plans">製品</a><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="contact.html">お問い合わせ</a></nav>
+</header>
+<main id="main-content">
+  <section class="portal-hero section-frame" aria-labelledby="portal-title">
+    <img class="portal-hero-mark" src="../assets/baked-kale-mark.svg" width="360" height="360" alt="" aria-hidden="true">
+    <p class="eyebrow">CUSTOMER PORTAL</p><h1 id="portal-title">注文情報を、<br>ひとつの場所に。</h1><p class="portal-lead">注文番号と購入時のメールアドレスを、見積・支払い・納品の情報とあわせて確認。</p>
+  </section>
+  <div class="portal-document section-frame">
+    <section class="portal-input-surface" aria-labelledby="portal-form-title">
+      <div class="portal-form-intro"><span class="portal-icon"><img src="../assets/phosphor-file-text.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h2 id="portal-form-title">注文情報</h2><p>見積書や注文確認メールに記載された情報を入力してください。</p></div></div>
+      <form id="portal-form" novalidate aria-describedby="portal-privacy">
+        <div class="portal-fields">
+          <div class="portal-field"><label for="portal-order">注文番号</label><input id="portal-order" type="text" required maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" pattern="[Bb][Kk]-[0-9]{8}-[A-Fa-f0-9]{8}" aria-describedby="portal-order-hint"><p class="portal-hint" id="portal-order-hint">例：BK-20261101-1234ABCD</p><p class="portal-error" id="portal-order-error" hidden>注文番号を BK-YYYYMMDD-XXXXXXXX の形式で入力してください。</p></div>
+          <div class="portal-field"><label for="portal-email">購入時のメールアドレス</label><input id="portal-email" type="email" required maxlength="254" autocomplete="email" autocapitalize="none" spellcheck="false"><p class="portal-error" id="portal-email-error" hidden>有効なメールアドレスを入力してください。</p></div>
+        </div>
+        <div class="portal-form-actions"><p id="portal-privacy">このプレビューでは画面内で入力内容のみを確認します。送信・保存は行いません。</p><button class="button button-primary" type="submit">入力内容を確認<img src="../assets/phosphor-arrow-right.svg" width="24" height="24" alt="" aria-hidden="true"></button></div>
+      </form>
+      <section id="portal-review" aria-labelledby="portal-review-title" hidden tabindex="-1">
+        <h3 id="portal-review-title">入力内容の確認</h3><p>入力した情報の確認です。注文状況や支払い状況の照会結果ではありません。</p><dl><div><dt>注文番号</dt><dd id="portal-review-order"></dd></div><div><dt>購入時のメールアドレス</dt><dd id="portal-review-email"></dd></div></dl><button class="button button-secondary" id="portal-edit" type="button">入力内容を編集</button>
+      </section>
+      <p class="sr-only" id="portal-announcement" role="status" aria-live="polite"></p>
+    </section>
+    <section class="portal-information" aria-labelledby="portal-information-title">
+      <h2 id="portal-information-title">注文にまつわる情報</h2><ul><li><span class="portal-icon"><img src="../assets/phosphor-file-text.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h3>見積・注文</h3><p>見積書と注文確認メールをまとめて確認。</p></div></li><li><span class="portal-icon"><img src="../assets/phosphor-credit-card.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h3>支払い</h3><p>支払い方法のご案内と確認メールを参照。</p></div></li><li><span class="portal-icon"><img src="../assets/phosphor-truck.svg" width="24" height="24" alt="" aria-hidden="true"></span><div><h3>納品</h3><p>納品のご案内やキャンセルの連絡を整理。</p></div></li></ul>
+      <p class="portal-contact-note">製品やプランについてのご質問はこちらから。</p><a class="button button-primary" href="contact.html">お問い合わせ<img src="../assets/phosphor-arrow-right.svg" width="24" height="24" alt="" aria-hidden="true"></a>
+    </section>
+  </div>
+</main>
+<footer class="site-footer section-frame"><a href="./"><img src="../assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="index.html#plans">製品</a><a href="demo.html">デモ</a><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="contact.html">お問い合わせ</a></nav><small>© 2026 Baked Kale FDE</small></footer>
+</div>
+</body>
+</html>
