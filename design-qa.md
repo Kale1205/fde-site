@@ -1,3 +1,28 @@
+# W07 approved combined Order — 2026-10-07
+
+## Source, composition and boundaries
+
+- Approved target: `fde-w02-review-site/dist/w07-refined.png`, 1024×1536. Desktop x0–726 and Mobile x738–1024 are board presentation crops, not literal CSS viewports. Inspected source and actual captures together, then a normalized 390px Mobile side-by-side comparison (`output/w07-implementation/comparison.html`). Final captures: `final-{ja,en,zh}-{390,1024,1440}.png` in that directory; original and initial failed captures are retained. Actual source art replaces generated approximations; complete readable copy and the approved shared header/footer account for the longer Mobile page.
+- EN/JA/ZH `order.html` now use option-one forest hero, genuine faint brand mark and unboxed product display, with option-two connected purchase-process rail (horizontal Desktop, vertical Mobile). Exact product names, taglines, illustrations, JPY prices and release line are extracted from each approved homepage. Updates is required for License, first three months included, ¥4,900/month for months 4–6 and ¥9,800/month from month 7; ending Updates retains the existing version. Plus remains purchaser-managed and outside our Updates. These are user-approved commercial alignment changes, not incidental copy invention.
+- Existing canonical/hreflang/meta descriptions and noindex,follow remain unchanged. No checkout, form, payment runtime, analytics, new external request or dependency is introduced. Source renderer is idempotent and emits ordinary HTML. No new indexed route, schema, sitemap or robots change. Primary terms/contact/product links and locale switching retain their destinations.
+- Genuine Phosphor regular user, package, file-text, warning-circle, check, minus and arrow-right assets reuse the existing MIT license; path geometry comes unchanged from `https://raw.githubusercontent.com/phosphor-icons/core/main/assets/regular/{name}.svg`, only fill uses the existing forest token value. No handcrafted icon drawings. Warning uses the library outline rather than the source mock's orange bitmap; JPY is explicitly disclosed beside prices.
+
+## Iterations and verification
+
+1. [P1] Inherited hero rule initially put white type on white; scoped specificity restores forest and post-fix captures confirm it.
+2. [P2] Legacy order-page class duplicated the brand and stacked the footer. Removed obsolete class while retaining gallery/quiet-page common components; final captures confirm one logo and consistent footer.
+3. [P2] Hidden definition-list value was initially visible. Scoped sr-only rule hides it visually while preserving accessible semantics. Final captures confirmed Updates rows have no duplicate visible text.
+4. Capture-only issue: one screenshot preceded async image paint. Awaited all image decodes and two animation frames, then recaptured all nine views. License Plus art is visible in final evidence; no missing asset was concealed.
+- Chrome DevTools MCP: JA/EN/ZH at 390, 1024 and 1440 CSS px, all loaded images, zero document overflow and zero Console error/warning. All observed asset/document requests were HTTP 200; observed local CLS 0 in these nine loads (not field-performance certification).
+- Shared Mobile sheet's eight links are above the backdrop and hit-testable. Escape closes it and restores trigger focus; actual language-picker click navigates JA Order to EN Order, not Home. Keyboard/accessibility and static link integrity verified without submitting anything.
+- Lighthouse snapshot: JA Mobile and ZH Desktop Accessibility, Best Practices, SEO and Agentic Browsing 100, no failed checks. Does not certify full WCAG, Performance or physical iPhone/Safari behavior.
+- 70 related Node tests pass, covering W01–W07 including source preservation and approved Order facts. Order renderer check, `git diff --check`, `npm run sitemap -- --check` and `npm run validate` pass. First validation retained a legacy USD-price-book failure; narrowed the new approved JPY Order branch with explicit price and static/purchase-disabled invariants, keeping legacy commercial-page checks intact. No conventional build/lint script exists in this static repository.
+- Original checkout and pre-existing output are preserved. FDE source remains local on `preview/quiet-form-motion`; no FDE push, PR, merge, sales activation or actual production publication. Owner-private review packaging is separate. W08 Customer stays unchanged until design selection; English-only route and missing JA/ZH routes require a separate decision.
+
+final result: passed (scoped W07 implementation)
+
+---
+
 # W06 approved FAQ-first Contact — 2026-10-07
 
 ## Reference and implementation

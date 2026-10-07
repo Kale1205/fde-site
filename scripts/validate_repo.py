@@ -528,7 +528,23 @@ PUBLIC_PRICE_PAGES = (
     "index.html", "license.html", "order.html",
     "ja/index.html", "ja/license.html", "ja/order.html",
 )
-PUBLIC_PRICE_PAGES = tuple(rel for rel in PUBLIC_PRICE_PAGES if rel not in QUIET_HOMEPAGES)
+QUIET_ORDER_PAGES = {
+    rel for rel in ("order.html", "ja/order.html", "zh/order.html")
+    if 'order-renewal' in public_source_text.get(rel, "")
+}
+# Approved W07 follows the all-locale JPY homepage, not the legacy USD book.
+# Keep the old price-book checks intact for non-renewed commercial pages.
+for rel in sorted(QUIET_ORDER_PAGES):
+    source = public_source_text.get(rel, "")
+    for marker in ("¥49,800", "¥99,800", "¥4,900", "¥9,800", "JPY", "License Updates", "noindex,follow", 'class="order-process-rail"'):
+        if marker not in source:
+            fail(f"{rel}: approved W07 fact missing: {marker}")
+    found = set(re.findall(r"¥([\d,]+)", source))
+    if found != {"49,800", "99,800", "4,900", "9,800"}:
+        fail(f"{rel}: W07 JPY price book drift")
+    if re.search(r"<form\b|stripe\.com|\$\s*\d", source):
+        fail(f"{rel}: W07 must remain a static, purchase-disabled notice")
+PUBLIC_PRICE_PAGES = tuple(rel for rel in PUBLIC_PRICE_PAGES if rel not in QUIET_HOMEPAGES and rel not in QUIET_ORDER_PAGES)
 CONTENT_PLAN_NAME_PATTERNS = {
     "License": re.compile(r"(?<![A-Za-z0-9])License(?![A-Za-z0-9]|\s+Plus)"),
     "License Plus": re.compile(r"(?<![A-Za-z0-9])License Plus(?![A-Za-z0-9])"),
@@ -639,7 +655,7 @@ for rel in PUBLIC_PRICE_PAGES:
 currency_disclosure_markers = {
     "index.html": "UNAPPROVED USD CANDIDATE",
     "license.html": "unapproved candidate",
-    "order.html": "unapproved candidates",
+    "order.html": "JPY",
     "ja/index.html": "日本円",
     "ja/license.html": "日本円",
     "ja/order.html": "JPY",
