@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE</title>
-  <meta name="description" content="FDE IMS v1.0の簡易操作デモ。サンプルデータで在庫検索、入庫、移動、棚卸、出庫、履歴確認を試せます。変更内容は保存されません。">
+  <title>IMS 在庫管理ソフト操作デモ | Baked Kale FDE</title>
+  <meta name="description" content="IMS v1.0の簡易操作デモ。サンプルデータで在庫検索、入庫、移動、棚卸、出庫、履歴確認を試せます。変更内容は保存されません。">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://kale1205.github.io/fde-site/ja/demo.html">
   <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/demo.html">
@@ -13,25 +13,25 @@
   <link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/demo.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Baked Kale FDE">
-  <meta property="og:title" content="FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE">
-  <meta property="og:description" content="サンプルデータを使って、FDE IMS v1.0の基本的な在庫操作を簡易体験できます。">
+  <meta property="og:title" content="IMS 在庫管理ソフト操作デモ | Baked Kale FDE">
+  <meta property="og:description" content="サンプルデータを使って、IMS v1.0の基本的な在庫操作を簡易体験できます。">
   <meta property="og:url" content="https://kale1205.github.io/fde-site/ja/demo.html">
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
-  <meta property="og:image:alt" content="Baked Kale FDEによるFDE IMS在庫管理の開発プレビュー">
+  <meta property="og:image:alt" content="Baked Kale FDEによるIMS在庫管理の開発プレビュー">
   <meta property="og:locale" content="ja_JP">
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE">
-  <meta name="twitter:description" content="サンプルデータを使って、FDE IMS v1.0の基本的な在庫操作を簡易体験できます。">
+  <meta name="twitter:title" content="IMS 在庫管理ソフト操作デモ | Baked Kale FDE">
+  <meta name="twitter:description" content="サンプルデータを使って、IMS v1.0の基本的な在庫操作を簡易体験できます。">
   <meta name="twitter:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
-  <meta name="twitter:image:alt" content="Baked Kale FDEによるFDE IMS在庫管理の開発プレビュー">
+  <meta name="twitter:image:alt" content="Baked Kale FDEによるIMS在庫管理の開発プレビュー">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="../gallery-ui.css?v=20261007-224522">
-  <link rel="stylesheet" href="../gallery-pages.css?v=20261007-224522">
-  <script defer src="../gallery-ui.js?v=20261007-224522"></script>
-  <script defer src="../demo-v1.js?v=20261007-224522"></script>
-  <script defer src="../site.js?v=20261007-224522"></script>
-  <link rel="stylesheet" href="../quiet-pages.css?v=20261007-224522">
+  <link rel="stylesheet" href="../gallery-ui.css?v=20261008-000319">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20261008-000319">
+  <script defer src="../gallery-ui.js?v=20261008-000319"></script>
+  <script defer src="../demo-v1.js?v=20261008-000319"></script>
+  <script defer src="../site.js?v=20261008-000319"></script>
+  <link rel="stylesheet" href="../quiet-pages.css?v=20261008-000319">
 </head>
 <body class="quiet-page gallery-page gallery-subpage demo-page demo-app demo-renewal">
 <div class="site-shell language-ja">
@@ -45,7 +45,7 @@
     <nav class="mobile-nav" id="mobile-nav" aria-label="モバイルナビゲーション" hidden><a href="index.html">製品</a><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="../demo.html" hreflang="en" lang="en">English</a><a href="../zh/demo.html" hreflang="zh-CN" lang="zh-CN">简体中文</a><a href="contact.html">お問い合わせ</a></nav>
   </header>
   <div class="demo-bar">
-    <div class="section-frame demo-toolbar"><strong>FDE IMS / v1.0 簡易デモ</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">デモを閉じる</button></div></div>
+    <div class="section-frame demo-toolbar"><strong>IMS / v1.0 簡易デモ</strong><div class="demo-toolbar-actions"><button class="button demo-back" type="button" id="closeDemo">デモを閉じる</button></div></div>
   </div>
   <main class="demo-dashboard">
     <div class="demo-hero">
@@ -59,7 +59,7 @@
       <nav class="demo-view-switcher" aria-label="デモ画面の切り替え" hidden><button type="button" data-demo-view="inventory" aria-pressed="true" aria-controls="demoInventoryView demoOperationForm">在庫</button><button type="button" data-demo-view="operation" aria-pressed="false" aria-controls="demoOperationForm">在庫操作</button><button type="button" data-demo-view="history" aria-pressed="false" aria-controls="demoHistoryView">移動履歴</button></nav>
     </section>
     </div>
-    <section class="demo-workspace section-frame" id="imsDemoRoot" aria-label="FDE IMS v1.0サンプル在庫画面">
+    <section class="demo-workspace section-frame" id="imsDemoRoot" aria-label="IMS v1.0サンプル在庫画面">
       <div class="demo-app-grid">
         <div class="demo-inventory-panel" id="demoInventoryView">
           <div class="demo-panel-head"><div><p class="eyebrow">CURRENT INVENTORY</p><h2 id="demoInventoryTitle">保管場所別の在庫</h2></div></div>
@@ -108,7 +108,7 @@
       <div class="demo-workbench-actions"><button id="demoReset" class="button button-secondary light" type="button">デモをリセット</button></div>
       <details class="demo-guide" id="demoGuide"><summary id="demoGuideTitle">v1.0の簡易業務フロー</summary><div data-demo-notes>
       <div class="ims-pre"><strong>操作シミュレーション · 正式版製品ではありません</strong><p>このブラウザ専用デモは、v1.0の操作を簡略化したものです。IMSサーバーへの接続、変更内容の保存、ログイン・権限管理、本番用バックアップは行いません。</p></div>
-      <small class="demo-note">FDE IMS by Baked Kale FDE</small>
+      <small class="demo-note">IMS by Baked Kale FDE</small>
     <ol class="demo-flow" aria-label="v1.0の簡易業務フロー">
       <li><small>01</small><strong>検索</strong><span>SKU・バーコード</span></li>
       <li><small>02</small><strong>入庫</strong><span>入荷在庫を追加</span></li>
@@ -125,7 +125,7 @@
       </div></details>
     </section>
   </main>
-  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>小規模な現場向けのFDE IMS在庫管理ソフト</p><small>サンプルデータによる操作プレビュー</small><nav class="footer-nav" aria-label="フッターナビゲーション"><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="license.html">License</a><a href="contact.html">お問い合わせ</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
+  <footer class="site-footer section-frame"><img alt="Baked Kale FDE" src="../assets/baked-kale-logo.svg"><div><p>小規模な現場向けのIMS在庫管理ソフト</p><small>サンプルデータによる操作プレビュー</small><nav class="footer-nav" aria-label="フッターナビゲーション"><a href="goals.html">Our Goals</a><a href="news.html">お知らせ</a><a href="license.html">License</a><a href="contact.html">お問い合わせ</a></nav></div><span>© 2026 Baked Kale FDE</span></footer>
   <div class="toast" role="status" aria-live="polite"></div>
 </div>
 </body>

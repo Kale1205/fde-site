@@ -4,6 +4,7 @@ import json
 import re
 import sys
 from urllib.parse import urlsplit
+from static_news_validation import complete_static_news_lead
 
 from sitemap_config import (
     SitemapStateError,
@@ -338,7 +339,7 @@ quiet_home_markers = {
 for rel in sorted(QUIET_HOMEPAGES):
     visible = public_visible_text[rel]
     source = public_source_text[rel]
-    for marker in quiet_home_markers[rel] + ("¥49,800", "¥99,800", "¥4,900", "¥9,800", "FDE IMS", "License", "License Plus"):
+    for marker in quiet_home_markers[rel] + ("¥49,800", "¥99,800", "¥4,900", "¥9,800", "IMS", "License", "License Plus"):
         if marker not in visible:
             fail(f"{rel}: approved Quiet Form content missing: {marker}")
     for marker in ('id="product"', 'id="plans"', 'id="license-plus"', 'id="motion-demo"', 'id="imsDemoRoot"', 'class="quiet-comparison"', 'scope="col"', 'quiet-form.css', 'quiet-form.js', 'demo-v1.js', 'license.html#comparison', 'goals.html', 'news.html', 'contact.html'):
@@ -352,14 +353,14 @@ search_markers = {
         "Your company’s system. Yours to build on.",
         "Excel, SaaS, or a system you can shape?",
         "Build your own", "Internal source changes", "One-time purchase",
-        "FDE IMS License Plus",
+        "IMS License Plus",
         "Deployment assistance, development services and support scope are not yet confirmed.",
     ),
     "ja/index.html": (
         "自社で使うシステムを、 自社で育てていく。",
-        "Excel・SaaS・FDE IMSの違い",
+        "Excel・SaaS・IMSの違い",
         "自社で設計", "社内向け改変", "買い切り",
-        "FDE IMS License Plus",
+        "IMS License Plus",
         "導入支援・開発代行・保守サービスの提供範囲は未確定です。",
     ),
 }
@@ -372,13 +373,13 @@ for rel, markers in search_markers.items():
             fail(f"{rel}: inventory adoption / entity marker missing: {marker}")
 
 seo_page_markers = {
-    "contact.html": ("Inventory Software Adoption & Migration Questions", "Ask about adopting or moving to FDE IMS"),
-    "ja/contact.html": ("在庫管理ソフトの導入・移行相談", "FDE IMSの導入・移行を相談する"),
-    "demo.html": ("FDE IMS Inventory Software Demo | Baked Kale FDE", "Try the core stock workflow"),
-    "ja/demo.html": ("FDE IMS 在庫管理ソフト操作デモ | Baked Kale FDE", "基本の在庫業務を試す"),
-    "license.html": ("FDE IMS License & License Plus | Plan Policy", "Where do you want to start?"),
-    "ja/license.html": ("FDE IMS LicenseとLicense Plus | 料金・利用条件", "どちらから始めますか？"),
-    "zh/license.html": ("FDE IMS License 与 License Plus｜价格与使用条件", "您想从哪一种方案开始？"),
+    "contact.html": ("Inventory Software Adoption & Migration Questions", "Ask about adopting or moving to IMS"),
+    "ja/contact.html": ("在庫管理ソフトの導入・移行相談", "IMSの導入・移行を相談する"),
+    "demo.html": ("IMS Inventory Software Demo | Baked Kale FDE", "Try the core stock workflow"),
+    "ja/demo.html": ("IMS 在庫管理ソフト操作デモ | Baked Kale FDE", "基本の在庫業務を試す"),
+    "license.html": ("IMS License & License Plus | Plan Policy", "Where do you want to start?"),
+    "ja/license.html": ("IMS LicenseとLicense Plus | 料金・利用条件", "どちらから始めますか？"),
+    "zh/license.html": ("IMS License 与 License Plus｜价格与使用条件", "您想从哪一种方案开始？"),
 }
 for rel, markers in seo_page_markers.items():
     source = public_source_text.get(rel, "")
@@ -388,7 +389,7 @@ for rel, markers in seo_page_markers.items():
 
 demo_page_markers = {
     "demo.html": (
-        "FDE IMS / v1.0 SIMPLIFIED DEMO",
+        "IMS / v1.0 SIMPLIFIED DEMO",
         'id="imsDemoRoot"',
         'value="receive"',
         'value="transfer"',
@@ -398,7 +399,7 @@ demo_page_markers = {
         "INTERACTIVE SIMULATION · NOT THE RELEASED PRODUCT",
     ),
     "ja/demo.html": (
-        "FDE IMS / v1.0 簡易デモ",
+        "IMS / v1.0 簡易デモ",
         'id="imsDemoRoot"',
         'value="receive"',
         'value="transfer"',
@@ -448,14 +449,14 @@ if (ROOT / "llms.txt").exists():
 
 structured_faq_pairs = {
     "index.html": (
-        ("Can I purchase FDE IMS now?", "No. FDE IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available."),
+        ("Can I purchase IMS now?", "No. IMS is still in development. The USD prices shown are unapproved candidates pending final international pricing, and purchasing is not yet available."),
         ("Can I try the product workflow?", "Yes. The simplified v1.0 demo uses sample data and lets you search inventory and try temporary Receive, Transfer, Count, and Ship actions."),
         ("Where can I review detailed terms or ask a question?", "Review the License page for the current planned terms, review each plan above for the responsibility split, or open Contact for the searchable FAQ and inquiry form."),
-        ("Is FDE IMS intended for teams using paper or spreadsheets?", "Yes. FDE IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."),
+        ("Is IMS intended for teams using paper or spreadsheets?", "Yes. IMS is being designed for small businesses that want to move from paper or spreadsheets to a clearer receive, stock, and ship record."),
         ("Can Baked Kale FDE migrate or import data from an existing system?", "Not yet confirmed. Data-import formats, migration services, and deployment support will be defined before formal sales."),
     ),
     "ja/index.html": (
-        ("FDE IMSは今すぐ購入できますか？", "いいえ。FDE IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。"),
+        ("IMSは今すぐ購入できますか？", "いいえ。IMSは現在開発中です。表示価格は日本円の予定価格で、購入機能はまだ利用できません。"),
         ("製品の操作を試せますか？", "はい。v1.0簡易デモではサンプルデータを使い、在庫検索と一時的な入庫・移動・棚卸・出庫操作を試せます。"),
         ("詳しい条件の確認や質問はどこでできますか？", "現在の予定条件はLicenseページ、責任分担は各プランの利用条件で確認できます。その他の質問は、お問い合わせページのFAQまたはフォームをご利用ください。"),
         ("紙やExcelで在庫管理している会社にも向いていますか？", "はい。紙やExcelから、入庫・在庫確認・出庫をひとつの分かりやすい記録へ移したい小規模企業向けに開発しています。"),
@@ -486,10 +487,10 @@ for rel in ("index.html", "ja/index.html", "zh/index.html"):
     expected_logo = "https://kale1205.github.io/fde-site/assets/baked-kale-logo.svg"
     if (
         len(organizations) != 1
-        or organizations[0].get("name") != "Baked Kale FDE"
+        or organizations[0].get("name") != "Baked Kale"
         or organizations[0].get("logo", {}).get("url") != expected_logo
     ):
-        fail(f"{rel}: Organization must identify Baked Kale FDE and its canonical logo")
+        fail(f"{rel}: Organization must identify Baked Kale and its canonical logo")
     if "Offer" in json.dumps(graph_document, ensure_ascii=False):
         fail(f"{rel}: JSON-LD must not claim an Offer while commerce and USD pricing are unapproved")
     faq_nodes = [item for item in graph if isinstance(item, dict) and item.get("@type") == "FAQPage"]
@@ -582,12 +583,12 @@ for rel in PUBLIC_PRICE_PAGES:
 # Bind the primary homepage cards to their actual prices and responsibilities.
 homepage_plan_facts = {
     "index.html": {
-        "<h3>FDE IMS License</h3>": ("$349", "$31", "$62", "First 3 months of Updates included", "Source code and source-level modification are not included", "No automatic paid conversion"),
-        "<h3>FDE IMS License Plus</h3>": ("$699", "Full source code included", "Customer-server/self-hosted operation planned", "documentation planned", "Purchaser manages updates and security", "No included Updates entitlement"),
+        "<h3>IMS License</h3>": ("$349", "$31", "$62", "First 3 months of Updates included", "Source code and source-level modification are not included", "No automatic paid conversion"),
+        "<h3>IMS License Plus</h3>": ("$699", "Full source code included", "Customer-server/self-hosted operation planned", "documentation planned", "Purchaser manages updates and security", "No included Updates entitlement"),
     },
     "ja/index.html": {
-        "<h3>FDE IMS License</h3>": ("49,800円", "4,900円", "9,800円", "購入後3か月はUpdatesを含む", "ソースコードとソースレベルの改変権は含まない", "有料契約へ自動移行しない"),
-        "<h3>FDE IMS License Plus</h3>": ("99,800円", "ソースコード一式", "顧客管理サーバーでの自社運用を予定", "資料を提供予定", "更新・セキュリティは購入者が管理", "Updates特典は含まない"),
+        "<h3>IMS License</h3>": ("49,800円", "4,900円", "9,800円", "購入後3か月はUpdatesを含む", "ソースコードとソースレベルの改変権は含まない", "有料契約へ自動移行しない"),
+        "<h3>IMS License Plus</h3>": ("99,800円", "ソースコード一式", "顧客管理サーバーでの自社運用を予定", "資料を提供予定", "更新・セキュリティは購入者が管理", "Updates特典は含まない"),
     },
 }
 for rel, plans in homepage_plan_facts.items():
@@ -703,8 +704,8 @@ for rel in ("contact.html", "ja/contact.html"):
         fail(f"{rel}: static Contact FAQ fallback must contain the three core product FAQs")
 
 static_news_titles = {
-    "news.html": "FDE IMS updated to two products plus a License Updates add-on",
-    "ja/news.html": "FDE IMSを2商品＋Updates追加オプションへ更新",
+    "news.html": "IMS updated to two products plus a License Updates add-on",
+    "ja/news.html": "IMSを2商品＋Updates追加オプションへ更新",
 }
 for rel, expected_title in static_news_titles.items():
     source = public_source_text.get(rel, "")
@@ -715,7 +716,8 @@ for rel, expected_title in static_news_titles.items():
     lead_fragment = source[lead_start:latest_start] if lead_start >= 0 and latest_start > lead_start else ""
     latest_fragment = source[latest_start:wire_start] if latest_start >= 0 and wire_start > latest_start else ""
     wire_fragment = source[wire_start:instagram_start] if wire_start >= 0 and instagram_start > wire_start else ""
-    if expected_title not in plain_html_text(lead_fragment) or len(plain_html_text(lead_fragment)) < 350:
+    required_news_terms = ("License", "License Plus", "Updates", "ソースコード" if rel.startswith("ja/") else "source code")
+    if not complete_static_news_lead(source, expected_title, required_news_terms):
         fail(f"{rel}: static News lead fallback is missing or insubstantial")
     if "latest-card" not in latest_fragment or not plain_html_text(latest_fragment):
         fail(f"{rel}: static News latest fallback is missing")
@@ -816,19 +818,19 @@ intent_plan_facts = {
         "自動で有料契約へ移行しません", "購入機能は利用できません",
     ),
     "inventory-software-with-source-code.html": (
-        "$699", "FDE IMS License Plus", "full source code",
+        "$699", "IMS License Plus", "full source code",
         "License Updates are not included", "Source delivery and purchasing are not available",
     ),
     "ja/inventory-software-with-source-code.html": (
-        "99,800円", "FDE IMS License Plus", "ソースコード一式",
+        "99,800円", "IMS License Plus", "ソースコード一式",
         "Updates特典はありません", "ソース納品と購入機能は利用できません",
     ),
     "self-hosted-inventory-management-software.html": (
-        "$699", "FDE IMS License Plus", "customer-server/self-hosted operation",
+        "$699", "IMS License Plus", "customer-server/self-hosted operation",
         "License Plus does not include the License Updates add-on", "not available for deployment",
     ),
     "ja/self-hosted-inventory-management-software.html": (
-        "99,800円", "FDE IMS License Plus", "顧客が管理するサーバー",
+        "99,800円", "IMS License Plus", "顧客が管理するサーバー",
         "License PlusにはLicense専用のUpdatesを追加できません", "購入と導入は利用不可",
     ),
     "small-business-inventory-management-software.html": (
@@ -902,7 +904,7 @@ for name in sorted(REMOVED_DECISION_PAGE_NAMES):
         else:
             application = applications[0]
             if application.get("@id") != "https://kale1205.github.io/fde-site/#fde-ims":
-                fail(f"{rel}: SoftwareApplication must use the stable FDE IMS @id")
+                fail(f"{rel}: SoftwareApplication must use the stable IMS @id")
             if application.get("url") != "https://kale1205.github.io/fde-site/":
                 fail(f"{rel}: SoftwareApplication url must use the stable English root URL")
             expected_status = "開発中" if locale == "ja" else "In development"
@@ -1010,7 +1012,7 @@ for locale, rel in (("en", "index.html"), ("ja", "ja/index.html"), ("zh", "zh/in
     retired_targets = {f"{prefix}{name}" for name in REMOVED_DECISION_PAGE_NAMES}
     for remaining in sorted(retired_targets & targets):
         fail(f"{rel}: retired home intent link remains: {remaining}")
-    for retired_marker in ("Retired standalone Updates card", "updates-plan", "<h3>FDE IMS Updates</h3>"):
+    for retired_marker in ("Retired standalone Updates card", "updates-plan", "<h3>IMS Updates</h3>"):
         if retired_marker in source:
             fail(f"{rel}: retired standalone Updates card markup remains: {retired_marker}")
 

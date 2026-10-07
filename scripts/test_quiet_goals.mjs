@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
+import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {renderQuietGoals} from './build_quiet_goals.mjs';
 

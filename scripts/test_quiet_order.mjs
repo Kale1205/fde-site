@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
+import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
 import {renderQuietOrder} from './build_quiet_order.mjs';
 import {approvedHeadPrefix} from './approved_head_prefix.mjs';
 const root=new URL('../',import.meta.url),read=n=>readFileSync(new URL(n,root),'utf8');

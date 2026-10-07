@@ -7,10 +7,10 @@ import { releaseCopy } from './release_notice_policy.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const copy = {
   ja: {
-    language: 'ja', title: 'Quiet Form — FDE IMS デザインプレビュー',
+    language: 'ja', title: 'Quiet Form — IMS デザインプレビュー',
     product: '製品', demo: 'デモ', news: 'お知らせ', contact: 'お問い合わせ', skip: '本文へ移動', menu: 'メニューを開く',
     release: '2026年11月1日リリース', hero: '自社開発は、<br>ゼロからじゃなくていい。',
-    lead: '在庫管理システムとソースコードを、自社の業務に合う仕組みの出発点に。',
+    lead: '在庫管理システムIMS（Inventory Management System）とソースコードを、自社の業務に合う仕組みの出発点に。',
     primary: 'ソースコード付きプランを見る', secondary: 'デモを見る',
     license: '最新版へ、更新し続ける。', plus: '自分で変えて、自社だけのアプリへ。',
     comparison: '出発点は2つ', licenseIntro: 'はじめる、整える、使い続ける。', plusIntro: '見える、変えられる、育てていける。',
@@ -26,10 +26,10 @@ const copy = {
     mobileStock: '選択商品の在庫', total: '合計', main: '本社 / A-01', osaka: '大阪 / B-02',
   },
   en: {
-    language: 'en', title: 'Quiet Form — FDE IMS design preview',
+    language: 'en', title: 'Quiet Form — IMS design preview',
     product: 'Products', demo: 'Demo', news: 'News', contact: 'Contact', skip: 'Skip to content', menu: 'Open menu',
     release: 'Releases November 1, 2026', hero: 'Your own system.<br>Not from scratch.',
-    lead: 'An inventory system and its source code. A starting point for the way your company works.',
+    lead: 'IMS (Inventory Management System) and its source code. A starting point for the way your company works.',
     primary: 'Explore the source-code plan', secondary: 'Try the demo',
     license: 'Keep moving with the latest IMS.', plus: 'Make it yours. Make it your company’s app.',
     comparison: 'Two starting points.', licenseIntro: 'Start. Organize. Keep working.', plusIntro: 'See it. Change it. Build on it.',
@@ -45,10 +45,10 @@ const copy = {
     mobileStock: 'Selected product stock', total: 'Total', main: 'Main / A-01', osaka: 'Osaka / B-02',
   },
   zh: {
-    language: 'zh-CN', title: 'Quiet Form — FDE IMS 设计预览',
+    language: 'zh-CN', title: 'Quiet Form — IMS 设计预览',
     product: '产品', demo: '演示', news: '动态', contact: '联系我们', skip: '跳至正文', menu: '打开菜单',
     release: '2026年11月1日发布', hero: '开发自己的系统，<br>不必从零开始。',
-    lead: '以库存管理系统和源代码为起点，打造适合自己业务的工作方式。',
+    lead: '以库存管理系统 IMS（Inventory Management System）及其源代码为起点，打造适合自己业务的工作方式。',
     primary: '查看含源代码的方案', secondary: '体验演示',
     license: '持续更新，使用最新版 IMS。', plus: '亲手改造，成为自己公司的应用。',
     comparison: '两种起点。', licenseIntro: '开始使用，理顺流程，持续运作。', plusIntro: '看得见，改得了，用着不断完善。',
@@ -108,15 +108,15 @@ ${alternates}
 <h1 id="hero-title">${c.hero.split('<br>').map(line => `<span>${line}</span>`).join('')}</h1><p class="quiet-lead">${c.lead}</p>
 <div class="quiet-actions"><a class="button" href="#license-plus">${c.primary} <span aria-hidden="true">→</span></a><a class="quiet-text-link" href="#motion-demo">${c.secondary} <span aria-hidden="true">→</span></a></div>
 <div class="sculpture-pair">
-<figure>${productImage(false, true)}<figcaption><h2><span>FDE IMS</span> <span>License</span></h2><p>${c.license}</p></figcaption></figure>
-<figure>${productImage(true, true)}<figcaption><h2><span>FDE IMS</span> <span>License Plus</span></h2><p>${c.plus}</p></figcaption></figure>
+<figure>${productImage(false, true)}<figcaption><h2><span>IMS</span> <span>License</span></h2><p>${c.license}</p></figcaption></figure>
+<figure>${productImage(true, true)}<figcaption><h2><span>IMS</span> <span>License Plus</span></h2><p>${c.plus}</p></figcaption></figure>
 </div></div>
 </section>
 <section class="quiet-plans section-frame" id="plans" aria-labelledby="plan-title">
 <h2 class="quiet-heading" id="plan-title">${c.comparison}</h2>
 <table class="quiet-comparison"><caption class="visually-hidden">${c.features}</caption>
-<thead><tr><th scope="col"><div class="plan-top">${productImage()}<h3><span>FDE IMS</span> <span>License</span></h3><p>${c.licenseIntro}</p><strong class="plan-price">¥49,800</strong><a href="license.html#comparison">${c.terms} <span aria-hidden="true">→</span></a></div></th>
-<th scope="col" id="license-plus"><div class="plan-top">${productImage(true)}<h3><span>FDE IMS</span> <span>License Plus</span></h3><p>${c.plusIntro}</p><strong class="plan-price">¥99,800</strong><a href="license.html#comparison">${c.terms} <span aria-hidden="true">→</span></a></div></th></tr></thead>
+<thead><tr><th scope="col"><div class="plan-top">${productImage()}<h3><span>IMS</span> <span>License</span></h3><p>${c.licenseIntro}</p><strong class="plan-price">¥49,800</strong><a href="license.html#comparison">${c.terms} <span aria-hidden="true">→</span></a></div></th>
+<th scope="col" id="license-plus"><div class="plan-top">${productImage(true)}<h3><span>IMS</span> <span>License Plus</span></h3><p>${c.plusIntro}</p><strong class="plan-price">¥99,800</strong><a href="license.html#comparison">${c.terms} <span aria-hidden="true">→</span></a></div></th></tr></thead>
 <tbody>${featureRows}</tbody></table>
 <div class="updates-strip"><strong>License Updates</strong>${c.fees.map(fee => `<span>${fee}</span>`).join('')}</div>
 <p class="updates-note">${c.retained}</p>

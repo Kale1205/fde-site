@@ -75,7 +75,7 @@ for (const prefix of ['', 'ja/', 'zh/']) {
 }
 const comparisonExpectations = [
   ['index.html', 'Excel, SaaS, or a system you can shape?', 'Typical cloud inventory SaaS'],
-  ['ja/index.html', 'Excel・SaaS・FDE IMSの違い', '一般的なクラウド型在庫管理SaaS'],
+  ['ja/index.html', 'Excel・SaaS・IMSの違い', '一般的なクラウド型在庫管理SaaS'],
   ['zh/index.html', 'Excel、SaaS，还是可以自行调整的系统？', '一般的云端库存管理 SaaS'],
 ];
 for (const [name, heading, cloudLabel] of comparisonExpectations) {

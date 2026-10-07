@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
+import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import test from 'node:test';
