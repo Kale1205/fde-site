@@ -1,3 +1,41 @@
+# W08 Quiet Access customer input preview — 2026-10-07
+
+## Source and intentional changes
+
+- Selected displayed option **1**, verified against `fde-w02-review-site/dist/w08-prompts.json`: **Quiet Access**, `w08-option-1.png` (1024×1536). Original image retained; local copy `output/w08-implementation/source-option-1.png`.
+- W08 uses the forest band, faint genuine kale mark, soft ivory surface and document/payment/delivery icon rows. User explicitly changed the warning-only concept into an editable screen and approved EN/JA/ZH. Removed pre-release/unavailable headings, development notice and planned suffixes. The original generated board did not include a form; the form and review/error states extend the approved W06 input style instead of pretending to be literal image content.
+- Added JA/ZH `customer.html` routes; all three have static localized copy, reciprocal canonical/hreflang and noindex,follow. No new indexed sitemap route, JSON-LD, analytics or dependency. Approved W01–W07 navigation, font, tokens, footer and Mobile sheet reused. The board's approximate logo and gradient texture are not copied; genuine assets and the existing forest/paper tokens remain the source of truth.
+- Order ID/email inputs support validation → local review → edit. The button says Review details, not Check status. Privacy and review text clearly identify local entered information, not retrieved customer data. Nothing is sent or persisted. Legacy customer.js is not loaded; Worker production commerce guard and A01 Japanese CMS are byte-preserved against f95aa4d.
+
+## Visual comparisons and iterations
+
+- Before captures: `output/w08-implementation/w08-before-{1440,1024,390}.png`. Initial JA capture `w08-first-ja390.png` and confirmation `w08-review-ja390.png` retained.
+- Final native Chrome captures: `output/w08-implementation/final-{en,ja,zh}-{1440,1024,390}.png`. Viewports 1440×960, 1024×960 and 390×844, DPR1. EN full-page captures are 1440×1836 and 390×1898; JA final Mobile is approximately 390×1816. Source board crops are presentation, not literal CSS dimensions: mobile x727–1024 is normalized to 390px; Desktop x0–715 is compared at proportional content scale, with no invented pixel-perfect viewport assertion.
+- Source and implementation opened together in one comparison input; normalized Mobile comparison rendered and inspected as `output/w08-implementation/comparison.html`, native capture `comparison.png`. Full composition plus readable hero, form, icon rows, CTA and footer inspected. Approved content changes intentionally change page length/region proportions.
+- [P2, fixed] Initial new library payment/truck assets were black beside forest document art. Recolored only their fill to #073e2c, preserving original Phosphor regular path geometry. Post-fix nine-view captures show consistent icons. Real sources: `https://raw.githubusercontent.com/phosphor-icons/core/main/assets/regular/credit-card.svg` and `truck.svg`, existing MIT license retained.
+- [P2, fixed] Initial hidden errors were referenced in aria-describedby, so accessible descriptions included errors before submission. Initial descriptions now contain only the order-format hint; runtime associates an error only when invalid. Native fresh snapshot verifies no premature email error and submitted error focus is correct.
+- Repository validation found a Japanese full stop on the new h1. Removed it in renderer and JA HTML without changing validation rules; re-rendered and recaptured JA 1440/1024/390.
+- Typography: local Inter + established JA/ZH/system fallback, display 36–76px, body 16–17px, input 16px, clear weight hierarchy; no tiny text or ellipsis hiding input. Spacing: shared 1280px frame, 48/22px gutters, two Desktop input columns / one Mobile column, 64/32px document gap and unboxed rows. Colors: existing forest/paper/surface tokens, restrained shadow/borders, orange focus. Image quality: genuine SVG mark/logo, reserved dimensions, sharp library SVG icons; zero broken images. Copy: three manually authored locales with the same input/confirmation boundaries and no unavailable warning. All five required fidelity surfaces inspected.
+
+## Browser and functional evidence
+
+- All nine locale/width combinations: no document overflow, no broken images; both inputs enabled with 16px font. Console warning/error lists empty for EN/JA/ZH clean loads; all observed 13 per-locale asset/document requests HTTP200.
+- JA invalid submit, valid lower-case normalization, focus to confirmation and edit-back tested. EN Desktop and ZH Mobile real keyboard Enter submit succeeded. Confirmation output uses textContent; no simulated payment/order status. Form unit fixture confirms validation focus, safe text rendering and preserved values on edit.
+- Shared sheet: eight visible private-package links hit-testable above backdrop. Escape closes and restores trigger focus. Actual ZH→EN source language click and JA→ZH private language click stay on customer route. Private package JA form keyboard confirmation succeeded with zero external requests; private scope includes all 24 W01–W08 routes. No inquiry submitted.
+- Native Lighthouse snapshot: ZH Mobile and EN Desktop Accessibility / Best Practices / SEO / Agentic Browsing 100, zero failed audits. EN local trace observed CLS 0.00 and LCP 89ms unthrottled; not field performance, physical-device QA or full WCAG certification.
+- An initial stale native input UID was rejected after a viewport/page change. Fresh snapshot then EN form Enter check succeeded. Initial private 4178 navigation failed because its server was no longer running; restarted task-owned loopback preview and successfully checked the actual bundle. Failed evidence was not called application success.
+- 87 related Node tests passed. W08 six tests passed again after punctuation correction. Renderer idempotence, Chinese eight-page generator and JS syntax checks passed. Repository validator and final sitemap check are recorded in the W08 implementation handoff below after completion. This static repository has no separate build/lint command.
+
+## Boundaries and handoff
+
+- No FDE push, PR, main merge, public FDE deployment, Worker activation, customer/order lookup, payment or CMS write. Existing output and original checkout preserved. Owner-private review Site is a separate preview publication; all-page user approval still precedes FDE merge/publication.
+- A01 remains Japanese-only and untouched. W08 final implementation awaits user visual confirmation. Physical iPhone Safari/other vendor engines remain user/device QA, not claimed from Chrome emulation.
+- No actionable P0/P1/P2 visual finding remains. Implementation checklist: review published private W08; decide A01 visual scope separately; perform consolidated approval and exact-head PR/CI review before any FDE main merge.
+
+final result: passed
+
+---
+
 # W07 approved combined Order — 2026-10-07
 
 ## Source, composition and boundaries
