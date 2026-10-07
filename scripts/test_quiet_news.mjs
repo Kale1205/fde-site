@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {renderQuietNews} from './build_quiet_news.mjs';
+import {applyReleaseNoticePolicy} from './release_notice_policy.mjs';
 
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
@@ -17,7 +18,7 @@ for(const [prefix,heading] of [['','Updates'],['ja/','アップデート情報']
     for(const id of ['cmsNewsLead','cmsLatestList','cmsNewsWire','cmsInstagram'])assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1);
     assert.match(html,/class="news-hero-mark"[^>]*alt="" aria-hidden="true"/);
     assert.equal(html.match(/<head>[\s\S]*?<\/head>/)[0],original.match(/<head>[\s\S]*?<\/head>/)[0]);
-    for(const tag of original.match(/<p>[\s\S]*?<\/p>|<time[^>]*>[\s\S]*?<\/time>/g)||[])assert.ok(html.includes(tag),'Existing prose and dates remain');
+    for(const tag of applyReleaseNoticePolicy(original,'news').match(/<p>[\s\S]*?<\/p>|<time[^>]*>[\s\S]*?<\/time>/g)||[])assert.ok(html.includes(tag),'Other prose and dates remain');
     assert.ok(html.indexOf('news-featured')<html.indexOf('news-supporting'));
     assert.ok(html.indexOf('news-updates')<html.indexOf('news-archive'));
   });

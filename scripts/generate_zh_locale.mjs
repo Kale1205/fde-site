@@ -3,9 +3,16 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { renderQuietHomepage } from './build_quiet_homepages.mjs';
 import { renderQuietDemo } from './build_quiet_demo.mjs';
+import { renderQuietOrder } from './build_quiet_order.mjs';
+import { applyReleaseNoticePolicy, removePurchaseStatusCopy, releaseCopy } from './release_notice_policy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-translations.json'), 'utf8'));
+// Reuse existing reviewed translations after the approved notice removal.
+// The dictionary and unrelated wording stay unchanged.
+const noticeTranslations = new Map(Object.entries(translations).map(([en, zh]) =>
+  [removePurchaseStatusCopy(en), removePurchaseStatusCopy(zh)]));
+noticeTranslations.set(`${releaseCopy.en.date}. ${releaseCopy.en.unavailable}`, `${releaseCopy.zh.date}。 ${releaseCopy.zh.unavailable}`);
 const pages = [
   'index.html',
   'license.html',
@@ -47,7 +54,7 @@ const polishChinese = (value) => String(value)
   .replace(/粗略代码/g, 'Rust 代码')
   .replace(/^编号\s*/, '否。')
   .replace(/^没有\s+/, '否。');
-const translateValue = (value) => polishChinese(translations[value.replace(/\s+/g, ' ').trim()] || value);
+const translateValue = (value) => polishChinese(noticeTranslations.get(value.replace(/\s+/g, ' ').trim()) || value);
 
 function translateMarkup(source) {
   const tokens = source.split(/(<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<template\b[^>]*>[\s\S]*?<\/template>|<[^>]+>)/gi);
@@ -66,8 +73,8 @@ function translateMarkup(source) {
     const leading = token.match(/^\s*/)?.[0] || '';
     const trailing = token.match(/\s*$/)?.[0] || '';
     const normalized = token.replace(/\s+/g, ' ').trim();
-    return normalized && Object.hasOwn(translations, normalized)
-      ? `${leading}${polishChinese(translations[normalized])}${trailing}`
+    return normalized && noticeTranslations.has(normalized)
+      ? `${leading}${polishChinese(noticeTranslations.get(normalized))}${trailing}`
       : token;
   }).join('');
 }
@@ -139,7 +146,7 @@ function renderPage(name) {
     translated = translated.replace(excerpt, output.match(excerpt)[0]
       .replace(/(aria-label=")[^"]+/, `$1${label}`));
   }
-  return name === 'demo.html' ? renderQuietDemo(translated, 'zh') : translated;
+  return name === 'demo.html' ? renderQuietDemo(translated, 'zh') : applyReleaseNoticePolicy(translated,name.replace('.html',''));
 }
 
 mkdirSync(path.join(root, 'zh'), { recursive: true });
@@ -148,7 +155,10 @@ for (const name of pages) {
   // The approved homepage has manually authored three-language copy in one
   // shared renderer. Do not translate it back to the retired source-home UI.
   const output = name === 'index.html' && /class="gallery-page quiet-home"/.test(readFileSync(path.join(root, name), 'utf8'))
-    ? await renderQuietHomepage('zh') : renderPage(name);
+    ? await renderQuietHomepage('zh')
+    : name === 'order.html' && readFileSync(path.join(root,name),'utf8').includes('order-renewal')
+      ? renderQuietOrder(readFileSync(path.join(root,'zh',name),'utf8'),await renderQuietHomepage('zh'))
+      : renderPage(name);
   const outputPath = path.join(root, 'zh', name);
   if (process.argv.includes('--check')) {
     let current = '';

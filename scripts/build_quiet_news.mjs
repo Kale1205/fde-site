@@ -1,13 +1,14 @@
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {applyReleaseNoticePolicy} from './release_notice_policy.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 // Preserve existing articles, SEO, navigation and CMS anchors; only recompose
 // the selected Soft Dispatch layout and translate the approved section label.
 export function renderQuietNews(source) {
-  if(source.includes('news-renewal'))return source;
+  if(source.includes('news-renewal'))return applyReleaseNoticePolicy(source,'news');
   const prefix=/<html lang="en">/.test(source)?'':'../';
   const heading=/<html lang="ja">/.test(source)?'アップデート情報':/<html lang="zh-CN">/.test(source)?'更新信息':'Updates';
   let html=source.replace(' cms-news-page"',' cms-news-page news-renewal"');
@@ -16,7 +17,7 @@ export function renderQuietNews(source) {
   html=html.replace(/        (<div class="news-desk-label news-top-label">[\s\S]*?<\/a>)\n\n        (<h2 class="news-desk-label news-section-rule">[^<]+<\/h2>\n        <div id="cmsLatestList"[\s\S]*?        <\/div>)\n\n        (<h2 class="news-desk-label news-section-rule">[^<]+<\/h2>\n        <div id="cmsNewsWire"[\s\S]*?        <\/div>)/,
     (_,feature,latest,archive)=>`        <section class="news-featured" aria-labelledby="news-featured-title">\n          ${feature.replace('<div class="news-desk-label news-top-label">','<h2 id="news-featured-title" class="news-desk-label news-top-label">').replace('</div>','</h2>')}\n        </section>\n        <div class="news-supporting">\n          <section class="news-updates" aria-labelledby="news-updates-title">\n            ${latest.replace(/<h2 class="news-desk-label news-section-rule">[^<]+<\/h2>/,`<h2 id="news-updates-title" class="news-desk-label news-section-rule">${heading}</h2>`)}\n          </section>\n          <section class="news-archive" aria-labelledby="news-archive-title">\n            ${archive.replace('<h2 class="news-desk-label news-section-rule">','<h2 id="news-archive-title" class="news-desk-label news-section-rule">')}\n          </section>\n        </div>`);
   if(!html.includes('news-supporting'))throw Error('News composition anchors not found');
-  return html;
+  return applyReleaseNoticePolicy(html,'news');
 }
 
 if(process.argv[1]===fileURLToPath(import.meta.url)){

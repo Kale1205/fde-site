@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {renderQuietContact} from './build_quiet_contact.mjs';
+import {applyReleaseNoticePolicy} from './release_notice_policy.mjs';
 
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
@@ -22,12 +23,13 @@ for(const prefix of ['', 'ja/', 'zh/']){
     const form=s=>s.match(/<form id="contactForm"[\s\S]*?<\/form>/)[0];
     assert.equal(form(html),form(before),'Fields, validation, options and button copy are preserved');
     assert.equal((form(html).match(/ required/g)||[]).length,6);
-    for(const article of before.match(/<article class="faq-item"[\s\S]*?<\/article>/g))assert.ok(html.includes(article),'Static localized FAQ copy is unchanged');
+    const approvedCopy=applyReleaseNoticePolicy(before,'contact');
+    for(const article of approvedCopy.match(/<article class="faq-item"[\s\S]*?<\/article>/g))assert.ok(html.includes(article),'Other static localized FAQs are unchanged');
     for(const state of before.match(/<section id="inquiry(?:Confirm|Complete)"[\s\S]*?<\/section>/g))assert.ok(html.includes(state),'Confirm/complete contract is unchanged');
     const head=s=>s.match(/<head>[\s\S]*?<\/head>/)[0];
     assert.equal(head(html).replace(/\n  <script defer src="(?:\.\.\/)?quiet-contact\.js[^>]*><\/script>/,''),head(before),'SEO and existing scripts are unchanged');
     assert.equal(html.match(/<header[\s\S]*?<\/header>/)[0],before.match(/<header[\s\S]*?<\/header>/)[0]);
-    assert.equal(html.match(/<footer[\s\S]*?<\/footer>/)[0],before.match(/<footer[\s\S]*?<\/footer>/)[0]);
+    assert.equal(html.match(/<footer[\s\S]*?<\/footer>/)[0],approvedCopy.match(/<footer[\s\S]*?<\/footer>/)[0]);
   });
 }
 test('Contact interaction shim has no external requests, persistence or copy replacement',()=>{

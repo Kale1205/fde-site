@@ -1,12 +1,13 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {applyReleaseNoticePolicy} from './release_notice_policy.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const buildVersion=readFileSync(path.join(root,'build-version.txt'),'utf8').trim();
 // Recompose existing markup only: commercial copy, links and metadata remain source-owned.
 export function renderQuietLicense(source, prefix='') {
-  const finalize = html => html.replace(/<h3>/g, '<h2>').replace(/<\/h3>/g, '</h2>')
+  const finalize = html => applyReleaseNoticePolicy(html,'license').replace(/<h3>/g, '<h2>').replace(/<\/h3>/g, '</h2>')
     .replace(/(quiet-pages\.css|gallery-ui\.js)\?v=[0-9A-Za-z._-]+/g, `$1?v=${buildVersion}`);
   if(source.includes('license-renewal')) return finalize(source);
   const take=expression=>{const match=source.match(expression);if(!match)throw new Error(`Missing License region: ${expression}`);return match[0];};

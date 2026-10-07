@@ -690,7 +690,7 @@ for rel, markers in required_markers.items():
 # Core Contact FAQs and News items must remain present in raw HTML so crawlers
 # and users without JavaScript receive useful product facts before CMS hydration.
 static_contact_faq_ids = {
-    "ims-sale-status", "license-updates-difference", "license-plus-price",
+    "license-updates-difference", "license-plus-price",
     "inventory-adoption-migration-fit",
 }
 for rel in ("contact.html", "ja/contact.html"):
@@ -700,7 +700,7 @@ for rel in ("contact.html", "ja/contact.html"):
     fragment = source[start:end] if start >= 0 and end > start else ""
     ids = set(re.findall(r'data-faq-id=["\']([^"\']+)["\']', fragment, re.IGNORECASE))
     if not static_contact_faq_ids.issubset(ids) or len(plain_html_text(fragment)) < 500:
-        fail(f"{rel}: static Contact FAQ fallback must contain the four core product FAQs")
+        fail(f"{rel}: static Contact FAQ fallback must contain the three core product FAQs")
 
 static_news_titles = {
     "news.html": "FDE IMS updated to two products plus a License Updates add-on",

@@ -1,6 +1,7 @@
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {releaseCopy} from './release_notice_policy.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const copy={
@@ -22,7 +23,7 @@ export function renderQuietOrder(source,home){
     .replaceAll('href="#plans"','href="index.html#plans"')
     .replace(/href="([^"]*)" hreflang=/g,(_,directory)=>`href="${directory}order.html" hreflang=`);
   const footer=home.match(/<footer class="site-footer[\s\S]*?<\/footer>/)[0].replaceAll('href="#plans"','href="index.html#plans"');
-  const release=home.match(/<p class="release-line">[\s\S]*?<\/p>/)[0].replace(/<span[\s\S]*?<\/span> /,'');
+  const release=`<p class="release-line">${releaseCopy[key].date}</p>`;
   const plans=[...home.matchAll(/<div class="plan-top">([\s\S]*?)<\/div>/g)].slice(0,2);
   if(plans.length!==2)throw Error('Approved homepage product anchors missing');
   const products=plans.map((m,i)=>{

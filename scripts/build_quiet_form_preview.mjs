@@ -2,6 +2,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { releaseCopy } from './release_notice_policy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const copy = {
@@ -103,7 +104,7 @@ ${alternates}
 <main id="main-content">
 <section class="quiet-hero" id="product" aria-labelledby="hero-title">
 <div class="section-frame">
-<p class="release-line"><span aria-hidden="true">—</span> ${c.release}</p>
+<p class="release-line" data-release-notice><span aria-hidden="true">—</span><span>${c.release}<span class="release-availability">${releaseCopy[locale].unavailable}</span></span></p>
 <h1 id="hero-title">${c.hero.split('<br>').map(line => `<span>${line}</span>`).join('')}</h1><p class="quiet-lead">${c.lead}</p>
 <div class="quiet-actions"><a class="button" href="#license-plus">${c.primary} <span aria-hidden="true">→</span></a><a class="quiet-text-link" href="#motion-demo">${c.secondary} <span aria-hidden="true">→</span></a></div>
 <div class="sculpture-pair">

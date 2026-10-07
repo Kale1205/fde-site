@@ -1,13 +1,14 @@
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {applyReleaseNoticePolicy} from './release_notice_policy.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 // Selected W06 option 2: FAQ first, then one soft form surface. Preserve
 // existing copy, CMS/search anchors, six fields and the confirm/send contract.
 export function renderQuietContact(source) {
-  if(source.includes('contact-renewal'))return source;
+  if(source.includes('contact-renewal'))return applyReleaseNoticePolicy(source,'contact');
   const prefix=/<html lang="en">/.test(source)?'':'../';
   const faq=source.match(/    <section class="content-section section-frame">\n      <details class="faq-shell contact-faq">[\s\S]*?      <\/details>\n    <\/section>/)?.[0];
   if(!faq)throw Error('Contact FAQ anchors not found');
@@ -25,7 +26,7 @@ export function renderQuietContact(source) {
     (_,link,key)=>`${link}\n  <script defer src="${prefix}quiet-contact.js?v=${key}"></script>`);
   html=html.replace('        <section class="business-profile">','        </div>\n        <section class="business-profile">');
   if(!html.includes('contact-surface'))throw Error('Contact form anchors not found');
-  return html;
+  return applyReleaseNoticePolicy(html,'contact');
 }
 
 if(process.argv[1]===fileURLToPath(import.meta.url)){
