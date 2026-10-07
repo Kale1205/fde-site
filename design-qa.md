@@ -19,7 +19,14 @@
 - 70 related Node tests pass, covering W01–W07 including source preservation and approved Order facts. Order renderer check, `git diff --check`, `npm run sitemap -- --check` and `npm run validate` pass. First validation retained a legacy USD-price-book failure; narrowed the new approved JPY Order branch with explicit price and static/purchase-disabled invariants, keeping legacy commercial-page checks intact. No conventional build/lint script exists in this static repository.
 - Original checkout and pre-existing output are preserved. FDE source remains local on `preview/quiet-form-motion`; no FDE push, PR, merge, sales activation or actual production publication. Owner-private review packaging is separate. W08 Customer stays unchanged until design selection; English-only route and missing JA/ZH routes require a separate decision.
 
-final result: passed (scoped W07 implementation)
+## Final handoff
+
+- Verified implementation checkpoint `68499cd3dec673cca6990faa815ea60d30c96ecb`, no FDE push. Contact email-routing regression also passes (71 related tests including the prior 70). Private-package English 320/760/761 boundary probes have no overflow and correct one/three-column rail transitions. Focused terms CTA has a visible orange 3px outline; actual Enter navigates to private English License. JA terms click and ZH locale routes also remain private.
+- Existing owner-only audience retained. Sites source `bf2a828f72a410cb831ac6fd1dcc6671fb6ac55d` was pushed and archive-built by the native source workflow; deployment `appgdep_6ac596c509d481919874282052fb3661` returned `succeeded` at `https://fde-w02-design-review.kale-1999.chatgpt.site` on 2026-10-07T00:48:24Z. This is the separate private review site, not FDE production. `/w07-complete.html` links all three actual Order previews; prior galleries/preview safety remain preserved. No deployed-URL fetch or recurring task was used.
+- W08 generated exactly three independent image boards, shown in current-chat arrival order and retained as `dist/w08-option-{1,2,3}.png` in the review Site; full prompts and actual attached source references are in `dist/w08-prompts.json`. `/w08.html` Mobile/Desktop/board and 1/2/3 controls work at 390/1024/1440; actual keyboard selects option 3; no overflow, Console errors or failed requests. Gallery Accessibility/Best Practices/Agentic Browsing 100; SEO 80 from missing private-gallery description, not public SEO regression. Generated extra decorative slogan/approximated logos are explicitly not implementation copy/assets. `customer.html` remains untouched awaiting selection; JA/ZH new routes and CMS remain separate scope decisions.
+- Space renewal page (sequence 22), ToDo (62) and project table (104) all saved successfully and targeted readback confirmed W07 implementation/W08 selection state, correcting the earlier stale W06 status. Original other-page history, future IMS demo replacements, all-page-before-merge agreement and unrelated release/governance conditions are preserved.
+
+final result: passed (scoped W07 implementation, private handoff and Space sync; W08 design selection pending)
 
 ---
 
