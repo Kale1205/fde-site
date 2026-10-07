@@ -37,7 +37,13 @@ CodeQL reported seven new high findings in offline composition/test string opera
 
 The corrected local suite passes all 94 tests, zero skips. An initial in-flight run still loaded the first version of the new copy-extraction fixture, and also reported a transient Chinese release-notice mismatch during iCloud reads. The corrected fixture and an unchanged readback of all three Chinese release notices pass on the full rerun; no release copy or condition was altered.
 
-final result: passed (local visual and functional QA; exact-head CI/security recheck pending)
+The second security scan reduced findings to three but still rejected regex-based script filtering. Homepage/order builders now recompose the known generated asset suffix from an approved static metadata prefix, reject unexpected executable scripts before that boundary, and permit only the validated JSON-LD block on the homepage. Legacy order favicons are retained explicitly. Negative tests cover uppercase, whitespace/malformed closing tags, extra scripts and missing boundaries. No dependency was added and production output remains byte-identical. All 95 related tests pass without skips.
+
+An iCloud Git index write then timed out before committing this correction. The original folders and source were preserved. A fresh checkout outside iCloud was created from the already-pushed exact PR head; only the four correction files and this evidence were transferred for normal validation and push. Local repository/sitemap history checks in the original iCloud worktree also timed out; those attempts are failures, not passes.
+
+The non-iCloud checkout passes all 95 Node tests, repository validation, unchanged composition checks, sitemap check, three sitemap regression tests, all eight Chinese pages, staging integrity and whitespace checks. No generated HTML or sitemap change was needed.
+
+final result: passed (local visual and functional QA; corrected exact-head CI/security recheck pending)
 
 ---
 

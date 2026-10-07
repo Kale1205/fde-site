@@ -2,6 +2,7 @@ import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {releaseCopy} from './release_notice_policy.mjs';
+import {approvedHeadPrefix} from './approved_head_prefix.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const copy={
@@ -17,15 +18,11 @@ export function renderQuietOrder(source,home){
   const key=locale==='ja'?'ja':locale==='zh-CN'?'zh':'en',t=copy[key],prefix=key==='en'?'':'../';
   const version=home.match(/gallery-ui\.css\?v=([^"\s]+)/)[1];
   const icon=(name,cls='')=>`<img class="${cls}" src="${prefix}assets/phosphor-${name}.svg" width="24" height="24" alt="" aria-hidden="true">`;
-  let head=source.slice(0,source.indexOf('</head>'));
-  // This recomposes trusted repository markup, not arbitrary user HTML.
-  // A stable removal pass also handles uppercase and re-formed script tags.
-  let previousHead;
-  do {
-    previousHead=head;
-    head=head.replace(/<link\b[^>]*rel="stylesheet"[^>]*>\s*/gi,'');
-    head=head.replace(/<script\b[^>]*>[\s\S]*?<\/script>\s*/gi,'');
-  } while(head!==previousHead);
+  let head=approvedHeadPrefix(source);
+  // Legacy inputs placed the approved favicon after their stylesheet suffix.
+  // Retain that single known metadata element without filtering arbitrary tags.
+  const favicon=source.slice(0,source.indexOf('</head>')).match(/^[ \t]*<link rel="icon" type="image\/svg\+xml" href="(?:\.\.\/)?assets\/baked-kale-mark\.svg">/m)?.[0];
+  if(favicon&&!head.includes(favicon.trim()))head=head.trimEnd()+'\n'+favicon+'\n';
   head=head.trimEnd()+`\n  <link rel="stylesheet" href="${prefix}gallery-ui.css?v=${version}">\n  <link rel="stylesheet" href="${prefix}quiet-pages.css?v=${version}">\n  <script defer src="${prefix}gallery-ui.js?v=${version}"></script>\n`;
   const header=home.match(/<header class="site-header">[\s\S]*?<\/header>/)[0]
     .replaceAll('href="#plans"','href="index.html#plans"')

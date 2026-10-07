@@ -3,6 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { renderQuietPreview } from './build_quiet_form_preview.mjs';
+import { approvedHeadPrefix } from './approved_head_prefix.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const directories = { en: '', ja: 'ja/', zh: 'zh/' };
@@ -12,15 +13,7 @@ export async function renderQuietHomepage(locale) {
   const source = await readFile(path.join(root, directories[locale], 'index.html'), 'utf8');
   const version = (await readFile(path.join(root, 'build-version.txt'), 'utf8')).trim();
   // Keep each existing title, description, canonical, hreflang and entity IDs.
-  let head = source.slice(0, source.indexOf('</head>'));
-  // Trusted repository markup only. Repeat removals so adjacent fragments
-  // cannot re-form an executable tag; this is not a general HTML sanitizer.
-  let previousHead;
-  do {
-    previousHead = head;
-    head = head.replace(/<script\b[^>]*\bdefer\b[^>]*>[\s\S]*?<\/script>\s*/gi, '');
-    head = head.replace(/<link\b[^>]*rel="stylesheet"[^>]*>\s*/gi, '');
-  } while (head !== previousHead);
+  let head = approvedHeadPrefix(source, {jsonLd: true});
   head = head.replace(/(<script type="application\/ld\+json">)\s*([\s\S]*?)(<\/script>)/, (_, open, json, close) => {
     const data = JSON.parse(json);
     // The approved layout has no FAQ section. Never advertise invisible FAQs.

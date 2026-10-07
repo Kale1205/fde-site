@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {renderQuietOrder} from './build_quiet_order.mjs';
+import {approvedHeadPrefix} from './approved_head_prefix.mjs';
 const root=new URL('../',import.meta.url),read=n=>readFileSync(new URL(n,root),'utf8');
 test('head recomposition removes uppercase and re-formed executable tags',()=>{
   const page=read('order.html'),home=read('index.html');
@@ -11,6 +12,16 @@ test('head recomposition removes uppercase and re-formed executable tags',()=>{
   assert.doesNotMatch(output,/UNEXPECTED_/);
   assert.equal((output.match(/<script\b/gi)||[]).length,1);
   assert.equal(output,page);
+});
+test('static metadata rejects executable scripts and missing asset boundaries',()=>{
+  const page=read('order.html');
+  for(const script of ['<SCRIPT>alert(1)</SCRIPT>', '<script>alert(1)</script >', '<script>alert(1)</script foo="bar">']) {
+    assert.throws(()=>approvedHeadPrefix(page.replace('<title>',script+'<title>')),/Unexpected script/);
+  }
+  assert.throws(()=>approvedHeadPrefix('<head><title>No assets</title></head>'),/suffix missing/);
+  const home=read('index.html');
+  assert.ok(approvedHeadPrefix(home,{jsonLd:true}).includes('application/ld+json'));
+  assert.throws(()=>approvedHeadPrefix(home.replace('<title>','<script>unexpected</script><title>'),{jsonLd:true}),/Only the approved JSON-LD/);
 });
 for(const prefix of ['', 'ja/', 'zh/']){
   test(`${prefix}order matches selected W07 composition and approved homepage products`,()=>{
