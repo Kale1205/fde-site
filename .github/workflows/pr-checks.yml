@@ -43,6 +43,9 @@ jobs:
       - name: Repository consistency checks
         run: npm run validate
 
+      - name: Multilingual FAQ, stock terminology, and internal-link contracts
+        run: node --test scripts/test_multilingual_content.mjs
+
       - name: Linear-inspired redesign contracts
         run: node scripts/test_linear_redesign.mjs
 

@@ -6,6 +6,7 @@ import { renderQuietDemo } from './build_quiet_demo.mjs';
 import { renderQuietOrder } from './build_quiet_order.mjs';
 import { renderQuietCustomer } from './build_quiet_customer.mjs';
 import { applyReleaseNoticePolicy, removePurchaseStatusCopy, releaseCopy } from './release_notice_policy.mjs';
+import { renderStaticFaq } from './multilingual_content_copy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-translations.json'), 'utf8'));
@@ -132,7 +133,6 @@ function renderPage(name) {
     output = output.replace(/<nav class="order-locale"[\s\S]*?<\/nav>/, '<nav class="order-locale" aria-label="选择语言"><a href="../order.html" hreflang="en" lang="en">English</a><a href="../ja/order.html" hreflang="ja" lang="ja">日本語</a><a href="order.html" hreflang="zh-CN" lang="zh-CN" aria-current="page">简体中文</a></nav>');
   }
 
-  if (name === 'contact.html') output = output.replace(/\n?<script defer src="\.\.\/faq-cms\.js[^>]*><\/script>/, '');
   let translated = translateMarkup(output).replace(/\n[ \t]+\n/g, '\n\n');
   if (name === 'news.html') {
     // This editorial section is not the commercial Updates product label.
@@ -140,6 +140,7 @@ function renderPage(name) {
   }
   if (name === 'contact.html') {
     translated = translated.replace('<p>02 / CONTACT FORM</p>', '<p>02 / 咨询表单</p>');
+    translated = renderStaticFaq(translated);
   }
   if (name === 'goals.html') {
     // Localize the accessible label, never the actual source identifiers.

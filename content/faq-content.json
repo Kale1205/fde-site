@@ -2,49 +2,64 @@
   "version": 3,
   "locales": [
     "ja",
-    "en"
+    "en",
+    "zh-CN"
   ],
   "categories": {
     "status": {
       "order": 1,
       "label": {
         "ja": "製品・販売状況",
-        "en": "Product & Availability"
+        "en": "Product & Availability",
+        "zh-CN": "产品与销售状况"
       }
     },
     "license": {
       "order": 2,
       "label": {
         "ja": "License・内部利用",
-        "en": "License & Internal Use"
+        "en": "License & Internal Use",
+        "zh-CN": "License 与内部使用"
       }
     },
     "restrictions": {
       "order": 3,
       "label": {
         "ja": "禁止事項・再配布",
-        "en": "Restrictions & Redistribution"
+        "en": "Restrictions & Redistribution",
+        "zh-CN": "限制与再分发"
       }
     },
     "updates": {
       "order": 4,
       "label": {
         "ja": "Updates・更新",
-        "en": "Updates & Maintenance"
+        "en": "Updates & Maintenance",
+        "zh-CN": "Updates 与维护"
       }
     },
     "rights": {
       "order": 5,
       "label": {
         "ja": "権利・AI・第三者",
-        "en": "Rights, AI & Third Parties"
+        "en": "Rights, AI & Third Parties",
+        "zh-CN": "权利、AI 与第三方"
       }
     },
     "orders": {
       "order": 6,
       "label": {
         "ja": "注文・EULA",
-        "en": "Ordering & EULA"
+        "en": "Ordering & EULA",
+        "zh-CN": "订单与 EULA"
+      }
+    },
+    "product": {
+      "order": 7,
+      "label": {
+        "ja": "製品・導入相談",
+        "en": "Product & Adoption",
+        "zh-CN": "产品与导入评估"
       }
     }
   },
@@ -53,98 +68,120 @@
       "category": "status",
       "label": {
         "ja": "開発状況",
-        "en": "Development status"
+        "en": "Development status",
+        "zh-CN": "开发状况"
       }
     },
     "models": {
       "category": "status",
       "label": {
         "ja": "提供モデル",
-        "en": "Product models"
+        "en": "Product models",
+        "zh-CN": "产品方案"
       }
     },
     "license-basics": {
       "category": "license",
       "label": {
         "ja": "License基本",
-        "en": "License basics"
+        "en": "License basics",
+        "zh-CN": "License 基本条件"
       }
     },
     "entity": {
       "category": "license",
       "label": {
         "ja": "利用法人・端末",
-        "en": "Entity & devices"
+        "en": "Entity & devices",
+        "zh-CN": "法人及设备"
       }
     },
     "contractor": {
       "category": "license",
       "label": {
         "ja": "外部開発者",
-        "en": "External developers"
+        "en": "External developers",
+        "zh-CN": "外部开发者"
       }
     },
     "redistribution": {
       "category": "restrictions",
       "label": {
         "ja": "販売・再配布",
-        "en": "Resale & redistribution"
+        "en": "Resale & redistribution",
+        "zh-CN": "销售与再分发"
       }
     },
     "service": {
       "category": "restrictions",
       "label": {
         "ja": "第三者サービス",
-        "en": "Third-party services"
+        "en": "Third-party services",
+        "zh-CN": "第三方服务"
       }
     },
     "updates-model": {
       "category": "updates",
       "label": {
         "ja": "Updates基本",
-        "en": "Updates basics"
+        "en": "Updates basics",
+        "zh-CN": "Updates 基本条件"
       }
     },
     "responsibility": {
       "category": "updates",
       "label": {
         "ja": "更新・セキュリティ責任",
-        "en": "Update & security responsibility"
+        "en": "Update & security responsibility",
+        "zh-CN": "更新与安全责任"
       }
     },
     "ip": {
       "category": "rights",
       "label": {
         "ja": "知的財産・表示",
-        "en": "IP & notices"
+        "en": "IP & notices",
+        "zh-CN": "知识产权与声明"
       }
     },
     "ai": {
       "category": "rights",
       "label": {
         "ja": "AI利用",
-        "en": "AI use"
+        "en": "AI use",
+        "zh-CN": "AI 使用"
       }
     },
     "thirdparty": {
       "category": "rights",
       "label": {
         "ja": "OSS・第三者",
-        "en": "OSS & third parties"
+        "en": "OSS & third parties",
+        "zh-CN": "开源软件与第三方"
       }
     },
     "purchase": {
       "category": "orders",
       "label": {
         "ja": "正式販売・注文",
-        "en": "Formal purchase"
+        "en": "Formal purchase",
+        "zh-CN": "正式销售与订单"
       }
     },
     "eula": {
       "category": "orders",
       "label": {
         "ja": "License Agreement / EULA",
-        "en": "License Agreement / EULA"
+        "en": "License Agreement / EULA",
+        "zh-CN": "License Agreement / EULA"
+      }
+    },
+    "adoption": {
+      "category": "product",
+      "label": {
+        "ja": "導入相談",
+        "en": "Adoption",
+        "zh-CN": "导入评估"
       }
     }
   },
@@ -157,11 +194,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "LicenseとLicense Plusの違いは何ですか？",
-        "en": "What is the difference between License and License Plus?"
+        "en": "What is the difference between License and License Plus?",
+        "zh-CN": "License 与 License Plus 有什么区别？"
       },
       "answer": {
         "ja": "Licenseは、ソースコードを含まない買い切り型で、購入法人内で永続利用できます。購入後3か月はUpdatesを含み、その後はLicense専用の追加オプションとして任意継続できます。License Plusは、ソースコードと社内改変権を含む買い切り型で、更新・セキュリティは購入者が管理します。Updatesは第3の製品プランではなく、License Plusは対象外です。",
-        "en": "License is a one-time purchase without source code and permits perpetual internal use. It includes the first three months of Updates, with optional continuation as a License-only add-on. License Plus is a one-time purchase with source code and internal-modification rights; the purchaser manages updates and security. Updates is not a third product plan, and License Plus is not eligible."
+        "en": "License is a one-time purchase without source code and permits perpetual internal use. It includes the first three months of Updates, with optional continuation as a License-only add-on. License Plus is a one-time purchase with source code and internal-modification rights; the purchaser manages updates and security. Updates is not a third product plan, and License Plus is not eligible.",
+        "zh-CN": "License 为一次性购买，不含源代码，可永久用于购买法人内部，并包含前三个月的 Updates；之后可选择继续购买 License 专用的 Updates 附加服务。License Plus 同样为一次性购买，包含源代码与内部修改权，更新和安全由购买方负责。Updates 不是第三种产品方案，也不适用于 License Plus。"
       },
       "keywords": {
         "ja": [
@@ -179,6 +218,13 @@
           "difference",
           "comparison",
           "model"
+        ],
+        "zh-CN": [
+          "产品区别",
+          "一次性购买",
+          "源代码",
+          "内部修改",
+          "Updates"
         ]
       },
       "synonyms": {
@@ -191,6 +237,13 @@
           "which one",
           "plan difference",
           "product model"
+        ],
+        "zh-CN": [
+          "产品区别",
+          "一次性购买",
+          "源代码",
+          "内部修改",
+          "Updates"
         ]
       }
     },
@@ -202,11 +255,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "IMSはどのような用途の製品ですか？",
-        "en": "What is IMS intended for?"
+        "en": "What is IMS intended for?",
+        "zh-CN": "IMS 是用于什么的产品？"
       },
       "answer": {
         "ja": "小規模企業の在庫管理を支える、デスクトップ中心・ローカル運用を前提とした業務ソフトとして開発しています。完成時の機能はまだ確定していないため、本FAQでは未確定の機能を保証しません。",
-        "en": "IMS is being developed as desktop-first, local-first business software intended to support inventory-related operations for small companies. The completed feature set is still under development, so this FAQ does not guarantee features that have not been formally finalized."
+        "en": "IMS is being developed as desktop-first, local-first business software intended to support inventory-related operations for small companies. The completed feature set is still under development, so this FAQ does not guarantee features that have not been formally finalized.",
+        "zh-CN": "IMS 正在作为面向小型企业的库存管理业务软件开发，以桌面应用和本地运行为主要方向。最终功能仍在开发中，本 FAQ 不保证尚未正式确定的功能。"
       },
       "keywords": {
         "ja": [
@@ -222,6 +277,12 @@
           "purpose",
           "desktop",
           "local-first"
+        ],
+        "zh-CN": [
+          "库存管理",
+          "小型企业",
+          "桌面应用",
+          "本地运行"
         ]
       },
       "synonyms": {
@@ -234,6 +295,12 @@
           "what does it do",
           "product purpose",
           "inventory software"
+        ],
+        "zh-CN": [
+          "库存管理",
+          "小型企业",
+          "桌面应用",
+          "本地运行"
         ]
       }
     },
@@ -245,11 +312,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "現在のIMSデモは正式製品ですか？",
-        "en": "Is the current IMS demo a released product?"
+        "en": "Is the current IMS demo a released product?",
+        "zh-CN": "目前的 IMS 演示是正式发布的产品吗？"
       },
       "answer": {
-        "ja": "いいえ。現在のデモは、開発中のIMSを想定した操作イメージを確認するためのサンプルです。正式製品のバージョン、完成機能、更新履歴、セキュリティ対応実績、提供実績を示すものではありません。",
-        "en": "No. The current demo is a sample used to review the intended operating experience of the IMS under development. It does not represent a released product version, completed feature set, update history, security track record or delivery record."
+        "ja": "いいえ。現在のデモは、開発中のIMSを想定した操作イメージを確認するためのサンプルです。正式製品のバージョン、完成機能、更新履歴、セキュリティ対応実績、提供実績を示すものではありません。 Webサイトは英語・日本語・簡体字中国語に対応しています。ネイティブ初回版の画面言語は英語・日本語を対象とし、Webサイトの中国語対応がネイティブ版の中国語対応を意味するものではありません。",
+        "en": "No. The current demo is a sample used to review the intended operating experience of the IMS under development. It does not represent a released product version, completed feature set, update history, security track record or delivery record. The website is available in English, Japanese and Simplified Chinese. The initial native app targets English and Japanese UI only; Chinese on the website does not imply Chinese support in the native app.",
+        "zh-CN": "不是。目前的演示是用于了解开发中 IMS 预期操作体验的示例，不代表正式产品版本、已完成功能、更新历史、安全维护记录或交付记录。网站提供英语、日语和简体中文；原生应用首个版本的界面语言仅以英语和日语为目标，网站提供中文不代表原生应用支持中文。"
       },
       "keywords": {
         "ja": [
@@ -263,6 +332,14 @@
           "released product",
           "version",
           "development preview"
+        ],
+        "zh-CN": [
+          "演示",
+          "正式产品",
+          "示例数据",
+          "开发预览",
+          "界面语言",
+          "中文"
         ]
       },
       "synonyms": {
@@ -275,6 +352,14 @@
           "trial",
           "finished version",
           "release"
+        ],
+        "zh-CN": [
+          "演示",
+          "正式产品",
+          "示例数据",
+          "开发预览",
+          "界面语言",
+          "中文"
         ]
       }
     },
@@ -286,11 +371,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "IMS Licenseの価格はいくらですか？",
-        "en": "What is the planned price of IMS License?"
+        "en": "What is the planned price of IMS License?",
+        "zh-CN": "IMS License 的价格是多少？"
       },
       "answer": {
         "ja": "Licenseの予定価格は49,800円（買い切り）です。ソースコードは含みません。購入法人内で期限なく利用でき、購入後3か月はUpdatesを追加料金なしで利用できます。有料のUpdatesへ自動移行することはありません。",
-        "en": "The planned one-time price is a $349 USD candidate. Source code is not included. The plan permits perpetual internal use and includes the first three months of Updates-equivalent service at no additional charge. It does not automatically convert into paid Updates. All USD figures are unapproved candidates pending final international pricing."
+        "en": "The planned one-time price is a $349 USD candidate. Source code is not included. The plan permits perpetual internal use and includes the first three months of Updates-equivalent service at no additional charge. It does not automatically convert into paid Updates. All USD figures are unapproved candidates pending final international pricing.",
+        "zh-CN": "License 的一次性美元候选价格为 349 美元，不含源代码，允许购买法人永久内部使用，并包含购买后前三个月的 Updates 等效服务，无需另付费用。不会自动转为付费 Updates。所有美元金额均为等待最终国际定价的未批准候选价格。"
       },
       "keywords": {
         "ja": [
@@ -306,6 +393,13 @@
           "$349 candidate",
           "cost",
           "one-time"
+        ],
+        "zh-CN": [
+          "License",
+          "价格",
+          "349 美元",
+          "一次性购买",
+          "前三个月"
         ]
       },
       "synonyms": {
@@ -318,6 +412,13 @@
           "how much",
           "fee",
           "one-time price"
+        ],
+        "zh-CN": [
+          "License",
+          "价格",
+          "349 美元",
+          "一次性购买",
+          "前三个月"
         ]
       }
     },
@@ -329,19 +430,57 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "IMS License Plusの価格と内容を教えてください",
-        "en": "What are the planned price and included rights for License Plus?"
+        "en": "What are the planned price and included rights for License Plus?",
+        "zh-CN": "License Plus 的预定价格与包含权利是什么？"
       },
       "answer": {
         "ja": "License Plusの予定価格は99,800円（買い切り）です。購入法人内で期限なく利用でき、ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。Updates特典はなく、更新・セキュリティは購入者が管理します。",
-        "en": "The planned one-time price is a $699 USD candidate. It is planned to include perpetual internal use, full source, internal-modification rights, technical documentation, and customer-server/self-hosted operation for the purchasing legal entity. It has no Updates entitlement; the purchaser manages updates and security. All USD figures are unapproved candidates pending final international pricing."
+        "en": "The planned one-time price is a $699 USD candidate. It is planned to include perpetual internal use, full source, internal-modification rights, technical documentation, and customer-server/self-hosted operation for the purchasing legal entity. It has no Updates entitlement; the purchaser manages updates and security. All USD figures are unapproved candidates pending final international pricing.",
+        "zh-CN": "一次性美元候选价格为 699 美元。计划包含购买法人的永久内部使用权、完整源代码、内部修改权、技术文档以及客户服务器自托管运行。该方案不含 Updates 权利，更新与安全由购买方负责。所有美元金额均为等待最终国际定价的未批准候选价格。"
       },
       "keywords": {
-        "ja": ["License Plus", "99,800円", "ソースコード一式", "社内改変", "自社サーバー", "買い切り"],
-        "en": ["License Plus", "$699 candidate", "full source", "self-hosted", "internal modification", "one-time purchase"]
+        "ja": [
+          "License Plus",
+          "99,800円",
+          "ソースコード一式",
+          "社内改変",
+          "自社サーバー",
+          "買い切り"
+        ],
+        "en": [
+          "License Plus",
+          "$699 candidate",
+          "full source",
+          "self-hosted",
+          "internal modification",
+          "one-time purchase"
+        ],
+        "zh-CN": [
+          "License Plus",
+          "价格",
+          "699 美元",
+          "源代码",
+          "自托管"
+        ]
       },
       "synonyms": {
-        "ja": ["Plusの価格", "コード付きプラン", "改変できるプラン"],
-        "en": ["Plus price", "source-code plan", "customizable plan"]
+        "ja": [
+          "Plusの価格",
+          "コード付きプラン",
+          "改変できるプラン"
+        ],
+        "en": [
+          "Plus price",
+          "source-code plan",
+          "customizable plan"
+        ],
+        "zh-CN": [
+          "License Plus",
+          "价格",
+          "699 美元",
+          "源代码",
+          "自托管"
+        ]
       }
     },
     {
@@ -352,19 +491,51 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "LicenseからLicense Plusへアップグレードできますか？",
-        "en": "Can License be upgraded to License Plus?"
+        "en": "Can License be upgraded to License Plus?",
+        "zh-CN": "可以从 License 升级到 License Plus 吗？"
       },
       "answer": {
         "ja": "現在の2商品構成では、LicenseからLicense Plusへの差額アップグレード条件は設けていません。License Plusは別商品として購入する予定です。正式販売前に最終条件を提示します。",
-        "en": "The current two-product model does not define a price-difference upgrade from License to License Plus. License Plus is planned as a separate purchase. Final terms will be presented before formal sales."
+        "en": "The current two-product model does not define a price-difference upgrade from License to License Plus. License Plus is planned as a separate purchase. Final terms will be presented before formal sales.",
+        "zh-CN": "当前的两种产品方案未设置从 License 补差价升级到 License Plus 的条件。License Plus 计划作为独立产品另行购买，最终条件会在正式销售前公布。"
       },
       "keywords": {
-        "ja": ["License Plus", "アップグレード", "別商品", "ソースコード一式", "自社サーバー"],
-        "en": ["License Plus", "upgrade", "separate purchase", "full source", "self-hosted"]
+        "ja": [
+          "License Plus",
+          "アップグレード",
+          "別商品",
+          "ソースコード一式",
+          "自社サーバー"
+        ],
+        "en": [
+          "License Plus",
+          "upgrade",
+          "separate purchase",
+          "full source",
+          "self-hosted"
+        ],
+        "zh-CN": [
+          "升级",
+          "差价",
+          "独立购买"
+        ]
       },
       "synonyms": {
-        "ja": ["Plusへ変更", "コード付きへ変更", "上位プラン"],
-        "en": ["move to Plus", "upgrade to source code", "higher plan"]
+        "ja": [
+          "Plusへ変更",
+          "コード付きへ変更",
+          "上位プラン"
+        ],
+        "en": [
+          "move to Plus",
+          "upgrade to source code",
+          "higher plan"
+        ],
+        "zh-CN": [
+          "升级",
+          "差价",
+          "独立购买"
+        ]
       }
     },
     {
@@ -375,11 +546,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "Licenseは一度購入すれば永続的に利用できますか？",
-        "en": "Is License planned to allow perpetual use?"
+        "en": "Is License planned to allow perpetual use?",
+        "zh-CN": "License 购买一次后可以永久使用吗？"
       },
       "answer": {
         "ja": "はい。Licenseは、購入した法人内で期限なく使えます。基本機能を使うための月額契約は不要です。最終条件は、販売開始前にLicense Agreement / EULAで提示します。",
-        "en": "Yes. License is designed to permit perpetual internal use by the purchasing legal entity, with no mandatory monthly subscription for basic use. Final conditions will be defined in the License Agreement / EULA before formal sales."
+        "en": "Yes. License is designed to permit perpetual internal use by the purchasing legal entity, with no mandatory monthly subscription for basic use. Final conditions will be defined in the License Agreement / EULA before formal sales.",
+        "zh-CN": "可以。License 允许购买法人永久内部使用，使用基本功能无需强制订阅月度服务。最终条件会在正式销售前通过 License Agreement / EULA 公布。"
       },
       "keywords": {
         "ja": [
@@ -393,6 +566,12 @@
           "one-time",
           "no monthly fee",
           "License"
+        ],
+        "zh-CN": [
+          "永久使用",
+          "内部使用",
+          "无需月费",
+          "EULA"
         ]
       },
       "synonyms": {
@@ -405,6 +584,12 @@
           "use forever",
           "perpetual license",
           "no subscription"
+        ],
+        "zh-CN": [
+          "永久使用",
+          "内部使用",
+          "无需月费",
+          "EULA"
         ]
       }
     },
@@ -416,11 +601,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "Licenseにソースコードは含まれますか？",
-        "en": "Does License include source code?"
+        "en": "Does License include source code?",
+        "zh-CN": "License 包含源代码吗？"
       },
       "answer": {
         "ja": "いいえ。49,800円のLicenseにソースコードは含まれません。ソースコード一式と社内改変権は、99,800円のLicense Plusに含む予定です。どちらも購入法人内で期限なく利用できます。",
-        "en": "No. The License has a $349 USD candidate price and does not include source code. Customers that need full source, technical documentation, self-hosted operation, and internal-modification rights should choose License Plus at the $699 USD candidate price. Both plans permit perpetual internal use by the purchasing legal entity. All USD figures are unapproved candidates."
+        "en": "No. The License has a $349 USD candidate price and does not include source code. Customers that need full source, technical documentation, self-hosted operation, and internal-modification rights should choose License Plus at the $699 USD candidate price. Both plans permit perpetual internal use by the purchasing legal entity. All USD figures are unapproved candidates.",
+        "zh-CN": "不包含。License 的美元候选价格为 349 美元，不含源代码。需要完整源代码、技术文档、自托管运行与内部修改权的客户可选择美元候选价格为 699 美元的 License Plus。两种产品均允许购买法人永久内部使用。所有美元金额均为未批准候选价格。"
       },
       "keywords": {
         "ja": [
@@ -434,6 +621,13 @@
           "License",
           "copyright",
           "intellectual property"
+        ],
+        "zh-CN": [
+          "源代码",
+          "License",
+          "License Plus",
+          "349 美元",
+          "699 美元"
         ]
       },
       "synonyms": {
@@ -446,6 +640,13 @@
           "code included",
           "source included",
           "IP ownership"
+        ],
+        "zh-CN": [
+          "源代码",
+          "License",
+          "License Plus",
+          "349 美元",
+          "699 美元"
         ]
       }
     },
@@ -457,11 +658,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "ソースコードを自社向けに改変できるプランはどれですか？",
-        "en": "Which plan allows internal source-code modification?"
+        "en": "Which plan allows internal source-code modification?",
+        "zh-CN": "哪种产品允许修改源代码以适应内部业务？"
       },
       "answer": {
         "ja": "License Plusなら、社内業務に使う範囲でソースコードを確認・編集・改変できます。機能追加、自社システムとの連携、改変版の社内利用も可能です。Licenseにソースコードは含まれません。また、改変できる範囲に販売・再配布・サブライセンスは含まれません。",
-        "en": "License Plus is planned to allow source-code inspection, editing, modification, internal feature development, integration with internal systems, and internal use of modified versions by the purchasing legal entity. License does not include source code. Modification rights do not include resale, redistribution, or sublicensing rights."
+        "en": "License Plus is planned to allow source-code inspection, editing, modification, internal feature development, integration with internal systems, and internal use of modified versions by the purchasing legal entity. License does not include source code. Modification rights do not include resale, redistribution, or sublicensing rights.",
+        "zh-CN": "License Plus 计划允许购买法人为内部业务查看、编辑和修改源代码，增加功能、与内部系统集成，并在内部使用修改后的版本。License 不包含源代码。修改权不包含销售、再分发或再许可的权利。"
       },
       "keywords": {
         "ja": [
@@ -477,6 +680,12 @@
           "edit",
           "internal development",
           "source code"
+        ],
+        "zh-CN": [
+          "内部修改",
+          "定制",
+          "系统集成",
+          "源代码"
         ]
       },
       "synonyms": {
@@ -489,6 +698,12 @@
           "internal customization",
           "change code",
           "extend features"
+        ],
+        "zh-CN": [
+          "内部修改",
+          "定制",
+          "系统集成",
+          "源代码"
         ]
       }
     },
@@ -500,11 +715,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "外部の開発会社やエンジニアに改修を委託できますか？",
-        "en": "Can an external developer customize License Plus for us?"
+        "en": "Can an external developer customize License Plus for us?",
+        "zh-CN": "可以委托外部开发公司或工程师修改 License Plus 吗？"
       },
       "answer": {
         "ja": "License Plusでは、社内向けの開発・改修・保守に必要な範囲で、外部開発者にソースコードを開示できます。委託先にも、秘密保持、他案件への流用禁止、販売・再配布禁止などの条件が適用されます。Licenseにはソースコードが含まれないため、この取り扱いは適用されません。",
-        "en": "License Plus is planned to permit necessary source-code disclosure to external developers working on the purchasing entity’s internal development, modification, or maintenance. The customer must enforce confidentiality, no reuse in other projects, and no resale or redistribution. License does not include source code and is not covered by this permission."
+        "en": "License Plus is planned to permit necessary source-code disclosure to external developers working on the purchasing entity’s internal development, modification, or maintenance. The customer must enforce confidentiality, no reuse in other projects, and no resale or redistribution. License does not include source code and is not covered by this permission.",
+        "zh-CN": "License Plus 允许在购买法人的内部开发、修改或维护所必需的范围内，向外部开发者披露源代码。委托方须确保对方遵守保密、不得用于其他项目、不得销售或再分发等条件。License 不包含源代码，不适用这项许可。"
       },
       "keywords": {
         "ja": [
@@ -520,6 +737,12 @@
           "outsourcing",
           "NDA",
           "confidentiality"
+        ],
+        "zh-CN": [
+          "外部开发者",
+          "委托",
+          "保密",
+          "维护"
         ]
       },
       "synonyms": {
@@ -532,6 +755,12 @@
           "outsourced developer",
           "development company",
           "maintenance contractor"
+        ],
+        "zh-CN": [
+          "外部开发者",
+          "委托",
+          "保密",
+          "维护"
         ]
       }
     },
@@ -543,11 +772,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "LicenseまたはLicense Plusは何台のPCにインストールできますか？",
-        "en": "How many devices can use License or License Plus?"
+        "en": "How many devices can use License or License Plus?",
+        "zh-CN": "License 或 License Plus 可以安装在多少台设备上？"
       },
       "answer": {
         "ja": "LicenseとLicense Plusは購入した1法人の内部業務向けです。初回のネイティブ版は、Apple M2以降の同一Mac上でHostとClientを利用する構成を対象とします。対応機種とmacOSは実機検証後に確定し、各機種の最低OS要件を満たす必要があります。複数MacのLAN接続は初回の範囲外で、後続アップデートの時期は未定です。ライセンス上の端末数などは正式EULAで定め、接続・同期の技術的な対応範囲とは区別します。",
-        "en": "License and License Plus are for the purchasing legal entity’s internal business use. The initial native release targets an Apple M2-or-later Mac, with Host and Client on that same Mac. Supported models and macOS versions will be confirmed after device testing and must meet each model’s minimum OS requirement. Multiple-Mac LAN access is outside the initial release; the later update has no confirmed date. Device permissions will be defined in the final EULA and are separate from technical connection and synchronization support."
+        "en": "License and License Plus are for the purchasing legal entity’s internal business use. The initial native release targets an Apple M2-or-later Mac, with Host and Client on that same Mac. Supported models and macOS versions will be confirmed after device testing and must meet each model’s minimum OS requirement. Multiple-Mac LAN access is outside the initial release; the later update has no confirmed date. Device permissions will be defined in the final EULA and are separate from technical connection and synchronization support.",
+        "zh-CN": "License 和 License Plus 用于购买法人的内部业务。首个原生版本面向配备 Apple M2 或更新芯片的单台 Mac，Host 与 Client 在同一台 Mac 上运行。支持的机型与 macOS 版本将在实机测试后确认，并须满足各机型的最低系统要求。多台 Mac 的局域网连接不在首个版本范围内，后续更新的日期尚未确定。许可允许的设备数量将在最终 EULA 中规定，与连接及同步的技术支持范围分开说明。"
       },
       "keywords": {
         "ja": [
@@ -563,6 +794,13 @@
           "install",
           "device count",
           "legal entity"
+        ],
+        "zh-CN": [
+          "设备数量",
+          "Apple M2",
+          "Mac",
+          "局域网",
+          "系统要求"
         ]
       },
       "synonyms": {
@@ -575,6 +813,13 @@
           "how many computers",
           "multiple PCs",
           "internal devices"
+        ],
+        "zh-CN": [
+          "设备数量",
+          "Apple M2",
+          "Mac",
+          "局域网",
+          "系统要求"
         ]
       }
     },
@@ -586,11 +831,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "LicenseまたはLicense Plusのバックアップを作成できますか？",
-        "en": "Can we make backups of License or License Plus?"
+        "en": "Can we make backups of License or License Plus?",
+        "zh-CN": "可以为 License 或 License Plus 创建备份吗？"
       },
       "answer": {
         "ja": "はい。購入した法人が社内利用を続けるために必要なバックアップは作成できます。第三者への配布を目的とした複製はできません。この利用条件は、アプリの復元機能が提供済みという意味ではありません。現開発版では復元・リカバリーを提供していません。顧客向け復元方法を完成・検証してから有料販売を開始します。",
-        "en": "Yes. Backups necessary to support the purchasing entity’s internal use are planned to be permitted. Copies made for third-party distribution are not permitted. This permission does not mean an app restore function is already available. Restore and recovery are not available in the current development build. Paid sales will begin only after the customer restore method is completed and verified."
+        "en": "Yes. Backups necessary to support the purchasing entity’s internal use are planned to be permitted. Copies made for third-party distribution are not permitted. This permission does not mean an app restore function is already available. Restore and recovery are not available in the current development build. Paid sales will begin only after the customer restore method is completed and verified.",
+        "zh-CN": "可以。购买法人可创建维持内部使用所必需的备份，不得以向第三方分发为目的制作副本。这项许可不代表应用已经提供还原功能。当前开发版本尚不提供还原与恢复功能。只有在面向客户的还原方法完成并通过验证后，才会开始付费销售。"
       },
       "keywords": {
         "ja": [
@@ -604,6 +851,12 @@
           "copy",
           "storage",
           "License"
+        ],
+        "zh-CN": [
+          "备份",
+          "还原",
+          "恢复",
+          "内部使用"
         ]
       },
       "synonyms": {
@@ -616,6 +869,12 @@
           "backup copy",
           "recovery",
           "archive"
+        ],
+        "zh-CN": [
+          "备份",
+          "还原",
+          "恢复",
+          "内部使用"
         ]
       }
     },
@@ -627,11 +886,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "1つのLicenseまたはLicense Plusをグループ会社で共有できますか？",
-        "en": "Can one License or License Plus be shared across a corporate group?"
+        "en": "Can one License or License Plus be shared across a corporate group?",
+        "zh-CN": "一个 License 或 License Plus 可以在集团内共享吗？"
       },
       "answer": {
         "ja": "原則としてできません。LicenseとLicense Plusは、1購入につき1法人が対象です。親会社・子会社・関連会社など、法人格が異なる組織はそれぞれ購入する必要があります。",
-        "en": "Generally no. License and License Plus are each planned for one purchasing legal entity. Parent companies, subsidiaries, affiliates, and other separate legal entities generally require separate purchases."
+        "en": "Generally no. License and License Plus are each planned for one purchasing legal entity. Parent companies, subsidiaries, affiliates, and other separate legal entities generally require separate purchases.",
+        "zh-CN": "原则上不可以。每次购买仅适用于一个法人。母公司、子公司、关联公司等具有不同法人资格的组织，原则上需要分别购买。"
       },
       "keywords": {
         "ja": [
@@ -647,6 +908,12 @@
           "parent company",
           "affiliate",
           "legal entity"
+        ],
+        "zh-CN": [
+          "集团",
+          "母公司",
+          "子公司",
+          "法人"
         ]
       },
       "synonyms": {
@@ -659,6 +926,12 @@
           "corporate group",
           "separate entity",
           "share license"
+        ],
+        "zh-CN": [
+          "集团",
+          "母公司",
+          "子公司",
+          "法人"
         ]
       }
     },
@@ -670,11 +943,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "同一法人の本社・支店・営業所で利用できますか？",
-        "en": "Can headquarters and branches of the same legal entity use one License?"
+        "en": "Can headquarters and branches of the same legal entity use one License?",
+        "zh-CN": "同一法人的总部、分公司和办事处可以使用一个 License 吗？"
       },
       "answer": {
         "ja": "購入法人内での社内利用を予定しています。初回はHostとClientを同一Macで利用する構成です。複数MacのLAN接続・同期や拠点間接続は初回の提供範囲に含めず、後続アップデートの時期は未定です。複数倉庫・Location情報を1台のMacで管理することと、複数端末の接続・同期は別の範囲です。最終的な対応環境・利用条件は販売開始前に提示します。別法人での利用は原則として別途購入が必要です。",
-        "en": "Internal use by the purchasing legal entity is planned. The first release uses Host and Client on the same Mac. Multiple-Mac LAN access, synchronization and cross-site connections are outside the initial release; no date is confirmed for the later update. Managing warehouse or location records on one Mac is separate from connecting and synchronizing multiple devices. Final supported environments and license terms will be presented before sales open. Separate legal entities generally require separate purchases."
+        "en": "Internal use by the purchasing legal entity is planned. The first release uses Host and Client on the same Mac. Multiple-Mac LAN access, synchronization and cross-site connections are outside the initial release; no date is confirmed for the later update. Managing warehouse or location records on one Mac is separate from connecting and synchronizing multiple devices. Final supported environments and license terms will be presented before sales open. Separate legal entities generally require separate purchases.",
+        "zh-CN": "计划允许购买法人内部使用。首个版本的 Host 与 Client 在同一台 Mac 上运行，不包含多台 Mac 的局域网连接、同步或跨地点连接；后续更新的日期尚未确定。在一台 Mac 上管理多个仓库或 Location 信息，与连接和同步多台设备是不同的范围。最终支持环境和使用条件会在销售前公布。不同法人原则上需要分别购买。"
       },
       "keywords": {
         "ja": [
@@ -690,6 +965,13 @@
           "office",
           "same legal entity",
           "employees"
+        ],
+        "zh-CN": [
+          "总部",
+          "分公司",
+          "仓库",
+          "Location",
+          "多台 Mac"
         ]
       },
       "synonyms": {
@@ -702,6 +984,13 @@
           "locations",
           "sites",
           "internal users"
+        ],
+        "zh-CN": [
+          "总部",
+          "分公司",
+          "仓库",
+          "Location",
+          "多台 Mac"
         ]
       }
     },
@@ -713,11 +1002,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "License購入後のアップデートやセキュリティは誰が管理しますか？",
-        "en": "Who manages updates and security for License?"
+        "en": "Who manages updates and security for License?",
+        "zh-CN": "License 的更新与安全由谁负责？"
       },
       "answer": {
         "ja": "Licenseには購入後3か月のUpdatesが含まれ、その期間はFDEが機能・セキュリティ・互換性の更新と不具合修正を提供します。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続できます。継続しない期間は購入者が更新・セキュリティを管理し、有料契約へ自動移行しません。License PlusはUpdates追加オプションの対象外です。",
-        "en": "License includes three months of Updates, during which FDE provides functionality, security, compatibility, and bug-fix updates. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. When Updates is inactive, the customer manages updates and security. There is no automatic paid conversion, and License Plus is not eligible for the add-on. All USD figures are unapproved candidates pending final international pricing."
+        "en": "License includes three months of Updates, during which FDE provides functionality, security, compatibility, and bug-fix updates. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. When Updates is inactive, the customer manages updates and security. There is no automatic paid conversion, and License Plus is not eligible for the add-on. All USD figures are unapproved candidates pending final international pricing.",
+        "zh-CN": "License 包含购买后前三个月的 Updates，在此期间由 FDE 提供功能、安全、兼容性更新及缺陷修复。之后可自愿继续订阅：第 4–6 个月的美元候选价格为每月 31 美元，第 7 个月起为每月 62 美元。未订阅 Updates 的期间，由购买方负责更新与安全。不会自动转为付费服务，License Plus 不适用这项附加服务。所有美元金额均为等待最终国际定价的未批准候选价格。"
       },
       "keywords": {
         "ja": [
@@ -733,6 +1024,13 @@
           "maintenance",
           "responsibility",
           "License"
+        ],
+        "zh-CN": [
+          "安全",
+          "更新责任",
+          "31 美元",
+          "62 美元",
+          "自愿订阅"
         ]
       },
       "synonyms": {
@@ -745,6 +1043,13 @@
           "security patches",
           "who updates",
           "customer-managed"
+        ],
+        "zh-CN": [
+          "安全",
+          "更新责任",
+          "31 美元",
+          "62 美元",
+          "自愿订阅"
         ]
       }
     },
@@ -756,11 +1061,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "購入したIMSを第三者へ販売できますか？",
-        "en": "Can we resell IMS to a third party?"
+        "en": "Can we resell IMS to a third party?",
+        "zh-CN": "可以把购买的 IMS 转售给第三方吗？"
       },
       "answer": {
         "ja": "できません。LicenseとLicense Plusのいずれにも、IMSの原版または改変版を第三者へ販売・再販売する権利は含まれません。利用権は購入法人の社内利用に限られます。",
-        "en": "No. Neither License nor License Plus includes the right to sell or resell the original or a modified version of IMS to third parties. Use rights are limited to the purchasing legal entity’s internal operations."
+        "en": "No. Neither License nor License Plus includes the right to sell or resell the original or a modified version of IMS to third parties. Use rights are limited to the purchasing legal entity’s internal operations.",
+        "zh-CN": "不可以。License 和 License Plus 均不包含向第三方销售或转售 IMS 原版或修改版的权利，使用权仅限购买法人的内部业务。"
       },
       "keywords": {
         "ja": [
@@ -774,6 +1081,12 @@
           "sell",
           "third party",
           "reselling"
+        ],
+        "zh-CN": [
+          "转售",
+          "销售",
+          "第三方",
+          "内部使用"
         ]
       },
       "synonyms": {
@@ -786,6 +1099,12 @@
           "can I resell",
           "resell software",
           "sell onward"
+        ],
+        "zh-CN": [
+          "转售",
+          "销售",
+          "第三方",
+          "内部使用"
         ]
       }
     },
@@ -797,11 +1116,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "改変したIMSを別の商品として販売できますか？",
-        "en": "Can we sell a modified version of IMS?"
+        "en": "Can we sell a modified version of IMS?",
+        "zh-CN": "可以把修改后的 IMS 作为其他产品出售吗？"
       },
       "answer": {
         "ja": "できません。名称・UI・機能を変更しても、IMSを基にした改変版を第三者向けの商品として販売・再販売することはできません。",
-        "en": "No. Even if the name, UI or functions are changed, selling or reselling a modified product based on IMS to third parties is planned to be prohibited."
+        "en": "No. Even if the name, UI or functions are changed, selling or reselling a modified product based on IMS to third parties is planned to be prohibited.",
+        "zh-CN": "不可以。即使更改名称、界面或功能，也不得把基于 IMS 的修改版作为面向第三方的产品销售或转售。"
       },
       "keywords": {
         "ja": [
@@ -815,6 +1136,12 @@
           "sell",
           "white label",
           "resale"
+        ],
+        "zh-CN": [
+          "修改版",
+          "转售",
+          "改名",
+          "界面"
         ]
       },
       "synonyms": {
@@ -827,6 +1154,12 @@
           "sell modified copy",
           "rename and sell",
           "white-label resale"
+        ],
+        "zh-CN": [
+          "修改版",
+          "转售",
+          "改名",
+          "界面"
         ]
       }
     },
@@ -838,11 +1171,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "ソースコードやインストーラーを第三者へ再配布できますか？",
-        "en": "Can source code or installers be redistributed to third parties?"
+        "en": "Can source code or installers be redistributed to third parties?",
+        "zh-CN": "可以向第三方再分发源代码或安装程序吗？"
       },
       "answer": {
         "ja": "できません。License Plusで提供するソースコード、インストーラー、IMSを構成するファイルは、第三者へ再配布できません。ただし、社内向けの改修に必要な範囲で、別途定める条件を守る外部委託先に開示できます。",
-        "en": "No. Redistribution of installers, product files, or the source code supplied with License Plus is planned to be prohibited. License Plus source code may be disclosed to approved contractors only as needed for internal modification and subject to the applicable license conditions."
+        "en": "No. Redistribution of installers, product files, or the source code supplied with License Plus is planned to be prohibited. License Plus source code may be disclosed to external contractors only as needed for internal modification and subject to the applicable license conditions.",
+        "zh-CN": "不可以。License Plus 提供的源代码、安装程序及 IMS 产品文件不得向第三方再分发。但可在内部修改所必需的范围内，向遵守适用许可条件的外部委托方披露源代码。"
       },
       "keywords": {
         "ja": [
@@ -856,6 +1191,12 @@
           "source code",
           "installer",
           "files"
+        ],
+        "zh-CN": [
+          "再分发",
+          "源代码",
+          "安装程序",
+          "外部委托"
         ]
       },
       "synonyms": {
@@ -868,6 +1209,12 @@
           "share files",
           "distribute",
           "give code"
+        ],
+        "zh-CN": [
+          "再分发",
+          "源代码",
+          "安装程序",
+          "外部委托"
         ]
       }
     },
@@ -879,11 +1226,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "License PlusのソースコードをGitHubの公開リポジトリに置けますか？",
-        "en": "Can License Plus source code be placed in a public GitHub repository?"
+        "en": "Can License Plus source code be placed in a public GitHub repository?",
+        "zh-CN": "可以把 License Plus 源代码放到公开的 GitHub 仓库吗？"
       },
       "answer": {
         "ja": "できません。License Plusのソースコードを、GitHubの公開リポジトリ、Webサイト、SNS、公開ファイル共有、コミュニティ、公開サーバーなど、不特定多数や第三者がアクセスできる場所へ公開することはできません。",
-        "en": "No. Publishing License Plus source code to public GitHub repositories, websites, social media, public file shares, communities, public servers, or other locations accessible to third parties is planned to be prohibited."
+        "en": "No. Publishing License Plus source code to public GitHub repositories, websites, social media, public file shares, communities, public servers, or other locations accessible to third parties is planned to be prohibited.",
+        "zh-CN": "不可以。不得把 License Plus 源代码发布到公开 GitHub 仓库、网站、社交媒体、公开文件共享、社区、公开服务器等不特定公众或第三方可访问的位置。"
       },
       "keywords": {
         "ja": [
@@ -899,6 +1248,12 @@
           "publish",
           "source code",
           "public"
+        ],
+        "zh-CN": [
+          "GitHub",
+          "公开仓库",
+          "发布",
+          "源代码"
         ]
       },
       "synonyms": {
@@ -911,6 +1266,12 @@
           "open source repo",
           "post publicly",
           "upload publicly"
+        ],
+        "zh-CN": [
+          "GitHub",
+          "公开仓库",
+          "发布",
+          "源代码"
         ]
       }
     },
@@ -922,11 +1283,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "LicenseまたはLicense Plusを別法人へ譲渡できますか？",
-        "en": "Can License or License Plus be transferred to another legal entity?"
+        "en": "Can License or License Plus be transferred to another legal entity?",
+        "zh-CN": "可以把 License 或 License Plus 转让给其他法人吗？"
       },
       "answer": {
         "ja": "無断での譲渡は禁止します。LicenseとLicense Plusの利用権は購入法人に付与されるため、別法人や第三者への移転は最終EULAの条件に従います。",
-        "en": "Unauthorized transfer is prohibited. License and License Plus rights are granted to the purchasing legal entity, and any transfer to another entity or third party is subject to the final EULA."
+        "en": "Unauthorized transfer is prohibited. License and License Plus rights are granted to the purchasing legal entity, and any transfer to another entity or third party is subject to the final EULA.",
+        "zh-CN": "禁止未经许可的转让。License 和 License Plus 的使用权授予购买法人，转移给其他法人或第三方须遵守最终 EULA 的条件。"
       },
       "keywords": {
         "ja": [
@@ -940,6 +1303,11 @@
           "assign",
           "legal entity",
           "License"
+        ],
+        "zh-CN": [
+          "转让",
+          "法人",
+          "EULA"
         ]
       },
       "synonyms": {
@@ -952,6 +1320,11 @@
           "assignment",
           "move license",
           "change owner"
+        ],
+        "zh-CN": [
+          "转让",
+          "法人",
+          "EULA"
         ]
       }
     },
@@ -963,11 +1336,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "第三者へIMSの利用権をサブライセンスできますか？",
-        "en": "Can we sublicense IMS to third parties?"
+        "en": "Can we sublicense IMS to third parties?",
+        "zh-CN": "可以向第三方再许可 IMS 的使用权吗？"
       },
       "answer": {
         "ja": "できません。LicenseとLicense Plusのいずれにも、購入企業が第三者へIMSの利用権を独自に付与する権利は含まれません。",
-        "en": "No. Neither License nor License Plus allows the purchasing company to independently grant third parties the right to use IMS."
+        "en": "No. Neither License nor License Plus allows the purchasing company to independently grant third parties the right to use IMS.",
+        "zh-CN": "不可以。License 和 License Plus 均不允许购买企业自行向第三方授予 IMS 使用权。"
       },
       "keywords": {
         "ja": [
@@ -981,6 +1356,11 @@
           "third party",
           "usage rights",
           "relicense"
+        ],
+        "zh-CN": [
+          "再许可",
+          "第三方",
+          "使用权"
         ]
       },
       "synonyms": {
@@ -993,6 +1373,11 @@
           "grant rights",
           "license to others",
           "relicense"
+        ],
+        "zh-CN": [
+          "再许可",
+          "第三方",
+          "使用权"
         ]
       }
     },
@@ -1004,11 +1389,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "IMSをSaaS等として顧客へ提供できますか？",
-        "en": "Can IMS be offered to customers as SaaS or a hosted service?"
+        "en": "Can IMS be offered to customers as SaaS or a hosted service?",
+        "zh-CN": "可以把 IMS 作为 SaaS 或托管服务提供给客户吗？"
       },
       "answer": {
         "ja": "できません。LicenseとLicense Plusのいずれも、IMSそのものを第三者に利用させるSaaS、ASP、ホスティング、ソフトウェアレンタル、サービスビューロー等として提供する権利を含みません。",
-        "en": "No. Neither License nor License Plus includes the right to offer IMS itself to third parties as SaaS, ASP, hosting, software rental, a service bureau, or a similar service."
+        "en": "No. Neither License nor License Plus includes the right to offer IMS itself to third parties as SaaS, ASP, hosting, software rental, a service bureau, or a similar service.",
+        "zh-CN": "不可以。License 和 License Plus 均不包含把 IMS 本身提供给第三方使用的 SaaS、ASP、托管、软件租赁、服务机构等业务的权利。"
       },
       "keywords": {
         "ja": [
@@ -1024,6 +1411,13 @@
           "hosting",
           "rental",
           "service bureau"
+        ],
+        "zh-CN": [
+          "SaaS",
+          "ASP",
+          "托管",
+          "租赁",
+          "第三方服务"
         ]
       },
       "synonyms": {
@@ -1036,6 +1430,13 @@
           "host for customers",
           "software service",
           "commercial service"
+        ],
+        "zh-CN": [
+          "SaaS",
+          "ASP",
+          "托管",
+          "租赁",
+          "第三方服务"
         ]
       }
     },
@@ -1047,11 +1448,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "IMSを社内で使い、自社の商品やサービスを顧客へ販売することはできますか？",
-        "en": "Can we use IMS internally while selling our own products or services?"
+        "en": "Can we use IMS internally while selling our own products or services?",
+        "zh-CN": "可以在内部使用 IMS，同时向客户销售自己的产品或服务吗？"
       },
       "answer": {
         "ja": "はい。IMSを社内の在庫管理などに使い、自社の商品・サービスを顧客へ販売できます。できないのは、IMSそのものを第三者に使わせる事業です。",
-        "en": "Yes. Using IMS internally for operations such as inventory management while selling your own ordinary products or services to customers is planned to be permitted. The restriction concerns providing the IMS itself for third-party use."
+        "en": "Yes. Using IMS internally for operations such as inventory management while selling your own ordinary products or services to customers is planned to be permitted. The restriction concerns providing the IMS itself for third-party use.",
+        "zh-CN": "可以。可以把 IMS 用于内部库存管理等业务，同时向客户销售自身的一般产品或服务。限制针对的是让第三方使用 IMS 本身的业务。"
       },
       "keywords": {
         "ja": [
@@ -1065,6 +1468,11 @@
           "own services",
           "internal use",
           "customers"
+        ],
+        "zh-CN": [
+          "内部业务",
+          "自身产品",
+          "客户服务"
         ]
       },
       "synonyms": {
@@ -1077,6 +1485,11 @@
           "use in our business",
           "sell our goods",
           "ordinary business"
+        ],
+        "zh-CN": [
+          "内部业务",
+          "自身产品",
+          "客户服务"
         ]
       }
     },
@@ -1088,11 +1501,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "License向けUpdates追加オプションの予定価格はいくらですか？",
-        "en": "What is the planned price of the License Updates add-on?"
+        "en": "What is the planned price of the License Updates add-on?",
+        "zh-CN": "License 专用的 Updates 附加服务价格是多少？"
       },
       "answer": {
         "ja": "License購入後1〜3か月目は追加料金なしです。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続できます。UpdatesはLicense専用の追加オプションで、単独購入とLicense Plusへの追加はできません。有料契約へ自動移行しません。",
-        "en": "Months 1–3 are included with License. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. Updates is a License-only add-on; it cannot be purchased alone or added to License Plus. It never starts automatically, and all USD figures are unapproved candidates pending final international pricing."
+        "en": "Months 1–3 are included with License. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. Updates is a License-only add-on; it cannot be purchased alone or added to License Plus. It never starts automatically, and all USD figures are unapproved candidates pending final international pricing.",
+        "zh-CN": "License 购买后第 1–3 个月包含 Updates，无需另付费用。之后可自愿继续订阅：第 4–6 个月的美元候选价格为每月 31 美元，第 7 个月起为每月 62 美元。Updates 仅适用于 License，不能单独购买，也不能添加到 License Plus。不会自动转为付费服务，所有美元金额均为等待最终国际定价的未批准候选价格。"
       },
       "keywords": {
         "ja": [
@@ -1110,6 +1525,13 @@
           "monthly",
           "price",
           "subscription"
+        ],
+        "zh-CN": [
+          "Updates",
+          "31 美元",
+          "62 美元",
+          "自愿订阅",
+          "前三个月"
         ]
       },
       "synonyms": {
@@ -1122,6 +1544,13 @@
           "monthly fee",
           "subscription price",
           "how much"
+        ],
+        "zh-CN": [
+          "Updates",
+          "31 美元",
+          "62 美元",
+          "自愿订阅",
+          "前三个月"
         ]
       }
     },
@@ -1133,11 +1562,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "Updatesにはソースコードが付属しますか？",
-        "en": "Does Updates include source code?"
+        "en": "Does Updates include source code?",
+        "zh-CN": "Updates 包含源代码吗？"
       },
       "answer": {
         "ja": "いいえ。Updatesはソースコードを提供しません。ソースコードと社内改変権はLicense Plusに含まれます。",
-        "en": "No. Updates does not include source-code delivery. Customers that need source code and internal-modification rights should choose License Plus."
+        "en": "No. Updates does not include source-code delivery. Customers that need source code and internal-modification rights should choose License Plus.",
+        "zh-CN": "不包含。Updates 不提供源代码。需要源代码和内部修改权时，应选择 License Plus。"
       },
       "keywords": {
         "ja": [
@@ -1151,6 +1582,11 @@
           "source code",
           "no source",
           "License"
+        ],
+        "zh-CN": [
+          "Updates",
+          "源代码",
+          "内部修改"
         ]
       },
       "synonyms": {
@@ -1163,6 +1599,11 @@
           "source included",
           "code access",
           "customization"
+        ],
+        "zh-CN": [
+          "Updates",
+          "源代码",
+          "内部修改"
         ]
       }
     },
@@ -1174,11 +1615,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "Updatesは契約終了後も利用できますか？",
-        "en": "Can Updates be used after the subscription ends?"
+        "en": "Can Updates be used after the subscription ends?",
+        "zh-CN": "Updates 订阅结束后还可以使用吗？"
       },
       "answer": {
         "ja": "Updatesを終了すると、FDEによる新しい更新の提供は止まります。購入済みLicenseの社内利用権は残り、購入時のバージョンを利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。",
-        "en": "When Updates ends, FDE stops providing new updates. The purchased License remains valid for internal use of the version purchased. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms."
+        "en": "When Updates ends, FDE stops providing new updates. The purchased License remains valid for internal use of the version purchased. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms.",
+        "zh-CN": "Updates 结束后，FDE 将停止提供新的更新。购买的 License 仍允许内部使用购买时的版本。通过 Updates 获取的版本在订阅结束后的使用条件，将在最终许可条款中说明。"
       },
       "keywords": {
         "ja": [
@@ -1192,6 +1635,12 @@
           "subscription ends",
           "Updates",
           "term"
+        ],
+        "zh-CN": [
+          "订阅结束",
+          "停止更新",
+          "购买时版本",
+          "最终许可条款"
         ]
       },
       "synonyms": {
@@ -1204,6 +1653,12 @@
           "after cancellation",
           "after subscription",
           "usage period"
+        ],
+        "zh-CN": [
+          "订阅结束",
+          "停止更新",
+          "购买时版本",
+          "最终许可条款"
         ]
       }
     },
@@ -1215,11 +1670,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "UpdatesではFDEが何を管理する予定ですか？",
-        "en": "What is FDE planned to manage under Updates?"
+        "en": "What is FDE planned to manage under Updates?",
+        "zh-CN": "Updates 期间 FDE 负责什么？"
       },
       "answer": {
         "ja": "契約期間中は、FDEが機能・セキュリティ・互換性の更新を担当します。更新頻度、バージョン管理、SLAなどの詳細はまだ確定していません。",
-        "en": "Updates is being designed so FDE manages ongoing functionality, security and compatibility updates during the subscription term. Specific update frequency, versioning, SLA and track record are not yet established."
+        "en": "Updates is being designed so FDE manages ongoing functionality, security and compatibility updates during the subscription term. Specific update frequency, versioning, SLA and track record are not yet established.",
+        "zh-CN": "Updates 的设计方向是在订阅期间由 FDE 提供功能、安全和兼容性更新。更新频率、版本管理、SLA 等具体内容尚未确定。"
       },
       "keywords": {
         "ja": [
@@ -1235,6 +1692,12 @@
           "compatibility",
           "updates",
           "FDE-managed"
+        ],
+        "zh-CN": [
+          "功能更新",
+          "安全",
+          "兼容性",
+          "SLA"
         ]
       },
       "synonyms": {
@@ -1247,6 +1710,12 @@
           "maintenance",
           "what is managed",
           "update service"
+        ],
+        "zh-CN": [
+          "功能更新",
+          "安全",
+          "兼容性",
+          "SLA"
         ]
       }
     },
@@ -1258,11 +1727,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "License PlusでFDEロゴやアプリUIを変更できますか？",
-        "en": "Can we change the FDE logo or UI in License Plus?"
+        "en": "Can we change the FDE logo or UI in License Plus?",
+        "zh-CN": "License Plus 可以更改 FDE 标志或应用界面吗？"
       },
       "answer": {
         "ja": "License Plusでは、社内利用のための改変として、アプリ画面上のFDEロゴ・名称などのUI変更を一律に禁止する予定はありません。ただし、ソースコード内の著作権表示、ライセンス情報、権利表示、第三者ライセンスに関する表示などは適切に保持する必要があります。Licenseはソースコードを含みません。",
-        "en": "License Plus is not planned to categorically prohibit changing the FDE logo, name, or UI for internal use. Copyright, license, rights, and third-party notices in the source must be appropriately retained. License does not include source code."
+        "en": "License Plus is not planned to categorically prohibit changing the FDE logo, name, or UI for internal use. Copyright, license, rights, and third-party notices in the source must be appropriately retained. License does not include source code.",
+        "zh-CN": "License Plus 不计划一律禁止为内部使用而修改应用界面中的 FDE 标志、名称等内容。不过，源代码中的版权、许可、权利声明和第三方许可声明等须妥善保留。License 不包含源代码。"
       },
       "keywords": {
         "ja": [
@@ -1276,6 +1747,12 @@
           "UI",
           "branding",
           "copyright notice"
+        ],
+        "zh-CN": [
+          "标志",
+          "界面",
+          "品牌",
+          "版权声明"
         ]
       },
       "synonyms": {
@@ -1288,6 +1765,12 @@
           "change logo",
           "rebrand UI",
           "branding change"
+        ],
+        "zh-CN": [
+          "标志",
+          "界面",
+          "品牌",
+          "版权声明"
         ]
       }
     },
@@ -1299,11 +1782,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "改変後に、IMSの原版を自社の独自開発製品と表示できますか？",
-        "en": "Can we claim the original IMS was independently developed by our company?"
+        "en": "Can we claim the original IMS was independently developed by our company?",
+        "zh-CN": "修改后可以声称 IMS 原版是本公司独立开发的吗？"
       },
       "answer": {
         "ja": "できません。UIなどを変更しても、IMSの原版を「自社が独自に開発した製品」と表示することはできません。",
-        "en": "No. Even when UI or other modifications are made under License Plus, the purchasing company may not falsely claim that the original IMS was independently developed by it."
+        "en": "No. Even when UI or other modifications are made under License Plus, the purchasing company may not falsely claim that the original IMS was independently developed by it.",
+        "zh-CN": "不可以。即使在 License Plus 下修改界面等内容，也不得虚假声称 IMS 原版由购买企业独立开发。"
       },
       "keywords": {
         "ja": [
@@ -1317,6 +1802,12 @@
           "independent development",
           "copyright",
           "original product"
+        ],
+        "zh-CN": [
+          "独立开发",
+          "作者",
+          "原版",
+          "版权"
         ]
       },
       "synonyms": {
@@ -1329,6 +1820,12 @@
           "claim ownership",
           "claim authorship",
           "developer credit"
+        ],
+        "zh-CN": [
+          "独立开发",
+          "作者",
+          "原版",
+          "版权"
         ]
       }
     },
@@ -1340,11 +1837,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "License Plusの改修にAIコーディングツールを利用できますか？",
-        "en": "Can AI coding tools be used to modify License Plus?"
+        "en": "Can AI coding tools be used to modify License Plus?",
+        "zh-CN": "可以使用 AI 编程工具修改 License Plus 吗？"
       },
       "answer": {
         "ja": "License Plusの社内改修では、入力コードを第三者のモデル学習に使わない設定・契約のAIコーディングツールを使えます。一方、IMSのコードをモデル学習、ファインチューニング、第三者向け訓練、公開データセット、類似製品を再現するための学習に利用することはできません。",
-        "en": "For internal modification under License Plus, the planned policy permits AI coding tools whose settings or contract prevent submitted code from being used for third-party model training. IMS code may not be used for model training, fine-tuning, third-party training, public datasets, or training intended to reproduce a similar product."
+        "en": "For internal modification under License Plus, the planned policy permits AI coding tools whose settings or contract prevent submitted code from being used for third-party model training. IMS code may not be used for model training, fine-tuning, third-party training, public datasets, or training intended to reproduce a similar product.",
+        "zh-CN": "内部修改 License Plus 时，可使用设置或合同明确禁止将提交代码用于第三方模型训练的 AI 编程工具。不得把 IMS 代码用于模型训练、微调、第三方训练、公开数据集，或用于重现类似产品的训练。"
       },
       "keywords": {
         "ja": [
@@ -1360,6 +1859,12 @@
           "fine-tuning",
           "model training",
           "code assistant"
+        ],
+        "zh-CN": [
+          "AI 编程",
+          "生成式 AI",
+          "模型训练",
+          "微调"
         ]
       },
       "synonyms": {
@@ -1372,6 +1877,12 @@
           "generative AI",
           "coding assistant",
           "AI developer tool"
+        ],
+        "zh-CN": [
+          "AI 编程",
+          "生成式 AI",
+          "模型训练",
+          "微调"
         ]
       }
     },
@@ -1383,11 +1894,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "OSSや第三者ライブラリのライセンスはどうなりますか？",
-        "en": "How are OSS and third-party component licenses handled?"
+        "en": "How are OSS and third-party component licenses handled?",
+        "zh-CN": "开源软件及第三方组件的许可如何处理？"
       },
       "answer": {
         "ja": "FDEが独自に開発した部分にはFDEのLicense条件が適用され、OSSや第三者ソフトウェアには、それぞれのライセンス条件が適用されます。具体的な構成は製品完成時に確定します。",
-        "en": "FDE-developed portions are planned to be governed by the FDE License, while OSS and third-party software remain subject to their respective license terms. The specific component set will be finalized as the product is completed."
+        "en": "FDE-developed portions are planned to be governed by the FDE License, while OSS and third-party software remain subject to their respective license terms. The specific component set will be finalized as the product is completed.",
+        "zh-CN": "FDE 独立开发的部分适用 FDE 的 License 条件，开源软件及第三方软件各自适用其许可条件。具体组件将在产品完成时确定。"
       },
       "keywords": {
         "ja": [
@@ -1401,6 +1914,13 @@
           "open source",
           "third-party library",
           "license terms"
+        ],
+        "zh-CN": [
+          "开源软件",
+          "OSS",
+          "第三方组件",
+          "依赖",
+          "许可"
         ]
       },
       "synonyms": {
@@ -1413,6 +1933,13 @@
           "third-party components",
           "dependencies",
           "open-source license"
+        ],
+        "zh-CN": [
+          "开源软件",
+          "OSS",
+          "第三方组件",
+          "依赖",
+          "许可"
         ]
       }
     },
@@ -1424,11 +1951,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "正式販売時の注文では何が表示されますか？",
-        "en": "What information is planned for a formal IMS order?"
+        "en": "What information is planned for a formal IMS order?",
+        "zh-CN": "正式销售时的订单会显示哪些信息？"
       },
       "answer": {
         "ja": "正式販売時の注文画面には、選択した商品、価格、購入法人、製品バージョン、利用期間、ソースコードの有無、License向けUpdates追加オプション、License Agreement / EULAを表示します。Licenseはソースコードなしの永続利用、License Plusはソースコードと社内改変権付きの永続利用です。",
-        "en": "Formal orders are planned to show the selected product, price, purchasing legal entity, product version at purchase, usage term, whether source code is included, any License Updates add-on, and the applicable License Agreement / EULA. License provides perpetual use without source code, while License Plus provides perpetual use with source code and internal-modification rights."
+        "en": "Formal orders are planned to show the selected product, price, purchasing legal entity, product version at purchase, usage term, whether source code is included, any License Updates add-on, and the applicable License Agreement / EULA. License provides perpetual use without source code, while License Plus provides perpetual use with source code and internal-modification rights.",
+        "zh-CN": "正式订单计划显示选择的产品、价格、购买法人、购买时的产品版本、使用期限、是否包含源代码、License 的 Updates 附加服务及适用的 License Agreement / EULA。License 不含源代码并允许永久使用；License Plus 包含源代码与内部修改权并允许永久使用。"
       },
       "keywords": {
         "ja": [
@@ -1444,6 +1973,12 @@
           "product version",
           "EULA",
           "License"
+        ],
+        "zh-CN": [
+          "订单",
+          "购买法人",
+          "产品版本",
+          "EULA"
         ]
       },
       "synonyms": {
@@ -1456,6 +1991,12 @@
           "order form",
           "quotation",
           "purchase details"
+        ],
+        "zh-CN": [
+          "订单",
+          "购买法人",
+          "产品版本",
+          "EULA"
         ]
       }
     },
@@ -1467,11 +2008,13 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "オンライン購入ではEULAへの同意が必要ですか？",
-        "en": "Will online purchase require agreement to the EULA?"
+        "en": "Will online purchase require agreement to the EULA?",
+        "zh-CN": "在线购买需要同意 EULA 吗？"
       },
       "answer": {
         "ja": "はい。購入確定前にLicense Agreement / EULAを確認し、同意していただく予定です。現在のLicenseページは製品方針の概要であり、最終契約書ではありません。",
-        "en": "Yes. Formal online sales are planned to require the customer to review the License Agreement / EULA and actively agree before purchase confirmation. The current License page is a product-policy summary, not the final legal agreement."
+        "en": "Yes. Formal online sales are planned to require the customer to review the License Agreement / EULA and actively agree before purchase confirmation. The current License page is a product-policy summary, not the final legal agreement.",
+        "zh-CN": "需要。正式在线销售计划要求客户在确认购买前阅读并主动同意 License Agreement / EULA。目前的 License 页面仅为产品方针概要，不是最终法律协议。"
       },
       "keywords": {
         "ja": [
@@ -1485,6 +2028,12 @@
           "agreement",
           "License Agreement",
           "purchase confirmation"
+        ],
+        "zh-CN": [
+          "EULA",
+          "同意",
+          "许可协议",
+          "购买确认"
         ]
       },
       "synonyms": {
@@ -1497,6 +2046,12 @@
           "terms",
           "acceptance checkbox",
           "license terms"
+        ],
+        "zh-CN": [
+          "EULA",
+          "同意",
+          "许可协议",
+          "购买确认"
         ]
       }
     },
@@ -1508,19 +2063,59 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "紙・Excel・既存システムからIMSへ移行できますか？",
-        "en": "Can IMS replace paper, spreadsheets, or an existing inventory system?"
+        "en": "Can IMS replace paper, spreadsheets, or an existing inventory system?",
+        "zh-CN": "IMS 可以替代纸张、电子表格或现有库存系统吗？"
       },
       "answer": {
         "ja": "IMSは、紙やExcelでの在庫管理を分かりやすい仕組みへ移したい場合や、既存システムを見直したい小規模企業向けに開発しています。製品が自社に合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。",
-        "en": "IMS is being designed for small businesses moving from paper or spreadsheets, or reviewing an existing inventory system. Product fit can be discussed now, but data-import formats, migration services, and final deployment support are not yet confirmed."
+        "en": "IMS is being designed for small businesses moving from paper or spreadsheets, or reviewing an existing inventory system. Product fit can be discussed now, but data-import formats, migration services, and final deployment support are not yet confirmed.",
+        "zh-CN": "IMS 面向希望从纸张或电子表格迁移，或正在重新评估现有库存系统的小型企业。现在可以讨论产品适配性，但数据导入格式、迁移服务与最终部署支持范围尚未确定。"
       },
       "keywords": {
-        "ja": ["在庫管理", "紙", "Excel", "既存システム", "移行", "データ取り込み"],
-        "en": ["inventory management", "paper", "spreadsheets", "existing system", "migration", "data import"]
+        "ja": [
+          "在庫管理",
+          "紙",
+          "Excel",
+          "既存システム",
+          "移行",
+          "データ取り込み"
+        ],
+        "en": [
+          "inventory management",
+          "paper",
+          "spreadsheets",
+          "existing system",
+          "migration",
+          "data import"
+        ],
+        "zh-CN": [
+          "库存管理",
+          "纸张",
+          "Excel",
+          "电子表格",
+          "迁移",
+          "数据导入"
+        ]
       },
       "synonyms": {
-        "ja": ["在庫管理を変えたい", "Excelから移したい", "システム入れ替え"],
-        "en": ["replace inventory system", "move from Excel", "inventory software adoption"]
+        "ja": [
+          "在庫管理を変えたい",
+          "Excelから移したい",
+          "システム入れ替え"
+        ],
+        "en": [
+          "replace inventory system",
+          "move from Excel",
+          "inventory software adoption"
+        ],
+        "zh-CN": [
+          "库存管理",
+          "纸张",
+          "Excel",
+          "电子表格",
+          "迁移",
+          "数据导入"
+        ]
       }
     }
   ]
