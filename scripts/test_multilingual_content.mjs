@@ -22,7 +22,7 @@ for(const prefix of prefixes)for(const page of names){
     const current=read(file),old=before(file);
     assert.equal(normalized(current),normalized(apply(file,old)),file);
     assert.equal(apply(file,current),current,'idempotent');
-    assert.deepEqual(meta(current),meta(apply(file,old)),'only the pinned Chinese demo description translation changes');
+    assert.deepEqual(meta(normalized(current)),meta(normalized(apply(file,old))),'only pinned Chinese demo descriptions and date-only asset keys change');
     assert.deepEqual(current.match(/<link rel="(?:canonical|alternate)"[^>]*>|<meta name="robots"[^>]*>/g),old.match(/<link rel="(?:canonical|alternate)"[^>]*>|<meta name="robots"[^>]*>/g),'canonical/hreflang/robots remain exact');
     assert.deepEqual(current.match(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g),old.match(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g));
     assert.deepEqual(outsideFaq(current).match(/(?:¥|\$)\s?\d[\d,.]*/g),outsideFaq(old).match(/(?:¥|\$)\s?\d[\d,.]*/g));
