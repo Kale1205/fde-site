@@ -60,6 +60,9 @@ jobs:
       - name: Approved optional License Updates copy and unchanged commerce boundaries
         run: node --test scripts/test_optional_updates.mjs
 
+      - name: Release target and initial native scope copy contracts
+        run: node --test scripts/test_initial_release_scope.mjs
+
       - name: Selected W03 Demo composition is current
         run: node scripts/build_quiet_demo.mjs --check
 

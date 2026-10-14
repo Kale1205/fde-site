@@ -332,9 +332,9 @@ QUIET_HOMEPAGES = {
 # The approved Quiet Form home has its own explicit contracts; inner-page
 # commercial policies below remain untouched by this design-only renewal.
 quiet_home_markers = {
-    "index.html": ("Your own system. Not from scratch.", "Two starting points.", "Optional monthly subscription", "Purchaser updates and manages", "Updates is optional. You can use the version purchased without a subscription. Paid Updates never starts automatically.", "Releases November 1, 2026"),
-    "ja/index.html": ("自社開発は、 ゼロからじゃなくていい。", "出発点は2つ", "任意の月額契約", "購入者が更新・管理", "Updatesは任意契約です。未契約でも購入時のバージョンを利用でき、有料契約へ自動移行しません。", "2026年11月1日リリース"),
-    "zh/index.html": ("开发自己的系统， 不必从零开始。", "两种起点。", "可选月度订阅", "由购买方更新和管理", "Updates 为可选订阅。未订阅时仍可使用购买时的版本，不会自动转为付费订阅。", "2026年11月1日发布"),
+    "index.html": ("Your own system. Not from scratch.", "Two starting points.", "Optional monthly subscription", "Purchaser updates and manages", "Updates is optional. You can use the version purchased without a subscription. Paid Updates never starts automatically.", "Target launch: November 1, 2026"),
+    "ja/index.html": ("自社開発は、 ゼロからじゃなくていい。", "出発点は2つ", "任意の月額契約", "購入者が更新・管理", "Updatesは任意契約です。未契約でも購入時のバージョンを利用でき、有料契約へ自動移行しません。", "発売目標：2026年11月1日"),
+    "zh/index.html": ("开发自己的系统， 不必从零开始。", "两种起点。", "可选月度订阅", "由购买方更新和管理", "Updates 为可选订阅。未订阅时仍可使用购买时的版本，不会自动转为付费订阅。", "目标发布日期：2026年11月1日"),
 }
 for rel in sorted(QUIET_HOMEPAGES):
     visible = public_visible_text[rel]
@@ -1091,7 +1091,7 @@ for value in sorted(platform_values):
         fail(f"site.js: Web Demo platform-interest choice missing: {value}")
     if f"'{value}'" not in contact_runtime:
         fail(f"contact-direct.js: inquiry platform allowlist/display missing: {value}")
-for marker in ("source=web-demo", "Web Demo availability does not mean", "browser-based development preview"):
+for marker in ("source=web-demo", "Web Demo availability does not mean", "initial native release scope", "'zh-CN'"):
     if marker not in site_runtime:
         fail(f"site.js: Web Demo/native boundary marker missing: {marker}")
 for marker in ("[Source: Web Demo]", "[Native platform interest:", "message,lang:lang()"):
