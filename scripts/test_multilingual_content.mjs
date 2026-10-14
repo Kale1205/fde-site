@@ -5,11 +5,12 @@ import {execFileSync} from 'node:child_process';
 import {runInNewContext} from 'node:vm';
 import {applyApprovedMultilingualContent as apply,mergedFaqData,zhFaqCopy,demoLanguageNotes,redistributionAnswer,zhInventoryCopy} from './multilingual_content_copy.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
+import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 
 const root=new URL('../',import.meta.url);
 const baseline='b714f3d7e3cf2444effb6ca6b0d303c3036857f4';
 const read=file=>readFileSync(new URL(file,root),'utf8');
-const before=file=>execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});
+const before=file=>applyW02PurchaseCta(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'}));
 const normalized=value=>normalizeAssetBuildKeys(value.trimEnd());
 const prefixes=['','ja/','zh/'];
 const names=['index','license','demo','goals','news','contact','order','customer','quiet-form'];

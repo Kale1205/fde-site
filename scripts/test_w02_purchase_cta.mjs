@@ -1,0 +1,42 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {applyW02PurchaseCta,purchaseCtaLabels} from './w02_purchase_cta.mjs';
+import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
+
+const root=new URL('../',import.meta.url);
+const baseline='d1302742d66acd427dbe7aea64bd5fe1dee861fa';
+const read=file=>readFileSync(new URL(file,root),'utf8');
+const before=file=>execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});
+for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']]) {
+  test(locale+': consultation CTA becomes one genuinely disabled purchase button, with no order destination',()=>{
+    const file=prefix+'license.html',html=read(file),old=before(file);
+    assert.equal(normalize(html),normalize(applyW02PurchaseCta(file,old)));
+    assert.equal(applyW02PurchaseCta(file,html),html);
+    const button=html.match(/<button[^>]*data-license-purchase[^>]*>[\s\S]*?<\/button>/g);
+    assert.equal(button.length,1);assert.match(button[0],/type="button"/);
+    assert.match(button[0],/\sdisabled\s/);assert.match(button[0],/aria-disabled="true"/);
+    assert.ok(button[0].includes(purchaseCtaLabels[locale]));
+    assert.doesNotMatch(button[0],/href=|form=|onclick=|data-buy|data-order|data-pay/);
+    assert.doesNotMatch(html,/Ask about these terms|この条件について相談|咨询这些条件|<form|order\.js|stripe\.com|data-buy/);
+    const head=s=>s.match(/<head>[\s\S]*?<\/head>/)[0];
+    assert.equal(normalize(head(html)),normalize(head(old)));
+    assert.equal(html.match(/<p class="license-note"[\s\S]*?<\/p>/)[0],old.match(/<p class="license-note"[\s\S]*?<\/p>/)[0]);
+    assert.deepEqual(html.match(/(?:¥|\$)\s?\d[\d,.]*|\d[\d,]*円/g),old.match(/(?:¥|\$)\s?\d[\d,.]*|\d[\d,]*円/g));
+    assert.equal((html.match(/data-license-plan=/g)||[]).length,2);
+  });
+}
+test('Chinese dictionary adds exactly the purchase-label translation; no other copy/URLs change',()=>{
+  const file='content/zh-translations.json';assert.equal(read(file),applyW02PurchaseCta(file,before(file)));
+  const now=JSON.parse(read(file)),old=JSON.parse(before(file));delete now[purchaseCtaLabels.en];assert.deepEqual(now,old);
+});
+test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
+  for(const file of ['gallery-ui.js','gallery-ui.css','quiet-pages.css','license.css','contact-direct.js','contact-config.js','quiet-form.js',
+    'worker/src/index-v14.js','robots.txt','content/faq-content.json','content/faq-policy-additions.json','content/site-content.json',
+    ...['','ja/','zh/'].flatMap(p=>['index','contact','demo','goals','news','order','customer'].map(n=>p+n+'.html'))]){
+    assert.equal(normalize(read(file)),normalize(before(file)),file);
+  }
+  assert.match(read('quiet-pages.css'),/\.quiet-page :is\(button,\[type=submit\]\):disabled \{ transform: none; opacity: \.55; cursor: not-allowed; \}/);
+  assert.doesNotMatch(read('gallery-ui.js'),/data-license-purchase/);
+});
