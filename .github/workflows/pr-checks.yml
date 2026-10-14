@@ -57,6 +57,9 @@ jobs:
           node --test scripts/test_product_naming.mjs
           python scripts/test_static_news_validation.py
 
+      - name: Approved optional License Updates copy and unchanged commerce boundaries
+        run: node --test scripts/test_optional_updates.mjs
+
       - name: Selected W03 Demo composition is current
         run: node scripts/build_quiet_demo.mjs --check
 
