@@ -3,6 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {releaseCopy} from './release_notice_policy.mjs';
 import {approvedHeadPrefix} from './approved_head_prefix.mjs';
+import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const copy={
@@ -14,6 +15,10 @@ const copy={
 // W07 uses the exact approved homepage products/assets/JPY prices in all locales.
 // It is still a static, noindex pre-release notice, never a checkout surface.
 export function renderQuietOrder(source,home){
+  const locale=source.includes('<html lang="ja">')?'ja':source.includes('<html lang="zh-CN">')?'zh':'en';
+  return applyApprovedInitialReleaseScope(`${locale==='en'?'':locale+'/'}order.html`,renderQuietOrderContent(source,home));
+}
+function renderQuietOrderContent(source,home){
   const locale=source.match(/<html lang="([^"]+)"/)[1];
   const key=locale==='ja'?'ja':locale==='zh-CN'?'zh':'en',t=copy[key],prefix=key==='en'?'':'../';
   const version=home.match(/gallery-ui\.css\?v=([^"\s]+)/)[1];

@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {applyApprovedOptionalUpdates, optionalUpdatesCopy, updatesNewsNotes} from './optional_updates_copy.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
+import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline = 'ccc17a1f85ef079d82d4a8e616df78b8b457fccb';
@@ -18,7 +19,7 @@ const prices = source => source.match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
 for (const file of pages) {
   test(file + ': only the approved Updates copy changes; metadata, prices and controls are preserved', () => {
     const source = read(file);
-    assert.equal(normalize(source), normalize(applyApprovedOptionalUpdates(file, before(file))));
+    assert.equal(normalize(source), normalize(applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file)))));
     assert.equal(applyApprovedOptionalUpdates(file, source), source, 'copy migration is idempotent');
     assert.deepEqual(prices(source), prices(before(file)), 'no JPY or candidate USD price changes');
     assert.equal(normalize(source.match(/<head>[\s\S]*?<\/head>/)?.[0] || ''),
@@ -47,8 +48,8 @@ for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
 test('FAQ updates are limited to four answers, without adding questions, changing IDs, or altering prices', () => {
   const ids = new Set(['updates-term','license-updates-entitlement','cancel-updates-after-license','cancel-updates-only']);
   for (const file of ['content/faq-content.json','content/faq-policy-additions.json']) {
-    const now = JSON.parse(read(file)), old = JSON.parse(before(file));
-    assert.equal(read(file), applyApprovedOptionalUpdates(file, before(file)));
+    const now = JSON.parse(read(file)), old = JSON.parse(applyApprovedInitialReleaseScope(file, before(file)));
+    assert.equal(read(file), applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file))));
     assert.deepEqual(now.faq.map(x=>x.id), old.faq.map(x=>x.id));
     for (const item of now.faq) {
       const previous = old.faq.find(x=>x.id===item.id);

@@ -1,8 +1,9 @@
 // Build-time copy policy. Never controls checkout or changes product terms.
+import {initialReleaseCopy, applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 export const releaseCopy = {
-  en: {date: 'Releases November 1, 2026', unavailable: 'Not yet available for purchase.'},
-  ja: {date: '2026年11月1日リリース', unavailable: '現在は購入できません。'},
-  zh: {date: '2026年11月1日发布', unavailable: '目前尚不可购买。'},
+  en: {date: initialReleaseCopy.en.date, unavailable: 'Not yet available for purchase.'},
+  ja: {date: initialReleaseCopy.ja.date, unavailable: '現在は購入できません。'},
+  zh: {date: initialReleaseCopy.zh.date, unavailable: '目前尚不可购买。'},
 };
 
 export function removePurchaseStatusCopy(text) {
@@ -21,6 +22,7 @@ export function removePurchaseStatusCopy(text) {
 export function applyReleaseNoticePolicy(source, page) {
   const key=source.includes('<html lang="ja">')?'ja':source.includes('<html lang="zh-CN">')?'zh':'en';
   const t=releaseCopy[key];
+  source=applyApprovedInitialReleaseScope(`${key==='en'?'':key+'/'}${page}.html`,source);
   if(page==='license') {
     if(source.includes('data-release-notice'))return source;
     return source.replace('<p class="license-note">', `<p class="license-note" data-release-notice><strong>${t.date}。 ${t.unavailable}</strong><br>`)

@@ -2,6 +2,7 @@
 // descriptions deliberately stay unchanged. Also used for historical fixtures.
 import {execFileSync} from 'node:child_process';
 import {applyApprovedOptionalUpdates} from './optional_updates_copy.mjs';
+import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 
 export function applyApprovedProductNaming(source) {
   return source.replaceAll('FDE IMS', 'IMS')
@@ -22,5 +23,5 @@ export function execApprovedNamingBaseline(command, args, options) {
   const file = command === 'git' && args[0] === 'show' ? args[1].split(':').slice(1).join(':') : '';
   const copyFixture = /^(?:(?:ja|zh)\/)?[\w-]+\.html$/.test(file)
     || /^content\/(?:site-content|faq-content|faq-policy-additions|zh-translations)\.json$/.test(file);
-  return copyFixture ? applyApprovedOptionalUpdates(file, applyApprovedProductNaming(result)) : result;
+  return copyFixture ? applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(result))) : result;
 }

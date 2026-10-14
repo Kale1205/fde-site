@@ -9,7 +9,7 @@ const copy = {
   ja: {
     language: 'ja', title: 'Quiet Form — IMS デザインプレビュー',
     product: '製品', demo: 'デモ', news: 'お知らせ', contact: 'お問い合わせ', skip: '本文へ移動', menu: 'メニューを開く',
-    release: '2026年11月1日リリース', hero: '自社開発は、<br>ゼロからじゃなくていい。',
+    release: releaseCopy.ja.date, hero: '自社開発は、<br>ゼロからじゃなくていい。',
     lead: '在庫管理システムIMS（Inventory Management System）とソースコードを、自社の業務に合う仕組みの出発点に。',
     primary: 'ソースコード付きプランを見る', secondary: 'デモを見る',
     license: 'Updatesで、最新版へ。', plus: '自分で変えて、自社だけのアプリへ。',
@@ -28,7 +28,7 @@ const copy = {
   en: {
     language: 'en', title: 'Quiet Form — IMS design preview',
     product: 'Products', demo: 'Demo', news: 'News', contact: 'Contact', skip: 'Skip to content', menu: 'Open menu',
-    release: 'Releases November 1, 2026', hero: 'Your own system.<br>Not from scratch.',
+    release: releaseCopy.en.date, hero: 'Your own system.<br>Not from scratch.',
     lead: 'IMS (Inventory Management System) and its source code. A starting point for the way your company works.',
     primary: 'Explore the source-code plan', secondary: 'Try the demo',
     license: 'Stay current with optional Updates.', plus: 'Make it yours. Make it your company’s app.',
@@ -47,7 +47,7 @@ const copy = {
   zh: {
     language: 'zh-CN', title: 'Quiet Form — IMS 设计预览',
     product: '产品', demo: '演示', news: '动态', contact: '联系我们', skip: '跳至正文', menu: '打开菜单',
-    release: '2026年11月1日发布', hero: '开发自己的系统，<br>不必从零开始。',
+    release: releaseCopy.zh.date, hero: '开发自己的系统，<br>不必从零开始。',
     lead: '以库存管理系统 IMS（Inventory Management System）及其源代码为起点，打造适合自己业务的工作方式。',
     primary: '查看含源代码的方案', secondary: '体验演示',
     license: '按需订阅 Updates，使用最新版 IMS。', plus: '亲手改造，成为自己公司的应用。',
