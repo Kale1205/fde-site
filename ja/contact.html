@@ -58,20 +58,190 @@
         <summary class="section-intro compact"><p>01 / FAQ</p><h2>お問い合わせの前に</h2><span>製品、各プラン、セキュリティ、提供時期について、よくある質問を検索できます。</span><img class="contact-faq-chevron" src="../assets/phosphor-caret-right.svg" width="24" height="24" alt="" aria-hidden="true"></summary>
         <input id="faqSearch" aria-label="よくある質問を検索" class="faq-search" type="search" autocomplete="off" placeholder="質問・回答・関連語から検索">
         <div id="cmsFaqList">
-          <article class="faq-item" data-faq-id="license-updates-difference">
-            <button class="faq-q" type="button" aria-expanded="false"><span>LicenseとLicense Plusの違いは何ですか？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>提供状況</span><span>商品構成</span></div>
-            <div class="faq-a">Licenseは、ソースコードを含まない買い切り型で、購入法人内で永続利用できます。購入後3か月はUpdatesを含み、その後はLicense専用の追加オプションとして任意継続できます。License Plusは、ソースコードと社内改変権を含む買い切り型で、更新・セキュリティは購入者が管理します。Updatesは第3の製品プランではなく、License Plusは対象外です。</div>
+          <article class="faq-item" data-faq-id="license-updates-difference" data-faq-category-key="status" data-faq-subcategory="models" data-faq-terms="License License Plus Updates 違い 比較 プラン どっち 料金プラン 契約方式">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-updates-difference"><span>LicenseとLicense Plusの違いは何ですか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>製品・販売状況</span><span>提供モデル</span></div>
+            <div class="faq-a" id="faq-answer-license-updates-difference">Licenseは、ソースコードを含まない買い切り型で、購入法人内で永続利用できます。購入後3か月はUpdatesを含み、その後はLicense専用の追加オプションとして任意継続できます。License Plusは、ソースコードと社内改変権を含む買い切り型で、更新・セキュリティは購入者が管理します。Updatesは第3の製品プランではなく、License Plusは対象外です。</div>
           </article>
-          <article class="faq-item" data-faq-id="license-plus-price">
-            <button class="faq-q" type="button" aria-expanded="false"><span>IMS License Plusの価格と内容を教えてください</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>License</span><span>基本情報</span></div>
-            <div class="faq-a">License Plusの予定価格は99,800円（買い切り）です。購入法人内で期限なく利用でき、ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。Updates特典はなく、更新・セキュリティは購入者が管理します。</div>
+          <article class="faq-item" data-faq-id="license-price" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License 価格 49800円 料金 一括 いくら 値段 買い切り価格">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-price"><span>IMS Licenseの価格はいくらですか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>License基本</span></div>
+            <div class="faq-a" id="faq-answer-license-price">Licenseの予定価格は49,800円（買い切り）です。ソースコードは含みません。購入法人内で期限なく利用でき、購入後3か月はUpdatesを追加料金なしで利用できます。有料のUpdatesへ自動移行することはありません。</div>
           </article>
-          <article class="faq-item" data-faq-id="inventory-adoption-migration-fit">
-            <button class="faq-q" type="button" aria-expanded="false"><span>紙・Excel・既存システムからIMSへ移行できますか？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>製品</span><span>導入・移行</span></div>
-            <div class="faq-a">IMSは、紙やExcelでの在庫管理を分かりやすい仕組みへ移したい場合や、既存システムを見直したい小規模企業向けに開発しています。製品が自社に合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。</div>
+          <article class="faq-item" data-faq-id="license-plus-price" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License Plus 99,800円 ソースコード一式 社内改変 自社サーバー 買い切り Plusの価格 コード付きプラン 改変できるプラン">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-plus-price"><span>IMS License Plusの価格と内容を教えてください</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>License基本</span></div>
+            <div class="faq-a" id="faq-answer-license-plus-price">License Plusの予定価格は99,800円（買い切り）です。購入法人内で期限なく利用でき、ソースコード一式、社内改変権、技術資料、顧客管理サーバーでの自社運用を含む予定です。Updates特典はなく、更新・セキュリティは購入者が管理します。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-plus-upgrade" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License Plus アップグレード 別商品 ソースコード一式 自社サーバー Plusへ変更 コード付きへ変更 上位プラン">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-plus-upgrade"><span>LicenseからLicense Plusへアップグレードできますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>License基本</span></div>
+            <div class="faq-a" id="faq-answer-license-plus-upgrade">現在の2商品構成では、LicenseからLicense Plusへの差額アップグレード条件は設けていません。License Plusは別商品として購入する予定です。正式販売前に最終条件を提示します。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-source-code" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="ソースコード 源コード License 知的財産 コード付き ソース付属 著作権">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-source-code"><span>Licenseにソースコードは含まれますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>License基本</span></div>
+            <div class="faq-a" id="faq-answer-license-source-code">いいえ。49,800円のLicenseにソースコードは含まれません。ソースコード一式と社内改変権は、99,800円のLicense Plusに含む予定です。どちらも購入法人内で期限なく利用できます。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-customization" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="カスタマイズ 改変 編集 機能追加 社内利用 自社向け変更 改造 機能を追加">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-customization"><span>ソースコードを自社向けに改変できるプランはどれですか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>License基本</span></div>
+            <div class="faq-a" id="faq-answer-license-customization">License Plusなら、社内業務に使う範囲でソースコードを確認・編集・改変できます。機能追加、自社システムとの連携、改変版の社内利用も可能です。Licenseにソースコードは含まれません。また、改変できる範囲に販売・再配布・サブライセンスは含まれません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-group-company" data-faq-category-key="license" data-faq-subcategory="entity" data-faq-terms="グループ会社 子会社 親会社 関連会社 1法人 系列会社 別法人 共有">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-group-company"><span>1つのLicenseまたはLicense Plusをグループ会社で共有できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>利用法人・端末</span></div>
+            <div class="faq-a" id="faq-answer-license-group-company">原則としてできません。LicenseとLicense Plusは、1購入につき1法人が対象です。親会社・子会社・関連会社など、法人格が異なる組織はそれぞれ購入する必要があります。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-security-responsibility" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="セキュリティ アップデート 更新 責任 License 脆弱性対応 保守 誰が更新">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-security-responsibility"><span>License購入後のアップデートやセキュリティは誰が管理しますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>License基本</span></div>
+            <div class="faq-a" id="faq-answer-license-security-responsibility">Licenseには購入後3か月のUpdatesが含まれ、その期間はFDEが機能・セキュリティ・互換性の更新と不具合修正を提供します。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続できます。継続しない期間は購入者が更新・セキュリティを管理し、有料契約へ自動移行しません。License PlusはUpdates追加オプションの対象外です。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-resale" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="再販売 販売 転売 第三者 転売できる 売っていい 再販">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-resale"><span>購入したIMSを第三者へ販売できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>禁止事項・再配布</span><span>販売・再配布</span></div>
+            <div class="faq-a" id="faq-answer-no-resale">できません。LicenseとLicense Plusのいずれにも、IMSの原版または改変版を第三者へ販売・再販売する権利は含まれません。利用権は購入法人の社内利用に限られます。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-saas" data-faq-category-key="restrictions" data-faq-subcategory="service" data-faq-terms="SaaS ASP ホスティング レンタル 第三者サービス クラウドサービス化 顧客に使わせる 有料サービス">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-saas"><span>IMSをSaaS等として顧客へ提供できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>禁止事項・再配布</span><span>第三者サービス</span></div>
+            <div class="faq-a" id="faq-answer-no-saas">できません。LicenseとLicense Plusのいずれも、IMSそのものを第三者に利用させるSaaS、ASP、ホスティング、ソフトウェアレンタル、サービスビューロー等として提供する権利を含みません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="updates-price" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="Updates 4,900円 9,800円 月額 価格 料金 サブスク料金 月額料金 いくら">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-updates-price"><span>License向けUpdates追加オプションの予定価格はいくらですか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates・更新</span><span>Updates基本</span></div>
+            <div class="faq-a" id="faq-answer-updates-price">License購入後1〜3か月目は追加料金なしです。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で任意継続できます。UpdatesはLicense専用の追加オプションで、単独購入とLicense Plusへの追加はできません。有料契約へ自動移行しません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="formal-order-flow" data-faq-category-key="orders" data-faq-subcategory="purchase" data-faq-terms="注文 購入法人 製品バージョン EULA License 注文書 見積書 購入情報">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-formal-order-flow"><span>正式販売時の注文では何が表示されますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>注文・EULA</span><span>正式販売・注文</span></div>
+            <div class="faq-a" id="faq-answer-formal-order-flow">正式販売時の注文画面には、選択した商品、価格、購入法人、製品バージョン、利用期間、ソースコードの有無、License向けUpdates追加オプション、License Agreement / EULAを表示します。Licenseはソースコードなしの永続利用、License Plusはソースコードと社内改変権付きの永続利用です。</div>
+          </article>
+          <article class="faq-item" data-faq-id="inventory-adoption-migration-fit" data-faq-category-key="product" data-faq-subcategory="adoption" data-faq-terms="在庫管理 紙 Excel 既存システム 移行 データ取り込み 在庫管理を変えたい Excelから移したい システム入れ替え">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-inventory-adoption-migration-fit"><span>紙・Excel・既存システムからIMSへ移行できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>製品・導入相談</span><span>導入相談</span></div>
+            <div class="faq-a" id="faq-answer-inventory-adoption-migration-fit">IMSは、紙やExcelでの在庫管理を分かりやすい仕組みへ移したい場合や、既存システムを見直したい小規模企業向けに開発しています。製品が自社に合うかはご相談いただけますが、データ移行、対応ファイル形式、導入支援の範囲は現在検討中です。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-updates-entitlement" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="License Updates 購入後3か月分込み 4,900円 9,800円 自動課金なし 購入後の更新 Updates特典 通常料金 有料へ自動移行">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-updates-entitlement"><span>License購入後のUpdates料金はどうなりますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates・更新</span><span>Updates基本</span></div>
+            <div class="faq-a" id="faq-answer-license-updates-entitlement">Licenseには購入後3か月のUpdatesが含まれます。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。Updatesを契約しない場合も、購入時のバージョンを期限なく利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。有料契約へ自動移行することはありません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="cancel-updates-after-license" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="Updates解約 License継続 永続利用 ソースコードなし セキュリティ 更新を止める 月額を終了 買い切り版を使い続ける">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-cancel-updates-after-license"><span>License購入後にUpdatesを終了するとどうなりますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates・更新</span><span>Updates基本</span></div>
+            <div class="faq-a" id="faq-answer-cancel-updates-after-license">Updatesの利用権とFDEによる継続更新は契約期間の終了時に停止します。ソースコードなしの購入済みLicenseは、購入時のバージョンを引き続き社内で利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。その後の更新・セキュリティ管理は購入者側の責任です。</div>
+          </article>
+          <article class="faq-item" data-faq-id="cancel-updates-only" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="Updates 単独購入不可 License専用 追加オプション License Plus対象外 Updatesだけ購入 追加購入 オプション対象">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-cancel-updates-only"><span>Updatesだけを購入できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates・更新</span><span>Updates基本</span></div>
+            <div class="faq-a" id="faq-answer-cancel-updates-only">いいえ。UpdatesはLicense専用の追加オプションで、単独では購入できません。License Plusも対象外です。Updatesを終了しても、購入済みLicenseの社内利用権は残り、購入時のバージョンを利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。</div>
+          </article>
+          <article class="faq-item" data-faq-id="ims-purpose" data-faq-category-key="status" data-faq-subcategory="development" data-faq-terms="IMS 在庫管理 用途 デスクトップ ローカル 何ができる どんな製品 在庫ソフト">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-ims-purpose"><span>IMSはどのような用途の製品ですか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>製品・販売状況</span><span>開発状況</span></div>
+            <div class="faq-a" id="faq-answer-ims-purpose">小規模企業の在庫管理を支える、デスクトップ中心・ローカル運用を前提とした業務ソフトとして開発しています。完成時の機能はまだ確定していないため、本FAQでは未確定の機能を保証しません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="demo-not-product-version" data-faq-category-key="status" data-faq-subcategory="development" data-faq-terms="デモ 正式製品 バージョン 開発プレビュー 体験版 完成版 正式版">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-demo-not-product-version"><span>現在のIMSデモは正式製品ですか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>製品・販売状況</span><span>開発状況</span></div>
+            <div class="faq-a" id="faq-answer-demo-not-product-version">いいえ。現在のデモは、開発中のIMSを想定した操作イメージを確認するためのサンプルです。正式製品のバージョン、完成機能、更新履歴、セキュリティ対応実績、提供実績を示すものではありません。 Webサイトは英語・日本語・簡体字中国語に対応しています。ネイティブ初回版の画面言語は英語・日本語を対象とし、Webサイトの中国語対応がネイティブ版の中国語対応を意味するものではありません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-perpetual" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="永続利用 一括 月額不要 License ずっと使える 買い切り サブスク不要">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-perpetual"><span>Licenseは一度購入すれば永続的に利用できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>License基本</span></div>
+            <div class="faq-a" id="faq-answer-license-perpetual">はい。Licenseは、購入した法人内で期限なく使えます。基本機能を使うための月額契約は不要です。最終条件は、販売開始前にLicense Agreement / EULAで提示します。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-external-developer" data-faq-category-key="license" data-faq-subcategory="contractor" data-faq-terms="外部開発 委託 エンジニア 秘密保持 NDA 開発会社 外注 保守委託">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-external-developer"><span>外部の開発会社やエンジニアに改修を委託できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>外部開発者</span></div>
+            <div class="faq-a" id="faq-answer-license-external-developer">License Plusでは、社内向けの開発・改修・保守に必要な範囲で、外部開発者にソースコードを開示できます。委託先にも、秘密保持、他案件への流用禁止、販売・再配布禁止などの条件が適用されます。Licenseにはソースコードが含まれないため、この取り扱いは適用されません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-devices" data-faq-category-key="license" data-faq-subcategory="entity" data-faq-terms="端末 PC インストール 台数 1法人 何台 複数PC 社内端末">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-devices"><span>LicenseまたはLicense Plusは何台のPCにインストールできますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>利用法人・端末</span></div>
+            <div class="faq-a" id="faq-answer-license-devices">LicenseとLicense Plusは購入した1法人の内部業務向けです。初回のネイティブ版は、Apple M2以降の同一Mac上でHostとClientを利用する構成を対象とします。対応機種とmacOSは実機検証後に確定し、各機種の最低OS要件を満たす必要があります。複数MacのLAN接続は初回の範囲外で、後続アップデートの時期は未定です。ライセンス上の端末数などは正式EULAで定め、接続・同期の技術的な対応範囲とは区別します。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-backup" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="バックアップ 複製 保存 License 予備コピー 復旧 保管">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-backup"><span>LicenseまたはLicense Plusのバックアップを作成できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>License基本</span></div>
+            <div class="faq-a" id="faq-answer-license-backup">はい。購入した法人が社内利用を続けるために必要なバックアップは作成できます。第三者への配布を目的とした複製はできません。この利用条件は、アプリの復元機能が提供済みという意味ではありません。現開発版では復元・リカバリーを提供していません。顧客向け復元方法を完成・検証してから有料販売を開始します。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-branches" data-faq-category-key="license" data-faq-subcategory="entity" data-faq-terms="本社 支店 営業所 同一法人 従業員 拠点 店舗 社内">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-branches"><span>同一法人の本社・支店・営業所で利用できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License・内部利用</span><span>利用法人・端末</span></div>
+            <div class="faq-a" id="faq-answer-license-branches">購入法人内での社内利用を予定しています。初回はHostとClientを同一Macで利用する構成です。複数MacのLAN接続・同期や拠点間接続は初回の提供範囲に含めず、後続アップデートの時期は未定です。複数倉庫・Location情報を1台のMacで管理することと、複数端末の接続・同期は別の範囲です。最終的な対応環境・利用条件は販売開始前に提示します。別法人での利用は原則として別途購入が必要です。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-modified-resale" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="改変版 販売 UI変更 別商品 改造して販売 名前を変えて販売 OEM">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-modified-resale"><span>改変したIMSを別の商品として販売できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>禁止事項・再配布</span><span>販売・再配布</span></div>
+            <div class="faq-a" id="faq-answer-no-modified-resale">できません。名称・UI・機能を変更しても、IMSを基にした改変版を第三者向けの商品として販売・再販売することはできません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-redistribution" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="再配布 ソースコード インストーラー ファイル 配る 共有 第三者提供">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-redistribution"><span>ソースコードやインストーラーを第三者へ再配布できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>禁止事項・再配布</span><span>販売・再配布</span></div>
+            <div class="faq-a" id="faq-answer-no-redistribution">できません。License Plusで提供するソースコード、インストーラー、IMSを構成するファイルは、第三者へ再配布できません。ただし、社内向けの改修に必要な範囲で、別途定める条件を守る外部委託先に開示できます。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-public-repo" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="GitHub 公開 Public Repository SNS ソースコード 公開リポジトリ ネット公開 アップロード">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-public-repo"><span>License PlusのソースコードをGitHubの公開リポジトリに置けますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>禁止事項・再配布</span><span>販売・再配布</span></div>
+            <div class="faq-a" id="faq-answer-no-public-repo">できません。License Plusのソースコードを、GitHubの公開リポジトリ、Webサイト、SNS、公開ファイル共有、コミュニティ、公開サーバーなど、不特定多数や第三者がアクセスできる場所へ公開することはできません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-transfer" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="譲渡 移転 別法人 License 名義変更 他社へ移す 権利移転">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-transfer"><span>LicenseまたはLicense Plusを別法人へ譲渡できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>禁止事項・再配布</span><span>販売・再配布</span></div>
+            <div class="faq-a" id="faq-answer-no-transfer">無断での譲渡は禁止します。LicenseとLicense Plusの利用権は購入法人に付与されるため、別法人や第三者への移転は最終EULAの条件に従います。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-sublicense" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="サブライセンス 利用権 第三者 再許諾 再許諾 他社に使わせる ライセンスを貸す">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-sublicense"><span>第三者へIMSの利用権をサブライセンスできますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>禁止事項・再配布</span><span>販売・再配布</span></div>
+            <div class="faq-a" id="faq-answer-no-sublicense">できません。LicenseとLicense Plusのいずれにも、購入企業が第三者へIMSの利用権を独自に付与する権利は含まれません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="internal-use-own-business" data-faq-category-key="restrictions" data-faq-subcategory="service" data-faq-terms="自社商品 自社サービス 内部利用 顧客販売 本業で使う 在庫管理して販売 通常業務">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-internal-use-own-business"><span>IMSを社内で使い、自社の商品やサービスを顧客へ販売することはできますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>禁止事項・再配布</span><span>第三者サービス</span></div>
+            <div class="faq-a" id="faq-answer-internal-use-own-business">はい。IMSを社内の在庫管理などに使い、自社の商品・サービスを顧客へ販売できます。できないのは、IMSそのものを第三者に使わせる事業です。</div>
+          </article>
+          <article class="faq-item" data-faq-id="updates-no-source" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="Updates ソースコード コードなし License ソース付属 コード提供 カスタマイズ">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-updates-no-source"><span>Updatesにはソースコードが付属しますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates・更新</span><span>Updates基本</span></div>
+            <div class="faq-a" id="faq-answer-updates-no-source">いいえ。Updatesはソースコードを提供しません。ソースコードと社内改変権はLicense Plusに含まれます。</div>
+          </article>
+          <article class="faq-item" data-faq-id="updates-term" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="解約 契約終了 Updates 利用期間 退会後 契約後 いつまで使える">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-updates-term"><span>Updatesは契約終了後も利用できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates・更新</span><span>Updates基本</span></div>
+            <div class="faq-a" id="faq-answer-updates-term">Updatesを終了すると、FDEによる新しい更新の提供は止まります。購入済みLicenseの社内利用権は残り、購入時のバージョンを利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。</div>
+          </article>
+          <article class="faq-item" data-faq-id="updates-managed" data-faq-category-key="updates" data-faq-subcategory="responsibility" data-faq-terms="Updates 更新 セキュリティ 互換性 FDE管理 保守 アップデート内容 何をしてくれる">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-updates-managed"><span>UpdatesではFDEが何を管理する予定ですか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates・更新</span><span>更新・セキュリティ責任</span></div>
+            <div class="faq-a" id="faq-answer-updates-managed">契約期間中は、FDEが機能・セキュリティ・互換性の更新を担当します。更新頻度、バージョン管理、SLAなどの詳細はまだ確定していません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="ui-brand-change" data-faq-category-key="rights" data-faq-subcategory="ip" data-faq-terms="FDEロゴ UI 名称変更 著作権表示 ロゴを消す 画面変更 ブランド変更">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-ui-brand-change"><span>License PlusでFDEロゴやアプリUIを変更できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>権利・AI・第三者</span><span>知的財産・表示</span></div>
+            <div class="faq-a" id="faq-answer-ui-brand-change">License Plusでは、社内利用のための改変として、アプリ画面上のFDEロゴ・名称などのUI変更を一律に禁止する予定はありません。ただし、ソースコード内の著作権表示、ライセンス情報、権利表示、第三者ライセンスに関する表示などは適切に保持する必要があります。Licenseはソースコードを含みません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-false-authorship" data-faq-category-key="rights" data-faq-subcategory="ip" data-faq-terms="独自開発 権利主張 著作権 原版 自社製品と主張 開発者表示 権利者">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-false-authorship"><span>改変後に、IMSの原版を自社の独自開発製品と表示できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>権利・AI・第三者</span><span>知的財産・表示</span></div>
+            <div class="faq-a" id="faq-answer-no-false-authorship">できません。UIなどを変更しても、IMSの原版を「自社が独自に開発した製品」と表示することはできません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="ai-coding-tools" data-faq-category-key="rights" data-faq-subcategory="ai" data-faq-terms="AI コーディング 学習 fine-tuning モデル訓練 生成AI Copilot AI開発">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-ai-coding-tools"><span>License Plusの改修にAIコーディングツールを利用できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>権利・AI・第三者</span><span>AI利用</span></div>
+            <div class="faq-a" id="faq-answer-ai-coding-tools">License Plusの社内改修では、入力コードを第三者のモデル学習に使わない設定・契約のAIコーディングツールを使えます。一方、IMSのコードをモデル学習、ファインチューニング、第三者向け訓練、公開データセット、類似製品を再現するための学習に利用することはできません。</div>
+          </article>
+          <article class="faq-item" data-faq-id="third-party-components" data-faq-category-key="rights" data-faq-subcategory="thirdparty" data-faq-terms="OSS オープンソース 第三者ライブラリ ライセンス 外部ライブラリ Third-party components 依存関係">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-third-party-components"><span>OSSや第三者ライブラリのライセンスはどうなりますか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>権利・AI・第三者</span><span>OSS・第三者</span></div>
+            <div class="faq-a" id="faq-answer-third-party-components">FDEが独自に開発した部分にはFDEのLicense条件が適用され、OSSや第三者ソフトウェアには、それぞれのライセンス条件が適用されます。具体的な構成は製品完成時に確定します。</div>
+          </article>
+          <article class="faq-item" data-faq-id="eula-agreement" data-faq-category-key="orders" data-faq-subcategory="eula" data-faq-terms="EULA 規約同意 License Agreement 購入確定 利用規約 同意チェック 契約書">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-eula-agreement"><span>オンライン購入ではEULAへの同意が必要ですか？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>注文・EULA</span><span>License Agreement / EULA</span></div>
+            <div class="faq-a" id="faq-answer-eula-agreement">はい。購入確定前にLicense Agreement / EULAを確認し、同意していただく予定です。現在のLicenseページは製品方針の概要であり、最終契約書ではありません。</div>
           </article>
         </div><div id="faqEmpty" class="faq-empty" hidden>該当する質問が見つかりませんでした。</div>
       </details>

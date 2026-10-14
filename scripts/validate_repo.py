@@ -1269,8 +1269,10 @@ if faq_path.exists():
     try:
         faq_data = json.loads(faq_path.read_text(encoding="utf-8"))
         locales = faq_data.get("locales", [])
-        if locales != ["ja", "en"]:
-            fail(f"content/faq-content.json: locales must be exactly ['ja', 'en'], got {locales!r}")
+        # Existing CMS enrichment still writes ja/en; reviewed Chinese fields
+        # are additive and must not break that editor's current save contract.
+        if locales not in (["ja", "en"], ["ja", "en", "zh-CN"]):
+            fail(f"content/faq-content.json: unsupported locale declaration: {locales!r}")
         for item in faq_data.get("faq", []):
             item_id = item.get("id", "<unknown>")
             for field in ("question", "answer"):

@@ -5,6 +5,7 @@ import {execFileSync} from 'node:child_process';
 import {runInNewContext} from 'node:vm';
 import {applyApprovedInitialReleaseScope, initialReleaseCopy, initialScopeFaqAnswers} from './initial_release_copy.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
+import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline = 'd6ab9132810381668d72c9eff7664a87db0a9be1';
@@ -16,16 +17,17 @@ const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
 ).concat(['cms-admin.html','overview.html','products.html']);
 const prices = source => source.match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
 const controls = source => [...source.matchAll(/<(?:a|button|input|select|textarea|form)\b[^>]*>/g)].map(m=>m[0]);
+const outsideFaq = source => source.replace(/<div id="cmsFaqList">[\s\S]*?<\/div><div id="faqEmpty"/, '<div id="faqEmpty"');
 
 for (const file of pages) {
   test(file + ': only scoped public copy changes; metadata, prices, links and controls stay intact', () => {
     const current = read(file), previous = before(file);
-    assert.equal(normalize(current), normalize(applyApprovedInitialReleaseScope(file, previous)));
+    assert.equal(normalize(current), normalize(applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, previous))));
     assert.equal(applyApprovedInitialReleaseScope(file, current), current, 'idempotent migration');
     assert.equal(normalize(current.match(/<head>[\s\S]*?<\/head>/)?.[0] || ''),
-      normalize(previous.match(/<head>[\s\S]*?<\/head>/)?.[0] || ''), 'canonical, hreflang, JSON-LD and scripts unchanged');
-    assert.deepEqual(prices(current), prices(previous));
-    assert.deepEqual(controls(current), controls(previous));
+      normalize(applyApprovedMultilingualContent(file,previous).match(/<head>[\s\S]*?<\/head>/)?.[0] || ''), 'metadata preserved; Chinese now uses the same FAQ script');
+    assert.deepEqual(prices(outsideFaq(current)), prices(outsideFaq(previous)));
+    assert.deepEqual(controls(outsideFaq(current)), controls(outsideFaq(previous)));
   });
 }
 
@@ -63,23 +65,24 @@ for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
 }
 
 test('FAQ changes only three existing answers; keep legal device permissions separate from technical support', () => {
-  const current = JSON.parse(read('content/faq-content.json')), previous = JSON.parse(before('content/faq-content.json'));
-  assert.equal(read('content/faq-content.json'), applyApprovedInitialReleaseScope('content/faq-content.json', before('content/faq-content.json')));
+  const current = JSON.parse(read('content/faq-content.json')), previous = JSON.parse(applyApprovedMultilingualContent('content/faq-content.json',before('content/faq-content.json')));
+  assert.equal(read('content/faq-content.json'), applyApprovedMultilingualContent('content/faq-content.json',applyApprovedInitialReleaseScope('content/faq-content.json', before('content/faq-content.json'))));
   assert.deepEqual({...current,faq:null},{...previous,faq:null});
   assert.deepEqual(current.faq.map(item=>item.id),previous.faq.map(item=>item.id));
   for (const item of current.faq) {
     const old = previous.faq.find(x=>x.id===item.id);
     if (initialScopeFaqAnswers[item.id]) {
       assert.deepEqual({...item,answer:null},{...old,answer:null});
-      assert.deepEqual(item.answer, initialScopeFaqAnswers[item.id]);
+      for(const locale of ['ja','en'])assert.equal(item.answer[locale], initialScopeFaqAnswers[item.id][locale]);
+      assert.equal(item.answer['zh-CN'],old.answer['zh-CN']);
     } else assert.deepEqual(item, old);
   }
-  assert.equal(read('content/faq-policy-additions.json'), before('content/faq-policy-additions.json'));
+  assert.equal(read('content/faq-policy-additions.json'), applyApprovedMultilingualContent('content/faq-policy-additions.json',before('content/faq-policy-additions.json')));
 });
 
 test('Chinese dictionary translates the complete public scope and does not restore retired demo capability claims', () => {
   const dictionary = JSON.parse(read('content/zh-translations.json'));
-  assert.equal(read('content/zh-translations.json'), applyApprovedInitialReleaseScope('content/zh-translations.json', before('content/zh-translations.json')));
+  assert.equal(read('content/zh-translations.json'), applyApprovedMultilingualContent('content/zh-translations.json',applyApprovedInitialReleaseScope('content/zh-translations.json', before('content/zh-translations.json'))));
   for (const key of ['scope','restore','nativeTitle','nativeScope','preview']) assert.equal(dictionary[initialReleaseCopy.en[key]],initialReleaseCopy.zh[key]);
   assert.ok(!dictionary['Only available in the real product']);
 });

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>IMS 库存管理软件演示｜Baked Kale FDE</title>
-<meta name="description" content="尝试一个简化的IMS v1.0工作流程,并附带临时样本数据:搜索库存,接收,传输,计数,飞船,以及审查移动历史.">
+<meta name="description" content="使用临时示例数据体验简化的 IMS v1.0 流程：搜索库存、入库、调拨、盘点、出库及查看操作记录。">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://kale1205.github.io/fde-site/zh/demo.html">
   <link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/demo.html">
@@ -15,7 +15,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Baked Kale FDE">
   <meta property="og:title" content="IMS 库存管理软件演示｜Baked Kale FDE">
-  <meta property="og:description" content="尝试使用临时样本数据简化IMS v1.0股票工作流程.">
+  <meta property="og:description" content="使用临时示例数据体验简化的 IMS v1.0 库存管理流程。">
   <meta property="og:url" content="https://kale1205.github.io/fde-site/zh/demo.html">
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta property="og:image:alt" content="IMS inventory operations development preview by Baked Kale FDE">
@@ -23,7 +23,7 @@
   <meta property="og:locale:alternate" content="ja_JP">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="IMS 库存管理软件演示｜Baked Kale FDE">
-  <meta name="twitter:description" content="尝试使用临时样本数据简化IMS v1.0股票工作流程.">
+  <meta name="twitter:description" content="使用临时示例数据体验简化的 IMS v1.0 库存管理流程。">
   <meta name="twitter:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:image:alt" content="IMS inventory operations development preview by Baked Kale FDE">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
@@ -54,7 +54,7 @@
     <section class="section-frame section-intro compact demo-intro">
       <p>V1.0 简化流程 / 临时数据</p>
       <h1>体验核心库存流程</h1>
-      <span>使用样品产品接收、转移、清点和船舶库存,然后审查产生的库存健康和移动历史。</span>
+      <span>使用示例商品体验入库、调拨、盘点和出库，再查看库存状态与操作记录。</span>
 
 
       <p class="demo-simulation-label">交互式模拟 · 非正式发布产品</p>
@@ -97,7 +97,7 @@
           <div id="demoDestinationField"><label for="demoDestination">目标位置</label><select id="demoDestination" name="destination"></select></div>
           <label for="demoQuantity" id="demoQuantityLabel">实收数量</label>
           <input id="demoQuantity" name="quantity" type="number" min="1" step="1" value="5" inputmode="numeric" required>
-          <p class="demo-field-help" id="demoOperationHelp">将股票添加到选定的目的地。</p>
+          <p class="demo-field-help" id="demoOperationHelp">向所选目标位置添加库存。</p>
           <button class="button button-primary" id="demoApply" type="submit">收到记录</button>
           <p class="demo-result" id="demoResult" role="status" aria-live="polite">选择更新临时样本清单的操作 。</p>
           <div class="demo-selected-product" aria-live="off"><small data-demo-selected-label>商品</small><strong data-demo-selected-name></strong><small data-demo-selected-sku></small><dl><div><dt>主机 / A-01</dt><dd data-demo-selected-stock="0"></dd></div><div><dt>大阪 / B-02</dt><dd data-demo-selected-stock="1"></dd></div><div><dt>共计</dt><dd data-demo-selected-stock="2"></dd></div></dl></div>
@@ -109,18 +109,18 @@
       </section>
       <div class="demo-workbench-actions"><button id="demoReset" class="button button-secondary light" type="button">重置演示</button></div>
       <details class="demo-guide" id="demoGuide"><summary id="demoGuideTitle">v1.0 简化业务流程</summary><div data-demo-notes>
-      <div class="ims-pre"><strong>交互式模拟 · 非正式发布产品</strong><p>这个只浏览器的演示是V1.0工作流程的简化表示. 它不连接到IMS服务器,保存您的更改,提供认证或角色,或创建生产备份.</p></div>
+      <div class="ims-pre"><strong>交互式模拟 · 非正式发布产品</strong><p>本演示仅在浏览器中展示简化的 v1.0 操作流程，不连接 IMS 服务器，不持久保存更改，不提供身份验证或角色权限，也不创建生产环境备份。</p></div>
       <small class="demo-note">Baked Kale FDE 出品的 IMS</small>
     <ol class="demo-flow" aria-label="简化 v1.0 工作流程">
       <li><small>01</small><strong>查找</strong><span>SKU 或条码</span></li>
       <li><small>02</small><strong>入库</strong><span>添加进货库存</span></li>
       <li><small>03</small><strong>调拨</strong><span>在地点之间移动</span></li>
       <li><small>04</small><strong>盘点</strong><span>确认实际库存</span></li>
-      <li><small>05</small><strong>出库</strong><span>防止负存量</span></li>
-      <li><small>06</small><strong>查看记录</strong><span>卫生和历史</span></li>
+      <li><small>05</small><strong>出库</strong><span>防止库存数量为负</span></li>
+      <li><small>06</small><strong>查看记录</strong><span>库存状态与操作记录</span></li>
     </ol>
       <div class="demo-scope-grid">
-        <div><strong>包括在模拟中</strong><p>SKU/条码搜索,接收,转移,计数,船舶,非负存量,三态库存健康,移动历史.</p></div>
+        <div><strong>包括在模拟中</strong><p>SKU/条码搜索、入库、调拨、盘点、出库、非负库存数量、三种库存状态及操作记录。</p></div>
         <div><strong>原生应用仍在开发中</strong><p>首个原生版本面向配备 Apple M2 或更新芯片的单台 Mac，Host 与 Client 在同一台 Mac 上运行。支持的机型与 macOS 版本将在实机测试后确认，且须满足各机型的最低系统要求。多台 Mac 的局域网连接计划通过后续更新提供，时间尚未确定。当前开发版本尚不提供升级、还原与恢复功能。</p></div>
       </div>
       <p class="demo-note">本演示仅在当前页面内存中使用合成示例数据。重新加载或重置页面会清除所有更改，不能据此认定原生应用已完成、通过安全验证或正式发布。</p>

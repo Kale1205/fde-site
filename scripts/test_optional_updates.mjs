@@ -5,6 +5,7 @@ import {execFileSync} from 'node:child_process';
 import {applyApprovedOptionalUpdates, optionalUpdatesCopy, updatesNewsNotes} from './optional_updates_copy.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
+import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline = 'ccc17a1f85ef079d82d4a8e616df78b8b457fccb';
@@ -15,15 +16,16 @@ const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
 ).concat(['cms-admin.html','overview.html','products.html']);
 const normalize = source => normalizeAssetBuildKeys(source.trimEnd());
 const prices = source => source.match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
+const outsideFaq = source => source.replace(/<div id="cmsFaqList">[\s\S]*?<\/div><div id="faqEmpty"/, '<div id="faqEmpty"');
 
 for (const file of pages) {
   test(file + ': only the approved Updates copy changes; metadata, prices and controls are preserved', () => {
     const source = read(file);
-    assert.equal(normalize(source), normalize(applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file)))));
+    assert.equal(normalize(source), normalize(applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file))))));
     assert.equal(applyApprovedOptionalUpdates(file, source), source, 'copy migration is idempotent');
-    assert.deepEqual(prices(source), prices(before(file)), 'no JPY or candidate USD price changes');
+    assert.deepEqual(prices(outsideFaq(source)), prices(outsideFaq(before(file))), 'no JPY or candidate USD price changes outside the expanded FAQ');
     assert.equal(normalize(source.match(/<head>[\s\S]*?<\/head>/)?.[0] || ''),
-      normalize(before(file).match(/<head>[\s\S]*?<\/head>/)?.[0] || ''));
+      normalize(applyApprovedMultilingualContent(file,before(file)).match(/<head>[\s\S]*?<\/head>/)?.[0] || ''));
   });
 }
 
@@ -48,8 +50,8 @@ for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
 test('FAQ updates are limited to four answers, without adding questions, changing IDs, or altering prices', () => {
   const ids = new Set(['updates-term','license-updates-entitlement','cancel-updates-after-license','cancel-updates-only']);
   for (const file of ['content/faq-content.json','content/faq-policy-additions.json']) {
-    const now = JSON.parse(read(file)), old = JSON.parse(applyApprovedInitialReleaseScope(file, before(file)));
-    assert.equal(read(file), applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file))));
+    const now = JSON.parse(read(file)), old = JSON.parse(applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, before(file))));
+    assert.equal(read(file), applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file)))));
     assert.deepEqual(now.faq.map(x=>x.id), old.faq.map(x=>x.id));
     for (const item of now.faq) {
       const previous = old.faq.find(x=>x.id===item.id);

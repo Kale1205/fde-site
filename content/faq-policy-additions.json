@@ -8,19 +8,59 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "License購入後のUpdates料金はどうなりますか？",
-        "en": "How does Updates pricing work after purchasing License?"
+        "en": "How does Updates pricing work after purchasing License?",
+        "zh-CN": "购买 License 后，Updates 如何收费？"
       },
       "answer": {
         "ja": "Licenseには購入後3か月のUpdatesが含まれます。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。Updatesを契約しない場合も、購入時のバージョンを期限なく利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。有料契約へ自動移行することはありません。",
-        "en": "License includes the first three months of Updates. Optional continuation is a $31/month USD candidate for months 4–6 and a $62/month USD candidate from month 7. Customers can keep using the version purchased without continuing Updates. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms. Updates never starts automatically, and all USD figures are unapproved candidates pending final international pricing."
+        "en": "License includes the first three months of Updates. Optional continuation is a $31/month USD candidate for months 4–6 and a $62/month USD candidate from month 7. Customers can keep using the version purchased without continuing Updates. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms. Updates never starts automatically, and all USD figures are unapproved candidates pending final international pricing.",
+        "zh-CN": "License 包含购买后前三个月的 Updates。之后可自愿继续订阅：第 4–6 个月的美元候选价格为每月 31 美元，第 7 个月起为每月 62 美元。不继续订阅 Updates，也可以使用购买时的版本。通过 Updates 获取的版本在订阅结束后的使用条件，将在最终许可条款中说明。Updates 不会自动开始收费，所有美元金额均为等待最终国际定价的未批准候选价格。"
       },
       "keywords": {
-        "ja": ["License", "Updates", "購入後3か月分込み", "4,900円", "9,800円", "自動課金なし"],
-        "en": ["License", "Updates", "three months included", "$31 candidate", "$62 candidate", "no automatic conversion"]
+        "ja": [
+          "License",
+          "Updates",
+          "購入後3か月分込み",
+          "4,900円",
+          "9,800円",
+          "自動課金なし"
+        ],
+        "en": [
+          "License",
+          "Updates",
+          "three months included",
+          "$31 candidate",
+          "$62 candidate",
+          "no automatic conversion"
+        ],
+        "zh-CN": [
+          "Updates",
+          "31 美元",
+          "62 美元",
+          "自愿订阅",
+          "无自动扣费"
+        ]
       },
       "synonyms": {
-        "ja": ["購入後の更新", "Updates特典", "通常料金", "有料へ自動移行"],
-        "en": ["post-purchase Updates", "Updates entitlement", "standard price", "automatic paid subscription"]
+        "ja": [
+          "購入後の更新",
+          "Updates特典",
+          "通常料金",
+          "有料へ自動移行"
+        ],
+        "en": [
+          "post-purchase Updates",
+          "Updates entitlement",
+          "standard price",
+          "automatic paid subscription"
+        ],
+        "zh-CN": [
+          "Updates",
+          "31 美元",
+          "62 美元",
+          "自愿订阅",
+          "无自动扣费"
+        ]
       }
     },
     {
@@ -31,19 +71,53 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "License購入後にUpdatesを終了するとどうなりますか？",
-        "en": "What happens if Updates ends after purchasing License?"
+        "en": "What happens if Updates ends after purchasing License?",
+        "zh-CN": "购买 License 后结束 Updates 会怎样？"
       },
       "answer": {
         "ja": "Updatesの利用権とFDEによる継続更新は契約期間の終了時に停止します。ソースコードなしの購入済みLicenseは、購入時のバージョンを引き続き社内で利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。その後の更新・セキュリティ管理は購入者側の責任です。",
-        "en": "Updates access and FDE-managed ongoing updates end when the subscription term ends. The purchased perpetual License remains valid for internal use of the version purchased, without source code. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms. Updates and security are then customer-managed."
+        "en": "Updates access and FDE-managed ongoing updates end when the subscription term ends. The purchased perpetual License remains valid for internal use of the version purchased, without source code. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms. Updates and security are then customer-managed.",
+        "zh-CN": "订阅结束时，Updates 使用权和 FDE 的持续更新服务停止。不含源代码的已购永久 License 仍允许在内部使用购买时的版本。通过 Updates 获取的版本在订阅结束后的使用条件，将在最终许可条款中说明。之后由购买方负责更新与安全。"
       },
       "keywords": {
-        "ja": ["Updates解約", "License継続", "永続利用", "ソースコードなし", "セキュリティ"],
-        "en": ["cancel Updates", "keep License", "perpetual use", "no source code", "security"]
+        "ja": [
+          "Updates解約",
+          "License継続",
+          "永続利用",
+          "ソースコードなし",
+          "セキュリティ"
+        ],
+        "en": [
+          "cancel Updates",
+          "keep License",
+          "perpetual use",
+          "no source code",
+          "security"
+        ],
+        "zh-CN": [
+          "结束 Updates",
+          "继续 License",
+          "永久使用",
+          "安全"
+        ]
       },
       "synonyms": {
-        "ja": ["更新を止める", "月額を終了", "買い切り版を使い続ける"],
-        "en": ["stop Updates", "end monthly plan", "continue perpetual License"]
+        "ja": [
+          "更新を止める",
+          "月額を終了",
+          "買い切り版を使い続ける"
+        ],
+        "en": [
+          "stop Updates",
+          "end monthly plan",
+          "continue perpetual License"
+        ],
+        "zh-CN": [
+          "结束 Updates",
+          "继续 License",
+          "永久使用",
+          "安全"
+        ]
       }
     },
     {
@@ -54,19 +128,53 @@
       "translationStatus": "seeded",
       "question": {
         "ja": "Updatesだけを購入できますか？",
-        "en": "Can Updates be purchased without License?"
+        "en": "Can Updates be purchased without License?",
+        "zh-CN": "可以不购买 License，只购买 Updates 吗？"
       },
       "answer": {
         "ja": "いいえ。UpdatesはLicense専用の追加オプションで、単独では購入できません。License Plusも対象外です。Updatesを終了しても、購入済みLicenseの社内利用権は残り、購入時のバージョンを利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。",
-        "en": "No. Updates is a License-only add-on and cannot be purchased on its own. License Plus is not eligible. Ending Updates does not remove the purchased License or internal use of the version purchased. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms."
+        "en": "No. Updates is a License-only add-on and cannot be purchased on its own. License Plus is not eligible. Ending Updates does not remove the purchased License or internal use of the version purchased. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms.",
+        "zh-CN": "不可以。Updates 是 License 专用附加服务，不能单独购买，也不适用于 License Plus。结束 Updates 不会取消已购 License 的内部使用权，仍可使用购买时的版本。通过 Updates 获取的版本在订阅结束后的使用条件，将在最终许可条款中说明。"
       },
       "keywords": {
-        "ja": ["Updates", "単独購入不可", "License専用", "追加オプション", "License Plus対象外"],
-        "en": ["Updates", "not standalone", "License only", "add-on", "License Plus excluded"]
+        "ja": [
+          "Updates",
+          "単独購入不可",
+          "License専用",
+          "追加オプション",
+          "License Plus対象外"
+        ],
+        "en": [
+          "Updates",
+          "not standalone",
+          "License only",
+          "add-on",
+          "License Plus excluded"
+        ],
+        "zh-CN": [
+          "单独购买",
+          "附加服务",
+          "License 专用",
+          "License Plus 不适用"
+        ]
       },
       "synonyms": {
-        "ja": ["Updatesだけ購入", "追加購入", "オプション対象"],
-        "en": ["Updates only", "add Updates", "add-on eligibility"]
+        "ja": [
+          "Updatesだけ購入",
+          "追加購入",
+          "オプション対象"
+        ],
+        "en": [
+          "Updates only",
+          "add Updates",
+          "add-on eligibility"
+        ],
+        "zh-CN": [
+          "单独购买",
+          "附加服务",
+          "License 专用",
+          "License Plus 不适用"
+        ]
       }
     }
   ]
