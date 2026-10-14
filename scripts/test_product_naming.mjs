@@ -7,11 +7,12 @@ import {applyApprovedOptionalUpdates} from './optional_updates_copy.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
+import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = file => readFileSync(new URL(file, root), 'utf8');
 const baseline = 'e1ebe999d2acbbf7edc211688a51894eaf7b60a6';
-const previous = file => execFileSync('git', ['show', `${baseline}:${file}`], {cwd:root, encoding:'utf8'});
+const previous = file => applyW02PurchaseCta(file,execFileSync('git', ['show', `${baseline}:${file}`], {cwd:root, encoding:'utf8'}));
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
   ['index', 'license', 'demo', 'goals', 'news', 'contact', 'order', 'customer', 'quiet-form'].map(page => `${prefix}${page}.html`)
 ).concat(['cms-admin.html', 'overview.html', 'products.html']);

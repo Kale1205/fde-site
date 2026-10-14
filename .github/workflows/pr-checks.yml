@@ -46,6 +46,9 @@ jobs:
       - name: Multilingual FAQ, stock terminology, and internal-link contracts
         run: node --test scripts/test_multilingual_content.mjs
 
+      - name: W02 disabled purchase CTA and unchanged commerce boundaries
+        run: node --test scripts/test_w02_purchase_cta.mjs
+
       - name: Linear-inspired redesign contracts
         run: node scripts/test_linear_redesign.mjs
 
