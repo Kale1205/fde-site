@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {applyApprovedProductNaming} from './approved_product_naming.mjs';
+import {applyApprovedOptionalUpdates} from './optional_updates_copy.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -16,7 +17,7 @@ const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
 for (const file of pages) {
   test(`${file}: only approved product/operator naming and first-use expansion change`, () => {
     const html = read(file);
-    assert.equal(normalizeAssetBuildKeys(html.trimEnd()), normalizeAssetBuildKeys(applyApprovedProductNaming(previous(file)).trimEnd()));
+    assert.equal(normalizeAssetBuildKeys(html.trimEnd()), normalizeAssetBuildKeys(applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file))).trimEnd()));
     assert.doesNotMatch(html, /FDE IMS/);
     assert.equal(applyApprovedProductNaming(html), html);
   });
@@ -50,7 +51,7 @@ for (const prefix of ['', 'ja/', 'zh/']) {
 
 test('CMS hydration and Chinese dictionary contain the same approved names', () => {
   for (const file of ['content/site-content.json', 'content/faq-content.json', 'content/zh-translations.json']) {
-    assert.equal(read(file), applyApprovedProductNaming(previous(file)));
+    assert.equal(read(file), applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file))));
     assert.doesNotMatch(read(file), /FDE IMS/);
     JSON.parse(read(file));
   }

@@ -1177,8 +1177,8 @@
         "en": "Can Updates be used after the subscription ends?"
       },
       "answer": {
-        "ja": "Updatesを終了すると、FDEによる新しい更新の提供は止まります。購入済みLicenseと、その時点までに取得したバージョンの永続利用権は残ります。",
-        "en": "When Updates ends, FDE stops providing new updates. The purchased License and the perpetual right to use the version obtained up to that point remain valid."
+        "ja": "Updatesを終了すると、FDEによる新しい更新の提供は止まります。購入済みLicenseの社内利用権は残り、購入時のバージョンを利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。",
+        "en": "When Updates ends, FDE stops providing new updates. The purchased License remains valid for internal use of the version purchased. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms."
       },
       "keywords": {
         "ja": [

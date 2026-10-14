@@ -11,8 +11,8 @@
         "en": "How does Updates pricing work after purchasing License?"
       },
       "answer": {
-        "ja": "Licenseには購入後3か月のUpdatesが含まれます。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。継続しなくても、その時点のバージョンを期限なく利用できます。有料契約へ自動移行することはありません。",
-        "en": "License includes the first three months of Updates. Optional continuation is a $31/month USD candidate for months 4–6 and a $62/month USD candidate from month 7. The customer may keep using the current version perpetually without continuing. Updates never starts automatically, and all USD figures are unapproved candidates pending final international pricing."
+        "ja": "Licenseには購入後3か月のUpdatesが含まれます。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。Updatesを契約しない場合も、購入時のバージョンを期限なく利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。有料契約へ自動移行することはありません。",
+        "en": "License includes the first three months of Updates. Optional continuation is a $31/month USD candidate for months 4–6 and a $62/month USD candidate from month 7. Customers can keep using the version purchased without continuing Updates. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms. Updates never starts automatically, and all USD figures are unapproved candidates pending final international pricing."
       },
       "keywords": {
         "ja": ["License", "Updates", "購入後3か月分込み", "4,900円", "9,800円", "自動課金なし"],
@@ -34,8 +34,8 @@
         "en": "What happens if Updates ends after purchasing License?"
       },
       "answer": {
-        "ja": "Updatesの利用権とFDEによる継続更新は契約期間の終了時に停止します。ソースコードなしの購入済みLicenseは、引き続き社内で利用できます。その後の更新・セキュリティ管理は購入者側の責任です。",
-        "en": "Updates access and FDE-managed ongoing updates end when the subscription term ends. The purchased perpetual License remains valid, so the customer may continue using the License version internally without source code. Updates and security are then customer-managed."
+        "ja": "Updatesの利用権とFDEによる継続更新は契約期間の終了時に停止します。ソースコードなしの購入済みLicenseは、購入時のバージョンを引き続き社内で利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。その後の更新・セキュリティ管理は購入者側の責任です。",
+        "en": "Updates access and FDE-managed ongoing updates end when the subscription term ends. The purchased perpetual License remains valid for internal use of the version purchased, without source code. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms. Updates and security are then customer-managed."
       },
       "keywords": {
         "ja": ["Updates解約", "License継続", "永続利用", "ソースコードなし", "セキュリティ"],
@@ -57,8 +57,8 @@
         "en": "Can Updates be purchased without License?"
       },
       "answer": {
-        "ja": "いいえ。UpdatesはLicense専用の追加オプションで、単独では購入できません。License Plusも対象外です。Updatesを終了しても、購入済みLicenseとその時点までに取得したバージョンの永続利用権は残ります。",
-        "en": "No. Updates is a License-only add-on and cannot be purchased on its own. License Plus is not eligible. Ending Updates does not remove the purchased License or the perpetual right to use the version obtained up to that point."
+        "ja": "いいえ。UpdatesはLicense専用の追加オプションで、単独では購入できません。License Plusも対象外です。Updatesを終了しても、購入済みLicenseの社内利用権は残り、購入時のバージョンを利用できます。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。",
+        "en": "No. Updates is a License-only add-on and cannot be purchased on its own. License Plus is not eligible. Ending Updates does not remove the purchased License or internal use of the version purchased. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms."
       },
       "keywords": {
         "ja": ["Updates", "単独購入不可", "License専用", "追加オプション", "License Plus対象外"],
