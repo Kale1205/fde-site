@@ -1000,3 +1000,31 @@ The complete local rerun passes all 92 tests without skips after this bounded te
 The build-sync validation also exposed a legacy pre-staging assertion requiring the retired modal-only `data-demo-open` control. The approved W01 uses an inline demo and a normal localized Demo link. The assertion now accepts either the original trigger or the complete approved inline contract (IMS root, demo runtime and Quiet Form class), while still requiring the Japanese relative Demo link. Backend/Turnstile/CMS staging isolation checks remain unchanged.
 
 final result: passed
+
+## 2026-10-15 W01 product conditions CTA — selected displayed option 1
+
+### Scope and visual truth
+
+The user selected the first displayed generated design and its iPhone-accessible review implementation, and explicitly authorized implementation through merge. This is a scoped CTA change, not a new homepage redesign. Existing icons, typography, comparison layout, all copy/prices/terms, relative navigation, SEO and disabled commerce stay intact. No dependencies or runtime behavior are added.
+
+- Original selected image: `output/w01-forest-direct/selected-option-1.png` (1496 × 1051 raster concept).
+- Approved review implementation: owner-private `https://fde-w01-cta-review.kale-1999.chatgpt.site/?option=1`. The exact local source of that saved review was rendered for comparison without changing access or attempting another login.
+- Same-state region comparisons: `output/w01-forest-direct/reference-region-{1440,390}.png` and `implementation-region-{1440,390}.png`. Both source and implementation were opened together in the same comparison inputs. Browser CSS viewports were 1440 × 1000 and 390 × 1000, DPR 1; element captures preserve each existing section's natural dimensions, not an invented pixel-perfect global match. The reviewed scope is the CTA; the original homepage grid/spacing and feature-row styling intentionally remain unchanged.
+- Full viewport captures: `output/w01-forest-direct/after-{en,ja,zh}-{1440,1024,390}.png`. Desktop and Tablet before captures are `before-ja-{1440,1024}.png`. An initial native window resize did not change the actual CSS viewport; those attempts are excluded. Explicit viewport emulation and measured innerWidth/DPR were used for all final captures. A premature Mobile metrics probe lost its optional diagnostic object during emulation reload; the three Mobile measurements were rerun successfully without that probe. These diagnostic failures are not counted as product passes.
+- Focused comparison: source and implementation buttons were captured and inspected together at 250 × 54 CSS pixels. Same forest fill, ivory label, 10px radius, centered label/arrow and restrained shadow; both actions align below their prices. Native Tab shows the existing orange focus ring; Enter reaches the original localized conditions route, with its purchase button still disabled. Hover and active styling are scoped to the CTA; reduced motion disables translation.
+
+### Findings and required fidelity surfaces
+
+No actionable P0/P1/P2 differences remain in the requested CTA scope. Fonts/typography reuse Inter and existing locale fallbacks with 16px Desktop / 14px Mobile CTA labels. Spacing/layout uses the selected 24px price-to-button gap, 250px Desktop width and full-column Mobile buttons with 18px gap, 54px/50px minimum heights. Both column actions remain aligned. Colors/tokens reuse forest/paper/green and the existing keyboard-focus accent. Image quality and assets are byte-preserved original product sculptures and brand artwork; no fabricated icon, image replacement or decorative asset was introduced. Copy/content remains byte-identical except the existing normalized asset-build query keys. The original feature rows and product proportions are intentionally preserved instead of expanding this change into a table redesign.
+
+Comparison history: first valid paired source/implementation review found no actionable visual mismatch; no P0/P1/P2 visual-fix loop was needed. Earlier capture/diagnostic setup limitations are documented above, not presented as successful measurements. Minor differences between the review wrapper and the production section's surrounding gutters are expected scope boundaries, not a redesign request.
+
+### Verification and boundaries
+
+- All three locales at measured 1440/1024/390 CSS pixels, DPR1: no horizontal overflow, clipped labels, missing images, covered CTA centers, Console warnings/errors or failed observed resource requests. Both CTAs are 250 × 54px on Desktop/Tablet and 168 × 50px at 390px; existing 49,800 / 99,800 JPY top-page prices and local conditions links remain unchanged.
+- Native keyboard Tab/Enter and mouse hover were checked; existing focus styling and semantics retained. Chinese Mobile Lighthouse snapshot: Accessibility / Best Practices / SEO / Agentic Browsing 100, zero failed audits. This is lab/emulated Chrome evidence, not physical iPhone/Safari or field-performance acceptance.
+- The first combined regression run failed three historical copy-only tests because they required all CSS to be unchanged. Their expected fixtures now apply only the five exact approved W01 CSS replacements. A new whole-file comparison and negative tests continue detecting unrelated CSS/runtime changes; no assertion or commerce gate is disabled.
+- 267 related Node tests pass (259 existing + 8 W01), with no failed/skipped tests. Repository validation, eight-page Chinese generation, approved-homepage generation, static news tests (5), sitemap lastmod tests (3) and diff whitespace validation pass. This static repository has no separate production build/lint script; CI includes repository, security and generation contracts.
+- Implementation modifies only the selected CTA CSS plus tests/CI/this evidence report; the established build-sync bot changes dated asset references only. No sales activation, order/payment/fulfillment, CMS writes, analytics or native release is performed. PR, exact-head CI, merge and deployed-page verification are separate subsequent gates; they are not inferred from this local report.
+
+final result: passed

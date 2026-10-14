@@ -7,6 +7,7 @@ import {applyApprovedInitialReleaseScope, initialReleaseCopy, initialScopeFaqAns
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
+import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline = 'd6ab9132810381668d72c9eff7664a87db0a9be1';
@@ -115,10 +116,10 @@ test('site runtime changes are confined to the localized demand callout; no trac
   assert.equal(withoutCallout(read('site.js')),withoutCallout(before('site.js')));
   assert.doesNotMatch(read('site.js'), /navigator\.(?:userAgent|platform)|deviceMemory|fetch\(|localStorage|sessionStorage|WebSocket/);
 });
-test('visual styles, demo operations, authentication, commerce gates, news and robots remain unchanged', () => {
+test('visual styles except approved W01 CTA, demo operations, authentication, commerce gates, news and robots remain unchanged', () => {
   for (const file of ['gallery-ui.css','gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','styles.css','responsive.css',
     'gallery-ui.js','demo-v1.js','quiet-form.js','contact-config.js','contact-direct.js','quiet-customer.js',
     'worker/src/index-v14.js','content/site-content.json','robots.txt']) {
-    assert.equal(normalize(read(file)),normalize(before(file)),file);
+    assert.equal(normalize(read(file)),normalize(applyW01ProductCta(file,before(file))),file);
   }
 });
