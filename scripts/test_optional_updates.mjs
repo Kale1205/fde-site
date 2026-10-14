@@ -7,6 +7,7 @@ import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
+import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline = 'ccc17a1f85ef079d82d4a8e616df78b8b457fccb';
@@ -82,9 +83,9 @@ test('news keeps the dated article intact and shows the latest policy annotation
   assert.equal(applyApprovedOptionalUpdates('content/site-content.json',read('content/site-content.json')),read('content/site-content.json'));
 });
 
-test('CSS, runtime, authentication, payment gates, robots and native/back-end code are not changed', () => {
+test('CSS except approved W01 CTA, runtime, authentication, payment gates, robots and native/back-end code are not changed', () => {
   for (const file of ['gallery-ui.css','quiet-form.css','quiet-pages.css','gallery-ui.js','quiet-form.js','demo-v1.js',
     'contact-config.js','contact-direct.js','quiet-customer.js','worker/src/index-v14.js','robots.txt']) {
-    assert.equal(normalize(read(file)),normalize(before(file)),file);
+    assert.equal(normalize(read(file)),normalize(applyW01ProductCta(file,before(file))),file);
   }
 });
