@@ -1,5 +1,7 @@
 # W05 selected bookshelf implementation QA
 
+Earlier accepted page evidence is preserved in [the pre-W05 QA archive](docs/design-qa-before-w05.md).
+
 final result: passed
 
 Scope: the approved W05 presentation and interactions, not Instagram API
