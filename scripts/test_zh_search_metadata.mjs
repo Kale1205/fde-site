@@ -6,7 +6,9 @@ import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.m
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 const root=new URL('../',import.meta.url);
 const read=file=>readFileSync(new URL(file,root),'utf8');
-const baseline=file=>execFileSync('git',['show',`5dc6c44da0bb2cc2ac124cef087bdca891b041f2:${file}`],{cwd:root,encoding:'utf8'});
+// Keep the approved shared News images/CMS removal from merged PR #97.
+// This PR must only change the three reviewed Chinese metadata values.
+const baseline=file=>execFileSync('git',['show',`8e66ae7baece27e7ad75678ee3b8416a27ffae3c:${file}`],{cwd:root,encoding:'utf8'});
 const descriptions={
  'zh/index.html':'了解开发中的 IMS 库存管理软件及 License、License Plus 两种产品，比较使用条件，并通过浏览器演示体验基本库存流程。',
  'zh/license.html':'比较开发中的 IMS License 与 License Plus：了解使用权、源代码范围、维护责任、使用限制及价格状态。'
