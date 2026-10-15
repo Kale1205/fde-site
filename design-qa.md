@@ -1057,3 +1057,29 @@ final result: passed
 - PR/exact-head CI and production merge/publication remain separate gates. The owner-private Sites review is not the public production website; W04 is awaiting user review, not merged.
 
 final result: passed
+
+## W04 seamless-motion refinement — 2026-10-15
+
+The user's latest direction is continuous, music-box-like motion with no visible stop at a finite clip's restart. This refines the selected Layered Desk; no new visual direction, page, copy, price, feature or native capability is introduced.
+
+### Evidence and fidelity
+
+- Source: the previously reviewed live Layered Desk, captured before this change at 1024 × 1536 CSS pixels / DPR 1. `/Users/junenature/Desktop/Share/Codex/fde-site-review-evidence/w04-layered-motion/seamless-before-1024.png`.
+- Implementation: same viewport, density, route/section, palette and running state, `seamless-after-1024.png` in that directory. Both captures were opened together in the same comparison input. Different operation frames and code lines are expected dynamic content, not claimed pixel-identical states. Host reduced-motion CSS keeps both references untilted; normal playback is explicitly enabled for this comparison.
+- Full-view and focused inspection: heading/gutters, code header/text, screen edges, overlap, pause control and captions retain the existing scale and alignment. Fonts/typography remain the existing Inter/locale fallbacks and 14/12px monospace. Spacing/layout, forest/ivory colors, borders and shadows are retained. Asset fidelity: original MP4s, posters and artwork are unmodified. Copy/content and sample-versus-real-operation disclosures are unchanged.
+- Nine final locale/viewport captures are `seamless-{en,ja,zh}-{1440,1024,390}.png`, DPR 1. Panel bounds were checked as well as document overflow, so a clipped child cannot be incorrectly counted as a pass.
+
+### Findings, fixes and motion validation
+
+- [P2, fixed] The old finite-video loop sought the visible decoder at the end; code scrolled in whole-line jumps. Code now uses a bounded ring of rows with frame-paced, fractional-line translation. Removing an offscreen row and its offset in the same update preserves the visible trajectory, including a full source wrap. Type-on text remains illustrative and aria-hidden, with the full static sample available separately.
+- [P2, fixed] Initially, non-wrapping decorative code widened the mobile grid despite the shell hiding document overflow. Added a zero-minimum grid track and explicit minimum width. Post-fix all nine panel bounds fit the viewport; 390px code/screen right edges are approximately 348/364px. Long visual lines clip within the code window, while the complete sample remains readable in the existing disclosure.
+- Video now reuses the exact real recording in two muted inline decoders. The incoming stream starts before the outgoing stream ends; a 900ms linear dissolve starts only after an incoming decoded frame. Only the fully hidden outgoing stream pauses/seeks to zero. No synthetic app footage, reverse-operation footage or new media is substituted. The finite recording still repeats; this is a seam treatment, not an assertion of infinitely new operations.
+- Separate 25-second real-time Chrome observations at desktop and 390px: two handoffs observed, zero seeks while a layer was visibly exposed, composite screen coverage remained 1 (no blank frame). Both decoders produced frames. Nine final locale/viewport checks show advancing video time and code transforms, no panel navigation, one shared control, no new Console warnings/errors, and valid panel bounds. Observed initial lab CLS ranged approximately 0.00012–0.02915, not a field-performance guarantee.
+- One initial mobile measurement was excluded: same-document hash navigation had not re-run the no-preference diagnostic stub, leaving reduced-motion playback intentionally stopped. Explicit reload reran the test with verified motion enabled. This was not reported as successful loop evidence.
+- Native Enter pauses both decoders and code position; resume, mid-dissolve pause, offscreen/background pause and stale play rejection are covered. A real reduced-motion reload starts static with zero MP4 requests. Hidden duplicate has aria-hidden and tabindex=-1; no new focus target or live character announcement.
+- Chinese Mobile Lighthouse snapshot: Accessibility / Best Practices / SEO / Agentic Browsing 100, 33 passed / zero failed audits. This is Chrome emulation, not physical iPhone/Safari or a complete WCAG/field-performance certification.
+- 283 related Node tests pass, including 16 W04 tests (six additional seamless-motion cases). Static/generation contracts, repository validation and exact-head CI remain separate checks. The no-JS original recording keeps native controls; low-resource or blocked spare-decoder playback falls back to the original native loop rather than exposing an empty layer. That fallback may still reveal the original recording seam on constrained devices.
+
+No actionable P0/P1/P2 finding remains in the verified scope. Production merge remains pending user review; the private preview and existing PR #94 are updated independently.
+
+final result: passed
