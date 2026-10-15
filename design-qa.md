@@ -45,6 +45,9 @@ No individual social cards, invented posts, duplicate excerpts or archive list.
   ordinary vertical scrolling is not intercepted.
 - P2 small-height close: 844x390 initially put close above the viewport.
   Viewport-aware offset now keeps its top at >=8px.
+- P2 legacy CSS collision: tablet/desktop inherited grid-column:1/-1 on the old
+  cmsInstagram ID, pushing the profile list into a 56px track. Explicit icon/list
+  column and row placement fixes it; all three SNS locales rechecked at each width.
 - Polish: short title fade/slide, reserved translated-headline space, forest keyboard
   focus (inset on scroller), no rejected red/orange pointer-tap outline.
 

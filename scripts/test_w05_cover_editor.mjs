@@ -55,6 +55,7 @@ test('all three languages remove the rejected social description and visible fee
 });
 test('selected social directory uses genuine local Instagram photos, no LinkedIn avatar and approved D copy in every language',()=>{
  const intros={'news.html':'Want to know more? Explore our official and personal accounts.','ja/news.html':'もう少し詳しく知りたい方へ。公式・個人アカウントはこちら。','zh/news.html':'想了解更多？欢迎访问官方及个人账号。'};
+ assert.match(read('news-books.css'),/#cmsInstagram\{[^\n]+grid-column:1;grid-row:1/);assert.match(read('news-books.css'),/\.social-profiles\{grid-column:2;grid-row:1;min-width:0/);
  for(const [file,intro] of Object.entries(intros)){
   const html=read(file),social=html.slice(html.indexOf('<section class="news-social'),html.indexOf('<dialog class="book-reader'));
   assert.ok(social.includes(`<p class="social-intro">${intro}</p>`));assert.match(social,/class="social-directory"/);
