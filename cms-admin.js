@@ -23,7 +23,16 @@ function renderNewsOptions(selectId=''){const sel=$('#editNewsTarget');if(!sel)r
 function populateEditForm(){const n=(cms?.news||[]).find(x=>x.id===$('#editNewsTarget')?.value);const fields=$('#editNewsFields');if(fields)fields.classList.toggle('hidden',!n);if(!n)return;$('#editTitleJa').value=n.title?.ja||'';$('#editTitleEn').value=n.title?.en||'';$('#editBodyJa').value=n.body?.ja||'';$('#editBodyEn').value=n.body?.en||'';$('#editCategory').value=n.category||'Product';$('#editDate').value=n.date||today();$('#editFeatured').checked=!!n.featured;$('#editImageFile').value='';renderCurrentImage(n.image||'');previewFile('#editImageFile','#editPreview','新しい画像を選択すると表示されます。')/* W05 cover */;populateBookCover(n);/* W05 cover end */}
 async function connect(){token=$('#token')?.value.trim()||'';if(!token){status('GitHub tokenを入力してください。','error');return}const btn=$('#connectBtn');btn.disabled=true;try{const me=await fetch('https://api.github.com/user',{headers:headers()});if(!me.ok)throw new Error('GitHub認証に失敗しました');const user=await me.json();await loadCms();$('#adminTabs')?.classList.remove('hidden');showPanel('news');status(`${user.login} として接続しました。News・FAQ・メディア管理を利用できます。`,'success')}catch(e){token='';status(`接続できませんでした: ${e.message}`,'error')}finally{btn.disabled=false}}
 function validateImage(file){if(!file)return true;if(!file.type.startsWith('image/'))throw new Error('画像ファイルを選択してください。');if(file.size>8*1024*1024)throw new Error('画像は8MB以下にしてください。');return true}
-function previewFile(inputSelector,boxSelector,emptyText='画像を選択すると、ここにプレビューが表示されます。'){const file=$(inputSelector)?.files?.[0];const box=$(boxSelector);if(!box)return;if(!file){box.innerHTML=`<div class="preview-placeholder">${emptyText}</div>`;return}try{validateImage(file)}catch(e){status(e.message,'error');$(inputSelector).value='';return}const u=URL.createObjectURL(file);box.innerHTML=`<img src="${u}" alt="preview">`}
+/* W05_SAFE_FILE_PREVIEW_START */
+const previewUrls=new WeakMap();
+function previewFile(inputSelector,boxSelector,emptyText='画像を選択すると、ここにプレビューが表示されます。'){
+ const file=$(inputSelector)?.files?.[0],box=$(boxSelector);if(!box)return;
+ const previous=previewUrls.get(box);if(previous){URL.revokeObjectURL(previous);previewUrls.delete(box);}box.replaceChildren();
+ if(!file){const note=document.createElement('div');note.className='preview-placeholder';note.textContent=emptyText;box.append(note);return;}
+ try{validateImage(file);}catch(e){status(e.message,'error');$(inputSelector).value='';return;}
+ const objectUrl=URL.createObjectURL(file),image=document.createElement('img');previewUrls.set(box,objectUrl);image.src=objectUrl;image.alt='画像プレビュー';box.append(image);
+}
+/* W05_SAFE_FILE_PREVIEW_END */
 /* W05_SAFE_ARTICLE_PREVIEW_START */
 function renderCurrentImage(src){
  const box=$('#editCurrentImage');if(!box)return;box.replaceChildren();

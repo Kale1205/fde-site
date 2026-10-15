@@ -81,10 +81,11 @@ All controls meet their existing 44/48px targets. Existing duplicated lists stay
   asserts the remainder matches the pre-revision CMS baseline, apart from existing
   automatic asset keys. No auth, original translation pipeline, payment gate or
   article facts were weakened. No new dependency, tracker or external API.
-- The final security scan surfaced a legacy article-image preview using
-  innerHTML. Replaced only that presentation function with createElement,
-  textContent, own-project asset allowlisting and encoded path segments. Invalid
-  previews cannot inject elements and do not mutate the stored article image.
+- The final security scan surfaced the legacy file-preview innerHTML sink.
+  Replaced file and stored-article image previews with createElement/textContent;
+  local blob URLs are revoked when replaced. Stored-article paths also use
+  own-project allowlisting and encoded segments. Invalid previews cannot inject
+  elements and do not mutate the stored article image. No alert is suppressed.
 
 ## Remaining selection and external gates
 
