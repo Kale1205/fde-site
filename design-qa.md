@@ -74,13 +74,17 @@ All controls meet their existing 44/48px targets. Existing duplicated lists stay
   not a WCAG certification or physical Safari acceptance.
 - One warm local 390px diagnostic, no throttle: LCP158ms, CLS0.00. No field data;
   this is not a statistically established speed claim or a cold cellular measurement.
-- 318 Node tests; static News parser6; sitemap lastmod3 passed. Generation is
+- 319 Node tests; static News parser6; sitemap lastmod3 passed. Generation is
   idempotent, JS syntax and diff whitespace checks pass. Full repository validation
   is repeated after committing HTML and updating the sitemap as required.
 - Historical guards strip only named cover additions. A dedicated regression
   asserts the remainder matches the pre-revision CMS baseline, apart from existing
   automatic asset keys. No auth, original translation pipeline, payment gate or
   article facts were weakened. No new dependency, tracker or external API.
+- The final security scan surfaced a legacy article-image preview using
+  innerHTML. Replaced only that presentation function with createElement,
+  textContent, own-project asset allowlisting and encoded path segments. Invalid
+  previews cannot inject elements and do not mutate the stored article image.
 
 ## Remaining selection and external gates
 

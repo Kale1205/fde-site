@@ -7,6 +7,8 @@ export function withoutW05BookCoverEditor(file,source){
  if(file==='cms-admin.js')return source
   .replace(/\/\* W05 cover \*\/[\s\S]*?\/\* W05 cover end \*\//g,'')
   .replace(/\/\* W05_COVER_EDITOR_START \*\/[\s\S]*?\/\* W05_COVER_EDITOR_END \*\/\n/,'')
-  .replace('function init(){\n \n','function init(){\n');
+  .replace('function init(){\n \n','function init(){\n')
+  .replace(/\/\* W05_SAFE_ARTICLE_PREVIEW_START \*\/[\s\S]*?\/\* W05_SAFE_ARTICLE_PREVIEW_END \*\//,legacyArticlePreview);
  return source;
 }
+const legacyArticlePreview="function renderCurrentImage(src){const box=$('#editCurrentImage');if(!box)return;box.innerHTML=src?`<img src=\"${src}\" alt=\"current News image\">`:'<div class=\"preview-placeholder\">個別画像は未設定です。公開ページではNewsデフォルト画像が使われます。</div>'}";

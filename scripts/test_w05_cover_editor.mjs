@@ -43,3 +43,10 @@ test('all three languages remove the rejected social description and visible fee
  for(const file of ['news.html','ja/news.html','zh/news.html']){const html=read(file);assert.doesNotMatch(html,/class="social-intro"|投稿を表示できません|上のアイコンからInstagram|写真・映像・小説/);assert.match(html,/class="instagram-empty sr-only" role="status"><\/p>/);}
  assert.match(read('ja/news.html'),/<h2 id="news-social-title">SNS<\/h2>/);
 });
+test('article image preview treats stored CMS values as data, not HTML',()=>{
+ const js=read('cms-admin.js'),preview=js.slice(js.indexOf('/* W05_SAFE_ARTICLE_PREVIEW_START */'),js.indexOf('/* W05_SAFE_ARTICLE_PREVIEW_END */'));
+ assert.doesNotMatch(preview,/innerHTML|outerHTML|insertAdjacentHTML/);
+ assert.match(preview,/replaceChildren\(\)/);assert.match(preview,/document.createElement\('img'\)/);
+ assert.match(preview,/map\(encodeURIComponent\)/);assert.match(preview,/Kale1205/);
+ assert.match(preview,/保存済みの画像指定は変更していません/);
+});
