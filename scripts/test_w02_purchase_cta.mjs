@@ -5,11 +5,12 @@ import {execFileSync} from 'node:child_process';
 import {applyW02PurchaseCta,purchaseCtaLabels} from './w02_purchase_cta.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
+import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
 
 const root=new URL('../',import.meta.url);
 const baseline='d1302742d66acd427dbe7aea64bd5fe1dee861fa';
 const read=file=>readFileSync(new URL(file,root),'utf8');
-const before=file=>{const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});return /^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):old;};
+const before=file=>{const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});return /^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old);};
 for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']]) {
   test(locale+': consultation CTA becomes one genuinely disabled purchase button, with no order destination',()=>{
     const file=prefix+'license.html',html=read(file),old=before(file);

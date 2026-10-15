@@ -9,11 +9,12 @@ import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs'
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
+import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline = 'd6ab9132810381668d72c9eff7664a87db0a9be1';
 const read = file => readFileSync(new URL(file, root), 'utf8');
-const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return /^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):old; };
+const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return /^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old); };
 const normalize = source => normalizeAssetBuildKeys(source.trimEnd());
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
   ['index','quiet-form','license','order','demo','goals','news','contact','customer'].map(page => prefix + page + '.html')

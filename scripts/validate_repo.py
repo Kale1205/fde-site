@@ -672,8 +672,8 @@ required_markers = {
     "ja/index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content-ja.js", "data-demo-open"),
     "goals.html": ('id="fde"', 'id="approach"', 'id="partnership"', "mission-code", "stock_state", "ims-v1-operation-en.mp4"),
     "ja/goals.html": ('id="fde"', 'id="approach"', 'id="partnership"', "mission-code", "stock_state", "ims-v1-operation-ja.mp4"),
-    "news.html": ("cms-content.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
-    "ja/news.html": ("cms-content-ja.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
+    "news.html": ("cms-content.js", "cms-news-page", "book-news", "news-books.js", "id=\"book-news-data\"", "id=\"cmsInstagram\""),
+    "ja/news.html": ("cms-content-ja.js", "cms-news-page", "book-news", "news-books.js", "id=\"book-news-data\"", "id=\"cmsInstagram\""),
     "contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
     "ja/contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
 }
@@ -709,6 +709,23 @@ static_news_titles = {
 }
 for rel, expected_title in static_news_titles.items():
     source = public_source_text.get(rel, "")
+    if 'book-news' in source:
+        # The approved W05 bookshelf removes duplicate visible excerpts/lists.
+        # All current CMS articles remain readable as HTML without JavaScript.
+        locale = 'ja' if rel.startswith('ja/') else 'en'
+        cms = json.loads((ROOT / 'content/site-content.json').read_text(encoding='utf-8'))
+        for item in cms['news']:
+            match = re.search(r'<article data-static-news-id="' + re.escape(item['id']) + r'">([\s\S]*?)</article>', source)
+            if not match:
+                fail(f"{rel}: missing static full article {item['id']}")
+                continue
+            visible = plain_html_text(match.group(1))
+            expected_body = re.sub(r'\s+', ' ', item['body'][locale]).strip()
+            if item['title'][locale] not in visible or expected_body not in visible:
+                fail(f"{rel}: static full article is truncated or differs from CMS: {item['id']}")
+        if any(marker in source for marker in ('id="cmsLatestList"', 'id="cmsNewsWire"')):
+            fail(f"{rel}: removed duplicate News lists were reintroduced")
+        continue
     lead_start = source.find('id="cmsNewsLead"')
     latest_start = source.find('id="cmsLatestList"', lead_start + 1)
     wire_start = source.find('id="cmsNewsWire"', latest_start + 1)

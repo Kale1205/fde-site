@@ -39,11 +39,18 @@ class LeadParser(HTMLParser):
 
 def complete_static_news_lead(source, expected_title, required_terms):
     match = re.search(r'<a\b[^>]*\bid="cmsNewsLead"[^>]*>[\s\S]*?</a>', source)
+    candidates = [match.group(0)] if match else []
+    # W05 has one circular shelf instead of a duplicate visible lead/list.
+    # Only actual noscript articles count, never the JSON seed or attributes.
     if not match:
-        return False
-    parser = LeadParser()
-    parser.feed(match.group(0))
-    heading = " ".join("".join(parser.headings).split())
-    body = " ".join("".join(parser.paragraphs).split())
-    return (heading == expected_title and len(body) >= 150
-            and all(term in body for term in required_terms))
+        for fallback in re.findall(r'<noscript\b[^>]*>([\s\S]*?)</noscript>', source):
+            candidates.extend(re.findall(r'<article\b[^>]*\bdata-static-news-id="[^"]+"[^>]*>[\s\S]*?</article>', fallback))
+    for candidate in candidates:
+        parser = LeadParser()
+        parser.feed(candidate)
+        heading = " ".join("".join(parser.headings).split())
+        body = " ".join("".join(parser.paragraphs).split())
+        if (heading == expected_title and len(body) >= 150
+                and all(term in body for term in required_terms)):
+            return True
+    return False
