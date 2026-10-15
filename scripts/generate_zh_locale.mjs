@@ -7,6 +7,7 @@ import { renderQuietOrder } from './build_quiet_order.mjs';
 import { renderQuietCustomer } from './build_quiet_customer.mjs';
 import { applyReleaseNoticePolicy, removePurchaseStatusCopy, releaseCopy } from './release_notice_policy.mjs';
 import { renderStaticFaq } from './multilingual_content_copy.mjs';
+import { localizeW04Motion } from './w04_layered_motion.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-translations.json'), 'utf8'));
@@ -143,11 +144,17 @@ function renderPage(name) {
     translated = renderStaticFaq(translated);
   }
   if (name === 'goals.html') {
+    if (output.includes('data-goals-motion')) {
+      // Localized controls/provenance, identical illustrative code identifiers.
+      const sample=/<code data-code-source>[\s\S]*?<\/code>/;
+      translated=localizeW04Motion(translated,'zh').replace(sample,output.match(sample)[0]);
+    } else {
     // Localize the accessible label, never the actual source identifiers.
     const excerpt = /<div class="mission-code-window">[\s\S]*?<\/code><\/pre><\/div>/;
     const label = translated.match(/<pre[^>]*aria-label="([^"]+)"/)[1];
     translated = translated.replace(excerpt, output.match(excerpt)[0]
       .replace(/(aria-label=")[^"]+/, `$1${label}`));
+    }
   }
   return name === 'demo.html' ? renderQuietDemo(translated, 'zh') : applyReleaseNoticePolicy(translated,name.replace('.html',''));
 }

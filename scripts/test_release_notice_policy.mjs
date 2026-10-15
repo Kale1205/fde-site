@@ -4,10 +4,11 @@ import {readFileSync} from 'node:fs';
 import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {releaseCopy, applyReleaseNoticePolicy, removePurchaseStatusCopy} from './release_notice_policy.mjs';
+import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 
 const root=new URL('../',import.meta.url);
 const read=file=>normalizeAssetBuildKeys(readFileSync(new URL(file,root),'utf8'));
-const before=file=>normalizeAssetBuildKeys(execFileSync('git',['show',`d49ca55:${file}`],{cwd:root,encoding:'utf8'}));
+const before=file=>{const old=execFileSync('git',['show',`d49ca55:${file}`],{cwd:root,encoding:'utf8'});return normalizeAssetBuildKeys(/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):old);};
 for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
   test(`${locale}: release/purchase notice only appears on homepage, terms and W07`,()=>{
     for(const page of ['index','license','order']) {

@@ -1028,3 +1028,118 @@ Comparison history: first valid paired source/implementation review found no act
 - Implementation modifies only the selected CTA CSS plus tests/CI/this evidence report; the established build-sync bot changes dated asset references only. No sales activation, order/payment/fulfillment, CMS writes, analytics or native release is performed. PR, exact-head CI, merge and deployed-page verification are separate subsequent gates; they are not inferred from this local report.
 
 final result: passed
+
+## W04 Layered Desk motion — 2026-10-15
+
+### Selected visual and comparison evidence
+
+- User selected Layered Desk (first displayed W04 image), then requested continuous sample typing, a looping real operation screen, no foreground switching and no panel navigation. Scope is the existing Our Goals proof block in English, Japanese and Simplified Chinese; surrounding brand, artwork, copy, routes, prices, license and commerce boundaries remain intact.
+- Original visual: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-11198e46-64c4-44f9-a7d1-e5f4e8b15724.png`. Revised visual reflecting that feedback: sibling `exec-96285042-b789-4ac8-b7d0-cfbe7d6f5de8.png` (1024 × 1536 pixels). This generated design is reference-only, never substituted for the real recording.
+- Rendered comparison: `/Users/junenature/Desktop/Share/Codex/fde-site-review-evidence/w04-layered-motion/comparison-1024.png`, CSS viewport 1024 × 1536, DPR 1, 1024 × 1536 pixels. Revised source and rendered screenshot were opened together in the same comparison input. Heading-to-panels composition and the code header / recording / pause control were explicitly inspected. This is a section-style adaptation, not a claim of exact global pixel replication: existing chapter rail, extra explanatory copy and original type scale are retained. Host reduced-motion CSS removes tilt; normal-motion runtime was separately simulated through the browser's pre-navigation matchMedia stub. No density scaling was applied.
+- Additional captures: the same evidence directory contains `w04-{en,ja,zh}-{1440,1024,390}.png`. Measured viewports 1440 × 1000, 1024 × 1000 and 390 × 844, DPR 1. The published static preview export was separately rendered at 390 × 844 after the focus fix.
+
+### Findings and comparison history
+
+- [P2, fixed] The inherited proof `:focus-within` rule would move the foreground recording when the pause control received keyboard focus. Added an explicitly scoped stationary focused state at desktop and mobile breakpoints. Post-fix Chrome measurements at 1024 and 390 report zero horizontal position change; paired post-fix comparison and native Enter activation confirm the fix. No actionable P0/P1/P2 findings remain.
+- Fonts/typography: existing Inter, Japanese/Chinese fallbacks, hierarchy and prose retained. Code uses the existing monospace treatment (14px desktop, 12px narrow screens), wraps only inside a reserved clipped viewport; full static code remains horizontally scrollable and keyboard-accessible in a disclosure.
+- Spacing/layout: dark rear code window and offset foreground recording follow the selected layered composition without foreground switching. Reserved 540/326px code viewport and 9:7 recording prevent motion-driven section growth. Both panels stay within the chapter gutters; focus does not change geometry.
+- Colors/tokens: existing ivory/forest palette, thin borders and restrained shadows. Existing orange focus treatment is preserved. No decorative glow, new branding or additional design system.
+- Image quality/asset fidelity: original native MP4s and posters, chapter illustrations and brand assets are byte-preserved. The recording is not generated UI; its original resolution/compression and historical development-build appearance remain visible. Chinese uses the existing English recording with Chinese explanatory text, not a claimed Chinese native application.
+- Copy/content: surrounding copy, actual-operation provenance, synthetic-dataset disclosure and operational responsibilities are retained. The former implementation-excerpt claim is deliberately replaced in all three languages by a clear sample-code label. Motion controls and failure fallback are localized. No new navigation links, panel switching or code-as-actual-IMS claim.
+
+### Interaction, accessibility and bounded verification
+
+- Nine locale/viewport checks: both code content and video time advance; no horizontal overflow, missing resource, covered pause control, new Console warning/error or uncaught script error. Observed CLS was 0.00012–0.00220 (lab observations, not a field/Core Web Vitals guarantee). Observed requests succeeded (200 or video range 206).
+- Mobile native recording playback is muted and inline. Clicking code/video does not navigate. One semantic button pauses/resumes both animations; native keyboard Enter was exercised. Video autoplay rejection retains a deliberate replay action. Video/source failures expose localized text and the existing operation transcript.
+- Host reduced-motion setting was verified without a stub: initial static code, paused video and zero MP4 requests. Explicit play remains available. Offscreen/background pausing, user-pause preservation, preference changes, bounded looping text and rejected autoplay are covered by deterministic runtime tests. Repeated code is aria-hidden and never announced per character; the complete static sample and original operation transcript remain accessible without JS. Native video controls remain as no-JS fallback.
+- Chinese 390px Lighthouse snapshot: Accessibility, Best Practices, SEO and Agentic Browsing 100; 33 passed / zero failed audits. This excludes performance scoring and is Chrome emulation, not physical iPhone/Safari QA.
+- Existing historical whole-page fixtures now accommodate only the explicit W04 transform on the three goals routes. Dedicated exact approved-delta, unchanged-anchor/SEO/media-source and runtime tests continue rejecting unrelated changes. New assets are scoped CSS/JS only, with no dependency, tracking, backend, sales activation, CMS write or native release.
+- PR/exact-head CI and production merge/publication remain separate gates. The owner-private Sites review is not the public production website; W04 is awaiting user review, not merged.
+
+final result: passed
+
+## W04 seamless-motion refinement — 2026-10-15
+
+The user's latest direction is continuous, music-box-like motion with no visible stop at a finite clip's restart. This refines the selected Layered Desk; no new visual direction, page, copy, price, feature or native capability is introduced.
+
+### Evidence and fidelity
+
+- Source: the previously reviewed live Layered Desk, captured before this change at 1024 × 1536 CSS pixels / DPR 1. `/Users/junenature/Desktop/Share/Codex/fde-site-review-evidence/w04-layered-motion/seamless-before-1024.png`.
+- Implementation: same viewport, density, route/section, palette and running state, `seamless-after-1024.png` in that directory. Both captures were opened together in the same comparison input. Different operation frames and code lines are expected dynamic content, not claimed pixel-identical states. Host reduced-motion CSS keeps both references untilted; normal playback is explicitly enabled for this comparison.
+- Full-view and focused inspection: heading/gutters, code header/text, screen edges, overlap, pause control and captions retain the existing scale and alignment. Fonts/typography remain the existing Inter/locale fallbacks and 14/12px monospace. Spacing/layout, forest/ivory colors, borders and shadows are retained. Asset fidelity: original MP4s, posters and artwork are unmodified. Copy/content and sample-versus-real-operation disclosures are unchanged.
+- Nine final locale/viewport captures are `seamless-{en,ja,zh}-{1440,1024,390}.png`, DPR 1. Panel bounds were checked as well as document overflow, so a clipped child cannot be incorrectly counted as a pass.
+
+### Findings, fixes and motion validation
+
+- [P2, fixed] The old finite-video loop sought the visible decoder at the end; code scrolled in whole-line jumps. Code now uses a bounded ring of rows with frame-paced, fractional-line translation. Removing an offscreen row and its offset in the same update preserves the visible trajectory, including a full source wrap. Type-on text remains illustrative and aria-hidden, with the full static sample available separately.
+- [P2, fixed] Initially, non-wrapping decorative code widened the mobile grid despite the shell hiding document overflow. Added a zero-minimum grid track and explicit minimum width. Post-fix all nine panel bounds fit the viewport; 390px code/screen right edges are approximately 348/364px. Long visual lines clip within the code window, while the complete sample remains readable in the existing disclosure.
+- Video now reuses the exact real recording in two muted inline decoders. The incoming stream starts before the outgoing stream ends; a 900ms linear dissolve starts only after an incoming decoded frame. Only the fully hidden outgoing stream pauses/seeks to zero. No synthetic app footage, reverse-operation footage or new media is substituted. The finite recording still repeats; this is a seam treatment, not an assertion of infinitely new operations.
+- Separate 25-second real-time Chrome observations at desktop and 390px: two handoffs observed, zero seeks while a layer was visibly exposed, composite screen coverage remained 1 (no blank frame). Both decoders produced frames. Nine final locale/viewport checks show advancing video time and code transforms, no panel navigation, one shared control, no new Console warnings/errors, and valid panel bounds. Observed initial lab CLS ranged approximately 0.00012–0.02915, not a field-performance guarantee.
+- One initial mobile measurement was excluded: same-document hash navigation had not re-run the no-preference diagnostic stub, leaving reduced-motion playback intentionally stopped. Explicit reload reran the test with verified motion enabled. This was not reported as successful loop evidence.
+- Native Enter pauses both decoders and code position; resume, mid-dissolve pause, offscreen/background pause and stale play rejection are covered. A real reduced-motion reload starts static with zero MP4 requests. Hidden duplicate has aria-hidden and tabindex=-1; no new focus target or live character announcement.
+- Chinese Mobile Lighthouse snapshot: Accessibility / Best Practices / SEO / Agentic Browsing 100, 33 passed / zero failed audits. This is Chrome emulation, not physical iPhone/Safari or a complete WCAG/field-performance certification.
+- 283 related Node tests pass, including 16 W04 tests (six additional seamless-motion cases). Static/generation contracts, repository validation and exact-head CI remain separate checks. The no-JS original recording keeps native controls; low-resource or blocked spare-decoder playback falls back to the original native loop rather than exposing an empty layer. That fallback may still reveal the original recording seam on constrained devices.
+
+No actionable P0/P1/P2 finding remains in the verified scope. Production merge remains pending user review; the private preview and existing PR #94 are updated independently.
+
+final result: passed
+
+## W04 Layered Desk static-depth correction — 2026-10-15
+
+### Selected direction and diagnosis
+
+- User clarified that option 1 includes a clockwise rear code panel and a counterclockwise foreground operation screen, including on iPhone. This clarification supersedes the earlier reports accepting flattened reduced-motion screenshots. The selected direction, not a new variant, is implemented.
+- [P2, fixed] A reduced-motion CSS rule removed static panel transforms on every device, not just iPhone. Actual host reduced-motion Chrome at 390px reproduced both transforms as `none` before the fix. The user's physical iPhone preference was not inspected or assumed.
+- Static composition now retains +3 degrees on the rear code and -2 degrees on the foreground screen irrespective of motion preference. The rear figure is top-aligned so its rotation origin follows its code window rather than the entire stretched grid row. Inner video decoders remain unrotated to avoid double transforms. Existing runtime still pauses animation and avoids MP4 requests on reduced-motion startup.
+
+### Paired visual evidence
+
+- Original selected reference `exec-11198e46-64c4-44f9-a7d1-e5f4e8b15724.png` and rendered `tilt-comparison1024.png` were opened together in one comparison input at 1024 x 1536 pixels, DPR 1. Evidence is in `/Users/junenature/Desktop/Share/Codex/fde-site-review-evidence/w04-layered-motion/`. Focused 390px before/after captures are `tilt-before390.png` and `tilt-after390.png`; final tablet/desktop captures are `tilt-after1024.png` / `tilt-after1440.png`.
+- The rear/front tilt and overlap now match the selected direction. Existing chapter gutter, type scale, explanatory sample-code disclosure and single pause control are intentionally preserved; the reference's old foreground selector is not restored because the later user direction explicitly removed switching. No global pixel-identical claim is made.
+- Fonts/typography, spacing outside the panel composition, ivory/forest colors, media fidelity and copy/content are unchanged. Original native recordings/posters are byte-preserved. No new imagery, dependencies, tracking, prose, prices or license terms.
+
+### Verification and boundaries
+
+- All nine locale/viewport combinations (English/Japanese/Simplified Chinese at measured 1440, 1024, 390 CSS px, DPR 1) retain the two angles with reduced motion enabled, zero horizontal overflow and both transformed visual bounds inside the viewport. Each starts paused with zero MP4 resource requests. At 390px the code/screen bounds are approximately 38–356 / 61–368px.
+- Additional 390px normal-playback diagnostic uses an explicit pre-navigation matchMedia stub: actual video time and code transforms advance while static angles remain. Native Enter pauses both decoders and the code without flattening or moving panels; pause control hit target is unobstructed. No Console errors/warnings were observed. This is emulated Chrome, not physical Safari verification.
+- 284 related Node tests pass, including 17 W04 tests and a regression for static angles under reduced motion, top alignment and no double-rotated video. Repository validation, goals generation, Chinese eight-page generation and whitespace checks pass. Earlier seamless-handoff and Lighthouse evidence remains historical; runtime JS/media did not change in this correction.
+- The owner-private preview and open PR #94 are updated for user review. Production merge, exact-head CI and physical-device QA remain separate gates; no workflow approval or protection bypass is implied.
+
+No actionable P0/P1/P2 finding remains in this scoped visual comparison.
+
+final result: passed
+
+## W04 option-1 placement fidelity — 2026-10-15
+
+### Findings and correction history
+
+- [P1, fixed] The preceding tilt-only implementation did not reproduce option 1's placement: its front screen was too narrow and too far right, its code was too short, the caption followed the narrow screen column, and extra introductory prose separated the heading from the desk. Static 2D rotations also differed from the reference's receding planes. The user's latest direction supersedes the preceding acceptance of this geometry.
+- Rebuilt only the existing proof block's composition: heading directly above the desk, larger rear-left code and front-right operation frame, deeper overlap, shared full-width caption, then all unchanged explanatory prose. Uses two static perspective transforms around the outer bottom corners, not decorative animated tilting. The same ratios and depth remain on phones; no mobile stacked substitution.
+- First comparison corrected panel anchors/overlap, heading scale and caption alignment. A second pass matched the foreground frame height to the reference. Existing native 900 x 700 footage is contained at its original 9:7 ratio inside a 23:20 frame, with a neutral fitted margin; it is never stretched, cropped, or replaced by generated app imagery. The earlier user request removing the reference's foreground selector still applies: one pause/resume button remains, without panel switching or navigation.
+
+### Source and paired evidence
+
+- Source visual truth: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-11198e46-64c4-44f9-a7d1-e5f4e8b15724.png`, 1024 x 1536 pixels. Final source and rendered screenshot were opened together in the same comparison input, both 1024 x 1536 at DPR 1, with heading near y=84. No density rescaling was used. This comparison covers the selected proof section, not a replacement of the rest of Our Goals.
+- Evidence directory: `/Users/junenature/Desktop/Share/Codex/fde-site-review-evidence/w04-layered-motion/`. Before: `layout-before1024.png`. First pass: `layout-pass1-1024.png` / `layout-pass1-390.png`. Final: `layout-final1024.png`, `layout-final390.png`, `layout-final1440.png`. Full view and focused panel corners, overlap, code header, pause control and full-width caption were inspected in the paired images.
+- At 1024px, reference rear bounds are approximately x=82–792, y=199–818; final rear x=82–791, y=207–827. Reference front bounds are approximately x=212–960, y=501–1190; final front x=210–962, y=507–1195. Minor raster/reference measurements and dynamic content are not claimed pixel-identical. The front/rear placement and scale now follow the selected source rather than a nearby arrangement.
+- At 390px, rear x=31–302 and front x=80–368. Across all three main widths, projected rear/front widths remain approximately 80.51% / 85.43% of the desk. The front begins at 34% of the desk width below the rear's top. Caption returns to the shared left edge.
+
+### Required fidelity surfaces
+
+- Fonts/typography: reuse existing fonts/fallbacks, enlarge only the proof heading toward the reference's display scale, retain readable 26px minimum heading and 12px mobile code. Desktop code uses 18px monospace. Complete code remains available in the existing accessible disclosure; decorative flowing lines are intentionally clipped and aria-hidden.
+- Spacing/layout: panel dimensions, perspective origins, overlap, heading adjacency, caption width and phone proportions corrected. Existing chapter rail and surrounding sections remain; focus does not move the recording. The single control differs from the original selector by explicit later user instruction.
+- Colors/tokens: retain existing ivory, forest, borders and restrained shadows; no new brand palette or parallel system. The fitted media margin uses the existing recording background.
+- Image quality/asset fidelity: original recording sources, posters, artwork and runtime JS are byte-unchanged. The generated mock's invented application details/syntax colors are not substituted for actual footage or claimed actual source code. Native content remains fitted, not distorted.
+- Copy/content: every original text node is preserved in all three locales; explanatory copy is moved, not deleted or rewritten. Links, metadata, media attributes and transcript remain unchanged. New deterministic tests assert that preservation and generator idempotence.
+
+### Verification and boundaries
+
+- 285 related Node tests pass, including 18 W04 contracts. The first run identified one obsolete 2D-angle assertion and three old root-attribute selectors; these now assert the exact new perspective/layout marker while retaining exact-delta, metadata, text and media checks.
+- English/Japanese/Simplified Chinese at measured 1440, 1024 and 390 CSS px, DPR 1: no overflow, both panel bounds inside viewport, consistent proportional overlap. Actual host reduced-motion starts static with zero MP4 requests in all nine combinations. Additional 320/768px reflow checks also fit.
+- Normal playback at 390px advances both recording and code. Native Enter pauses both; focus causes zero panel position change and the control center remains unobstructed. No observed failed resource or Console warning/error. Sampled initial lab CLS is about 0.00040, not a field-performance guarantee.
+- Chinese 390px Lighthouse snapshot: Accessibility, Best Practices, SEO and Agentic Browsing 100; 33 passed, zero failed audits. Physical iPhone/Safari and post-login hosted rendering remain unverified. Earlier 25-second seamless-handoff results remain historical; the runtime/media are unchanged here.
+- Repository validation initially rejected dirty indexed HTML as designed; commit the page changes before final sitemap/validation checks. Persisted same-day lastmod dates remain the source of truth. Production merge and exact-head CI remain separate gates; PR #94 stays open for user review.
+
+No actionable P0/P1/P2 difference remains in the requested placement. Remaining differences are actual fitted media/sample code, explicitly removed switching, and minor reference-raster precision.
+
+final result: passed

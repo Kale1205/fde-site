@@ -7,11 +7,12 @@ import {applyApprovedMultilingualContent as apply,mergedFaqData,zhFaqCopy,demoLa
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
+import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 
 const root=new URL('../',import.meta.url);
 const baseline='b714f3d7e3cf2444effb6ca6b0d303c3036857f4';
 const read=file=>readFileSync(new URL(file,root),'utf8');
-const before=file=>applyW02PurchaseCta(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'}));
+const before=file=>{ const old=applyW02PurchaseCta(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'})); return /^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):old; };
 const normalized=value=>normalizeAssetBuildKeys(value.trimEnd());
 const prefixes=['','ja/','zh/'];
 const names=['index','license','demo','goals','news','contact','order','customer','quiet-form'];
