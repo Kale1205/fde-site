@@ -2,36 +2,37 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
-import {newsCoverPath,newsPanelPath,wrapBookOffset,prepareBookOffset,modulo,bookFlightTransform,BOOK_MOTION} from '../news-books.js';
+import {newsImagePath,wrapBookOffset,prepareBookOffset,modulo,bookFlightTransform,BOOK_MOTION} from '../news-books.js';
+import {storyImage,localNews} from './build_book_news.mjs';
 import {withoutW05BookCoverEditor} from './w05_cover_editor_test_helpers.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const before=file=>execFileSync('git',['show',`edcf24191d73c923868bc6714dbd35339b4ff0e1:${file}`],{cwd:root,encoding:'utf8'});
-test('cover additions preserve pre-existing CMS operations byte-for-byte apart from approved asset cache keys',()=>{
+test('shared image restores pre-existing CMS operations and retains safe previews',()=>{
  for(const file of ['cms-admin.js','cms-admin.html'])assert.equal(normalize(withoutW05BookCoverEditor(file,read(file))),normalize(before(file)));
  for(const file of ['news-translation-hook.js','cms-admin-loader.js','cms-admin-view.js','faq-admin-v3.js','worker/src/index-v14.js','content/site-content.json'])assert.equal(normalize(read(file)),normalize(before(file)));
 });
-test('covers never inherit article imagery or CMS fallback imagery',()=>{
- assert.equal(newsCoverPath({id:'article',image:'assets/top-page.png'}),'');
- assert.equal(newsCoverPath({id:'article',image:'assets/old.png',coverImage:'assets/custom.webp'},'../'),'../assets/custom.webp');
- assert.equal(newsCoverPath({id:'article',image:'assets/new.png',coverImage:'assets/custom.webp'},'../'),'../assets/custom.webp');
- assert.equal(newsCoverPath({id:'article',coverImage:'assets/custom.gif'}),'assets/custom.gif');
- assert.equal(newsCoverPath({id:'ims-license-updates-policy-20260819'}),'assets/ims-license-update.webp');
- assert.equal(newsCoverPath({id:'ims-license-updates-policy-20260819',coverImage:''}),'');
- for(const coverImage of ['https://evil.example/a.png','javascript:alert(1)','assets/../x.png','assets/a.png?payload=x','//evil.example/x.webp'])assert.equal(newsCoverPath({coverImage}),'');
+test('one article image controls the card, transition and reader even when old cover data remains',()=>{
+ for(const coverImage of ['', 'assets/old-cover.webp','https://evil.example/a.png']){
+  assert.equal(newsImagePath({id:'article',image:'assets/new.webp',coverImage},'../'),'../assets/new.webp');
+  assert.equal(newsImagePath({id:'article',coverImage},'../','assets/fallback.webp'),'../assets/fallback.webp');
+ }
+ assert.equal(newsImagePath({id:'ims-license-updates-policy-20260819',image:'assets/new.webp'}),'assets/new.webp');
+ assert.equal(newsImagePath({id:'ims-license-updates-policy-20260819'}),'assets/ims-license-update.webp');
+ for(const image of ['https://evil.example/a.png','javascript:alert(1)','assets/../x.png','assets/a.png?payload=x','//evil.example/x.webp'])assert.equal(newsImagePath({image}),'assets/news-fallback-user.svg');
 });
-test('CMS offers separate cover creation, replacement, reset and cover-only save with unique labels',()=>{
+test('CMS only offers the original shared article image controls',()=>{
  const html=read('cms-admin.html');
- for(const id of ['createCoverFile','createCoverPreview','editCoverFile','editCurrentCover','editCoverPreview','editCoverReset','saveBookCoverBtn'])assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);
- assert.match(html,/表紙だけを保存/);assert.match(html,/記事画像・本文・翻訳は変更せず/);
- assert.equal((html.match(/data-cms-book-cover-editor=/g)||[]).length,2);
+ for(const id of ['createImageFile','editImageFile','editCurrentImage','removeNewsImageBtn'])assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);
+ assert.doesNotMatch(html,/CoverFile|CurrentCover|CoverPreview|editCoverReset|saveBookCoverBtn|data-cms-book-cover-editor|本棚の表紙|表紙だけを保存/);
 });
-test('cover-only save validates files, uses the existing authenticated contents API, preserves translations and re-enables on failure',()=>{
- const js=read('cms-admin.js'),save=js.slice(js.indexOf('async function saveBookCover(){'),js.indexOf('/* W05_COVER_EDITOR_END */'));
- assert.match(save,/if\(!token\)/);assert.match(save,/validateCoverImage\(file\)/);assert.match(save,/await uploadAsset\(file\)/);assert.match(save,/await saveCms\(/);
- assert.match(save,/hadCover/);assert.match(save,/delete item.coverImage/);assert.match(save,/finally\{button.disabled=false/);
- assert.doesNotMatch(save,/item\.(?:body|title|image|date|category|featured|translationStatus)\s*=|cms\.news\s*=|fetch\(|localStorage|sessionStorage/);
- assert.match(js,/file.size>8\*1024\*1024/);assert.match(js,/\['image\/png','image\/jpeg','image\/webp','image\/gif'\]/);
+test('shared image upload, replacement and reset retain authentication and existing save API',()=>{
+ const js=read('cms-admin.js');
+ assert.doesNotMatch(js,/coverImage|CoverFile|saveBookCover|populateBookCover|initBookCovers/);
+ assert.match(js,/file.size>8\*1024\*1024/);
+ assert.match(js,/if\(file\)item.image=await uploadAsset\(file\)/);
+ assert.match(js,/item.image='';await saveCms/);
+ for(const name of ['createNews','saveEditedNews','removeEditedNewsImage'])assert.match(js,new RegExp(`async function ${name}\\(\\)\\{if\\(!token\\)`));
 });
 test('opening animation is sequenced after layout, pointer taps have no outline and keyboard focus remains visible',()=>{
  const js=read('news-books.js'),css=read('news-books.css');
@@ -57,10 +58,12 @@ test('Chronicle Rail uses the exact selected third concept without reintroducing
 test('five recycled planes keep correct items and stable hidden buffers through one- and two-step wraps',()=>{
  for(const count of [1,2,3,7,24]){let index=0,offsets=[-1,0,1,2,3];for(let step=0;step<200;step++){const delta=[1,-1,2,-2][step%4];const prepared=offsets.map(offset=>prepareBookOffset(offset,delta));assert.equal(new Set(prepared).size,5);const ids=prepared.map(offset=>modulo(index+offset,count));index=modulo(index+delta,count);const moved=prepared.map(offset=>offset-delta);for(let i=0;i<5;i++)if(moved[i]>=0&&moved[i]<=2)assert.equal(ids[i],modulo(index+moved[i],count));offsets=moved.map(wrapBookOffset);assert.deepEqual([...offsets].sort((a,b)=>a-b),[-1,0,1,2,3]);}}
 });
-test('Chronicle defaults reuse approved artwork but explicit CMS cover and blank reset always take precedence',()=>{
- assert.equal(newsPanelPath({id:'ims-demo-preview'}),'assets/ims-license-plus-customize.webp');assert.equal(newsPanelPath({id:'website-update-20260816'},'../'),'../assets/baked-kale-mark.svg');
- assert.equal(newsPanelPath({id:'ims-demo-preview',coverImage:''}),'');assert.equal(newsPanelPath({id:'ims-demo-preview',coverImage:'assets/custom.webp'}),'assets/custom.webp');assert.equal(newsPanelPath({id:'ims-demo-preview',coverImage:'https://evil.example/a.png'}),'');
- for(const id of ['__proto__','toString','constructor'])assert.equal(newsPanelPath({id}),'');
+test('static HTML and hydrated CMS content resolve the same shared image and fallback',()=>{
+ const content=JSON.parse(read('content/site-content.json'));
+ for(const locale of ['en','ja','zh'])for(const prefix of ['','../'])for(const item of localNews(locale))assert.equal(storyImage(item,prefix),newsImagePath(item,prefix,content.newsFallbackImage));
+ for(const id of ['__proto__','toString','constructor'])assert.equal(newsImagePath({id}),'assets/news-fallback-user.svg');
+ const js=read('news-books.js');assert.equal((js.match(/const cover=resolveImage\(item\)/g)||[]).length,2);assert.match(js,/image.src=resolveImage\(item\)/);assert.match(js,/newsFallbackImage===fallback/);
+ const css=execFileSync('git',['show','5dc6c44da0bb2cc2ac124cef087bdca891b041f2:news-books.css'],{cwd:root,encoding:'utf8'});assert.equal(read('news-books.css'),css,'layout and animation styles unchanged');
 });
 test('Chronicle changes leave the approved SNS markup and main social styles byte-identical',()=>{
  for(const file of ['news.html','ja/news.html','zh/news.html']){const previous=execFileSync('git',['show',`6c27def33c7c26a6361184ef6333d287d7d84d50:${file}`],{cwd:root,encoding:'utf8'});const social=html=>html.slice(html.indexOf('      <section class="news-social'),html.indexOf('      <dialog class="book-reader'));assert.equal(social(read(file)),social(previous));}
