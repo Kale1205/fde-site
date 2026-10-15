@@ -136,6 +136,10 @@ function renderPage(name) {
   }
 
   let translated = translateMarkup(output).replace(/\n[ \t]+\n/g, '\n\n');
+  if (name === 'demo.html') {
+    // Social sharing locale follows this Chinese page, not its English source.
+    translated = translated.replace('<meta property="og:locale" content="en_US">', '<meta property="og:locale" content="zh_CN">\n  <meta property="og:locale:alternate" content="en_US">');
+  }
   if (name === 'news.html') {
     // This editorial section is not the commercial Updates product label.
     translated = translated.replace(/(<h2 id="news-updates-title"[^>]*>)[^<]+/, '$1更新信息');

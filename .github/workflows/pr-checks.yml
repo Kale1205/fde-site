@@ -46,6 +46,9 @@ jobs:
       - name: Multilingual FAQ, stock terminology, and internal-link contracts
         run: node --test scripts/test_multilingual_content.mjs
 
+      - name: Chinese search metadata and unchanged public content
+        run: node --test scripts/test_zh_search_metadata.mjs
+
       - name: W02 disabled purchase CTA and unchanged commerce boundaries
         run: node --test scripts/test_w02_purchase_cta.mjs
 

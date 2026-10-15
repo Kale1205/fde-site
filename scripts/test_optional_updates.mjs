@@ -1,3 +1,4 @@
+import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -15,7 +16,7 @@ import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
 const root = new URL('../', import.meta.url);
 const baseline = 'ccc17a1f85ef079d82d4a8e616df78b8b457fccb';
 const read = file => withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8'));
-const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return /^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old); };
+const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
   ['index','license','order','contact','demo','goals','news','customer','quiet-form'].map(page => prefix + page + '.html')
 ).concat(['cms-admin.html','overview.html','products.html']);

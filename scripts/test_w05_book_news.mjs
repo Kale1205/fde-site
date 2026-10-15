@@ -6,9 +6,10 @@ import {modulo,MAX_BOOKS,INSTAGRAM_ACCOUNTS,newsImagePath,validInstagramFeed,shu
 import {renderQuietNews} from './build_quiet_news.mjs';
 import {withoutW05CmsBridge} from './w05_book_news_test_helpers.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
+import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const cms=JSON.parse(read('content/site-content.json'));
-const baseline=file=>execFileSync('git',['show',`79c017fe45c6316c402f28db5560c152597963d7:${file}`],{cwd:root,encoding:'utf8'});
+const baseline=file=>applyReviewedZhSearchMetadata(file,execFileSync('git',['show',`79c017fe45c6316c402f28db5560c152597963d7:${file}`],{cwd:root,encoding:'utf8'}));
 const entities={'&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"','&#39;':"'"};
 const decode=s=>s.replace(/&(?:amp|lt|gt|quot|#39);/g,x=>entities[x]);
 for(const [prefix,locale] of [['','en'],['ja/','ja'],['zh/','zh-CN']]){
