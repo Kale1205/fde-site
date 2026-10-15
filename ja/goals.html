@@ -69,8 +69,8 @@
       <section id="approach" class="mission-chapter section-frame" aria-labelledby="approach-title">
         <span class="mission-step" aria-hidden="true">02</span>
         <div class="mission-text mission-visual"><div class="mission-copy"><div class="mission-chapter-heading"><p class="eyebrow">02 / 私たちの取り組み</p><h2 id="approach-title">動くシステムと、<br>その中身を届ける</h2></div><div><p>業務効率化のためのシステムを、もっと導入しやすく。Baked Kaleは、ソースコード付きのシステムを提供することで、そのハードルを下げようとしています。</p><p>すべてをゼロから作るのでも、既製品に業務を合わせきるのでもなく。動く仕組みを出発点に、中身を理解し、自社の仕事に合わせて変えていく。そのための選択肢が、IMS License Plusです。</p></div></div><img class="mission-art" src="../assets/goals-open-system.png" width="1536" height="1024" alt="" loading="lazy" decoding="async"></div>
-        <div class="mission-proof mission-layered" data-goals-motion>
-          <div class="mission-proof-intro" id="layered-desk"><p class="eyebrow">INSIDE IMS</p><h3>画面の向こう側も、自分たちの手に</h3><p>在庫がゼロなら「在庫なし」。補充基準以下なら「在庫少」。こうした判定も、ソースコードを読めば仕組みがわかります。</p><small>説明用のサンプルコードです。IMSの実装コードではありません。</small></div>
+        <div class="mission-proof mission-layered" data-goals-motion data-desk-layout="01">
+          <div class="mission-proof-intro" id="layered-desk"><h3>画面の向こう側も、自分たちの手に</h3></div>
           <div class="mission-desk">
             <figure class="mission-code"><div class="mission-code-window">
               <div class="code-file"><span>SAMPLE CODE</span><span>inventory-example.rs · Rust</span></div>
@@ -78,6 +78,7 @@
             </div></figure>
             <figure class="mission-recording"><video controls muted loop playsinline preload="none" data-motion-video width="900" height="700" poster="../assets/ims-v1-operation-ja-poster.jpg" aria-label="IMS v1.0の実際の操作例"><source src="../assets/ims-v1-operation-ja.mp4" type="video/mp4"></video><div class="mission-motion-tools"><button type="button" data-motion-toggle data-pause-label="動きを一時停止" data-play-label="動きを再生" aria-pressed="false" hidden>動きを再生</button></div><figcaption><div class="mission-recording-intro"><h3>実際のIMSで、仕事の流れを見る</h3><p>商品を探し、入庫を記録し、在庫と履歴を確認する。開発中のネイティブアプリを、撮影専用の合成サンプルデータで操作しています。</p></div><span>IMS v1.0 / DEVELOPMENT BUILD</span><p>開発版の実操作を連続キャプチャで紹介。完成イメージやWeb Demoではありません。画面・仕様は開発に伴い変更されます。</p></figcaption></figure>
           </div>
+          <div class="mission-code-explainer"><p class="eyebrow">INSIDE IMS</p><p>在庫がゼロなら「在庫なし」。補充基準以下なら「在庫少」。こうした判定も、ソースコードを読めば仕組みがわかります。</p><small>説明用のサンプルコードです。IMSの実装コードではありません。</small></div>
           <p class="mission-motion-status" data-motion-status role="status" hidden>操作動画を再生できませんでした。下の文章で操作の流れをご確認いただけます。</p>
           <details class="mission-sample"><summary>サンプルコードを読む</summary><pre tabindex="0" aria-label="在庫管理のサンプルコード"><code data-code-source>// Illustration only — not IMS implementation code.
 enum StockState { OutOfStock, LowStock, Healthy }

@@ -47,7 +47,7 @@ export function localizeW04Motion(source, locale) {
 }
 
 export function applyW04LayeredMotion(source) {
-  if (source.includes('data-goals-motion')) return source;
+  if (source.includes('data-goals-motion')) return applyDeskComposition(source);
   const lang = /<html lang="ja">/.test(source) ? 'ja' : /<html lang="zh-CN">/.test(source) ? 'zh' : 'en';
   const prefix = lang === 'en' ? '' : '../';
   const t = copy[lang];
@@ -72,5 +72,19 @@ export function applyW04LayeredMotion(source) {
         </div>
         <details class="mission-transcript">`;
   });
-  return html;
+  return applyDeskComposition(html);
+}
+
+// Option 1: heading, overlapping desk, full-width caption, then the unchanged
+// explanatory copy. Keep the real recording and the later no-switch directive.
+function applyDeskComposition(source) {
+  if (source.includes('data-desk-layout="01"')) return source;
+  let explanation='';
+  let html=source.replace('mission-layered" data-goals-motion', 'mission-layered" data-goals-motion data-desk-layout="01"');
+  html=html.replace(/<div class="mission-proof-intro" id="layered-desk">([\s\S]*?)<\/div>/, (_,intro) => {
+    const heading=intro.match(/<h3>[\s\S]*?<\/h3>/)[0];
+    explanation=intro.replace(heading,'');
+    return `<div class="mission-proof-intro" id="layered-desk">${heading}</div>`;
+  });
+  return html.replace('          <p class="mission-motion-status"', `          <div class="mission-code-explainer">${explanation}</div>\n          <p class="mission-motion-status"`);
 }

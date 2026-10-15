@@ -35,7 +35,7 @@ for(const folder of ['', 'ja/', 'zh/']) {
     for(const asset of ['goals-understand-work','goals-open-system','goals-partner-dialogue']) {
       assert.ok(current.includes(`src="${folder?'../':''}assets/${asset}.png" width="1536" height="1024" alt="" loading="lazy" decoding="async"`));
     }
-    assert.match(current,/<div class="mission-proof mission-layered" data-goals-motion>[\s\S]*?<figure class="mission-code">[\s\S]*?<figure class="mission-recording">/);
+    assert.match(current,/<div class="mission-proof mission-layered" data-goals-motion data-desk-layout="01">[\s\S]*?<figure class="mission-code">[\s\S]*?<figure class="mission-recording">/);
   });
   test(`${name}: prose and metadata are unchanged, only requested closing CTAs removed`,()=>{
     assert.equal(head(current),normalizeAssetBuildKeys(head(applyW04LayeredMotion(previous))));

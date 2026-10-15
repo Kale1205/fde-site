@@ -156,10 +156,27 @@ test('missing IntersectionObserver uses visible fallback', () => {const f=fixtur
 test('Layered Desk static angles survive reduced motion on every viewport, without double-rotating decoded video', () => {
   const css=read('goals-motion.css');
   assert.match(css,/\.mission-code \{[^}]*align-self: start/);
-  assert.match(css,/\.mission-code \{[^}]*transform: rotate\(3deg\)/);
-  assert.match(css,/\.mission-video-loop \{[^}]*transform: rotate\(-2deg\)/);
+  assert.match(css,/\.mission-code \{[^}]*transform: perspective\(200cqw\) rotateY\(10deg\)/);
+  assert.match(css,/\.mission-video-loop \{[^}]*transform: perspective\(240cqw\) rotateY\(-7deg\)/);
   assert.match(css,/\.mission-video-loop video \{[^}]*transform: none/);
   assert.doesNotMatch(css,/@media\s*\(prefers-reduced-motion:[\s\S]*transform:\s*none/);
   const f=fixture({reduce:true});f.intersect(true);
   assert.equal(f.timer(),null);assert.ok(f.videos.every(v=>v.paused&&v.playCalls===0&&v.loadCalls===0));
+});
+
+test('option 1 keeps the same proportional overlap on phones and preserves every text node', () => {
+  const css=read('goals-motion.css');
+  assert.match(css,/\.mission-code \{[^}]*width: 88%/);
+  assert.match(css,/\.mission-video-loop \{[^}]*width: 90%/);
+  assert.match(css,/\.mission-layered:focus-within \.mission-recording \{[^}]*width: 100%; margin: 0; padding: 34% 0 0/);
+  const mobile=css.slice(css.indexOf('@media (max-width: 760px)'));
+  assert.doesNotMatch(mobile, /\.mission-code \{[^}]*width:|\.mission-recording \{[^}]*margin:|transform:/);
+  const nodes=html=>[...html.matchAll(/>([^<>]*)</g)].map(m=>m[1].replace(/\s+/g,' ').trim()).filter(Boolean).sort();
+  for(const file of ['goals.html','ja/goals.html','zh/goals.html']) {
+    const before=execFileSync('git',['show','5275ec6978745fe3723e53bd5d9cbe9266773aa5:'+file],{encoding:'utf8'}),now=read(file);
+    assert.deepEqual(nodes(now),nodes(before),file+' must preserve all existing text');
+    assert.match(now,/data-desk-layout="01"/);
+    assert.match(now,/<div class="mission-proof-intro" id="layered-desk"><h3>[^<]+<\/h3><\/div>/);
+    assert.ok(now.indexOf('class="mission-code-explainer"')>now.indexOf('class="mission-recording"'));
+  }
 });
