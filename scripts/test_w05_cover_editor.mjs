@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
-import {newsCoverPath,bookFlightTransform,BOOK_MOTION} from '../news-books.js';
+import {newsCoverPath,newsPanelPath,wrapBookOffset,prepareBookOffset,modulo,bookFlightTransform,BOOK_MOTION} from '../news-books.js';
 import {withoutW05BookCoverEditor} from './w05_cover_editor_test_helpers.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
@@ -36,7 +36,7 @@ test('cover-only save validates files, uses the existing authenticated contents 
 test('opening animation is sequenced after layout, pointer taps have no outline and keyboard focus remains visible',()=>{
  const js=read('news-books.js'),css=read('news-books.css');
  assert.match(js,/requestAnimationFrame\(\(\)=>requestAnimationFrame/);assert.match(js,/is-preparing/);assert.match(js,/reduce.matches\?220:BOOK_MOTION.open/);assert.match(js,/clearTimeout\(openingTimer\)/);
- assert.match(js,/openingCover.animate/);assert.match(js,/rotateY\(-168deg\)/);assert.match(css,/book-cover-dissolve 180ms/);
+ assert.match(js,/openingCover.animate/);assert.match(js,/rotateY\(-3deg\)/);assert.doesNotMatch(js,/rotateY\(-168deg\)/);assert.match(css,/book-cover-dissolve 180ms/);
  assert.match(css,/data-book-input="pointer"[^\n]*outline:none/);assert.match(css,/data-book-input="keyboard"[^\n]*outline:2px solid var\(--forest\)/);
 });
 test('book motion connects the source bounds to the reader, settles selection and preserves native vertical scrolling',()=>{
@@ -46,9 +46,25 @@ test('book motion connects the source bounds to the reader, settles selection an
  const js=read('news-books.js'),css=read('news-books.css');
  assert.match(js,/bookFlightTransform\(sourceRect/);assert.match(js,/sourceRect=liftedBook\?\.getBoundingClientRect/);
  assert.match(js,/getComputedStyle\(node\)\.transform/);assert.match(js,/velocity/);assert.match(js,/Math.abs\(event.deltaX\)<=Math.abs\(event.deltaY\)/);
- assert.match(js,/if\(Math.abs\(offset\)===1\)rotate\(offset\)/);assert.match(css,/touch-action:pan-y/);
+ assert.match(js,/if\(offset===1\|\|offset===2\)rotate\(offset\)/);assert.match(css,/touch-action:pan-y/);
  assert.match(js,/offset===0\?ui.read:offset<0\?ui.previous:ui.next/);assert.match(js,/else node.removeAttribute\('aria-haspopup'\)/);
  assert.doesNotMatch(js,/requestAnimationFrame\(.*rotate\(|setInterval/);
+});
+test('Chronicle Rail uses the exact selected third concept without reintroducing books, duplicate lists or changing SNS',()=>{
+ for(const file of ['news.html','ja/news.html','zh/news.html']){const html=read(file);assert.match(html,/class="chronicle-dates"/);assert.match(html,/class="chronicle-current-marker"/);assert.equal((html.match(/data-date-offset=/g)||[]).length,3);assert.match(html,/class="chronicle-selected-date"/);assert.match(html,/class="chronicle-pagination"/);assert.doesNotMatch(html,/book-skin|book-spine|news-book-forest|news-book-open|book-paper|class="news-archive"/);}
+ const css=read('news-books.css');assert.match(css,/left:var\(--rail-width\)/);assert.match(css,/overflow:clip/);assert.match(css,/\.chronicle-current-marker\{[^\n]+transition:transform 680ms/);
+});
+test('five recycled planes keep correct items and stable hidden buffers through one- and two-step wraps',()=>{
+ for(const count of [1,2,3,7,24]){let index=0,offsets=[-1,0,1,2,3];for(let step=0;step<200;step++){const delta=[1,-1,2,-2][step%4];const prepared=offsets.map(offset=>prepareBookOffset(offset,delta));assert.equal(new Set(prepared).size,5);const ids=prepared.map(offset=>modulo(index+offset,count));index=modulo(index+delta,count);const moved=prepared.map(offset=>offset-delta);for(let i=0;i<5;i++)if(moved[i]>=0&&moved[i]<=2)assert.equal(ids[i],modulo(index+moved[i],count));offsets=moved.map(wrapBookOffset);assert.deepEqual([...offsets].sort((a,b)=>a-b),[-1,0,1,2,3]);}}
+});
+test('Chronicle defaults reuse approved artwork but explicit CMS cover and blank reset always take precedence',()=>{
+ assert.equal(newsPanelPath({id:'ims-demo-preview'}),'assets/ims-license-plus-customize.webp');assert.equal(newsPanelPath({id:'website-update-20260816'},'../'),'../assets/baked-kale-mark.svg');
+ assert.equal(newsPanelPath({id:'ims-demo-preview',coverImage:''}),'');assert.equal(newsPanelPath({id:'ims-demo-preview',coverImage:'assets/custom.webp'}),'assets/custom.webp');assert.equal(newsPanelPath({id:'ims-demo-preview',coverImage:'https://evil.example/a.png'}),'');
+ for(const id of ['__proto__','toString','constructor'])assert.equal(newsPanelPath({id}),'');
+});
+test('Chronicle changes leave the approved SNS markup and main social styles byte-identical',()=>{
+ for(const file of ['news.html','ja/news.html','zh/news.html']){const previous=execFileSync('git',['show',`6c27def33c7c26a6361184ef6333d287d7d84d50:${file}`],{cwd:root,encoding:'utf8'});const social=html=>html.slice(html.indexOf('      <section class="news-social'),html.indexOf('      <dialog class="book-reader'));assert.equal(social(read(file)),social(previous));}
+ const previous=execFileSync('git',['show','6c27def33c7c26a6361184ef6333d287d7d84d50:news-books.css'],{cwd:root,encoding:'utf8'}),social=css=>css.slice(css.indexOf('.book-news .news-social'),css.indexOf('body.book-reader-open'));assert.equal(social(read('news-books.css')),social(previous));
 });
 test('all three languages remove the rejected social description and visible feed failure message',()=>{
  for(const file of ['news.html','ja/news.html','zh/news.html']){const html=read(file);assert.doesNotMatch(html,/投稿を表示できません|上のアイコンからInstagram|写真・映像・小説/);assert.match(html,/class="instagram-empty sr-only" role="status"><\/p>/);}
