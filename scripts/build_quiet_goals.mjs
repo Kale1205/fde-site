@@ -1,9 +1,9 @@
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const codeWindow=/<div class="mission-code-window">[\s\S]*?<\/code><\/pre><\/div>/;
 
 function renderJourney(source) {
   if (source.includes('goals-journey')) return source;
@@ -24,7 +24,7 @@ function renderJourney(source) {
 
 // Recompose existing HTML rather than substituting the mock's condensed copy.
 export function renderQuietGoals(source) {
-  if (source.includes('goals-renewal')) return renderJourney(source);
+  if (source.includes('goals-renewal')) return applyW04LayeredMotion(renderJourney(source));
   let html=source.replace(' mission-page"', ' mission-page goals-renewal"');
   html=html.replace(/(      <header class="mission-hero section-frame">[\s\S]*?      <\/header>)/,
     '      <div class="mission-hero-band">\n$1\n      </div>');
@@ -33,14 +33,7 @@ export function renderQuietGoals(source) {
   html=html.replace(/        (<figure class="mission-code">[\s\S]*?<\/figure>)\n        (<div class="mission-recording-intro">[\s\S]*?<\/div>)\n        (<figure class="mission-recording">[\s\S]*?<\/figure>)/,
     (_,code,intro,recording)=>`        <div class="mission-proof">\n          ${code}\n          ${recording.replace('<figcaption>', `<figcaption>${intro}`)}\n        </div>`);
   html=html.replace(/<div class="mission-actions">[\s\S]*?<\/div>/, '');
-  // Source identifiers are not prose: use the real excerpt, also in Chinese.
-  if (/<html lang="zh-CN">/.test(html)) {
-    const label=html.match(/<pre[^>]*aria-label="([^"]+)"/)[1];
-    const actual=readFileSync(path.join(root,'goals.html'),'utf8').match(codeWindow)[0]
-      .replace(/(aria-label=")[^"]+/, `$1${label}`);
-    html=html.replace(codeWindow,actual);
-  }
-  return renderJourney(html);
+  return applyW04LayeredMotion(renderJourney(html));
 }
 
 if(process.argv[1]===fileURLToPath(import.meta.url)) {

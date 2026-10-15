@@ -52,6 +52,12 @@ jobs:
       - name: W01 approved product conditions CTA presentation
         run: node --test scripts/test_w01_product_cta.mjs
 
+      - name: W04 layered sample-code and real-recording motion
+        run: |
+          node --test scripts/test_w04_layered_motion.mjs
+          node scripts/build_quiet_goals.mjs --check
+          node scripts/test_goals_content.mjs
+
       - name: Linear-inspired redesign contracts
         run: node scripts/test_linear_redesign.mjs
 

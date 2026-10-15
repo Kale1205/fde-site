@@ -1028,3 +1028,32 @@ Comparison history: first valid paired source/implementation review found no act
 - Implementation modifies only the selected CTA CSS plus tests/CI/this evidence report; the established build-sync bot changes dated asset references only. No sales activation, order/payment/fulfillment, CMS writes, analytics or native release is performed. PR, exact-head CI, merge and deployed-page verification are separate subsequent gates; they are not inferred from this local report.
 
 final result: passed
+
+## W04 Layered Desk motion — 2026-10-15
+
+### Selected visual and comparison evidence
+
+- User selected Layered Desk (first displayed W04 image), then requested continuous sample typing, a looping real operation screen, no foreground switching and no panel navigation. Scope is the existing Our Goals proof block in English, Japanese and Simplified Chinese; surrounding brand, artwork, copy, routes, prices, license and commerce boundaries remain intact.
+- Original visual: `/Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-11198e46-64c4-44f9-a7d1-e5f4e8b15724.png`. Revised visual reflecting that feedback: sibling `exec-96285042-b789-4ac8-b7d0-cfbe7d6f5de8.png` (1024 × 1536 pixels). This generated design is reference-only, never substituted for the real recording.
+- Rendered comparison: `/Users/junenature/Desktop/Share/Codex/fde-site-review-evidence/w04-layered-motion/comparison-1024.png`, CSS viewport 1024 × 1536, DPR 1, 1024 × 1536 pixels. Revised source and rendered screenshot were opened together in the same comparison input. Heading-to-panels composition and the code header / recording / pause control were explicitly inspected. This is a section-style adaptation, not a claim of exact global pixel replication: existing chapter rail, extra explanatory copy and original type scale are retained. Host reduced-motion CSS removes tilt; normal-motion runtime was separately simulated through the browser's pre-navigation matchMedia stub. No density scaling was applied.
+- Additional captures: the same evidence directory contains `w04-{en,ja,zh}-{1440,1024,390}.png`. Measured viewports 1440 × 1000, 1024 × 1000 and 390 × 844, DPR 1. The published static preview export was separately rendered at 390 × 844 after the focus fix.
+
+### Findings and comparison history
+
+- [P2, fixed] The inherited proof `:focus-within` rule would move the foreground recording when the pause control received keyboard focus. Added an explicitly scoped stationary focused state at desktop and mobile breakpoints. Post-fix Chrome measurements at 1024 and 390 report zero horizontal position change; paired post-fix comparison and native Enter activation confirm the fix. No actionable P0/P1/P2 findings remain.
+- Fonts/typography: existing Inter, Japanese/Chinese fallbacks, hierarchy and prose retained. Code uses the existing monospace treatment (14px desktop, 12px narrow screens), wraps only inside a reserved clipped viewport; full static code remains horizontally scrollable and keyboard-accessible in a disclosure.
+- Spacing/layout: dark rear code window and offset foreground recording follow the selected layered composition without foreground switching. Reserved 540/326px code viewport and 9:7 recording prevent motion-driven section growth. Both panels stay within the chapter gutters; focus does not change geometry.
+- Colors/tokens: existing ivory/forest palette, thin borders and restrained shadows. Existing orange focus treatment is preserved. No decorative glow, new branding or additional design system.
+- Image quality/asset fidelity: original native MP4s and posters, chapter illustrations and brand assets are byte-preserved. The recording is not generated UI; its original resolution/compression and historical development-build appearance remain visible. Chinese uses the existing English recording with Chinese explanatory text, not a claimed Chinese native application.
+- Copy/content: surrounding copy, actual-operation provenance, synthetic-dataset disclosure and operational responsibilities are retained. The former implementation-excerpt claim is deliberately replaced in all three languages by a clear sample-code label. Motion controls and failure fallback are localized. No new navigation links, panel switching or code-as-actual-IMS claim.
+
+### Interaction, accessibility and bounded verification
+
+- Nine locale/viewport checks: both code content and video time advance; no horizontal overflow, missing resource, covered pause control, new Console warning/error or uncaught script error. Observed CLS was 0.00012–0.00220 (lab observations, not a field/Core Web Vitals guarantee). Observed requests succeeded (200 or video range 206).
+- Mobile native recording playback is muted and inline. Clicking code/video does not navigate. One semantic button pauses/resumes both animations; native keyboard Enter was exercised. Video autoplay rejection retains a deliberate replay action. Video/source failures expose localized text and the existing operation transcript.
+- Host reduced-motion setting was verified without a stub: initial static code, paused video and zero MP4 requests. Explicit play remains available. Offscreen/background pausing, user-pause preservation, preference changes, bounded looping text and rejected autoplay are covered by deterministic runtime tests. Repeated code is aria-hidden and never announced per character; the complete static sample and original operation transcript remain accessible without JS. Native video controls remain as no-JS fallback.
+- Chinese 390px Lighthouse snapshot: Accessibility, Best Practices, SEO and Agentic Browsing 100; 33 passed / zero failed audits. This excludes performance scoring and is Chrome emulation, not physical iPhone/Safari QA.
+- Existing historical whole-page fixtures now accommodate only the explicit W04 transform on the three goals routes. Dedicated exact approved-delta, unchanged-anchor/SEO/media-source and runtime tests continue rejecting unrelated changes. New assets are scoped CSS/JS only, with no dependency, tracking, backend, sales activation, CMS write or native release.
+- PR/exact-head CI and production merge/publication remain separate gates. The owner-private Sites review is not the public production website; W04 is awaiting user review, not merged.
+
+final result: passed
