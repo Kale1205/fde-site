@@ -1,4 +1,5 @@
 import {readFileSync} from 'node:fs';
+import {newsImagePath} from '../news-books.js';
 const content=JSON.parse(readFileSync(new URL('../content/site-content.json',import.meta.url),'utf8'));
 const build=readFileSync(new URL('../build-version.txt',import.meta.url),'utf8').trim();
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -9,12 +10,7 @@ export const NEWS_UI={
 };
 export function localNews(locale){const key=locale==='zh'?'zh-CN':locale;return [...content.news].sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(x=>({...x,title:typeof x.title==='string'?x.title:x.title[key]||x.title.en,body:typeof x.body==='string'?x.body:x.body[key]||x.body.en}));}
 export function storyImage(item,prefix=''){
- if(item.id==='ims-license-updates-policy-20260819')return `${prefix}assets/ims-license-update.webp`;
- const url=item.image||content.newsFallbackImage||'assets/news-fallback-user.svg';
- if(url.endsWith('20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png'))return `${prefix}assets/news-demo-cover.webp`;
- if(url.endsWith('20260816-211414-ChatGPT-Image-Aug-16-2026-08_58_09-PM-1f5fe7.png'))return `${prefix}assets/news-site-cover.webp`;
- const local=url.replace(/^https:\/\/raw\.githubusercontent\.com\/Kale1205\/fde-site\/main\//,'');
- return /^(https?:|\/)/.test(local)?local:prefix+local;
+ return newsImagePath({...item,image:item.image||content.newsFallbackImage},prefix);
 }
 export function renderBookNews(source){
  const locale=source.includes('<html lang="ja"')?'ja':source.includes('<html lang="zh-CN"')?'zh':'en';

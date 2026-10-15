@@ -2,6 +2,18 @@
 export const modulo=(value,length)=>((value%length)+length)%length;
 export const MAX_BOOKS=5;
 export const INSTAGRAM_ACCOUNTS=['kale1999_','bakedkale'];
+export function newsImagePath(item,prefix=''){
+ if(item.id==='ims-license-updates-policy-20260819')return `${prefix}assets/ims-license-update.webp`;
+ const value=String(item.image||'assets/news-fallback-user.svg');
+ // CMS media must resolve to this project's public assets, never arbitrary
+ // schemes, hosts, HTML metacharacters, query payloads or traversal segments.
+ const match=/^(?:https:\/\/raw\.githubusercontent\.com\/Kale1205\/fde-site\/main\/|https:\/\/kale1205\.github\.io\/fde-site\/)?(assets\/[A-Za-z0-9_/-]+\.(?:png|jpe?g|webp|svg))$/.exec(value);
+ if(!match)return `${prefix}assets/news-fallback-user.svg`;
+ const asset=match[1];
+ if(asset.endsWith('20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png'))return `${prefix}assets/news-demo-cover.webp`;
+ if(asset.endsWith('20260816-211414-ChatGPT-Image-Aug-16-2026-08_58_09-PM-1f5fe7.png'))return `${prefix}assets/news-site-cover.webp`;
+ return prefix+asset.split('/').map(encodeURIComponent).join('/');
+}
 export function validInstagramFeed(feed){
  if(feed?.schemaVersion!==1||feed.connectionStatus!=='connected'||!Array.isArray(feed.posts))return [];
  const connected=new Set((Array.isArray(feed.accounts)?feed.accounts:[]).filter(a=>INSTAGRAM_ACCOUNTS.includes(a.username)&&a.profileUrl===`https://www.instagram.com/${a.username}/`&&a.connectionStatus==='connected').map(a=>a.username));
@@ -20,14 +32,7 @@ function init(){
  const slots=[...stage.querySelectorAll('.news-book')];
  const clone=slots[1].cloneNode(true);
  for(const offset of [-2,2]){const node=clone.cloneNode(true);node.dataset.offset=offset;node.tabIndex=-1;node.setAttribute('aria-hidden','true');stage.append(node);slots.push(node);}
- const resolveImage=item=>{
-  if(item.id==='ims-license-updates-policy-20260819')return `${prefix}assets/ims-license-update.webp`;
-  let src=String(item.image||'assets/news-fallback-user.svg').replace(/^https:\/\/raw\.githubusercontent\.com\/Kale1205\/fde-site\/main\//,'');
-  if(src.endsWith('20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png'))return `${prefix}assets/news-demo-cover.webp`;
-  if(src.endsWith('20260816-211414-ChatGPT-Image-Aug-16-2026-08_58_09-PM-1f5fe7.png'))return `${prefix}assets/news-site-cover.webp`;
-  if(/^(?:javascript|data|blob):/i.test(src))src='assets/news-fallback-user.svg';
-  return /^(?:https?:\/\/|\/)/.test(src)?src:prefix+src;
- };
+ const resolveImage=item=>newsImagePath(item,prefix);
  const text=(v)=>typeof v==='string'?v:v?.[seed.locale==='zh'?'zh-CN':seed.locale]||v?.en||v?.ja||'';
  function fill(node,offset){
   const item=items[modulo(index+offset,items.length)];node.dataset.bookId=item.id;

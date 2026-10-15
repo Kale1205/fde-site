@@ -94,9 +94,12 @@ No actionable P0/P1/P2 visual findings remain in the approved UI scope.
 - One diagnostic warm local trace, JA 390px / Fast 4G / 4× CPU: LCP 832ms,
   CLS 0.00. Baseline diagnostic was 1016ms / 0.00. One sample per version is not
   a statistically established improvement; no field/CrUX data was available.
-- Node suite: 311 passed; static News parser: 6 passed; sitemap lastmod: 3 passed.
+- Node suite: 312 passed; static News parser: 6 passed; sitemap lastmod: 3 passed.
   Generated News/Chinese source checks, syntax checks and diff whitespace checks
   pass. The buildless repository has no separate build/lint package command.
+- CI hardening: CMS image paths are restricted to this project's public asset
+  namespace with encoded path segments; schemes, foreign hosts, traversal and
+  HTML/query payloads are rejected. The test-only entity decoder uses one pass.
 
 ## Intentional differences and remaining gates
 
