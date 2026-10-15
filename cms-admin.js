@@ -30,7 +30,9 @@ function previewFile(inputSelector,boxSelector,emptyText='画像を選択する�
  const previous=previewUrls.get(box);if(previous){URL.revokeObjectURL(previous);previewUrls.delete(box);}box.replaceChildren();
  if(!file){const note=document.createElement('div');note.className='preview-placeholder';note.textContent=emptyText;box.append(note);return;}
  try{validateImage(file);}catch(e){status(e.message,'error');$(inputSelector).value='';return;}
- const objectUrl=URL.createObjectURL(file),image=document.createElement('img');previewUrls.set(box,objectUrl);image.src=objectUrl;image.alt='画像プレビュー';box.append(image);
+ const objectUrl=URL.createObjectURL(file),image=document.createElement('img');
+ if(!objectUrl.startsWith('blob:')){URL.revokeObjectURL(objectUrl);return;}
+ previewUrls.set(box,objectUrl);image.src=encodeURI(objectUrl);image.alt='画像プレビュー';box.append(image);
 }
 /* W05_SAFE_FILE_PREVIEW_END */
 /* W05_SAFE_ARTICLE_PREVIEW_START */

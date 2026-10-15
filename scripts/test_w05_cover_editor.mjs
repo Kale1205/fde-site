@@ -51,4 +51,5 @@ test('article image preview treats stored CMS values as data, not HTML',()=>{
  assert.match(preview,/保存済みの画像指定は変更していません/);
  const filePreview=js.slice(js.indexOf('/* W05_SAFE_FILE_PREVIEW_START */'),js.indexOf('/* W05_SAFE_FILE_PREVIEW_END */'));
  assert.doesNotMatch(filePreview,/innerHTML|outerHTML|insertAdjacentHTML/);assert.match(filePreview,/textContent=emptyText/);assert.match(filePreview,/revokeObjectURL/);assert.match(filePreview,/document.createElement\('img'\)/);
+ assert.match(filePreview,/objectUrl.startsWith\('blob:'\)/);assert.match(filePreview,/image.src=encodeURI\(objectUrl\)/);
 });
