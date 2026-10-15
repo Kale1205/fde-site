@@ -47,6 +47,7 @@ test('book motion connects the source bounds to the reader, settles selection an
  assert.match(js,/bookFlightTransform\(sourceRect/);assert.match(js,/sourceRect=liftedBook\?\.getBoundingClientRect/);
  assert.match(js,/getComputedStyle\(node\)\.transform/);assert.match(js,/velocity/);assert.match(js,/Math.abs\(event.deltaX\)<=Math.abs\(event.deltaY\)/);
  assert.match(js,/if\(Math.abs\(offset\)===1\)rotate\(offset\)/);assert.match(css,/touch-action:pan-y/);
+ assert.match(js,/offset===0\?ui.read:offset<0\?ui.previous:ui.next/);assert.match(js,/else node.removeAttribute\('aria-haspopup'\)/);
  assert.doesNotMatch(js,/requestAnimationFrame\(.*rotate\(|setInterval/);
 });
 test('all three languages remove the rejected social description and visible feed failure message',()=>{

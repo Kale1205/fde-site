@@ -60,7 +60,7 @@ function init(){
   node.querySelector('.book-stamp > span').textContent=ui.category[item.category]||item.category;
   node.querySelector('.book-spine-title').textContent=item.title;
  }
- function position(node,offset){node.dataset.offset=offset;node.tabIndex=offset===0?0:-1;node.setAttribute('aria-hidden',String(Math.abs(offset)>1));node.style.zIndex=String(10-Math.abs(offset));}
+ function position(node,offset){node.dataset.offset=offset;node.tabIndex=offset===0?0:-1;node.setAttribute('aria-hidden',String(Math.abs(offset)>1));node.setAttribute('aria-label',`${offset===0?ui.read:offset<0?ui.previous:ui.next}: ${node.querySelector('.book-spine-title').textContent}`);if(offset===0)node.setAttribute('aria-haspopup','dialog');else node.removeAttribute('aria-haspopup');node.style.zIndex=String(10-Math.abs(offset));}
  function selection(announce=false){title.textContent=items[index].title;read.dataset.article=items[index].id;stage.dataset.index=index;stage.dataset.count=items.length;if(announce){live.textContent=`${index+1} / ${items.length} — ${items[index].title}`;if(!reduce.matches)title.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:360,easing:'ease-out'});}}
  function render(){for(const node of slots){const offset=Number(node.dataset.offset);fill(node,offset);position(node,offset);}selection();document.querySelector('.book-controls').hidden=items.length<2;}
  function finish(delta){
