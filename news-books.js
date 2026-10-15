@@ -9,9 +9,10 @@ export function bookFlightTransform(source,target,base=''){
  return `translate3d(${source.left-target.left}px,${source.top+source.height/2-target.top-target.height/2}px,0) ${base} scale(${source.width/target.width},${source.height/target.height})`;
 }
 export const INSTAGRAM_ACCOUNTS=['kale1999_','bakedkale'];
-export function newsImagePath(item,prefix=''){
- if(item.id==='ims-license-updates-policy-20260819')return `${prefix}assets/ims-license-update.webp`;
- const value=String(item.image||'assets/news-fallback-user.svg');
+export function newsImagePath(item,prefix='',fallback=''){
+ // One source for the card, its transition and the article. Retired coverImage
+ // values are deliberately ignored, without deleting saved CMS data or files.
+ const value=String(item.image||(item.id==='ims-license-updates-policy-20260819'?'assets/ims-license-update.webp':fallback)||'assets/news-fallback-user.svg');
  // CMS media must resolve to this project's public assets, never arbitrary
  // schemes, hosts, HTML metacharacters, query payloads or traversal segments.
  const match=/^(?:https:\/\/raw\.githubusercontent\.com\/Kale1205\/fde-site\/main\/|https:\/\/kale1205\.github\.io\/fde-site\/)?(assets\/[A-Za-z0-9_/-]+\.(?:png|jpe?g|webp|gif|svg))$/.exec(value);
@@ -20,19 +21,6 @@ export function newsImagePath(item,prefix=''){
  if(asset.endsWith('20260816-193614-ChatGPT-Image-Aug-16-2026-06_24_32-PM-bca22a.png'))return `${prefix}assets/news-demo-cover.webp`;
  if(asset.endsWith('20260816-211414-ChatGPT-Image-Aug-16-2026-08_58_09-PM-1f5fe7.png'))return `${prefix}assets/news-site-cover.webp`;
  return prefix+asset.split('/').map(encodeURIComponent).join('/');
-}
-export function newsCoverPath(item,prefix=''){
- // Cover artwork is independent of the image displayed inside the article.
- // Existing featured artwork is a cover default only until the owner sets one.
- const cover=Object.hasOwn(item,'coverImage')?item.coverImage:(item.id==='ims-license-updates-policy-20260819'?'assets/ims-license-update.webp':'');
- if(!cover)return '';
- const image=newsImagePath({image:cover},prefix);
- return image===`${prefix}assets/news-fallback-user.svg`?'':image;
-}
-export function newsPanelPath(item,prefix=''){
- if(Object.hasOwn(item,'coverImage'))return newsCoverPath(item,prefix);
- const defaults={'ims-license-updates-policy-20260819':'assets/ims-license-update.webp','ims-demo-preview':'assets/ims-license-plus-customize.webp','website-update-20260816':'assets/baked-kale-mark.svg'};
- return Object.hasOwn(defaults,item.id)?prefix+defaults[item.id]:newsCoverPath(item,prefix);
 }
 export function validInstagramFeed(feed){
  if(feed?.schemaVersion!==1||feed.connectionStatus!=='connected'||!Array.isArray(feed.posts))return [];
@@ -55,12 +43,13 @@ function init(){
  const slots=[...stage.querySelectorAll('.news-book')];
  const clone=slots[0].cloneNode(true);
  for(const offset of [-1,3]){const node=clone.cloneNode(true);node.dataset.offset=offset;node.tabIndex=-1;node.setAttribute('aria-hidden','true');stage.querySelector('.chronicle-panels').append(node);slots.push(node);}
- const resolveImage=item=>newsImagePath(item,prefix);
+ let newsFallbackImage=seed.newsFallbackImage||'';
+ const resolveImage=item=>newsImagePath(item,prefix,newsFallbackImage);
  const text=(v)=>typeof v==='string'?v:v?.[seed.locale==='zh'?'zh-CN':seed.locale]||v?.en||v?.ja||'';
  function fill(node,offset){
   const item=items[modulo(index+offset,items.length)];node.dataset.bookId=item.id;node.dataset.panelTone=item.category==='Product'?'forest':'ivory';
   node.querySelector('.book-accessible').textContent=`${ui.read}: ${item.title} — ${item.date}`;
-  const cover=newsPanelPath(item,prefix),art=node.querySelector('.book-art');
+  const cover=resolveImage(item),art=node.querySelector('.book-art');
   art.hidden=!cover;if(cover)art.src=cover;else art.removeAttribute('src');
   const coverTitle=node.querySelector('.book-cover-title');coverTitle.textContent=item.title;coverTitle.hidden=!!cover;
  }
@@ -116,7 +105,7 @@ function init(){
   const sourceRect=liftedBook?.getBoundingClientRect();
   reader.classList.remove('is-closing','is-opening','is-ready','is-reduced');reader.classList.add('is-preparing');
   reader.classList.toggle('is-reduced',reduce.matches);
-  const cover=newsPanelPath(item,prefix),coverArt=reader.querySelector('.opening-cover-art');
+  const cover=resolveImage(item),coverArt=reader.querySelector('.opening-cover-art');
   coverArt.hidden=!cover;if(cover)coverArt.src=cover;else coverArt.removeAttribute('src');
   const coverTitle=reader.querySelector('.opening-cover-title');coverTitle.textContent=item.title;coverTitle.hidden=!!cover;
   reader.querySelector('.book-opening-cover').dataset.panelTone=item.category==='Product'?'forest':'ivory';
@@ -144,10 +133,11 @@ function init(){
  function updateContent(data){
   if(!Array.isArray(data?.news))return;
   if(busy||reader.open){pendingContent=data;return;}
-  const next=data.news.filter(x=>x&&typeof x.id==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)&&text(x.title)).sort((a,b)=>b.date.localeCompare(a.date)||String(a.id).localeCompare(String(b.id))).map(x=>({...x,title:text(x.title),body:text(x.body),image:x.image||data.newsFallbackImage}));
+  const next=data.news.filter(x=>x&&typeof x.id==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)&&text(x.title)).sort((a,b)=>b.date.localeCompare(a.date)||String(a.id).localeCompare(String(b.id))).map(x=>({...x,title:text(x.title),body:text(x.body),image:x.image||''}));
   if(!next.length)return;const current=items[index]?.id;
-  if(JSON.stringify(items)===JSON.stringify(next))return;
-  items=next;index=Math.max(0,items.findIndex(x=>x.id===current));render();
+  const fallback=typeof data.newsFallbackImage==='string'?data.newsFallbackImage:'';
+  if(JSON.stringify(items)===JSON.stringify(next)&&newsFallbackImage===fallback)return;
+  newsFallbackImage=fallback;items=next;index=Math.max(0,items.findIndex(x=>x.id===current));render();
  }
  document.addEventListener('fde:news-content',event=>updateContent(event.detail));
  initInstagram({prefix,ui,reduce,reader});
