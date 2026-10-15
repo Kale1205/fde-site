@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
-import {newsCoverPath} from '../news-books.js';
+import {newsCoverPath,bookFlightTransform,BOOK_MOTION} from '../news-books.js';
 import {withoutW05BookCoverEditor} from './w05_cover_editor_test_helpers.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
@@ -35,13 +35,43 @@ test('cover-only save validates files, uses the existing authenticated contents 
 });
 test('opening animation is sequenced after layout, pointer taps have no outline and keyboard focus remains visible',()=>{
  const js=read('news-books.js'),css=read('news-books.css');
- assert.match(js,/requestAnimationFrame\(\(\)=>requestAnimationFrame/);assert.match(js,/is-preparing/);assert.match(js,/reduce.matches\?220:1080/);assert.match(js,/clearTimeout\(openingTimer\)/);
- assert.match(css,/book-cover-open 1050ms/);assert.match(css,/book-cover-mobile-open/);assert.match(css,/book-cover-dissolve 180ms/);
+ assert.match(js,/requestAnimationFrame\(\(\)=>requestAnimationFrame/);assert.match(js,/is-preparing/);assert.match(js,/reduce.matches\?220:BOOK_MOTION.open/);assert.match(js,/clearTimeout\(openingTimer\)/);
+ assert.match(js,/openingCover.animate/);assert.match(js,/rotateY\(-168deg\)/);assert.match(css,/book-cover-dissolve 180ms/);
  assert.match(css,/data-book-input="pointer"[^\n]*outline:none/);assert.match(css,/data-book-input="keyboard"[^\n]*outline:2px solid var\(--forest\)/);
 });
+test('book motion connects the source bounds to the reader, settles selection and preserves native vertical scrolling',()=>{
+ assert.deepEqual(BOOK_MOTION,{select:680,open:1120,close:680});
+ assert.equal(bookFlightTransform({left:10,top:20,width:100,height:125},{left:50,top:60,width:200,height:250},'translateX(-50%)'),'translate3d(-40px,-102.5px,0) translateX(-50%) scale(0.5,0.5)');
+ assert.equal(bookFlightTransform({left:NaN,top:0,width:0,height:0},{left:0,top:0,width:0,height:0},'none'),'none');
+ const js=read('news-books.js'),css=read('news-books.css');
+ assert.match(js,/bookFlightTransform\(sourceRect/);assert.match(js,/sourceRect=liftedBook\?\.getBoundingClientRect/);
+ assert.match(js,/getComputedStyle\(node\)\.transform/);assert.match(js,/velocity/);assert.match(js,/Math.abs\(event.deltaX\)<=Math.abs\(event.deltaY\)/);
+ assert.match(js,/if\(Math.abs\(offset\)===1\)rotate\(offset\)/);assert.match(css,/touch-action:pan-y/);
+ assert.doesNotMatch(js,/requestAnimationFrame\(.*rotate\(|setInterval/);
+});
 test('all three languages remove the rejected social description and visible feed failure message',()=>{
- for(const file of ['news.html','ja/news.html','zh/news.html']){const html=read(file);assert.doesNotMatch(html,/class="social-intro"|投稿を表示できません|上のアイコンからInstagram|写真・映像・小説/);assert.match(html,/class="instagram-empty sr-only" role="status"><\/p>/);}
+ for(const file of ['news.html','ja/news.html','zh/news.html']){const html=read(file);assert.doesNotMatch(html,/投稿を表示できません|上のアイコンからInstagram|写真・映像・小説/);assert.match(html,/class="instagram-empty sr-only" role="status"><\/p>/);}
  assert.match(read('ja/news.html'),/<h2 id="news-social-title">SNS<\/h2>/);
+});
+test('selected social directory uses genuine local Instagram photos, no LinkedIn avatar and approved D copy in every language',()=>{
+ const intros={'news.html':'Want to know more? Explore our official and personal accounts.','ja/news.html':'もう少し詳しく知りたい方へ。公式・個人アカウントはこちら。','zh/news.html':'想了解更多？欢迎访问官方及个人账号。'};
+ for(const [file,intro] of Object.entries(intros)){
+  const html=read(file),social=html.slice(html.indexOf('<section class="news-social'),html.indexOf('<dialog class="book-reader'));
+  assert.ok(social.includes(`<p class="social-intro">${intro}</p>`));assert.match(social,/class="social-directory"/);
+  assert.equal((social.match(/class="social-avatar"/g)||[]).length,2);
+  for(const account of ['kale1999','bakedkale']){assert.ok(social.includes(`assets/instagram-${account}-profile.jpg`));assert.ok(readFileSync(new URL(`assets/instagram-${account}-profile.jpg`,root)).length<15000);}
+  const linkedin=social.slice(social.indexOf('class="social-network social-network-linkedin"'),social.indexOf('class="instagram-feed"'));
+  assert.match(linkedin,/Kakeru Okumoto/);assert.doesNotMatch(linkedin,/social-avatar|奥本|画像設定待ち/);
+  assert.equal((social.match(/class="social-profile"/g)||[]).length,3);
+ }
+});
+test('reader has a definite viewport-bounded size, an accessible inner scroller and resets scrolling for each article',()=>{
+ const css=read('news-books.css'),js=read('news-books.js');
+ assert.match(css,/height:min\(697\.85px,[^\n]+82dvh\)/);
+ assert.match(css,/height:min\(760px,calc\(100dvh - 64px\)\)/);
+ assert.match(css,/\.reader-copy\{[^\n]+min-height:0[^\n]+overflow:auto[^\n]+overscroll-behavior:contain/);
+ assert.match(js,/reader\.querySelector\('\.reader-copy'\)\.scrollTop=0/);
+ for(const file of ['news.html','ja/news.html','zh/news.html']){const html=read(file);assert.match(html,/class="reader-copy" role="region" aria-labelledby="book-article-title" tabindex="0"/);assert.doesNotMatch(html,/class="reader-body" tabindex/);}
 });
 test('article image preview treats stored CMS values as data, not HTML',()=>{
  const js=read('cms-admin.js'),preview=js.slice(js.indexOf('/* W05_SAFE_ARTICLE_PREVIEW_START */'),js.indexOf('/* W05_SAFE_ARTICLE_PREVIEW_END */'));

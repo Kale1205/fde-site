@@ -1,98 +1,100 @@
-# W05 bookshelf and independent cover editor revision QA
+# W05 selected social directory and continuous book motion QA
 
 final result: passed
 
-Scope: the owner's 2026-10-15 book fidelity corrections, opening interaction,
-independent CMS cover editing, and explicit text removals. The three new SNS
-layouts and five intro sentences remain proposals, not selected implementations.
-PR #95 is not merged; this is not a production-release or physical-iPhone pass.
-Previous reports are preserved in docs/design-qa-before-w05-r2.md and its archive.
+Scope: selected SNS option 1, approved intro D, viewport-bounded article reading,
+and the follow-up request for tactile, continuous book selection/opening motion.
+PR #95 remains unmerged. This is local browser evidence, not physical Safari or
+production acceptance. Previous report: docs/design-qa-before-w05-r3.md.
 
-## Source and browser comparison
+## Visual truth and comparison
 
-The exact owner attachment is 46D95568-FB26-4F1D-BC53-D4DB08B11C72/1-Pasted-Image-1.jpg.
-It shows a green selected book between real thick ivory spines with date/rule/title.
-The screenshot and final JA390 browser render were supplied together in one
-comparison input, normalized to equal logical widths. The reference is a mobile
-crop; existing common header/hero and previous deliberate duplicate-list removals
-remain. They were not copied back from the older screenshot.
+Source: /Users/junenature/.codex/generated_images/01a09ff4-cb43-7e40-9219-753898992b07/exec-9231170f-0d3c-4152-9872-ae233385e3d1.png
+(949 x 1657 raster, intended 390 x 680 logical component; ~2.43x).
+Implementation: fde-site-review-evidence/w05-ideation/w05-r3-sns-ja-390.png
+(780 x 1688 raster, 390 x 844 CSS viewport, deviceScaleFactor 2).
+Both images were supplied together in the same comparison input. Compare the SNS
+component, not browser chrome or the surrounding book/footer. Density was accounted
+for as 390px logical width. Source has no intro; approved D is an intentional addition.
+Existing site heading/body typography and Phosphor arrow assets are retained rather
+than adopting the mock's oversized heading or its unverified Japanese name.
 
-Evidence in the companion workspace fde-site-review-evidence/w05-ideation:
-- w05-r2-ja-390.png, w05-r2-en-1440.png, w05-r2-zh-1024.png
-- w05-r2-reader-ja-390.png, w05-r2-reader-ja-1440.png
-- w05-r2-opening-ja-390.png (normal-motion animation frozen at 320ms for inspection)
-- w05-r2-cms-cover-ja-390.png (browser-local fake API; no real account or write)
+Focused comparison: genuine app icons at left; two actual Instagram avatar/handle
+links stacked at right with one thin rule; a full divider and LinkedIn row below.
+LinkedIn has no photograph, placeholder or initials. Display name Kakeru Okumoto.
+All source imagery is present as local genuine assets, not handcrafted replacements.
+No individual social cards, invented posts, duplicate excerpts or archive list.
 
-## Findings fixed
+## Findings and iteration history
 
-- P2 image/layout: flat side covers and hidden spine text replaced by two real
-  generated thickness assets (18.8/17.7 KB). Date, divider and title remain live
-  CMS content, not baked into imagery. Center width is 47vw on mobile, 280/320px
-  on larger screens; no neighboring label is hidden behind the center cover.
-- P2 motion: preparing/opening/ready states are separated by two animation frames.
-  A 1050ms cover turn now stays visibly closed long enough to read before opening.
-  Normal motion was checked with a browser-only test override because the host
-  preference is reduce. Production honors reduced motion with a 180ms dissolve;
-  the cover is not silently display:none. Escape/close cancel pending timers.
-- P2 interaction: pointer taps do not show the rejected red/orange book outline.
-  Keyboard Tab/Shift-Tab still gives the selected book a visible 2px forest outline;
-  Enter opens, native dialog contains focus, Escape closes and restores the trigger.
-- P2 CMS: coverImage is independent of article image and fallback imagery.
-  Create/replace/reset controls and a cover-only save use the original authenticated
-  GitHub contents API. Blank covers show the title on cloth. Current article image,
-  all language text, date, category and commercial conditions remain unchanged.
-- P2 text: JA heading is SNS, EN Social, ZH 社交媒体. Rejected creative-account
-  description and visible unavailable/error copy are removed, without inventing posts.
-  Actual owner-supplied LinkedIn profile URL is used; no LinkedIn photo is added.
+- P1 reader containment: baseline mobile spread was 1163px tall inside a 764px dialog;
+  article content determined page height. Added a definite responsive book height,
+  min-height:0 tracks, and a named, keyboard-focusable inner reader-copy scroller.
+  Short and 60-paragraph stress bodies now have exactly equal outer book bounds.
+  Heading is inside that scroller too, so long titles cannot push body off the page.
+- P2 motion discontinuity: modal opening previously began at its destination instead
+  of the selected cover. Source-to-reader cover bounds now connect lift, enlargement,
+  a perspective hinge turn and paper/text arrival in a 1120ms timeline. Close reverses
+  the cover to its shelf; native Escape restores the original focus.
+- P2 mid-animation blank: the first global easing turned the cover away before ink
+  appeared. Segment easing on a linear master timeline fixes it; re-inspected at
+  580ms with browser-only freezing. Mobile background belongs to the animated spread.
+- P2 input feel: 680ms composite transform settle; dragging resumes from actual live
+  transforms and takes flick velocity into account. Neighbor tap selects, center tap
+  opens. Bounded pending intent avoids a long queue. Horizontal wheel/Shift-wheel work;
+  ordinary vertical scrolling is not intercepted.
+- P2 small-height close: 844x390 initially put close above the viewport.
+  Viewport-aware offset now keeps its top at >=8px.
+- Polish: short title fade/slide, reserved translated-headline space, forest keyboard
+  focus (inset on scroller), no rejected red/orange pointer-tap outline.
 
-## Fidelity and resilience
+## Required fidelity surfaces
 
-Existing Inter/Japanese system typography, forest/paper/orange tokens, margins,
-header/footer/navigation and body copy are retained. Cover images use object-fit
-contain. New ivory skins share the original cloth/paper art direction and actual
-alpha; no CSS/SVG substitute illustrations or new design system were added.
-At 390/1024/1440, all three locales preserve readable selected titles and complete
-article bodies. Narrow non-selected spines abbreviate visually by available area;
-the selected title and each button's accessible name retain the full CMS title.
-The desktop reader's close button intentionally projects 12px beyond its paper;
-spread/page/body have equal client/scroll widths and no horizontal content overflow.
-Mobile reader is a readable vertical reflow, desktop remains image-left/body-right.
-All controls meet their existing 44/48px targets. Existing duplicated lists stay deleted.
+Typography: existing Inter/system Japanese/Chinese families, body15/16px and heading
+scale retained. Full CMS titles/bodies remain; long words wrap inside the paper.
+Spacing/layout: selected open directory, unboxed rows, section-frame gutters;
+mobile image above text, desktop image left/text right.
+Colors/tokens: existing forest/paper/body/line/orange, no parallel design system.
+Images: authorized 100x100 Instagram photos; local app icons; existing cloth,
+ivory spines, open-book asset and independent CMS cover art, no substitutes.
+Copy: D exactly in Japanese, natural equivalent English/Chinese. Article facts,
+SEO metadata, commercial conditions and original CMS fields remain unchanged.
 
-## Verification
+## Browser evidence and interactions
 
-- Chrome DevTools MCP: 3 locales x 390/1024/1440, 9 final checks; no document overflow,
-  broken images, Console warnings/errors or failed page resources. Twelve forward
-  steps return to the initial article; render pool stays at five, not growing.
-- Reduced-motion open/ready/close/focus return checked in all nine cases. Normal
-  cover turning also inspected at 320ms with test-only animation/timer freezing.
-- CMS 390px browser fake API: upload then cover-only save, blank reset, 409 conflict
-  recovery/button re-enable, invalid SVG rejection/no-write. Deep comparison proves
-  every non-cover field, including JA/EN/ZH article text, is unchanged. Actual PUTs: 0.
-- Desktop and mobile Lighthouse navigation: Accessibility, Best Practices, SEO and
-  Agentic Browsing each 100; 53 passed/0 failed on each. These are local lab checks,
-  not a WCAG certification or physical Safari acceptance.
-- One warm local 390px diagnostic, no throttle: LCP158ms, CLS0.00. No field data;
-  this is not a statistically established speed claim or a cold cellular measurement.
-- 319 Node tests; static News parser6; sitemap lastmod3 passed. Generation is
-  idempotent, JS syntax and diff whitespace checks pass. Full repository validation
-  is repeated after committing HTML and updating the sitemap as required.
-- Historical guards strip only named cover additions. A dedicated regression
-  asserts the remainder matches the pre-revision CMS baseline, apart from existing
-  automatic asset keys. No auth, original translation pipeline, payment gate or
-  article facts were weakened. No new dependency, tracker or external API.
-- The final security scan surfaced the legacy file-preview innerHTML sink.
-  Replaced file and stored-article image previews with createElement/textContent;
-  local blob URLs are revoked when replaced. Stored-article paths also use
-  own-project allowlisting and encoded segments. Invalid previews cannot inject
-  elements and do not mutate the stored article image. No alert is suppressed.
+Chrome DevTools MCP: JA/EN/ZH x 390x844@2, 1024x1000@1, 1440x1000@1.
+All nine: document overflow0, book/spread height identical, outer height unchanged
+with 60 long added paragraphs, inner scroll reaches final paragraph, dialog scrollTop0,
+close visible. Stress fixture is browser-only. Additional 320x568 and 844x390 checks
+preserve readable text, internal scrolling and reachable close.
 
-## Remaining selection and external gates
+Evidence in fde-site-review-evidence/w05-ideation:
+- w05-r3-baseline-reader-ja-390.png
+- w05-r3-reader-ja-390.png
+- w05-r3-stress-ja-390.png, w05-r3-stress-zh-1024.png, w05-r3-stress-en-1440.png
+- w05-r3-opening-ja-390.png (normal-motion 580ms inspection)
+- w05-r3-sns-ja-390.png
 
-- SNS layout1/2/3 and intro A/B/C/D/E require owner selection. Generation text is
-  layout-proposal text only; final heading will be SNS and LinkedIn label Kakeru
-  Okumoto, not an unverified Japanese name or the rejected legacy heading.
-- Instagram public-avatar permission is not OAuth. Meta app and both account
-  authorizations/ingestion remain not connected, with zero shipped fake posts.
-- CMS production write, physical iPhone/Safari, cold/field performance and merge
-  are not claimed. Existing commerce and native IMS release gates stay unchanged.
+Real DevTools drag changes mobile selection without opening. Arrow keys/Enter,
+Tab into reader-copy, PageDown (361.5px), Escape and focus return work. Six forward
+steps cycle to the original story; pool remains five. Horizontal wheel handler
+checked with browser-local WheelEvent; physical trackpad is not claimed.
+Normal lift/open/close complete and clear is-lifted. Host uses reduced motion:
+normal mode tested with browser-only media/CSS override, never exported. Production
+honors OS preference with immediate selection and 180ms dissolve, not perspective
+flight. No idle animation loop, dependency, SDK, tracker or external social API added.
+
+Desktop EN/Mobile JA Lighthouse navigation: Accessibility, Best Practices, SEO and
+Agentic Browsing each100; 55 audits passed/0 failed each. Representative desktop
+Console warnings/errors0; observed page resources26/26 HTTP200.
+Warm local interaction diagnostic CLS <=0.01, not a cold/field speed claim.
+322 Node tests, static News parser6 and sitemap regression3 pass; generation
+idempotent, JS syntax and diff checks pass. Exact-head CI goes into PR/Space only
+after its fresh result, never inferred from local checks.
+
+## Remaining external gates
+
+Physical iPhone/Safari, real CMS write and field performance not claimed.
+Instagram Meta app/OAuth/ingestion remain disconnected with zero fabricated posts.
+SNS selection and D are implemented, no longer pending; final owner UI review and
+merge authorization remain separate. Purchase/payment/native IMS gates stay.
