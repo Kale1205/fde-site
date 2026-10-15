@@ -1,3 +1,4 @@
+import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
@@ -12,7 +13,7 @@ import {applyW05BookNews,withoutW05CmsBridge} from './w05_book_news_test_helpers
 
 const root=new URL('../',import.meta.url);
 const baseline='b714f3d7e3cf2444effb6ca6b0d303c3036857f4';
-const read=file=>readFileSync(new URL(file,root),'utf8');
+const read=file=>withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8'));
 const before=file=>{ const old=applyW02PurchaseCta(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'})); return /^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old); };
 const normalized=value=>normalizeAssetBuildKeys(value.trimEnd());
 const prefixes=['','ja/','zh/'];

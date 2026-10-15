@@ -29,7 +29,7 @@ for(const [prefix,locale] of [['','en'],['ja/','ja'],['zh/','zh-CN']]){
   assert.doesNotMatch(html,/<form\b|stripe|data-buy|instagram\.com\/.*utm_/i);
   assert.match(html,/href="https:\/\/www\.instagram\.com\/kale1999_\/"/);
   assert.match(html,/href="https:\/\/www\.instagram\.com\/bakedkale\/"/);
-  assert.match(html,/href="https:\/\/www\.linkedin\.com\/"/);
+  assert.match(html,/href="https:\/\/www\.linkedin\.com\/in\/okumoto-kakeru-326a49429\/"/);
  });
 }
 test('circular indices never hit an endpoint or grow the bounded render pool',()=>{assert.equal(MAX_BOOKS,5);for(let i=-10000;i<10000;i++){assert(modulo(i,3)>=0&&modulo(i,3)<3);assert.equal(modulo(i+3,3),modulo(i,3));}});
@@ -43,4 +43,4 @@ test('randomization preserves actual posts and never mutates their captions',()=
 test('native dialog, bounded recycling and accessible motion policies are explicit',()=>{const html=read('ja/news.html'),js=read('news-books.js'),css=read('news-books.css');assert.match(html,/<dialog class="book-reader" aria-labelledby="book-article-title"/);assert.match(js,/reader.showModal\(\)/);assert.match(js,/addEventListener\('cancel'/);assert.match(js,/lastTrigger.focus/);assert.match(js,/MAX_BOOKS/);assert.match(js,/Math\.min\(8,queued/);assert.match(js,/IntersectionObserver/);assert.match(js,/document.hidden/);assert.match(js,/reduce.matches/);assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/focus-visible/);assert.doesNotMatch(js,/innerHTML|insertAdjacentHTML|localStorage|sendBeacon|setInterval|graph\.instagram|api\.linkedin|access_token/i);});
 test('article facts, privacy and current release conditions are byte-identical',()=>{for(const file of ['content/site-content.json','content/zh-translations.json','robots.txt','worker/src/index-v14.js'])assert.equal(read(file),baseline(file));});
 test('shared CMS change is only a News-scoped handoff; all existing fetch/auth behavior stays exact',()=>{for(const file of ['cms-content.js','cms-content-ja.js'])assert.equal(withoutW05CmsBridge(read(file)),baseline(file));});
-test('generated book surfaces and real app icons have a bounded transfer budget',()=>{let sum=0;for(const file of ['news-book-forest.webp','news-book-ivory.webp','news-book-open.webp','instagram-app.webp','linkedin-app.webp','news-demo-cover.webp','news-site-cover.webp']){const n=statSync(new URL('../assets/'+file,import.meta.url)).size;assert(n<150000,file);sum+=n;}assert(sum<350000,`asset bytes: ${sum}`);});
+test('generated book surfaces and real app icons have a bounded transfer budget',()=>{let sum=0;for(const file of ['news-book-forest.webp','news-book-ivory.webp','news-book-open.webp','news-book-spine-left.webp','news-book-spine-right.webp','instagram-app.webp','linkedin-app.webp','news-demo-cover.webp','news-site-cover.webp']){const n=statSync(new URL('../assets/'+file,import.meta.url)).size;assert(n<150000,file);sum+=n;}assert(sum<350000,`asset bytes: ${sum}`);});

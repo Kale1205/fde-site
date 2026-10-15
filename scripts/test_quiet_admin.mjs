@@ -1,10 +1,11 @@
+import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 
-const root=new URL('../',import.meta.url),read=name=>readFileSync(new URL(name,root),'utf8');
+const root=new URL('../',import.meta.url),read=name=>withoutW05BookCoverEditor(name,readFileSync(new URL(name,root),'utf8'));
 
 test('A01 presentation is Japanese-only and keeps the existing protected runtime order',()=>{
   const html=read('cms-admin.html');

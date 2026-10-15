@@ -3,8 +3,11 @@
 The approved design uses Instagram captions from `@kale1999_` (Creator) and
 `@bakedkale` (Business). Both account types were confirmed by the owner, who has
 not created a Meta developer app yet. Each account needs its own authorization.
-LinkedIn personal-post integration is explicitly out of scope; its app icon is
-only a link to LinkedIn's official entry point, not an invented personal profile.
+LinkedIn personal-post integration is explicitly out of scope. Its application
+icon links to the owner-supplied profile at
+`https://www.linkedin.com/in/okumoto-kakeru-326a49429/`. The owner explicitly
+requested no LinkedIn profile photo. Instagram's two current profile photos were
+approved for the SNS design comparison; this is not API/OAuth authorization.
 
 ## What is implemented
 
@@ -16,7 +19,8 @@ only a link to LinkedIn's official entry point, not an invented personal profile
 - A fixed twelve-bubble ring, random selection of real registered posts, pause,
   reduced-motion, offscreen/hidden-tab/dialog suspension, and readable text for
   assistive technology. No post iframe, SDK, polling, analytics or tracking.
-- Explicit disconnected state. There are **no actual posts in the shipped file**.
+- Explicit disconnected state in data, without a visible unavailable message or
+  fabricated bubble. There are **no actual posts in the shipped file**.
 
 ## Still required before automatic ingestion
 
@@ -68,7 +72,17 @@ and open W05 mockups. Prompts requested blank forest/ivory orthographic covers
 (4:5), and a blank ivory two-page spread with thin forest binding (16:9), no text,
 logos or artwork, genuine alpha, subtle paper/leather texture and clean edges.
 Generated originals are preserved outside Git; optimized WebP files are used.
-Existing IMS artwork and CMS lead imagery are reused without altering article data.
+Existing IMS artwork is retained as a cover default. Book covers now use their
+own optional `coverImage` field, never article/lead imagery as a fallback. The
+Japanese CMS supports create/replace/reset and a cover-only save that leaves
+article images, bodies, translations, dates and conditions untouched. Unset
+covers use the blank binding with the article title. Uploads use the existing
+authenticated GitHub contents flow, not a new service. The selected cover image
+is contained within the book face (not treated as an edge-to-edge cover PDF).
+
+The revised left/right ivory spines were generated independently from the
+owner's 2026-10-15 screenshot, with genuine thickness, page-edge slivers and no
+embedded text. Text is live CMS content. Each optimized WebP is under 19 KB.
 
 App icons are the actual Instagram and LinkedIn application artwork returned by
 Apple's public lookup for app IDs `389801252` and `288429040` on 2026-10-15,
