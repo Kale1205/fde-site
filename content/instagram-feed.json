@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "accounts": [
+    {"username": "kale1999_", "profileUrl": "https://www.instagram.com/kale1999_/", "accountType": "CREATOR", "connectionStatus": "not-connected"},
+    {"username": "bakedkale", "profileUrl": "https://www.instagram.com/bakedkale/", "accountType": "BUSINESS", "connectionStatus": "not-connected"}
+  ],
+  "connectionStatus": "not-connected",
+  "updatedAt": null,
+  "posts": []
+}

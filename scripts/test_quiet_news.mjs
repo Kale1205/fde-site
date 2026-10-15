@@ -13,15 +13,16 @@ for(const [prefix,heading] of [['','Updates'],['ja/','アップデート情報']
   test(`${prefix}news: selected composition is deterministic and idempotent`,()=>{
     const original=normalizeAssetBuildKeys(execFileSync('git',['show',`${base}:${prefix}news.html`],{cwd:root,encoding:'utf8'}));
     const html=read(`${prefix}news.html`);
-    assert.equal(html,renderQuietNews(original));
-    assert.equal(renderQuietNews(html),html);
+    assert.equal(html,normalizeAssetBuildKeys(renderQuietNews(original)));
+    assert.equal(normalizeAssetBuildKeys(renderQuietNews(html)),html);
     assert.match(html,new RegExp(`id="news-updates-title"[^>]*>${heading}<`));
-    for(const id of ['cmsNewsLead','cmsLatestList','cmsNewsWire','cmsInstagram'])assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1);
+    for(const id of ['book-news-data','selected-story-title','cmsInstagram'])assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1);
+    for(const id of ['cmsNewsLead','cmsLatestList','cmsNewsWire'])assert.ok(!html.includes(`id="${id}"`));
     assert.match(html,/class="news-hero-mark"[^>]*alt="" aria-hidden="true"/);
     assert.equal(html.match(/<head>[\s\S]*?<\/head>/)[0],original.match(/<head>[\s\S]*?<\/head>/)[0]);
     for(const tag of applyReleaseNoticePolicy(original,'news').match(/<p>[\s\S]*?<\/p>|<time[^>]*>[\s\S]*?<\/time>/g)||[])assert.ok(html.includes(tag),'Other prose and dates remain');
-    assert.ok(html.indexOf('news-featured')<html.indexOf('news-supporting'));
-    assert.ok(html.indexOf('news-updates')<html.indexOf('news-archive'));
+    assert.ok(html.indexOf('news-library')<html.indexOf('news-social'));
+    assert.ok(html.includes('<dialog class="book-reader"'));
   });
 }
 for(const script of ['cms-content.js','cms-content-ja.js']){

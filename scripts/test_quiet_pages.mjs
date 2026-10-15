@@ -1,3 +1,4 @@
+import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
@@ -22,7 +23,7 @@ const original = name => execFileSync('git', ['show', `${baseline}:${name}`], { 
 
 for (const name of pages) {
   test(`${name}: content, scripts, links, conditions and SEO are unchanged`, () => {
-    const html = readFileSync(path.join(root, name), 'utf8');
+    const html = withoutW05BookCoverEditor(name,readFileSync(path.join(root, name), 'utf8'));
     let stripped = html
       .replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m, '')
       .replace(/^  <script defer src="(?:\.\.\/)?quiet-contact\.js\?v=[0-9A-Za-z._-]+"><\/script>\n/m, '')

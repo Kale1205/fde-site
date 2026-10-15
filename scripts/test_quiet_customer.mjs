@@ -1,3 +1,4 @@
+import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -6,7 +7,7 @@ import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {renderQuietCustomer,customerCopy} from './build_quiet_customer.mjs';
 import {validatePortalInput,initPortal} from '../quiet-customer.js';
 
-const root=new URL('../',import.meta.url),read=name=>readFileSync(new URL(name,root),'utf8');
+const root=new URL('../',import.meta.url),read=name=>withoutW05BookCoverEditor(name,readFileSync(new URL(name,root),'utf8'));
 for(const locale of ['en','ja','zh'])test(`${locale}: selected W08 composition, language routes, labels and noindex`,()=>{
   const prefix=locale==='en'?'':locale+'/',html=read(prefix+'customer.html');
   assert.equal(html,renderQuietCustomer(locale,read(prefix+'index.html')));

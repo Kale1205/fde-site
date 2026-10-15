@@ -8,6 +8,7 @@ import { renderQuietCustomer } from './build_quiet_customer.mjs';
 import { applyReleaseNoticePolicy, removePurchaseStatusCopy, releaseCopy } from './release_notice_policy.mjs';
 import { renderStaticFaq } from './multilingual_content_copy.mjs';
 import { localizeW04Motion } from './w04_layered_motion.mjs';
+import {renderBookNews} from './build_book_news.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-translations.json'), 'utf8'));
@@ -156,6 +157,7 @@ function renderPage(name) {
       .replace(/(aria-label=")[^"]+/, `$1${label}`));
     }
   }
+  if(name==='news.html'&&output.includes('book-news'))return renderBookNews(applyReleaseNoticePolicy(translated,'news'));
   return name === 'demo.html' ? renderQuietDemo(translated, 'zh') : applyReleaseNoticePolicy(translated,name.replace('.html',''));
 }
 
