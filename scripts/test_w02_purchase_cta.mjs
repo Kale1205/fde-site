@@ -1,3 +1,4 @@
+import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -10,7 +11,7 @@ import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
 const root=new URL('../',import.meta.url);
 const baseline='d1302742d66acd427dbe7aea64bd5fe1dee861fa';
 const read=file=>readFileSync(new URL(file,root),'utf8');
-const before=file=>{const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});return /^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old);};
+const before=file=>{const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});return applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']]) {
   test(locale+': consultation CTA becomes one genuinely disabled purchase button, with no order destination',()=>{
     const file=prefix+'license.html',html=read(file),old=before(file);

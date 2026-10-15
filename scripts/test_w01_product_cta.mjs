@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import test from 'node:test';
+import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {applyW01ProductCta,w01CtaCssChanges} from './w01_product_cta_test_helpers.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -42,7 +43,7 @@ for (const directory of ['', 'ja/', 'zh/']) {
     for (const name of ['index.html', 'quiet-form.html']) {
       const file = directory + name;
       const html = await readFile(new URL(file, root), 'utf8');
-      const before = execFileSync('git', ['show', `${base}:${file}`], {cwd:root,encoding:'utf8'});
+      const before = applyReviewedZhSearchMetadata(file,execFileSync('git', ['show', `${base}:${file}`], {cwd:root,encoding:'utf8'}));
       const normalize = value => value.replace(/\?v=\d{8}-\d{6}/g, '?v=BUILD');
       assert.equal(normalize(html), normalize(before), file);
       assert.equal((html.match(/href="license.html#comparison"/g) || []).length, 2);
