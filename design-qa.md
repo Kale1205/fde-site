@@ -1083,3 +1083,28 @@ The user's latest direction is continuous, music-box-like motion with no visible
 No actionable P0/P1/P2 finding remains in the verified scope. Production merge remains pending user review; the private preview and existing PR #94 are updated independently.
 
 final result: passed
+
+## W04 Layered Desk static-depth correction — 2026-10-15
+
+### Selected direction and diagnosis
+
+- User clarified that option 1 includes a clockwise rear code panel and a counterclockwise foreground operation screen, including on iPhone. This clarification supersedes the earlier reports accepting flattened reduced-motion screenshots. The selected direction, not a new variant, is implemented.
+- [P2, fixed] A reduced-motion CSS rule removed static panel transforms on every device, not just iPhone. Actual host reduced-motion Chrome at 390px reproduced both transforms as `none` before the fix. The user's physical iPhone preference was not inspected or assumed.
+- Static composition now retains +3 degrees on the rear code and -2 degrees on the foreground screen irrespective of motion preference. The rear figure is top-aligned so its rotation origin follows its code window rather than the entire stretched grid row. Inner video decoders remain unrotated to avoid double transforms. Existing runtime still pauses animation and avoids MP4 requests on reduced-motion startup.
+
+### Paired visual evidence
+
+- Original selected reference `exec-11198e46-64c4-44f9-a7d1-e5f4e8b15724.png` and rendered `tilt-comparison1024.png` were opened together in one comparison input at 1024 x 1536 pixels, DPR 1. Evidence is in `/Users/junenature/Desktop/Share/Codex/fde-site-review-evidence/w04-layered-motion/`. Focused 390px before/after captures are `tilt-before390.png` and `tilt-after390.png`; final tablet/desktop captures are `tilt-after1024.png` / `tilt-after1440.png`.
+- The rear/front tilt and overlap now match the selected direction. Existing chapter gutter, type scale, explanatory sample-code disclosure and single pause control are intentionally preserved; the reference's old foreground selector is not restored because the later user direction explicitly removed switching. No global pixel-identical claim is made.
+- Fonts/typography, spacing outside the panel composition, ivory/forest colors, media fidelity and copy/content are unchanged. Original native recordings/posters are byte-preserved. No new imagery, dependencies, tracking, prose, prices or license terms.
+
+### Verification and boundaries
+
+- All nine locale/viewport combinations (English/Japanese/Simplified Chinese at measured 1440, 1024, 390 CSS px, DPR 1) retain the two angles with reduced motion enabled, zero horizontal overflow and both transformed visual bounds inside the viewport. Each starts paused with zero MP4 resource requests. At 390px the code/screen bounds are approximately 38–356 / 61–368px.
+- Additional 390px normal-playback diagnostic uses an explicit pre-navigation matchMedia stub: actual video time and code transforms advance while static angles remain. Native Enter pauses both decoders and the code without flattening or moving panels; pause control hit target is unobstructed. No Console errors/warnings were observed. This is emulated Chrome, not physical Safari verification.
+- 284 related Node tests pass, including 17 W04 tests and a regression for static angles under reduced motion, top alignment and no double-rotated video. Repository validation, goals generation, Chinese eight-page generation and whitespace checks pass. Earlier seamless-handoff and Lighthouse evidence remains historical; runtime JS/media did not change in this correction.
+- The owner-private preview and open PR #94 are updated for user review. Production merge, exact-head CI and physical-device QA remain separate gates; no workflow approval or protection bypass is implied.
+
+No actionable P0/P1/P2 finding remains in this scoped visual comparison.
+
+final result: passed

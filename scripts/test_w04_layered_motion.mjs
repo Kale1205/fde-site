@@ -149,6 +149,17 @@ test('active media/source failure exposes localized fallback; spare failure reta
 test('duplicate is hidden from assistive tech and has no keyboard or panel action', () => {
   const f=fixture();assert.equal(f.videos[1].attributes['aria-hidden'],'true');assert.equal(f.videos[1].attributes.tabindex,'-1');
   assert.doesNotMatch(read('goals-motion.js'),/\bfetch\(|XMLHttpRequest|location\s*[.=]|localStorage|sessionStorage|window\.open|innerHTML/);
-  assert.match(read('goals-motion.css'),/prefers-reduced-motion: reduce/);
+  assert.match(read('goals-motion.js'),/matchMedia\('\(prefers-reduced-motion: reduce\)'\)/);
 });
 test('missing IntersectionObserver uses visible fallback', () => {const f=fixture({observer:false});assert.equal(f.video.paused,false);});
+
+test('Layered Desk static angles survive reduced motion on every viewport, without double-rotating decoded video', () => {
+  const css=read('goals-motion.css');
+  assert.match(css,/\.mission-code \{[^}]*align-self: start/);
+  assert.match(css,/\.mission-code \{[^}]*transform: rotate\(3deg\)/);
+  assert.match(css,/\.mission-video-loop \{[^}]*transform: rotate\(-2deg\)/);
+  assert.match(css,/\.mission-video-loop video \{[^}]*transform: none/);
+  assert.doesNotMatch(css,/@media\s*\(prefers-reduced-motion:[\s\S]*transform:\s*none/);
+  const f=fixture({reduce:true});f.intersect(true);
+  assert.equal(f.timer(),null);assert.ok(f.videos.every(v=>v.paused&&v.playCalls===0&&v.loadCalls===0));
+});
