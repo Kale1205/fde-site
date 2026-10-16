@@ -23,3 +23,133 @@
 .cms-language-preview p{white-space:pre-wrap;line-height:1.8}
 .admin-renewal input:focus-visible,.admin-renewal textarea:focus-visible,.admin-renewal select:focus-visible,.admin-renewal button:focus-visible,.admin-renewal a:focus-visible{outline:2px solid var(--green);outline-offset:3px}
 @media(max-width:760px){.cms-news-preview{padding:20px}.cms-review-check{align-items:flex-start}.cms-review-check input{flex-shrink:0}.cms-draft-bar select{font-size:16px}.cms-publication-result button{margin-top:12px}}
+
+/* A layout with menu-first navigation. Higher scope overrides the older sidebar skin. */
+.quiet-page.admin-renewal.cms-menu-layout [hidden]{display:none!important}
+.quiet-page.admin-renewal.cms-menu-layout .admin-header{padding:18px 28px;background:var(--forest,#093e2c);border:0;color:#fff}
+.quiet-page.admin-renewal.cms-menu-layout .admin-header>.admin-shell{width:100%;max-width:1360px;display:flex;align-items:center;flex-wrap:wrap;gap:14px}
+.quiet-page.admin-renewal.cms-menu-layout .admin-brand{align-items:center;margin-right:auto;min-width:0}
+.quiet-page.admin-renewal.cms-menu-layout .admin-brand strong{font-size:18px;color:#fff}
+.quiet-page.admin-renewal.cms-menu-layout .admin-brand small{font-size:11px;color:#d6e5dc;margin:0}
+.quiet-page.admin-renewal.cms-menu-layout .admin-brand img{filter:brightness(0) invert(1);width:36px;height:36px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-home-button{width:auto;min-height:44px;background:transparent;color:#fff;border:1px solid #ffffff70;border-radius:8px;padding:0 16px;box-shadow:none}
+.quiet-page.admin-renewal.cms-menu-layout .cms-connection{margin:0;min-width:0;width:auto;flex:0 0 auto}
+.quiet-page.admin-renewal.cms-menu-layout .cms-connection>summary{width:auto;min-height:44px;padding:10px 14px;border:1px solid #ffffff70;border-radius:8px;color:#fff;background:transparent;cursor:pointer;font-size:14px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-connection[open]{width:100%;flex:0 0 100%}
+.quiet-page.admin-renewal.cms-menu-layout .cms-connection[open]>summary{width:fit-content;margin-left:auto}
+.quiet-page.admin-renewal.cms-menu-layout .admin-connection-body{background:var(--surface,#fff);border-radius:12px;padding:4px 20px 20px;margin-top:14px;color:var(--ink);max-width:900px;margin-left:auto}
+.quiet-page.admin-renewal.cms-menu-layout .admin-connection-body .admin-card{padding:20px 0;margin:0;border:0;box-shadow:none;background:transparent}
+.quiet-page.admin-renewal.cms-menu-layout .admin-connection-body h2{font-size:20px}
+.quiet-page.admin-renewal.cms-menu-layout .admin-connection-body p,.quiet-page.admin-renewal.cms-menu-layout .admin-intro p{font-size:13px;line-height:1.7}
+.quiet-page.admin-renewal.cms-menu-layout .admin-intro h1{display:none}
+.quiet-page.admin-renewal.cms-menu-layout .cms-safety-settings>summary{cursor:pointer;font-size:13px;min-height:44px;display:flex;align-items:center;color:var(--green-dark)}
+.quiet-page.admin-renewal.cms-menu-layout .admin-main{margin-left:0;padding:28px 28px 60px}
+.quiet-page.admin-renewal.cms-menu-layout .admin-main>.admin-shell{width:100%;max-width:1360px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-breadcrumb{margin-bottom:16px;min-width:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-breadcrumb ol{display:flex;align-items:center;flex-wrap:wrap;gap:0;list-style:none;margin:0;padding:0;font-size:13px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-breadcrumb li{display:flex;align-items:center;min-width:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-breadcrumb li+li:before{content:'›';color:var(--muted);margin:0 8px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-text-button,.quiet-page.admin-renewal.cms-menu-layout .cms-back-button{font:inherit;border:0;background:transparent;color:var(--green-dark);padding:10px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;min-height:44px;box-shadow:none}
+.quiet-page.admin-renewal.cms-menu-layout .cms-breadcrumb [aria-current]{color:var(--ink);font-weight:650}
+.quiet-page.admin-renewal.cms-menu-layout .cms-page-heading{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-page-heading h1{font-size:30px;letter-spacing:-.035em;line-height:1.3;margin:0;color:var(--forest,#093e2c)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-back-button{font-size:13px;flex-shrink:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-status-slot .status{margin:0 0 18px;font-size:12px;line-height:1.6;padding:10px 14px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;max-width:1000px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-section-choices{grid-template-columns:repeat(2,minmax(0,1fr));max-width:800px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-choice{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;min-height:150px;width:100%;padding:28px;font:inherit;font-size:23px;font-weight:750;line-height:1.4;background:var(--surface,#fff);color:var(--forest,#093e2c);border:1px solid var(--line);border-radius:12px;text-align:left;cursor:pointer;box-shadow:none;overflow-wrap:anywhere}
+.quiet-page.admin-renewal.cms-menu-layout .cms-choice:hover{background:#edf4ee;border-color:var(--green)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-choice:disabled{opacity:.5;cursor:not-allowed;background:var(--soft,#f2f6f3)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-choice small{font-size:12px;font-weight:500;color:var(--muted)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-small-note{font-size:12px;line-height:1.7;color:var(--muted);margin:10px 0}
+.quiet-page.admin-renewal.cms-menu-layout .admin-news-workspace{display:grid;grid-template-columns:minmax(230px,.7fr) minmax(0,2fr);gap:24px;align-items:start}
+.quiet-page.admin-renewal.cms-menu-layout .admin-news-workspace.cms-single-stage{grid-template-columns:minmax(0,1fr)}
+.quiet-page.admin-renewal.cms-menu-layout .admin-article-list{padding:22px 18px;min-width:0}
+.quiet-page.admin-renewal.cms-menu-layout .admin-article-rows{max-height:none;overflow:visible}
+.quiet-page.admin-renewal.cms-menu-layout .admin-article-row{grid-template-columns:minmax(0,1fr);gap:6px;padding:16px 12px;min-height:64px;font-size:14px;line-height:1.6}
+.quiet-page.admin-renewal.cms-menu-layout .admin-article-row span{font-weight:650}
+.quiet-page.admin-renewal.cms-menu-layout .admin-article-row:disabled{opacity:.55;cursor:not-allowed}
+.quiet-page.admin-renewal.cms-menu-layout .admin-list-state{font-size:12px;color:var(--muted);line-height:1.7;margin:8px 0 14px}
+.quiet-page.admin-renewal.cms-menu-layout .admin-editor-stage .admin-card{padding:26px;min-width:0;margin:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-article-editor>p{font-size:12px;margin-bottom:16px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-progress{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:18px 0 24px;border-bottom:1px solid var(--line)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-progress-step{font:inherit;font-size:13px;line-height:1.4;min-height:48px;padding:9px 4px;background:transparent;border:0;border-bottom:3px solid transparent;color:var(--muted);cursor:pointer;box-shadow:none;overflow-wrap:anywhere}
+.quiet-page.admin-renewal.cms-menu-layout .cms-progress-step[aria-current=step]{color:var(--green-dark);border-bottom-color:var(--green-dark);font-weight:750}
+.quiet-page.admin-renewal.cms-menu-layout .cms-progress-step[data-complete=true]{color:var(--green)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-section-heading h3,.quiet-page.admin-renewal.cms-menu-layout .cms-language-editor h3{font-size:18px;line-height:1.4;margin:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-section-heading .cms-small-note{margin:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-image-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-image-grid.cms-image-single{grid-template-columns:minmax(0,1fr);max-width:420px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-image-grid .preview-box{height:150px;min-height:150px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-image-grid .preview-box img{max-height:150px;object-fit:contain}
+.quiet-page.admin-renewal.cms-menu-layout .cms-image-section>.field{margin:18px 0 0;gap:8px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-image-section input[type=file]{padding:12px;font-size:13px;min-width:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-image-section .admin-button{justify-self:start;width:auto;min-height:44px;margin-top:2px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-language-editor{padding-top:24px;margin-top:24px;border-top:1px solid var(--line);min-width:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-language-tabs{display:flex;gap:8px;margin:16px 0 18px;border-bottom:1px solid var(--line)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-language-tab{font:inherit;font-size:13px;min-height:44px;padding:8px 14px;background:transparent;color:var(--muted);border:0;border-bottom:3px solid transparent;cursor:pointer;box-shadow:none}
+.quiet-page.admin-renewal.cms-menu-layout .cms-language-tab[aria-selected=true]{color:var(--green-dark);border-bottom-color:var(--green-dark);font-weight:750}
+.quiet-page.admin-renewal.cms-menu-layout .cms-language-panel>.field{margin:18px 0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-language-panel textarea{min-height:220px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-metadata,.quiet-page.admin-renewal.cms-menu-layout .cms-delete-settings,.quiet-page.admin-renewal.cms-menu-layout .cms-editor-options{border-top:1px solid var(--line);margin-top:22px;padding-top:8px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-metadata>summary,.quiet-page.admin-renewal.cms-menu-layout .cms-delete-settings>summary,.quiet-page.admin-renewal.cms-menu-layout .cms-editor-options>summary,.quiet-page.admin-renewal.cms-menu-layout .cms-translation-settings>summary{cursor:pointer;font-size:13px;font-weight:650;min-height:44px;padding:12px 0;color:var(--green-dark)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-metadata>.admin-form-grid{padding:12px 0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-article-editor>.admin-form-grid>.admin-grid,.quiet-page.admin-renewal.cms-menu-layout .cms-article-editor>.admin-form-grid>.actions:empty{display:none}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-footer{position:sticky;bottom:0;z-index:10;padding:12px 0 max(12px,env(safe-area-inset-bottom));margin-top:22px;background:var(--surface,#fff);border-top:1px solid var(--line)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-footer>.cms-small-note{margin:0 0 8px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-footer>.actions{display:flex;justify-content:flex-end;gap:12px;margin:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-footer .admin-button{min-width:140px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-footer .admin-button:last-child{background:var(--green-dark);color:#fff;border-color:var(--green-dark)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-options{padding:8px 20px;margin:14px 0 0;background:var(--surface,#fff);border:1px solid var(--line);border-radius:10px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-options .admin-button{margin-top:12px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-outcome{min-width:0;overflow-wrap:anywhere}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-outcome:has(#publicationResult:empty):has(#draftOperation:empty){display:none}
+.quiet-page.admin-renewal.cms-menu-layout .cms-draft-bar{margin-top:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-draft-row,.quiet-page.admin-renewal.cms-menu-layout .cms-faq-row{display:block}
+.quiet-page.admin-renewal.cms-menu-layout .cms-faq-list>h2{font-size:20px;margin:0 0 12px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-faq-editor .cms-language-editor{padding-top:0;margin-top:0;border-top:0}
+.quiet-page.admin-renewal.cms-menu-layout .cms-faq-editor .cms-metadata .result-url{white-space:pre-line;line-height:1.7;overflow-wrap:anywhere}
+.quiet-page.admin-renewal.cms-menu-layout .cms-editor-outcome:has(#faqPublicationResult:empty):has(#faqDraftOperation:empty){display:none}
+.quiet-page.admin-renewal.cms-menu-layout .cms-review-actions{margin-top:22px;border-top:1px solid var(--line);padding-top:14px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-review-actions .actions{margin-top:12px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-news-preview{scroll-padding-bottom:72px}
+.quiet-page.admin-renewal.cms-menu-layout .cms-preview-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:16px 0 20px;border-bottom:1px solid var(--line)}
+.quiet-page.admin-renewal.cms-menu-layout .cms-preview-steps .admin-button{font-size:13px;font-weight:500;line-height:1.4;min-width:0;min-height:48px;padding:9px 4px;background:transparent;color:var(--muted);border:0;border-bottom:3px solid transparent;border-radius:0;box-shadow:none}
+.quiet-page.admin-renewal.cms-menu-layout .cms-preview-steps .admin-button[aria-current=step]{color:var(--green-dark);border-bottom-color:var(--green-dark);font-weight:750}
+.quiet-page.admin-renewal.cms-menu-layout :is(button,summary):focus-visible{outline:2px solid var(--green);outline-offset:3px}
+@media(max-width:760px){
+ .quiet-page.admin-renewal.cms-menu-layout .admin-header{padding:16px}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-header>.admin-shell{gap:10px}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-brand{flex:1 1 135px;gap:8px}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-brand strong{font-size:14px}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-brand img{width:28px;height:28px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-home-button{padding:0 11px;font-size:12px;min-height:44px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-connection>summary{padding:12px 9px;font-size:12px}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-connection-body{padding:4px 14px 14px}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-main{padding:16px 16px 28px;margin:0}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-breadcrumb{margin-bottom:8px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-breadcrumb ol{font-size:12px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-breadcrumb li+li:before{margin:0 6px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-page-heading{gap:14px;margin-bottom:14px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-page-heading h1{font-size:26px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-choices,.quiet-page.admin-renewal.cms-menu-layout .cms-section-choices{grid-template-columns:minmax(0,1fr);gap:12px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-choice{min-height:96px;font-size:20px;padding:20px}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-news-workspace{grid-template-columns:minmax(0,1fr);gap:0}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-news-workspace[data-screen=editor]>.admin-article-list{display:none}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-editor-stage .admin-card{padding:20px 16px}
+ .quiet-page.admin-renewal.cms-menu-layout .admin-article-list{padding:20px 16px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-progress{margin:14px 0 20px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-progress-step{font-size:11px;padding:8px 2px;min-height:48px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-preview-steps .admin-button{font-size:11px;padding:8px 2px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-image-grid{gap:10px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-image-grid .preview-box{height:105px;min-height:105px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-image-grid .preview-box img{max-height:105px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-image-grid .preview-placeholder{font-size:11px;padding:12px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-language-tab{padding:8px 12px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-language-panel textarea{min-height:200px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-editor-footer>.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-editor-footer .admin-button{min-width:0;font-size:13px;padding:0 10px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-editor-footer>.cms-small-note{font-size:10px}
+ .quiet-page.admin-renewal.cms-menu-layout .cms-news-preview{width:calc(100% - 20px);padding:18px;max-height:92dvh}
+}

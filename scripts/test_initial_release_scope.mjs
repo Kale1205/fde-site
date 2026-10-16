@@ -13,6 +13,7 @@ import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
+import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline = 'd6ab9132810381668d72c9eff7664a87db0a9be1';
@@ -71,9 +72,10 @@ for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
   });
 }
 
-test('FAQ changes only three existing answers; keep legal device permissions separate from technical support', () => {
-  const current = JSON.parse(read('content/faq-content.json')), previous = JSON.parse(applyApprovedMultilingualContent('content/faq-content.json',before('content/faq-content.json')));
-  assert.equal(read('content/faq-content.json'), applyApprovedMultilingualContent('content/faq-content.json',applyApprovedInitialReleaseScope('content/faq-content.json', before('content/faq-content.json'))));
+test('historical FAQ migration changes only three answers; keep legal permissions separate from technical support', () => {
+  const fixture=readFaqMigrationFixture('content/faq-content.json');
+  const current = JSON.parse(fixture), previous = JSON.parse(applyApprovedMultilingualContent('content/faq-content.json',before('content/faq-content.json')));
+  assert.equal(fixture, applyApprovedMultilingualContent('content/faq-content.json',applyApprovedInitialReleaseScope('content/faq-content.json', before('content/faq-content.json'))));
   assert.deepEqual({...current,faq:null},{...previous,faq:null});
   assert.deepEqual(current.faq.map(item=>item.id),previous.faq.map(item=>item.id));
   for (const item of current.faq) {
@@ -83,6 +85,16 @@ test('FAQ changes only three existing answers; keep legal device permissions sep
       for(const locale of ['ja','en'])assert.equal(item.answer[locale], initialScopeFaqAnswers[item.id][locale]);
       assert.equal(item.answer['zh-CN'],old.answer['zh-CN']);
     } else assert.deepEqual(item, old);
+  }
+  // These existing product-scope facts remain protected even as ordinary FAQ
+  // records are added, edited or deleted through reviewed CMS pull requests.
+  const live=JSON.parse(read('content/faq-content.json'));
+  assert.deepEqual({...live,faq:null},{...current,faq:null},'FAQ editing does not change taxonomy or schema metadata');
+  for(const [id,answers] of Object.entries(initialScopeFaqAnswers)){
+    const item=live.faq.find(entry=>entry.id===id);
+    assert.ok(item,`protected product-scope FAQ is missing: ${id}`);
+    for(const locale of ['ja','en'])assert.equal(item.answer[locale],answers[locale],`${id}/${locale}: product scope requires separate approval`);
+    assert.equal(item.answer['zh-CN'],current.faq.find(entry=>entry.id===id).answer['zh-CN']);
   }
   assert.equal(read('content/faq-policy-additions.json'), applyApprovedMultilingualContent('content/faq-policy-additions.json',before('content/faq-policy-additions.json')));
 });

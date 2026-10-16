@@ -120,7 +120,7 @@ export class NewsPublisher {
   const comparison=await this.api(`/compare/${tx.commitSha}...${head}`,token);
   if(comparison.status!=='ahead'||comparison.files?.length>40||!Array.isArray(comparison.files))throw new CmsError('CONFLICT');
   for(const file of comparison.files){
-   if(!/^(?:build-version\.txt|(?:contact-config|cms-admin|cms-news-workflow|news-renderer)\.js|(?:ja\/|zh\/)?(?:index|license|demo|goals|news|contact|order|customer|cms-admin)\.html)$/.test(file.filename))throw new CmsError('CONFLICT');
+   if(!/^(?:build-version\.txt|(?:contact-config|cms-admin|cms-news-workflow|news-renderer|cms-faq-workflow|faq-admin-safe)\.js|(?:ja\/|zh\/)?(?:index|license|demo|goals|news|contact|order|customer|cms-admin)\.html)$/.test(file.filename))throw new CmsError('CONFLICT');
    const a=await this.file(file.filename,tx.commitSha,token),b=await this.file(file.filename,head,token);
    if(file.filename==='build-version.txt'){if(!/^\d{8}-\d{6}\n$/.test(a.text)||!/^\d{8}-\d{6}\n$/.test(b.text))throw new CmsError('CONFLICT');}
    else if(normalizeCache(a.text)!==normalizeCache(b.text))throw new CmsError('CONFLICT');

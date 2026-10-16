@@ -73,6 +73,12 @@ jobs:
       - name: CMS private drafts and atomic protected-branch publication
         run: node --test scripts/test_cms_news_workflow.mjs
 
+      - name: CMS navigation and FAQ draft and protected-branch publication
+        run: |
+          node --test scripts/test_cms_navigation.mjs scripts/test_faq_admin_readonly.mjs scripts/test_cms_faq_workflow.mjs scripts/test_cms_faq_navigation.mjs scripts/test_faq_renderer.mjs
+          python scripts/test_faq_validation.py
+          python scripts/test_sync_build_version.py
+
       - name: Approved W02 License composition is current
         run: node scripts/build_quiet_license.mjs --check
 

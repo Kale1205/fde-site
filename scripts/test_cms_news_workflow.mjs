@@ -52,6 +52,20 @@ function fixture(){
 }
 async function draft(existing=true){const d=newDraft(existing?content.news[0]:null,contentSha);if(!existing){d.record.title={ja:'試験用ニュース',en:'Test news','zh-CN':'测试新闻'};d.record.body={ja:'試験本文',en:'Test body','zh-CN':'测试正文'};}d.record.body.ja+='\n試験用の追記';d.reviewedFingerprint=await fingerprint(d);return d;}
 function finalFiles(f){const tree=[...f.trees.values()].at(-1);return Object.fromEntries(tree.tree.map(x=>[x.path,f.blobs.get(x.sha)]));}
+for(const file of ['cms-faq-workflow.js','faq-admin-safe.js'])for(const tampered of [false,true])test(`FAQ asset cache follow-up ${file}: ${tampered?'code changes are rejected':'dated cache keys are accepted'}`,async()=>{
+ const base='a'.repeat(40),head='b'.repeat(40),calls=[];
+ const publisher=new NewsPublisher({fetch:async(url,options={})=>{const u=new URL(url);calls.push({path:u.pathname,method:options.method||'GET'});
+  if(u.pathname.includes('/compare/'))return response({status:'ahead',files:[{filename:file}]});
+  if(u.pathname.endsWith('/contents/'+file)){const old=u.searchParams.get('ref')===base,text=`import './cms-news-workflow.js?v=${old?'20261016-143653':'20261017-010101'}';\n${!old&&tampered?'export const unreviewed=true;\n':''}`;return response({type:'file',encoding:'base64',content:Buffer.from(text).toString('base64')});}
+  throw new Error('Unexpected synthetic URL');}});
+ const checking=publisher.verifyBranch({commitSha:base},head,'synthetic-token');
+ if(tampered)await assert.rejects(checking,{code:'CONFLICT'});else await checking;
+ assert(calls.every(call=>call.method==='GET'));
+});
+test('an unrelated script cannot bypass branch verification as a cache follow-up',async()=>{
+ const publisher=new NewsPublisher({fetch:async()=>response({status:'ahead',files:[{filename:'faq-unreviewed.js'}]})});
+ await assert.rejects(publisher.verifyBranch({commitSha:'a'.repeat(40)},'b'.repeat(40),'synthetic-token'),{code:'CONFLICT'});
+});
 test('article-only update: all locales preserved; static HTML and sitemap travel in the same commit; no main PUT',async()=>{
  const f=fixture(),d=await draft(),old=structuredClone(d.record);const result=await f.publisher().publish(d,'synthetic-token');assert.equal(result.pr.number,101);assert.equal(f.refs.size,1);assert.equal(f.pulls.length,1);
  const files=finalFiles(f),cms=JSON.parse(files['content/site-content.json'].content),item=cms.news.find(x=>x.id===d.sourceId);assert.equal(item.body.en,old.body.en);assert.equal(item.body['zh-CN'],old.body['zh-CN']);

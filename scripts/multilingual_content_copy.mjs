@@ -1,5 +1,6 @@
 // Step ③: reviewed translations of existing questions, not new product terms.
 import {readFileSync} from 'node:fs';
+import {mergeFaqData,renderFaqPage} from '../faq-renderer.js';
 
 export const zhFaqCopy = {
   'license-updates-difference': ['License 与 License Plus 有什么区别？', 'License 为一次性购买，不含源代码，可永久用于购买法人内部，并包含前三个月的 Updates；之后可选择继续购买 License 专用的 Updates 附加服务。License Plus 同样为一次性购买，包含源代码与内部修改权，更新和安全由购买方负责。Updates 不是第三种产品方案，也不适用于 License Plus。', ['产品区别','一次性购买','源代码','内部修改','Updates']],
@@ -82,7 +83,7 @@ export const zhInventoryCopy = {
 };
 
 const root = new URL('../',import.meta.url);
-const esc = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Historical copy migration only. Live renderers consume the reviewed JSON as-is.
 export function localizeFaqData(data) {
   const copy=structuredClone(data);
   if(copy.locales && !copy.locales.includes('zh-CN'))copy.locales.push('zh-CN');
@@ -105,23 +106,16 @@ export function localizeFaqData(data) {
   return copy;
 }
 export function mergedFaqData() {
-  const base=localizeFaqData(JSON.parse(readFileSync(new URL('content/faq-content.json',root),'utf8')));
-  const extra=localizeFaqData(JSON.parse(readFileSync(new URL('content/faq-policy-additions.json',root),'utf8')));
-  const ids=new Set(base.faq.map(x=>x.id));
-  base.faq.push(...extra.faq.filter(x=>!ids.has(x.id)));
-  return base;
+  const base=JSON.parse(readFileSync(new URL('content/faq-content.json',root),'utf8'));
+  const extra=JSON.parse(readFileSync(new URL('content/faq-policy-additions.json',root),'utf8'));
+  return mergeFaqData(base,extra);
 }
 export function renderStaticFaq(source) {
   if(!source.includes('id="cmsFaqList"'))return source;
   const locale=source.match(/<html lang="([^"]+)"/)[1];
-  const data=mergedFaqData();
-  const items=[...data.faq].sort((a,b)=>Number(!!b.highFrequency)-Number(!!a.highFrequency));
-  const markup=items.map(item=>{
-    const answerId=`faq-answer-${item.id}`;
-    const terms=[...item.keywords[locale],...item.synonyms[locale]].join(' ');
-    return `          <article class="faq-item" data-faq-id="${esc(item.id)}" data-faq-category-key="${esc(item.category)}" data-faq-subcategory="${esc(item.subcategory)}" data-faq-terms="${esc(terms)}">\n            <button class="faq-q" type="button" aria-expanded="false" aria-controls="${answerId}"><span>${esc(item.question[locale])}</span><span class="faq-plus" aria-hidden="true">＋</span></button>\n            <div class="faq-path"><span>${esc(data.categories[item.category].label[locale])}</span><span>${esc(data.subcategories[item.subcategory].label[locale])}</span></div>\n            <div class="faq-a" id="${answerId}">${esc(item.answer[locale]).replace(/\n/g,'<br>')}</div>\n          </article>`;
-  }).join('\n');
-  return source.replace(/(<div id="cmsFaqList">)[\s\S]*?(<\/div><div id="faqEmpty")/,`$1\n${markup}\n        $2`);
+  const base=JSON.parse(readFileSync(new URL('content/faq-content.json',root),'utf8'));
+  const extra=JSON.parse(readFileSync(new URL('content/faq-policy-additions.json',root),'utf8'));
+  return renderFaqPage(source,base,extra,locale);
 }
 export function applyApprovedMultilingualContent(file,source) {
   if(/^content\/faq-(?:content|policy-additions)\.json$/.test(file))return JSON.stringify(localizeFaqData(JSON.parse(source)),null,2)+'\n';

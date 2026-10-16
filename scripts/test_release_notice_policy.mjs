@@ -5,6 +5,7 @@ import {execApprovedNamingBaseline as execFileSync} from './approved_product_nam
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {releaseCopy, applyReleaseNoticePolicy, removePurchaseStatusCopy} from './release_notice_policy.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
+import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
 
 const root=new URL('../',import.meta.url);
 const read=file=>normalizeAssetBuildKeys(readFileSync(new URL(file,root),'utf8'));
@@ -33,11 +34,12 @@ for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
 }
 test('CMS hydration cannot restore purchase-unavailable FAQ or suffixes',()=>{
   const data=JSON.parse(read('content/faq-content.json'));
-  assert.equal(data.faq.length,JSON.parse(before('content/faq-content.json')).faq.length-1);
   assert.ok(!data.faq.some(item=>item.id==='ims-sale-status'));
   for(const item of data.faq)for(const answer of Object.values(item.answer))assert.equal(removePurchaseStatusCopy(answer),answer);
   const old=JSON.parse(before('content/faq-content.json'));
-  for(const item of data.faq){
+  const historical=JSON.parse(readFaqMigrationFixture('content/faq-content.json'));
+  assert.equal(historical.faq.length,old.faq.length-1,'historical notice migration removes one FAQ');
+  for(const item of historical.faq){
     const expected=structuredClone(old.faq.find(entry=>entry.id===item.id));
     expected.answer=Object.fromEntries(Object.entries(expected.answer).map(([lang,text])=>[lang,removePurchaseStatusCopy(text)]));
     assert.deepEqual(item,expected,'All other FAQ questions, terms, prices and search keys are preserved');

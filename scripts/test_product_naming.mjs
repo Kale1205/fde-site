@@ -10,6 +10,7 @@ import {applyApprovedOptionalUpdates} from './optional_updates_copy.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
+import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
@@ -59,7 +60,8 @@ for (const prefix of ['', 'ja/', 'zh/']) {
 
 test('CMS hydration and Chinese dictionary contain the same approved names', () => {
   for (const file of ['content/faq-content.json', 'content/zh-translations.json']) {
-    assert.equal(read(file), applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file)))))));
+    const fixture=file==='content/faq-content.json'?readFaqMigrationFixture(file):read(file);
+    assert.equal(fixture, applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file)))))));
     assert.doesNotMatch(read(file), /FDE IMS/);
     JSON.parse(read(file));
   }

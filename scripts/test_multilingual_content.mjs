@@ -6,12 +6,13 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {runInNewContext} from 'node:vm';
-import {applyApprovedMultilingualContent as apply,mergedFaqData,zhFaqCopy,demoLanguageNotes,redistributionAnswer,zhInventoryCopy} from './multilingual_content_copy.mjs';
+import {applyApprovedMultilingualContent as apply,mergedFaqData,demoLanguageNotes,redistributionAnswer,zhInventoryCopy} from './multilingual_content_copy.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews,withoutW05CmsBridge} from './w05_book_news_test_helpers.mjs';
+import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
 
 const root=new URL('../',import.meta.url);
 const baseline='b714f3d7e3cf2444effb6ca6b0d303c3036857f4';
@@ -40,15 +41,31 @@ for(const prefix of prefixes)for(const page of names){
   });
 }
 const data=mergedFaqData();
-test('same 37 existing IDs, no new FAQ or sales activation; all three locales complete',()=>{
-  const old=[...JSON.parse(before('content/faq-content.json')).faq,...JSON.parse(before('content/faq-policy-additions.json')).faq];
-  assert.equal(data.faq.length,37);assert.deepEqual(data.faq.map(x=>x.id),old.map(x=>x.id));
-  assert.equal(new Set(data.faq.map(x=>x.id)).size,37);assert.equal(Object.keys(zhFaqCopy).length,37);
-  for(const item of data.faq)for(const locale of ['ja','en','zh-CN'])for(const field of ['question','answer','keywords','synonyms'])assert.ok(item[field][locale]?.length,item.id+' '+locale+' '+field);
+test('current FAQ IDs and counts follow both source files; all three locales complete',()=>{
+  const current=[...JSON.parse(read('content/faq-content.json')).faq,...JSON.parse(read('content/faq-policy-additions.json')).faq];
+  assert.equal(data.faq.length,current.length);assert.deepEqual(data.faq.map(x=>x.id),current.map(x=>x.id));
+  assert.equal(new Set(data.faq.map(x=>x.id)).size,current.length);
+  for(const item of data.faq)for(const locale of ['ja','en','zh-CN']){
+    for(const field of ['question','answer'])assert.ok(typeof item[field][locale]==='string'&&item[field][locale].trim(),item.id+' '+locale+' '+field);
+    for(const field of ['keywords','synonyms'])assert.ok(Array.isArray(item[field][locale])&&item[field][locale].every(value=>typeof value==='string'),item.id+' '+locale+' '+field);
+  }
+  assert.equal(data.faq.find(item=>item.id==='no-redistribution')?.answer.en,redistributionAnswer,'redistribution policy remains protected');
+  for(const [locale,note]of Object.entries(demoLanguageNotes))assert.ok(data.faq.find(item=>item.id==='demo-not-product-version')?.answer[locale]?.includes(note),'native-language scope remains protected');
 });
-for(const file of ['content/faq-content.json','content/faq-policy-additions.json'])test(file+': only Chinese translation, label definitions, and two scoped answer clarifications',()=>{
-  const current=JSON.parse(read(file)),old=JSON.parse(before(file));
-  assert.equal(read(file),apply(file,before(file)));
+test('current business-policy answers and existing FAQ prices retain their approved values',()=>{
+  const approved=new Map(['content/faq-content.json','content/faq-policy-additions.json'].flatMap(file=>JSON.parse(readFaqMigrationFixture(file)).faq).map(item=>[item.id,item]));
+  for(const id of ['no-redistribution','demo-not-product-version']){
+    const item=data.faq.find(entry=>entry.id===id);
+    assert.ok(item,`protected policy FAQ is missing: ${id}`);
+    for(const locale of ['ja','en','zh-CN'])assert.equal(item.answer[locale],approved.get(id).answer[locale],`${id}/${locale}: product policy requires separate approval`);
+  }
+  const prices=item=>JSON.stringify(item).match(/(?:[¥￥$]|JPY|USD)\s*\d[\d,.]*|\d[\d,.]*\s*(?:円|日元|美元|USD|JPY)/gi)||[];
+  for(const item of data.faq)if(approved.has(item.id))assert.deepEqual(prices(item),prices(approved.get(item.id)),`${item.id}: existing prices require separate approval`);
+});
+for(const file of ['content/faq-content.json','content/faq-policy-additions.json'])test(file+': historical migration changes only Chinese translation, labels and two scoped answers',()=>{
+  const fixture=readFaqMigrationFixture(file),current=JSON.parse(fixture),old=JSON.parse(before(file));
+  assert.equal(fixture,apply(file,before(file)));
+  if(file==='content/faq-policy-additions.json')assert.equal(read(file),fixture,'policy additions are not CMS-editable');
   for(const item of current.faq){
     const original=old.faq.find(x=>x.id===item.id);
     assert.deepEqual({...item,question:null,answer:null,keywords:null,synonyms:null},{...original,question:null,answer:null,keywords:null,synonyms:null});
@@ -62,7 +79,7 @@ for(const file of ['content/faq-content.json','content/faq-policy-additions.json
 });
 for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']])test(locale+': every FAQ lives in semantic HTML, with named controls and localized taxonomy',()=>{
   const html=read(prefix+'contact.html');
-  assert.equal((html.match(/class="faq-item"/g)||[]).length,37);
+  assert.equal((html.match(/class="faq-item"/g)||[]).length,data.faq.length);
   for(const item of data.faq){
     assert.ok(html.includes('data-faq-id="'+item.id+'"'));
     const answerId='faq-answer-'+item.id;
@@ -120,6 +137,6 @@ test('shared FAQ renderer retains static content on fetch failure/incomplete Chi
 test('visual design except approved W01 CTA, native demo operations, CMS editing/auth, contact submission and commerce boundaries are byte-preserved',()=>{
   for(const file of ['gallery-ui.css','gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','faq-v38.css',
     'gallery-ui.js','demo-v1.js','quiet-form.js','site.js','contact-direct.js','contact-config.js','quiet-customer.js',
-    'faq-admin-v3.js','cms-content.js','cms-content-ja.js',
+    'cms-content.js','cms-content-ja.js',
     'worker/src/index-v14.js','robots.txt'])assert.equal(normalized(file.startsWith('cms-content')?withoutW05CmsBridge(read(file)):read(file)),normalized(applyW01ProductCta(file,before(file))),file);
 });
