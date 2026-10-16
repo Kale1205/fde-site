@@ -159,6 +159,11 @@ jobs:
       - name: Security tooling hardening contract checks
         run: python scripts/validate_security_tooling.py
 
+      - name: Artifact action migration and preserved evidence boundaries
+        run: |
+          python scripts/validate_artifact_workflows.py
+          python scripts/test_artifact_workflows.py
+
       - name: P3 Auto Security critical gate
         run: python scripts/security_audit.py
 

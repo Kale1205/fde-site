@@ -43,7 +43,7 @@ worker_config = read(WORKER_CONFIG)
 worker_entry = read(WORKER_ENTRY)
 site_content = read(SITE_CONTENT)
 
-for marker in ("name: Kale Outreach foundation check", "workflow_dispatch:", "permissions:", "contents: read", "python scripts/validate_p3_outreach.py", "python scripts/test_p3_outreach_rules.py", "python scripts/kale_outreach_dry_run.py --output outreach-report", "actions/upload-artifact@v4", "retention-days: 14"):
+for marker in ("name: Kale Outreach foundation check", "workflow_dispatch:", "permissions:", "contents: read", "python scripts/validate_p3_outreach.py", "python scripts/test_p3_outreach_rules.py", "python scripts/kale_outreach_dry_run.py --output outreach-report", "actions/upload-artifact@v7", "retention-days: 14"):
     if marker not in workflow: fail(f"Kale Outreach workflow missing marker: {marker}")
 
 for forbidden in ("schedule:", "cron:", "secrets.", "BREVO_API_KEY", "GMAIL", "LINKEDIN", "CLOUDFLARE_", "wrangler deploy", "git push", "gh pr merge", "contents: write", "actions: write", "pull-requests: write", "deployments: write", "id-token: write"):

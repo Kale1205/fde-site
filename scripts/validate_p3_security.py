@@ -33,7 +33,7 @@ for marker in (
     "contents: read",
     "python scripts/security_audit.py",
     "continue-on-error: true",
-    "actions/upload-artifact@v4",
+    "actions/upload-artifact@v7",
     "retention-days: 14",
     "Enforce critical finding gate",
 ):

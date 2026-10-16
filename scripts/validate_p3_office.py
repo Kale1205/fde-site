@@ -55,7 +55,7 @@ for marker in (
     "python scripts/validate_p3_office.py",
     "python scripts/test_p3_office_rules.py",
     "python scripts/kales_office_dry_run.py --output office-report",
-    "actions/upload-artifact@v4",
+    "actions/upload-artifact@v7",
     "name: kales-office-foundation-report",
     "retention-days: 14",
 ):
