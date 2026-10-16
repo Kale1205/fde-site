@@ -25,15 +25,15 @@ class CmsError extends Error{constructor(code){super(code);this.code=code;}}
 function fixture(){
  const nodes=new Map(),events=[],timers=new Map(),journal=new Map();
  const counts={put:0,list:0,publish:0,confirm:0,fingerprint:0};
- const hooks={put:null,inspect:null,fingerprint:null,confirm:null};let sequence=0,timerSequence=0;
+ const hooks={put:null,inspect:null,fingerprint:null,confirm:null,publish:null};let sequence=0,timerSequence=0;
  function element(tag='div'){
   const classes=new Set();return {tagName:tag.toUpperCase(),value:'',checked:false,disabled:false,hidden:false,dataset:{},children:[],options:[],_text:'',open:false,
    get textContent(){return this._text+this.children.map(child=>typeof child==='string'?child:child.textContent||'').join('');},
    set textContent(value){this._text=String(value);this.children=[];},
    classList:{add:value=>classes.add(value),remove:value=>classes.delete(value),contains:value=>classes.has(value),toggle(value,force){const next=force??!classes.has(value);next?classes.add(value):classes.delete(value);return next;}},
    append(...children){this.children.push(...children);},replaceChildren(...children){this._text='';this.children=children;if(this.tagName==='SELECT'){this.options=children;this.value=children[0]?.value||'';}},
-   add(option){this.options.push(option);},setAttribute(name,value){this[name]=String(value);},addEventListener(){},dispatchEvent(event){events.push(event);},
-   focus(){this.focused=true;},scrollIntoView(){},showModal(){this.open=true;this.openCount=(this.openCount||0)+1;},close(){this.open=false;}
+   add(option){this.options.push(option);},setAttribute(name,value){this[name]=String(value);},listeners:{},addEventListener(type,handler){(this.listeners[type]??=[]).push(handler);},dispatchEvent(event){events.push(event);},
+   focus(){this.focused=true;},scrollIntoView(){this.scrollCount=(this.scrollCount||0)+1;},showModal(){this.open=true;this.openCount=(this.openCount||0)+1;},close(){this.open=false;}
   };
  }
  const node=(id,tag='div')=>{if(!nodes.has(id))nodes.set(id,element(tag));return nodes.get(id);};
@@ -58,7 +58,7 @@ function fixture(){
   async list(){counts.list++;return clone([...journal.values()]);}
  }
  class SyntheticPublisher{
-  async publish(){counts.publish++;return {pr:{number:123}};}
+  async publish(d,token){counts.publish++;return hooks.publish?hooks.publish(d,token):{pr:{number:123}};}
  }
  const context={document,window:{},DraftStore:MemoryDraftStore,NewsPublisher:SyntheticPublisher,CmsError,errorText:e=>e.code||e.message,newDraft,
   persistedDraft:clone,base64:()=>'',LANGS:locales,
@@ -71,7 +71,7 @@ function fixture(){
   setTimeout:callback=>{const id=++timerSequence;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)
  };
  // Expose the original inline handlers in this private VM without executing init.
- vm.createContext(context);vm.runInContext(runtime+`\nglobalThis.testApi={navigate,preserveCurrent,capture,fill,dirty,chooseImage,renderPreview,review,request,connect,translate,unchanged,version,setConnectionState,
+ vm.createContext(context);vm.runInContext(runtime+`\nglobalThis.testApi={navigate,preserveCurrent,capture,fill,dirty,chooseImage,renderPreview,review,request,connect,translate,unchanged,version,setConnectionState,showResult,
   removeImage:${removeImageAction},beforeUnload:${beforeUnloadAction},
   drafts,editDrafts,previewed,draftVersions,
   state:()=>({route,routeEpoch,navigating,busy,mode,snapshot,connectionState}),
@@ -139,6 +139,15 @@ for(const [field,value] of [['Category','Social'],['Date','2026-10-18'],['Featur
  assert.equal(await f.api.navigate(actions),true);assert.equal(f.journal.size,1,'the untouched fresh draft must stay unpersisted');
 });
 
+test('Top News choices for separate articles are restored independently through local saves',async()=>{
+ const f=await editing(),a=f.api.drafts.edit;f.api.state().snapshot.content.news.find(item=>item.id==='b').featured=true;
+ f.node('editFeatured').checked=true;f.api.dirty('edit');assert.equal(await f.api.navigate(editTarget('b')),true);const b=f.api.drafts.edit;
+ assert.equal(f.node('editFeatured').checked,true);assert.equal(b.record.featured,true);assert.equal(f.journal.get(a.id).record.featured,true);
+ assert.equal(await f.api.navigate(editTarget('a')),true);assert.equal(f.node('editFeatured').checked,true);
+ f.node('editFeatured').checked=false;f.api.dirty('edit');assert.equal(await f.api.navigate(editTarget('b')),true);
+ assert.equal(f.node('editFeatured').checked,true);assert.equal(f.journal.get(a.id).record.featured,false);assert.equal(b.record.featured,true);assert.equal(f.counts.publish,0);
+});
+
 test('restoring a local edit selects its source and caches that restored draft for later article switches',async()=>{
  const f=await editing(),saved=f.api.newDraft(article('b'),'synthetic-content-sha');saved.record.body.en='Restored synthetic English body';
  f.journal.set(saved.id,clone(saved));assert.equal(await f.api.navigate({section:'news',screen:'editor',draftId:saved.id}),true);
@@ -162,6 +171,80 @@ test('restoring common media shows its own publication state and restores its im
  assert.equal(f.api.state().route.screen,'media');assert.equal(f.api.state().mode,'media');assert.equal(f.api.drafts.media.id,media.id);
  assert.equal(f.node('instagramTarget').checked,true);assert.equal(f.node('fallbackTarget').checked,false);assert.equal(f.node('draftOperation').textContent,'');
  assert(f.node('publicationResult').textContent.includes('synthetic/media-only'));assert(!f.node('publicationResult').textContent.includes('synthetic/article-a'));
+});
+
+const savedRequest=(d,extra={})=>({fingerprint:digest(d),branch:'cms/news-synthetic-a-a1b2c3',branchReady:true,commitSha:'synthetic-commit',...extra});
+const resultChild=(f,id)=>f.node('publicationResult').children.find(child=>child.id===id);
+test('a restored PR creation denial recreates the safe manual link from its saved branch only',async()=>{
+ const f=await editing(),d=f.api.drafts.edit;d.request=savedRequest(d,{prErrorStage:'create',prErrorCode:'PERMISSION',prErrorStatus:403,compareUrl:'https://untrusted.invalid',prUrl:'javascript:invalid'});
+ f.api.fill('edit',clone(d));await f.api.showResult(f.api.drafts.edit);const box=f.node('publicationResult'),link=resultChild(f,'manualPublication');
+ assert.match(box.textContent,/保存済み.*この操作ではサイトに反映していません/s);assert.match(box.textContent,/PR作成.*GitHubに拒否.*HTTP 403/s);
+ assert.equal(link.href,'https://github.com/Kale1205/fde-site/compare/main...cms%2Fnews-synthetic-a-a1b2c3?expand=1');
+ assert.equal(link.target,'_blank');assert.equal(link.rel,'noopener noreferrer');assert.match(link.textContent,/既存PRを確認/);
+ await f.api.showResult(f.api.drafts.edit);assert.equal(box.children.filter(child=>child.id==='manualPublication').length,1,'redraw restores one link without transient append state');
+ assert.equal(f.counts.publish,0);assert.equal(f.counts.confirm,0);
+});
+
+for(const metadata of [{},{prErrorStage:'lookup',prErrorCode:'NETWORK'},{prErrorStage:'lookup',prErrorCode:'PERMISSION',prErrorStatus:403}])test(`a saved branch with ${metadata.prErrorStage||'legacy'} metadata does not claim a PR creation denial or absence`,async()=>{
+ const f=await editing(),d=f.api.drafts.edit;d.request=savedRequest(d,metadata);f.api.fill('edit',d);await f.api.showResult(d);const box=f.node('publicationResult');
+ assert.match(box.textContent,/PR.*未確認/);assert.doesNotMatch(box.textContent,/PR作成.*権限不足|既存PRの確認では見つかりません/);
+ assert.equal(resultChild(f,'manualPublication').textContent,'保存済みブランチ・PRをGitHubで確認');
+ assert.doesNotMatch(box.textContent,/必要な場合だけPRを作成/);assert(resultChild(f,'retryPublication'));
+});
+
+test('branch conflicts offer comparison and backup without manual PR creation or retry',async()=>{
+ const f=await editing(),d=f.api.drafts.edit;d.request=savedRequest(d,{prErrorStage:'branch',prErrorCode:'CONFLICT',prErrorStatus:409});f.api.fill('edit',d);await f.api.showResult(d);
+ const box=f.node('publicationResult');assert.match(box.textContent,/別の変更.*停止.*上書きしていません.*バックアップ/s);
+ assert(resultChild(f,'manualPublication'));assert.equal(resultChild(f,'retryPublication'),undefined);assert.doesNotMatch(box.textContent,/必要な場合だけPRを作成/);
+});
+
+test('a saved PR number takes precedence over stale error metadata and untrusted persisted URLs',async()=>{
+ const f=await editing(),d=f.api.drafts.edit;d.request=savedRequest(d,{prNumber:321,prUrl:'javascript:invalid',prErrorStage:'create',prErrorCode:'PERMISSION',prErrorStatus:403});f.api.fill('edit',d);await f.api.showResult(d);
+ const box=f.node('publicationResult'),link=box.children.find(child=>child.tagName==='A');assert.equal(link.href,'https://github.com/Kale1205/fde-site/pull/321');
+ assert.equal(box.dataset.recovery,'false');assert.equal(resultChild(f,'manualPublication'),undefined);assert.equal(resultChild(f,'retryPublication'),undefined);assert.doesNotMatch(box.textContent,/権限不足/);
+});
+
+test('an incomplete branch journal does not offer a manual PR creation link',async()=>{
+ const f=await editing(),d=f.api.drafts.edit;d.request=savedRequest(d,{branchReady:false});f.api.fill('edit',d);
+ assert.equal(resultChild(f,'manualPublication'),undefined);assert.equal(f.node('publicationResult').dataset.recovery,'false');assert.match(f.node('publicationResult').textContent,/未完了/);
+});
+
+test('manual recovery stays visible after the request and reopens review without automatically publishing again',async()=>{
+ const f=await editing(),d=approve(f);f.hooks.confirm=()=>true;f.hooks.publish=async draft=>{draft.request=savedRequest(draft,{prErrorStage:'create',prErrorCode:'PERMISSION',prErrorStatus:403});return {manual:true,compareUrl:'https://untrusted.invalid'};};
+ f.node('newsPreview').open=true;await f.api.request('edit');assert.equal(f.counts.publish,1);assert.equal(f.node('newsPreview').open,false);assert.equal(f.node('publicationResult').scrollCount,1);
+ assert.match(f.node('adminStatus').textContent,/PR作成.*GitHubに拒否.*HTTP 403.*サイトには未反映.*公開依頼の状況/s);assert.doesNotMatch(f.node('adminStatus').textContent,/上のリンク/);
+ assert(resultChild(f,'manualPublication'));f.api.fill('edit',d);await f.api.showResult(d);const retry=resultChild(f,'retryPublication');await retry.listeners.click[0]();
+ assert.equal(f.node('newsPreview').open,true);assert.equal(f.node('editReviewed').focused,true);assert.equal(f.counts.publish,1);assert.equal(f.counts.confirm,1,'retry only reopens the existing review and confirmation flow');
+});
+
+test('an uncertain PR lookup after branch saving closes the preview and reveals persisted recovery details',async()=>{
+ const f=await editing();approve(f);f.hooks.confirm=()=>true;f.hooks.publish=async draft=>{draft.request=savedRequest(draft,{prErrorStage:'lookup',prErrorCode:'NETWORK'});throw new CmsError('NETWORK');};
+ f.node('newsPreview').open=true;await assert.rejects(f.api.request('edit'),{code:'NETWORK'});
+ assert.equal(f.node('newsPreview').open,false);assert.equal(f.node('publicationResult').scrollCount,1);assert.match(f.node('publicationResult').textContent,/既存PR.*確認を完了できません.*PRの有無は未確認/s);
+ assert(resultChild(f,'manualPublication'));assert.equal(f.api.state().busy,false);assert.equal(f.counts.publish,1);
+});
+
+test('editing or restoring changed content removes manual creation and retry while preserving comparison and input',async()=>{
+ const f=await editing(),d=f.api.drafts.edit;d.request=savedRequest(d,{prErrorStage:'create',prErrorCode:'PERMISSION',prErrorStatus:403});await f.api.showResult(d);
+ assert(resultChild(f,'retryPublication'));assert.match(resultChild(f,'manualPublication').textContent,/PRを作成/);
+ f.node('editBodyEn').value='Synthetic change after the saved publication request';f.api.dirty('edit');
+ assert.equal(resultChild(f,'retryPublication'),undefined,'dirty must synchronously remove the old retry action');assert.doesNotMatch(resultChild(f,'manualPublication').textContent,/PRを作成/);
+ await f.api.showResult(d);assert.match(f.node('publicationResult').textContent,/現在の下書きの変更はそのブランチへ保存していません/);
+ assert.doesNotMatch(f.node('publicationResult').textContent,/必要な場合だけPRを作成/);assert.equal(f.node('editBodyEn').value,d.record.body.en);assert.equal(f.counts.publish,0);
+ f.api.fill('edit',clone(d));await f.api.showResult(f.api.drafts.edit);
+ assert.equal(resultChild(f,'retryPublication'),undefined);assert.doesNotMatch(resultChild(f,'manualPublication').textContent,/PRを作成/);assert.match(f.node('publicationResult').textContent,/バックアップ/);
+});
+
+test('an obsolete result fingerprint cannot restore recovery actions for a different draft',async()=>{
+ const f=await editing(),d=f.api.drafts.edit;d.request=savedRequest(d,{prErrorStage:'create',prErrorCode:'PERMISSION',prErrorStatus:403});const hashed=gate();f.hooks.fingerprint=()=>hashed.promise;
+ const pending=f.api.showResult(d);assert.equal(resultChild(f,'retryPublication'),undefined);assert.doesNotMatch(resultChild(f,'manualPublication').textContent,/PRを作成/);
+ f.api.fill('edit',f.api.newDraft(article('b'),'synthetic-content-sha'));hashed.resolve(digest(d));await pending;
+ assert.equal(f.node('publicationResult').textContent,'');assert.equal(resultChild(f,'retryPublication'),undefined);assert.equal(f.api.drafts.edit.sourceId,'b');assert.equal(f.counts.publish,0);
+});
+
+test('failure to compare the local fingerprint keeps the saved branch link without manual creation',async()=>{
+ const f=await editing(),d=f.api.drafts.edit;d.request=savedRequest(d,{prErrorStage:'create',prErrorCode:'PERMISSION',prErrorStatus:403});f.hooks.fingerprint=()=>{throw new Error('synthetic hash failure');};await f.api.showResult(d);
+ assert.match(f.node('publicationResult').textContent,/一致を確認できません.*バックアップ/s);assert(resultChild(f,'manualPublication'));assert.doesNotMatch(resultChild(f,'manualPublication').textContent,/PRを作成/);assert.equal(resultChild(f,'retryPublication'),undefined);assert.equal(f.counts.publish,0);
 });
 
 test('switching from an unsaved create draft to an existing article preserves and resumes the create draft',async()=>{

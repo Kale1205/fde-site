@@ -30,7 +30,7 @@
  const originalSelectField=select.closest('.field');originalSelectField.hidden=true;originalSelectField.classList.add('admin-original-selector');select.tabIndex=-1;
  const draftBar=newsPanel.querySelector('.cms-draft-bar'),draftSelect=$('localDrafts'),draftRows=make('div','cms-draft-rows');draftRows.id='cmsDraftRows';
  if(draftBar){draftBar.querySelector('h2').textContent='下書き';draftBar.querySelector('p').textContent='このブラウザに保存されています。';draftBar.append(draftRows);draftSelect.closest('.field').hidden=true;draftSelect.tabIndex=-1;}
- const outcome=make('section','cms-editor-outcome');outcome.setAttribute('aria-label','公開依頼の状況');outcome.append($('draftOperation'),$('publicationResult'));newsPanel.append(outcome);
+ const outcome=make('section','cms-editor-outcome');outcome.setAttribute('aria-label','公開依頼の状況');outcome.append($('draftOperation'),$('publicationResult'));statusSlot.after(outcome);
  const options=make('details','cms-editor-options');options.append(make('summary','','その他'));
  const translationSettings=make('details','cms-translation-settings');translationSettings.append(make('summary','','翻訳設定'),$('adminKey').closest('.field'));
  const freshDraft=routeButton('別の下書きを作る',{section:'news',screen:'editor',mode:'create',fresh:true});freshDraft.id='cmsFreshDraft';
@@ -160,7 +160,8 @@
   if(faq&&route.screen==='list')document.dispatchEvent(new CustomEvent('fde:cms-faq-read'));
   if(focus){title.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
   const parts=editor?(news?editorParts:faqSafe?faqEditorParts:{} )[route.mode]:null;
-  if(focus&&parts&&route.step===1)(parts.imageSection||parts.languageSection).scrollIntoView({block:'start'});
+  if(focus&&news&&editor&&route.step!==2&&$('publicationResult').dataset.recovery==='true')outcome.scrollIntoView({block:'start'});
+  else if(focus&&parts&&route.step===1)(parts.imageSection||parts.languageSection).scrollIntoView({block:'start'});
   else if(focus&&parts&&route.step===2){parts.activate(1);parts.languageSection.scrollIntoView({block:'start'});}
  }
  new MutationObserver(renderNewsList).observe(select,{childList:true,attributes:true,attributeFilter:['data-news-state']});select.addEventListener('change',syncSelection);

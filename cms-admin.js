@@ -4,7 +4,7 @@ import {DraftStore,NewsPublisher,CmsError,errorText,newDraft,persistedDraft,fing
 const $=id=>document.getElementById(id),make=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=text;node.className=className;return node;};
 const store=new DraftStore(),drafts={create:newDraft(),edit:null,media:null};
 let token='',snapshot=null,busy=false,mode='create',saveQueue=Promise.resolve(),timer,unsaved=false,connectionState='idle',navigating=false,routeEpoch=0;
-let route={section:null,screen:'menu'};
+let route={section:null,screen:'menu'},publicationRender=0;
 const editDrafts=new Map(),draftVersions=new WeakMap(),imageChoices=new Map(),imagePending=new Set();
 const previewed=new Map();
 const publisher=new NewsPublisher({persist:async d=>{await saveQueue;return store.put(d);}});
@@ -66,6 +66,7 @@ function setConnectionState(state){
  $('adminTabs').dataset.connectionState=state;select.dataset.newsState=ready?'loaded':state;select.disabled=!ready;
  document.querySelector('[data-admin-tab="faq"]').disabled=!ready;
  for(const which of ['create','edit','media']){if($(which+'Request'))$(which+'Request').disabled=!ready||busy||navigating||imagePending.has(which);if($(which+'PreviewBtn'))$(which+'PreviewBtn').disabled=busy||navigating||imagePending.has(which);}
+ if($('retryPublication'))$('retryPublication').disabled=busy||navigating||imagePending.size>0;
  document.dispatchEvent(new CustomEvent('fde:cms-connection',{detail:{state}}));
 }
 function connectionErrorText(error){
@@ -83,7 +84,7 @@ async function save(which=mode){
  unsaved=true;
  const task=saveQueue.catch(()=>{}).then(async()=>{d.updatedAt=new Date().toISOString();const saved=await store.put(d);d.revision=saved.revision;await refreshDraftList();unsaved=false;return saved;});saveQueue=task;return task;
 }
-function invalidateReview(which,d){draftVersions.set(d,version(d)+1);d.reviewedFingerprint='';const check=$(which+'Reviewed');if(check)check.checked=false;document.dispatchEvent(new CustomEvent('fde:cms-dirty',{detail:{which}}));}
+function invalidateReview(which,d){draftVersions.set(d,version(d)+1);d.reviewedFingerprint='';const check=$(which+'Reviewed');if(check)check.checked=false;showResult(d);document.dispatchEvent(new CustomEvent('fde:cms-dirty',{detail:{which}}));}
 function dirty(which){if(busy||navigating)return;mode=which;const d=capture(which);if(!d)return;invalidateReview(which,d);clearTimeout(timer);status('保存中・端末内');timer=setTimeout(()=>safe(async()=>{timer=null;await save(which);status('保存済み・端末内','success');})(),700);}
 async function refreshDraftList(){const list=await store.list(),sel=$('localDrafts'),current=sel.value;sel.replaceChildren(new Option('下書きを選択',''));for(const d of list){const option=new Option(`${d.updatedAt.slice(0,16).replace('T',' ')} — ${d.operation==='media'?'共通画像':d.record.title?.ja||'無題'}${d.request?'［依頼あり］':''}`,d.id);option.dataset.operation=d.operation;sel.add(option);}sel.value=current;sel.dataset.draftState='loaded';}
 function drawImage(box,blob,source=''){
@@ -137,11 +138,30 @@ async function renderPreview(which){
  if(focusRequest){$(which+'Reviewed').focus();actions.scrollIntoView({block:'nearest'});}
 }
 async function review(which){const d=capture(which);if(!d)return;const checked=$(which+'Reviewed').checked;if(!checked){d.reviewedFingerprint='';await save(which);progress(which,3);return;}const epoch=routeEpoch,revision=version(d),digest=await fingerprint(d);if(!unchanged(which,d,epoch,revision)||!$(which+'Reviewed').checked)return;if(previewed.get(which)!==digest){$(which+'Reviewed').checked=false;throw new CmsError('REVIEW');}d.reviewedFingerprint=digest;await save(which);progress(which,4);}
-function showResult(d){
- const box=$('publicationResult');box.replaceChildren();if(!d?.request)return;
- box.append(make('p',`公開依頼ブランチ：${d.request.branch}`));
- const number=d.request.prNumber;if(Number.isSafeInteger(number)&&number>0){const a=make('a',`PR #${number} を確認`);a.href=`https://github.com/Kale1205/fde-site/pull/${number}`;a.target='_blank';a.rel='noopener noreferrer';box.append(a);button('refreshPublication','検査・公開状況を確認',async()=>{const result=await publisher.status(number);$('publicationState').textContent=`${result.label}${result.head?` / ${result.head.slice(0,12)}`:''}`;},box);}
- const p=make('p',d.request.branchReady?'GitHubブランチは公開されています。サイトの公開にはPRの検査・承認・マージが必要です。':'公開依頼は未完了です。同じ下書きから再試行できます。');p.id='publicationState';box.append(p);
+async function showResult(d){
+ const render=++publicationRender,box=$('publicationResult');box.replaceChildren();box.dataset.recovery='false';if(!d?.request)return;
+ const tx=d.request;box.append(make('p',`公開依頼ブランチ：${tx.branch}`));
+ const number=tx.prNumber,hasPr=Number.isSafeInteger(number)&&number>0;
+ if(hasPr){const a=make('a',`PR #${number} を確認`);a.href=`https://github.com/Kale1205/fde-site/pull/${number}`;a.target='_blank';a.rel='noopener noreferrer';box.append(a);button('refreshPublication','検査・公開状況を確認',async()=>{const result=await publisher.status(number);$('publicationState').textContent=`${result.label}${result.head?` / ${result.head.slice(0,12)}`:''}`;},box);}
+ else if(tx.branchReady&&typeof tx.branch==='string'&&tx.branch){
+  box.dataset.recovery='true';const savedState=make('p','以前の公開依頼ブランチが保存されています。現在の下書きとの一致を確認しています。この操作ではサイトに反映していません。');box.append(make('h2','公開依頼の状況'),savedState);
+  const denied=tx.prErrorStage==='create'&&tx.prErrorCode==='PERMISSION'&&tx.prErrorStatus===403,conflict=tx.prErrorStage==='branch'&&['CONFLICT','INVALID'].includes(tx.prErrorCode);
+  if(denied)box.append(make('p','前回のPR作成はGitHubに拒否されました（HTTP 403）。既存PRの確認では見つかりませんでした。権限は変更していません。'));
+  else if(conflict)box.append(make('p',`${tx.prErrorCode==='CONFLICT'?'保存済みブランチに別の変更が見つかった':'保存済みブランチの安全性を確認できない'}ため、公開依頼を停止しています。上書きしていません。「その他」から下書きをバックアップし、GitHubで差分と既存PRを確認してください。`));
+  else if(['lookup','branch'].includes(tx.prErrorStage)){const action=tx.prErrorStage==='lookup'?'既存PR':'保存済みブランチ';const http=Number.isInteger(tx.prErrorStatus)&&tx.prErrorStatus>=400&&tx.prErrorStatus<=599?`（HTTP ${tx.prErrorStatus}）`:'';box.append(make('p',`前回は${action}の確認を完了できませんでした${http}。PRの有無は未確認です。`));}
+  else box.append(make('p','PRの作成状況は未確認です。リンク先で既存PRと公開状況を確認してください。'));
+  const a=make('a','保存済みブランチ・PRをGitHubで確認');a.id='manualPublication';a.href=`https://github.com/Kale1205/fde-site/compare/main...${encodeURIComponent(tx.branch)}?expand=1`;a.target='_blank';a.rel='noopener noreferrer';box.append(a);
+  const which=d.operation==='media'?'media':d.operation==='create'?'create':'edit',revision=version(d);
+  let digest;try{digest=await fingerprint(d);}catch{if(render===publicationRender)savedState.textContent='現在の下書きと保存済みブランチの一致を確認できません。「その他」から下書きをバックアップし、GitHubで状態を確認してください。';return;}
+  if(render!==publicationRender||drafts[which]!==d||d.request!==tx||version(d)!==revision)return;
+  if(!tx.fingerprint||digest!==tx.fingerprint||imagePending.has(which)){savedState.textContent='以前の公開依頼ブランチは保存済みですが、現在の下書きの変更はそのブランチへ保存していません。「その他」から下書きをバックアップし、GitHubで差分と既存PRを確認してください。この操作ではサイトに反映していません。';return;}
+  savedState.textContent='この下書きの公開依頼はGitHubブランチへ保存済みです。この操作ではサイトに反映していません。';
+  if(denied){a.textContent='GitHubで既存PRを確認してPRを作成';box.append(make('p','リンク先で既存PRがないことを確認してから、必要な場合だけPRを作成してください。'));}
+  if(!conflict){box.append(make('p','同じ下書きから再試行すると、既存ブランチ・PRを確認して再開します。重複を防ぐため、再試行用に別の下書きは作らないでください。'));
+   const retry=button('retryPublication','同じ下書きで再試行',async()=>{if(drafts[which]!==d)return;$('newsPreview').dataset.requestFocus='true';await renderPreview(which);},box);retry.disabled=busy||navigating||imagePending.size>0;
+  }
+ }
+ const p=make('p',tx.branchReady?'サイトの公開にはPRの検査・本人承認・マージが必要です。':'公開依頼は未完了です。同じ下書きから再試行できます。');p.id='publicationState';box.append(p);
 }
 async function request(which){
  if(imagePending.has(which)){status('画像を確認中です。少しお待ちください。');return;}
@@ -154,11 +174,11 @@ async function request(which){
  if(busy)return;
  if(!confirm(`「${which==='media'?'共通画像':d.record.title?.ja||'無題'}」の${d.operation==='delete'?'削除の':''}公開依頼を作成します。\n原稿と画像は公開GitHubブランチ・PRへ送信されます。サイト反映は検査・本人承認・マージ後です。続けますか？`))return;
  busy=true;const controls=[...document.querySelectorAll('input,textarea,select,button')].filter(x=>!x.disabled);controls.forEach(x=>x.disabled=true);clearTimeout(timer);timer=null;
- try{await save(which);status('公開依頼を準備しています。入力は端末内に保持しています…');const result=await publisher.publish(d,token);showResult(d);
-  if(result.manual){const a=make('a','GitHubで既存ブランチからPRを作成');a.href=result.compareUrl;a.target='_blank';a.rel='noopener noreferrer';$('publicationResult').append(a);status('記事・画像の一括保存は完了しましたが、現在のトークンではPRを作成できません。権限は変更していません。上のリンクから本人のGitHub画面で公開依頼を作成できます。','error');}
+ try{await save(which);status('公開依頼を準備しています。入力は端末内に保持しています…');const result=await publisher.publish(d,token);await showResult(d);
+  if(result.manual)status('GitHubブランチへの保存は完了しましたが、PR作成はGitHubに拒否されました（HTTP 403）。サイトには未反映です。「公開依頼の状況」のリンクから、本人のGitHub画面で状態を確認できます。権限は変更していません。','error');
   else status(`PR #${result.pr.number} を確認しました。サイトにはまだ公開していません。本人承認後にGitHubでマージしてください。`,'success');
-  $('newsPreview').close();
- }catch(e){showResult(d);throw e;}finally{busy=false;controls.forEach(x=>x.disabled=false);setConnectionState(connectionState);await refreshDraftList();}
+  $('newsPreview').close();$('publicationResult').scrollIntoView({block:'start'});
+ }catch(e){await showResult(d);if(d.request?.branchReady){$('newsPreview').close();$('publicationResult').scrollIntoView({block:'start'});}throw e;}finally{busy=false;controls.forEach(x=>x.disabled=false);setConnectionState(connectionState);await refreshDraftList();}
 }
 async function translate(which){
  if(busy||navigating||window.FDE_CMS_FAQ?.isBusy?.())return;
@@ -184,6 +204,7 @@ async function backup(){
 }
 function buildEditor(which){
  const card=$(which==='create'?'newsCreateCard':'newsManageCard');card.querySelector('h2').textContent=which==='create'?'新規作成':'記事を編集';card.querySelector('p').textContent='端末内に保存。公開依頼は確認後。';
+ const featuredNote=make('p','指定した記事は新しい順に最大10件を上部に表示します。超過分は一覧に表示します。','token-note');featuredNote.id=which+'FeaturedNote';$(which+'Featured').setAttribute('aria-describedby',featuredNote.id);$(which+'Featured').closest('.field').append(featuredNote);
  const anchor=$(which+'BodyJa').closest('.field');let after=anchor;
  for(const [locale,label] of [['en','English'],['zh-CN','简体中文']])for(const [field,tag] of [['Title','input'],['Body','textarea']]){
   const id=which+field+suffixes[locale];let input=$(id);if(!input){input=make(tag);input.id=id;}
