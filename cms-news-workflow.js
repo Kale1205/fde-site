@@ -1,4 +1,4 @@
-import {renderNewsPage} from './news-renderer.js?v=20261016-133303';
+import {renderNewsPage} from './news-renderer.js?v=20261016-164916';
 
 export const REPO='Kale1205/fde-site', API=`https://api.github.com/repos/${REPO}`;
 export const LANGS=['ja','en','zh-CN'];
@@ -100,7 +100,7 @@ export function updateSitemap(xml,manifest,changed,date){
 }
 const normalizeCache=text=>text.replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
 export class NewsPublisher {
- constructor({fetch=globalThis.fetch,persist=async d=>d,now=()=>new Date().toISOString()}={}){this.fetch=fetch;this.persist=persist;this.now=now;this.pending=new Map();}
+ constructor({fetch=globalThis.fetch.bind(globalThis),persist=async d=>d,now=()=>new Date().toISOString()}={}){this.fetch=fetch;this.persist=persist;this.now=now;this.pending=new Map();}
  async api(path,token,options={}){
   if(!path.startsWith('/')||path.startsWith('//')||options.method&& !['POST','GET'].includes(options.method))throw new CmsError('INVALID');
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),60000);
@@ -120,7 +120,7 @@ export class NewsPublisher {
   const comparison=await this.api(`/compare/${tx.commitSha}...${head}`,token);
   if(comparison.status!=='ahead'||comparison.files?.length>40||!Array.isArray(comparison.files))throw new CmsError('CONFLICT');
   for(const file of comparison.files){
-   if(!/^(?:build-version\.txt|(?:contact-config|cms-admin|cms-news-workflow|news-renderer)\.js|(?:ja\/|zh\/)?(?:index|license|demo|goals|news|contact|order|customer|cms-admin)\.html)$/.test(file.filename))throw new CmsError('CONFLICT');
+   if(!/^(?:build-version\.txt|(?:contact-config|cms-admin|cms-news-workflow|news-renderer|cms-faq-workflow|faq-admin-safe)\.js|(?:ja\/|zh\/)?(?:index|license|demo|goals|news|contact|order|customer|cms-admin)\.html)$/.test(file.filename))throw new CmsError('CONFLICT');
    const a=await this.file(file.filename,tx.commitSha,token),b=await this.file(file.filename,head,token);
    if(file.filename==='build-version.txt'){if(!/^\d{8}-\d{6}\n$/.test(a.text)||!/^\d{8}-\d{6}\n$/.test(b.text))throw new CmsError('CONFLICT');}
    else if(normalizeCache(a.text)!==normalizeCache(b.text))throw new CmsError('CONFLICT');

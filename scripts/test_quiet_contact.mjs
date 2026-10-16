@@ -6,6 +6,7 @@ import {execApprovedNamingBaseline as execFileSync} from './approved_product_nam
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {renderQuietContact} from './build_quiet_contact.mjs';
 import {applyReleaseNoticePolicy} from './release_notice_policy.mjs';
+import {renderCurrentFaqFixture} from './faq_content_test_helpers.mjs';
 
 const root=new URL('../',import.meta.url);
 const read=name=>normalizeAssetBuildKeys(readFileSync(new URL(name,root),'utf8'));
@@ -25,7 +26,7 @@ for(const prefix of ['', 'ja/', 'zh/']){
     const form=s=>s.match(/<form id="contactForm"[\s\S]*?<\/form>/)[0];
     assert.equal(form(html),form(before),'Fields, validation, options and button copy are preserved');
     assert.equal((form(html).match(/ required/g)||[]).length,6);
-    const approvedCopy=applyReleaseNoticePolicy(before,'contact');
+    const approvedCopy=renderCurrentFaqFixture(name,applyReleaseNoticePolicy(before,'contact'));
     for(const article of approvedCopy.match(/<article class="faq-item"[\s\S]*?<\/article>/g))assert.ok(html.includes(article),'Other static localized FAQs are unchanged');
     for(const state of before.match(/<section id="inquiry(?:Confirm|Complete)"[\s\S]*?<\/section>/g))assert.ok(html.includes(state),'Confirm/complete contract is unchanged');
     const head=s=>s.match(/<head>[\s\S]*?<\/head>/)[0];

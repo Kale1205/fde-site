@@ -5,6 +5,7 @@ import re
 import sys
 from urllib.parse import urlsplit
 from static_news_validation import complete_static_news_lead
+from faq_validation import validate_faq_documents
 
 from sitemap_config import (
     SitemapStateError,
@@ -1245,7 +1246,7 @@ else:
     text = cms_admin.read_text(encoding="utf-8")
     if not re.search(r"<html\s+lang=[\"']ja[\"']", text, re.IGNORECASE):
         fail("cms-admin.html: admin UI must remain Japanese")
-    for required in ("cms-admin.js", "news-translation-hook.js", "faq-admin-v3.js"):
+    for required in ("cms-admin.js", "news-translation-hook.js", "faq-admin-safe.js"):
         if required not in text:
             fail(f"cms-admin.html: required CMS runtime missing: {required}")
     for forbidden in ("fulfillmentPanel", 'data-admin-tab="fulfillment"', "order-status-admin.js", "news-delete-v2.js"):
@@ -1285,17 +1286,6 @@ faq_path = ROOT / "content" / "faq-content.json"
 if faq_path.exists():
     try:
         faq_data = json.loads(faq_path.read_text(encoding="utf-8"))
-        locales = faq_data.get("locales", [])
-        # Existing CMS enrichment still writes ja/en; reviewed Chinese fields
-        # are additive and must not break that editor's current save contract.
-        if locales not in (["ja", "en"], ["ja", "en", "zh-CN"]):
-            fail(f"content/faq-content.json: unsupported locale declaration: {locales!r}")
-        for item in faq_data.get("faq", []):
-            item_id = item.get("id", "<unknown>")
-            for field in ("question", "answer"):
-                value = item.get(field, {})
-                if not isinstance(value, dict) or not str(value.get("ja", "")).strip() or not str(value.get("en", "")).strip():
-                    fail(f"content/faq-content.json: FAQ {item_id} missing ja/en {field}")
     except Exception as exc:
         fail(f"content/faq-content.json: invalid JSON: {exc}")
 else:
@@ -1306,20 +1296,17 @@ faq_policy_path = ROOT / "content" / "faq-policy-additions.json"
 if faq_policy_path.exists():
     try:
         faq_policy_data = json.loads(faq_policy_path.read_text(encoding="utf-8"))
-        for item in faq_policy_data.get("faq", []):
-            item_id = item.get("id", "<unknown>")
-            for field in ("question", "answer"):
-                value = item.get(field, {})
-                if not isinstance(value, dict) or not str(value.get("ja", "")).strip() or not str(value.get("en", "")).strip():
-                    fail(f"content/faq-policy-additions.json: FAQ {item_id} missing ja/en {field}")
     except Exception as exc:
         fail(f"content/faq-policy-additions.json: invalid JSON: {exc}")
 else:
     fail("content/faq-policy-additions.json is missing")
 
-# Validate only the active Japanese and English fields consumed by the public
-# CMS runtimes. Dormant historical translations and the disabled staging
-# checkout catalog are deliberately excluded from this public-content gate.
+for message in validate_faq_documents(faq_data, faq_policy_data):
+    fail(message)
+
+# Commercial copy gates below use the Japanese and English price books.
+# FAQ structure and all three public locales are validated above; the disabled
+# staging checkout catalog remains outside this public-content policy gate.
 localized_public_data = {
     "content/faq-content.json": {
         locale: localized_text(faq_data, locale) for locale in ("ja", "en")

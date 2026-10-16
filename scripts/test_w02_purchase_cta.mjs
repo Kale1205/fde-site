@@ -8,6 +8,7 @@ import {applyW02PurchaseCta,purchaseCtaLabels} from './w02_purchase_cta.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
+import {renderCurrentFaqFixture,readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
 
 const root=new URL('../',import.meta.url);
 const baseline='d1302742d66acd427dbe7aea64bd5fe1dee861fa';
@@ -39,7 +40,8 @@ test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
   for(const file of ['gallery-ui.js','gallery-ui.css','quiet-pages.css','license.css','contact-direct.js','contact-config.js','quiet-form.js',
     'worker/src/index-v14.js','robots.txt','content/faq-content.json','content/faq-policy-additions.json',
     ...['','ja/','zh/'].flatMap(p=>['index','contact','demo','goals','news','order','customer'].map(n=>p+n+'.html'))]){
-    assert.equal(normalize(read(file)),normalize(before(file)),file);
+    const current=file==='content/faq-content.json'?readFaqMigrationFixture(file):read(file);
+    assert.equal(normalize(current),normalize(renderCurrentFaqFixture(file,before(file))),file);
   }
   assert.match(read('quiet-pages.css'),/\.quiet-page :is\(button,\[type=submit\]\):disabled \{ transform: none; opacity: \.55; cursor: not-allowed; \}/);
   assert.doesNotMatch(read('gallery-ui.js'),/data-license-purchase/);

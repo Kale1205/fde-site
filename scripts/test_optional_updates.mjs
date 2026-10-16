@@ -13,6 +13,7 @@ import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
+import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline = 'ccc17a1f85ef079d82d4a8e616df78b8b457fccb';
@@ -54,11 +55,13 @@ for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
   });
 }
 
-test('FAQ updates are limited to four answers, without adding questions, changing IDs, or altering prices', () => {
+test('historical FAQ migration changes four answers, without changing IDs or prices', () => {
   const ids = new Set(['updates-term','license-updates-entitlement','cancel-updates-after-license','cancel-updates-only']);
   for (const file of ['content/faq-content.json','content/faq-policy-additions.json']) {
-    const now = JSON.parse(read(file)), old = JSON.parse(applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, before(file))));
-    assert.equal(read(file), applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file)))));
+    const fixture=readFaqMigrationFixture(file);
+    const now = JSON.parse(fixture), old = JSON.parse(applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, before(file))));
+    assert.equal(fixture, applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file)))));
+    if(file==='content/faq-policy-additions.json')assert.equal(read(file),fixture,'policy additions are not CMS-editable');
     assert.deepEqual(now.faq.map(x=>x.id), old.faq.map(x=>x.id));
     for (const item of now.faq) {
       const previous = old.faq.find(x=>x.id===item.id);
@@ -71,6 +74,19 @@ test('FAQ updates are limited to four answers, without adding questions, changin
       assert.doesNotMatch(item.answer.ja, /その時点までに取得したバージョンの永続利用権/);
       assert.doesNotMatch(item.answer.en, /perpetual right to use the version obtained/);
       assert.deepEqual(prices(JSON.stringify(item)),prices(JSON.stringify(previous)));
+    }
+    const live=JSON.parse(read(file));
+    for(const expected of now.faq.filter(item=>ids.has(item.id))){
+      const item=live.faq.find(entry=>entry.id===expected.id);
+      assert.ok(item,`protected Updates FAQ is missing: ${expected.id}`);
+      for(const locale of ['ja','en','zh-CN'])assert.equal(item.answer[locale],expected.answer[locale],`${expected.id}/${locale}: Updates terms require separate approval`);
+      assert.match(item.answer.ja, /購入時のバージョン/);
+      assert.match(item.answer.en, /version purchased/);
+      assert.match(item.answer.ja, /契約終了後の扱い.*最終利用条件/);
+      assert.match(item.answer.en, /after cancellation.*final license terms/);
+      assert.doesNotMatch(item.answer.ja, /その時点までに取得したバージョンの永続利用権/);
+      assert.doesNotMatch(item.answer.en, /perpetual right to use the version obtained/);
+      assert.deepEqual(prices(JSON.stringify(item)),prices(JSON.stringify(expected)),'Updates prices require separate approval');
     }
   }
 });

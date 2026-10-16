@@ -8,8 +8,9 @@ import {withoutW05BookCoverEditor} from './w05_cover_editor_test_helpers.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const before=file=>execFileSync('git',['show',`edcf24191d73c923868bc6714dbd35339b4ff0e1:${file}`],{cwd:root,encoding:'utf8'});
-test('shared image retains public data, FAQ and backend contracts; News publication uses the new PR suite',()=>{
- for(const file of ['faq-admin-v3.js','worker/src/index-v14.js'])assert.equal(normalize(read(file)),normalize(before(file)));
+test('shared image retains public data and backend contracts; FAQ writes are separately guarded',()=>{
+ for(const file of ['worker/src/index-v14.js'])assert.equal(normalize(read(file)),normalize(before(file)));
+ assert.match(read('faq-admin-v3.js'),/FAQ_READ_ONLY=true/);
 });
 test('one article image controls the card, transition and reader even when old cover data remains',()=>{
  for(const coverImage of ['', 'assets/old-cover.webp','https://evil.example/a.png']){

@@ -170,7 +170,7 @@ cms_html = text("cms-admin.html")
 cms_loader = text("cms-admin-loader.js")
 if 'id="cmsRuntimeManifest"' not in cms_html or "cms-admin-loader.js" not in cms_html:
     fail("cms-admin.html must use the environment-aware CMS runtime loader")
-for required in ("cms-admin.js", "news-translation-hook.js", "faq-admin-v3.js"):
+for required in ("cms-admin.js", "news-translation-hook.js", "faq-admin-safe.js"):
     if required not in cms_html:
         fail(f"CMS runtime manifest missing: {required}")
 if "FDE_RUNTIME_ENV==='staging'" not in cms_loader or "showStagingLock" not in cms_loader:
