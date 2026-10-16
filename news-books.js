@@ -84,6 +84,7 @@ function init(){
   document.querySelector('[data-news-list-empty]').hidden=archive.length>0;
  }
  function render(){
+  if(!items.length)live.textContent='';
   stage.dataset.count=items.length;stage.hidden=!items.length;document.querySelector('.book-selection').hidden=!items.length;document.querySelector('[data-top-news-empty]').hidden=items.length>0;
   for(const node of slots){if(!items.length){node.tabIndex=-1;node.setAttribute('aria-hidden','true');continue;}const offset=Number(node.dataset.offset);fill(node,offset);position(node,offset);}
   selection();read.hidden=!items.length;document.querySelector('.book-controls').hidden=items.length<2;renderArchive();
