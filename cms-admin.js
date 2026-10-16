@@ -28,8 +28,8 @@ async function refreshDraftList(){const list=await store.list(),sel=$('localDraf
 function drawImage(box,blob,source=''){
  const previous=box.dataset.objectUrl;if(previous)URL.revokeObjectURL(previous);delete box.dataset.objectUrl;box.replaceChildren();
  let url='';if(blob){url=URL.createObjectURL(blob);box.dataset.objectUrl=url;}
- else{const match=String(source).match(/^(?:https:\/\/raw\.githubusercontent\.com\/Kale1205\/fde-site\/main\/|https:\/\/kale1205\.github\.io\/fde-site\/)?(assets\/[A-Za-z0-9_/-]+\.(?:png|jpe?g|webp|gif|svg))$/);if(match)url=`https://raw.githubusercontent.com/Kale1205/fde-site/main/${match[1]}`;}
- if(url){const img=make('img');img.src=url;img.alt='記事画像プレビュー';box.append(img);}else box.append(make('p','画像未設定','preview-placeholder'));
+ else{const match=String(source).match(/^(?:https:\/\/raw\.githubusercontent\.com\/Kale1205\/fde-site\/main\/|https:\/\/kale1205\.github\.io\/fde-site\/)?(assets\/[A-Za-z0-9_/-]+\.(?:png|jpe?g|webp|gif|svg))$/);if(match)url=`https://raw.githubusercontent.com/Kale1205/fde-site/main/${match[1].split('/').map(encodeURIComponent).join('/')}`;}
+ if(url){const img=make('img');img.src=encodeURI(url);img.alt='記事画像プレビュー';box.append(img);}else box.append(make('p','画像未設定','preview-placeholder'));
 }
 function fill(which,d){
  drafts[which]=d;

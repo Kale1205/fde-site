@@ -99,5 +99,6 @@ test('article and file previews use safe DOM, local asset allowlist and revocabl
  assert.match(js,/box.replaceChildren\(\)/);assert.match(js,/make\('img'\)/);
  assert.match(js,/raw\.githubusercontent/);assert.match(js,/Kale1205/);
  assert.match(js,/URL.revokeObjectURL/);assert.match(js,/URL.createObjectURL\(blob\)/);
+ assert.match(js,/img.src=encodeURI\(url\)/);assert.match(js,/map\(encodeURIComponent\)/);
  assert.match(js,/A-Za-z0-9_\//);
 });

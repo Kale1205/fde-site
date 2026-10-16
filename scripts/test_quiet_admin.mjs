@@ -29,6 +29,7 @@ test('FAQ and backend configuration are unchanged; News uses the protected PR wo
   assert.doesNotMatch(read('cms-admin.js'),/method:'PUT'|method:'PATCH'|localStorage|sessionStorage/);
   assert.match(read('cms-admin-loader.js'),/FDE_RUNTIME_ENV==='staging'/);
   assert.match(read('cms-admin-loader.js'),/script.type='module'/);
+  assert.match(read('cms-admin-loader.js'),/paths.every\(\(path,index\)=>path===RUNTIMES\[index\]\)/);
 });
 
 test('asset normalization ignores only dated JS/CSS cache keys, not content, routes or conditions',()=>{
