@@ -1270,8 +1270,8 @@ if site_content_path.exists():
             item_id = item.get("id", "<unknown>")
             for field in ("title", "body"):
                 value = item.get(field, {})
-                if not isinstance(value, dict) or not str(value.get("ja", "")).strip() or not str(value.get("en", "")).strip():
-                    fail(f"content/site-content.json: news {item_id} missing ja/en {field}")
+                if not isinstance(value, dict) or any(not str(value.get(locale, "")).strip() for locale in ("ja", "en", "zh-CN")):
+                    fail(f"content/site-content.json: news {item_id} missing ja/en/zh-CN {field}")
             ja_title = str(item.get("title", {}).get("ja", "")).strip()
             if ja_title.endswith("。"):
                 fail(f"content/site-content.json: Japanese news heading must not end in full stop: {item_id}")
@@ -1352,7 +1352,9 @@ if not any(item.get("id") == "inventory-adoption-migration-fit" for item in faq_
 
 for source, localized in localized_public_data.items():
     for locale, active_text in localized.items():
-        if source != "content/faq-policy-additions.json":
+        # News is editorial content, not the canonical price/plan catalog.
+        # Its fields/three locales/static rendering are checked separately.
+        if source == "content/faq-content.json":
             for plan, pattern in CONTENT_PLAN_NAME_PATTERNS.items():
                 if not pattern.search(active_text):
                     fail(f"{source}: active {locale} content missing plan name: {plan}")
@@ -1360,7 +1362,7 @@ for source, localized in localized_public_data.items():
             if pattern.search(active_text):
                 fail(f"{source}: active {locale} content contains retired price: {label}")
 
-for source in ("content/faq-content.json", "content/site-content.json"):
+for source in ("content/faq-content.json",):
     for locale, base_prices in {
         "en": ("$349", "$699", "$31", "$62"),
         "ja": ("49,800円", "99,800円", "4,900円", "9,800円"),

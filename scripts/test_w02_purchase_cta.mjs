@@ -1,3 +1,4 @@
+import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -11,7 +12,7 @@ import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
 const root=new URL('../',import.meta.url);
 const baseline='d1302742d66acd427dbe7aea64bd5fe1dee861fa';
 const read=file=>readFileSync(new URL(file,root),'utf8');
-const before=file=>{const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});return applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
+const before=file=>{const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});return file==='contact-config.js'?applyCmsMemoryKey(old):applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']]) {
   test(locale+': consultation CTA becomes one genuinely disabled purchase button, with no order destination',()=>{
     const file=prefix+'license.html',html=read(file),old=before(file);
@@ -36,7 +37,7 @@ test('Chinese dictionary adds exactly the purchase-label translation; no other c
 });
 test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
   for(const file of ['gallery-ui.js','gallery-ui.css','quiet-pages.css','license.css','contact-direct.js','contact-config.js','quiet-form.js',
-    'worker/src/index-v14.js','robots.txt','content/faq-content.json','content/faq-policy-additions.json','content/site-content.json',
+    'worker/src/index-v14.js','robots.txt','content/faq-content.json','content/faq-policy-additions.json',
     ...['','ja/','zh/'].flatMap(p=>['index','contact','demo','goals','news','order','customer'].map(n=>p+n+'.html'))]){
     assert.equal(normalize(read(file)),normalize(before(file)),file);
   }

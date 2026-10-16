@@ -1,3 +1,4 @@
+import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
@@ -16,11 +17,11 @@ import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
 const root = new URL('../', import.meta.url);
 const baseline = 'd6ab9132810381668d72c9eff7664a87db0a9be1';
 const read = file => withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8'));
-const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
+const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return file==='contact-config.js'?applyCmsMemoryKey(old):applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const normalize = source => normalizeAssetBuildKeys(source.trimEnd());
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
   ['index','quiet-form','license','order','demo','goals','news','contact','customer'].map(page => prefix + page + '.html')
-).concat(['cms-admin.html','overview.html','products.html']);
+).concat(['overview.html','products.html']); // CMS has its own draft/PR behavior suite.
 const prices = source => source.match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
 const controls = source => [...source.matchAll(/<(?:a|button|input|select|textarea|form)\b[^>]*>/g)].map(m=>m[0]);
 const outsideFaq = source => source.replace(/<div id="cmsFaqList">[\s\S]*?<\/div><div id="faqEmpty"/, '<div id="faqEmpty"');
@@ -123,7 +124,7 @@ test('site runtime changes are confined to the localized demand callout; no trac
 test('visual styles except approved W01 CTA, demo operations, authentication, commerce gates, news and robots remain unchanged', () => {
   for (const file of ['gallery-ui.css','gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','styles.css','responsive.css',
     'gallery-ui.js','demo-v1.js','quiet-form.js','contact-config.js','contact-direct.js','quiet-customer.js',
-    'worker/src/index-v14.js','content/site-content.json','robots.txt']) {
+    'worker/src/index-v14.js','robots.txt']) {
     assert.equal(normalize(read(file)),normalize(applyW01ProductCta(file,before(file))),file);
   }
 });

@@ -7,3 +7,19 @@
 .cms-book-cover-settings .check-row{margin-top:16px}
 .quiet-page.admin-renewal .cms-book-cover-settings .preview-box{height:144px;min-height:144px}
 .quiet-page.admin-renewal .cms-book-cover-settings .preview-box img{width:100%;height:100%;max-height:144px;object-fit:contain}
+
+/* CMS draft/review/request states reuse the approved A01 layout and palette. */
+.cms-draft-bar,.cms-publication-result{min-width:0;overflow-wrap:anywhere}
+.cms-draft-bar .field{max-width:100%}
+.cms-review-check{font-size:13px;line-height:1.6;margin-top:20px}
+.cms-publication-result a{display:inline-block;color:var(--green-dark);text-decoration:underline;padding:12px 0;margin-right:16px}
+.cms-news-preview{width:min(840px,calc(100% - 32px));max-height:88dvh;overflow:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:20px;background:#f8f9f5;color:var(--ink);padding:28px}
+.cms-news-preview::backdrop{background:rgb(6 35 25 / .45)}
+.cms-news-preview h2{font-size:26px;letter-spacing:-.03em}
+.cms-news-preview>.admin-button{position:sticky;bottom:0;margin-top:16px}
+.cms-language-preview{border-top:1px solid var(--line);margin-top:28px;padding-top:20px;overflow-wrap:anywhere}
+.cms-language-preview h3{font-size:13px;color:var(--muted)}
+.cms-language-preview h4{font-size:22px;margin:12px 0}
+.cms-language-preview p{white-space:pre-wrap;line-height:1.8}
+.admin-renewal input:focus-visible,.admin-renewal textarea:focus-visible,.admin-renewal select:focus-visible,.admin-renewal button:focus-visible,.admin-renewal a:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+@media(max-width:760px){.cms-news-preview{padding:20px}.cms-review-check{align-items:flex-start}.cms-review-check input{flex-shrink:0}.cms-draft-bar select{font-size:16px}.cms-publication-result button{margin-top:12px}}

@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
@@ -43,7 +44,7 @@ test('Contact interaction shim has no external requests, persistence or copy rep
   assert.match(shared,/empty.hidden=count>0/);
   assert.doesNotMatch(js,/fetch\(|localStorage|sessionStorage|innerHTML|\.textContent\s*=/);
   assert.equal(read('contact-direct.js'),original('contact-direct.js'));
-  assert.equal(read('contact-config.js'),original('contact-config.js'));
+  assert.equal(read('contact-config.js'),applyCmsMemoryKey(original('contact-config.js')));
 });
 test('Contact materials are scoped and reuse supplied logo and library icon',()=>{
   const css=read('quiet-pages.css');

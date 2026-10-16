@@ -1,3 +1,4 @@
+import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -20,9 +21,15 @@ test('A01 presentation is Japanese-only and keeps the existing protected runtime
   assert.match(html,/8MB以下/);
 });
 
-test('authentication, translation, CMS writes and staging lock remain unchanged apart from automatic asset cache keys',()=>{
-  for(const file of ['cms-admin.js','news-translation-hook.js','faq-admin-v3.js','contact-config.js','cms-admin-loader.js'])
-    assert.equal(normalizeAssetBuildKeys(read(file)),normalizeAssetBuildKeys(execFileSync('git',['show',`e45a1b2:${file}`],{cwd:root,encoding:'utf8'})));
+test('FAQ and backend configuration are unchanged; News uses the protected PR workflow and staging lock',()=>{
+  for(const file of ['faq-admin-v3.js','contact-config.js'])
+    assert.equal(normalizeAssetBuildKeys(read(file)),normalizeAssetBuildKeys(file==='contact-config.js'?applyCmsMemoryKey(execFileSync('git',['show',`e45a1b2:${file}`],{cwd:root,encoding:'utf8'})):execFileSync('git',['show',`e45a1b2:${file}`],{cwd:root,encoding:'utf8'})));
+  assert.match(read('cms-admin.js'),/publisher\.publish\(d,token\)/);
+  assert.match(read('cms-admin.js'),/new DraftStore/);
+  assert.doesNotMatch(read('cms-admin.js'),/method:'PUT'|method:'PATCH'|localStorage|sessionStorage/);
+  assert.match(read('cms-admin-loader.js'),/FDE_RUNTIME_ENV==='staging'/);
+  assert.match(read('cms-admin-loader.js'),/script.type='module'/);
+  assert.match(read('cms-admin-loader.js'),/paths.every\(\(path,index\)=>path===RUNTIMES\[index\]\)/);
 });
 
 test('asset normalization ignores only dated JS/CSS cache keys, not content, routes or conditions',()=>{

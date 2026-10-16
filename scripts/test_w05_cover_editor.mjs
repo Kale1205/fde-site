@@ -8,9 +8,8 @@ import {withoutW05BookCoverEditor} from './w05_cover_editor_test_helpers.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const before=file=>execFileSync('git',['show',`edcf24191d73c923868bc6714dbd35339b4ff0e1:${file}`],{cwd:root,encoding:'utf8'});
-test('shared image restores pre-existing CMS operations and retains safe previews',()=>{
- for(const file of ['cms-admin.js','cms-admin.html'])assert.equal(normalize(withoutW05BookCoverEditor(file,read(file))),normalize(before(file)));
- for(const file of ['news-translation-hook.js','cms-admin-loader.js','cms-admin-view.js','faq-admin-v3.js','worker/src/index-v14.js','content/site-content.json'])assert.equal(normalize(read(file)),normalize(before(file)));
+test('shared image retains public data, FAQ and backend contracts; News publication uses the new PR suite',()=>{
+ for(const file of ['faq-admin-v3.js','worker/src/index-v14.js'])assert.equal(normalize(read(file)),normalize(before(file)));
 });
 test('one article image controls the card, transition and reader even when old cover data remains',()=>{
  for(const coverImage of ['', 'assets/old-cover.webp','https://evil.example/a.png']){
@@ -26,13 +25,14 @@ test('CMS only offers the original shared article image controls',()=>{
  for(const id of ['createImageFile','editImageFile','editCurrentImage','removeNewsImageBtn'])assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);
  assert.doesNotMatch(html,/CoverFile|CurrentCover|CoverPreview|editCoverReset|saveBookCoverBtn|data-cms-book-cover-editor|本棚の表紙|表紙だけを保存/);
 });
-test('shared image upload, replacement and reset retain authentication and existing save API',()=>{
+test('shared image upload, replacement and reset use local drafts and the protected PR engine',()=>{
  const js=read('cms-admin.js');
  assert.doesNotMatch(js,/coverImage|CoverFile|saveBookCover|populateBookCover|initBookCovers/);
- assert.match(js,/file.size>8\*1024\*1024/);
- assert.match(js,/if\(file\)item.image=await uploadAsset\(file\)/);
- assert.match(js,/item.image='';await saveCms/);
- for(const name of ['createNews','saveEditedNews','removeEditedNewsImage'])assert.match(js,new RegExp(`async function ${name}\\(\\)\\{if\\(!token\\)`));
+ assert.match(read('cms-news-workflow.js'),/blob.size>8\*1024\*1024/);
+ assert.match(js,/inspectImage\(file\)/);
+ assert.match(js,/d.removeImage=true/);
+ assert.match(js,/publisher.publish\(d,token\)/);
+ assert.doesNotMatch(js,/uploadAsset|saveCms|method:'PUT'/);
 });
 test('opening animation is sequenced after layout, pointer taps have no outline and keyboard focus remains visible',()=>{
  const js=read('news-books.js'),css=read('news-books.css');
@@ -94,13 +94,11 @@ test('reader has a definite viewport-bounded size, an accessible inner scroller 
  assert.match(js,/reader\.querySelector\('\.reader-copy'\)\.scrollTop=0/);
  for(const file of ['news.html','ja/news.html','zh/news.html']){const html=read(file);assert.match(html,/class="reader-copy" role="region" aria-labelledby="book-article-title" tabindex="0"/);assert.doesNotMatch(html,/class="reader-body" tabindex/);}
 });
-test('article image preview treats stored CMS values as data, not HTML',()=>{
- const js=read('cms-admin.js'),preview=js.slice(js.indexOf('/* W05_SAFE_ARTICLE_PREVIEW_START */'),js.indexOf('/* W05_SAFE_ARTICLE_PREVIEW_END */'));
- assert.doesNotMatch(preview,/innerHTML|outerHTML|insertAdjacentHTML/);
- assert.match(preview,/replaceChildren\(\)/);assert.match(preview,/document.createElement\('img'\)/);
- assert.match(preview,/map\(encodeURIComponent\)/);assert.match(preview,/Kale1205/);
- assert.match(preview,/保存済みの画像指定は変更していません/);
- const filePreview=js.slice(js.indexOf('/* W05_SAFE_FILE_PREVIEW_START */'),js.indexOf('/* W05_SAFE_FILE_PREVIEW_END */'));
- assert.doesNotMatch(filePreview,/innerHTML|outerHTML|insertAdjacentHTML/);assert.match(filePreview,/textContent=emptyText/);assert.match(filePreview,/revokeObjectURL/);assert.match(filePreview,/document.createElement\('img'\)/);
- assert.match(filePreview,/objectUrl.startsWith\('blob:'\)/);assert.match(filePreview,/image.src=encodeURI\(objectUrl\)/);
+test('article and file previews use safe DOM, local asset allowlist and revocable blob URLs',()=>{
+ const js=read('cms-admin.js');assert.doesNotMatch(js,/innerHTML|outerHTML|insertAdjacentHTML/);
+ assert.match(js,/box.replaceChildren\(\)/);assert.match(js,/make\('img'\)/);
+ assert.match(js,/raw\.githubusercontent/);assert.match(js,/Kale1205/);
+ assert.match(js,/URL.revokeObjectURL/);assert.match(js,/URL.createObjectURL\(blob\)/);
+ assert.match(js,/img.src=encodeURI\(url\)/);assert.match(js,/map\(encodeURIComponent\)/);
+ assert.match(js,/A-Za-z0-9_\//);
 });

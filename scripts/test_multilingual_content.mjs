@@ -1,3 +1,4 @@
+import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
@@ -15,7 +16,7 @@ import {applyW05BookNews,withoutW05CmsBridge} from './w05_book_news_test_helpers
 const root=new URL('../',import.meta.url);
 const baseline='b714f3d7e3cf2444effb6ca6b0d303c3036857f4';
 const read=file=>withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8'));
-const before=file=>{ const old=applyW02PurchaseCta(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'})); return applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
+const before=file=>{ const old=applyW02PurchaseCta(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'})); return file==='contact-config.js'?applyCmsMemoryKey(old):applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const normalized=value=>normalizeAssetBuildKeys(value.trimEnd());
 const prefixes=['','ja/','zh/'];
 const names=['index','license','demo','goals','news','contact','order','customer','quiet-form'];
@@ -119,6 +120,6 @@ test('shared FAQ renderer retains static content on fetch failure/incomplete Chi
 test('visual design except approved W01 CTA, native demo operations, CMS editing/auth, contact submission and commerce boundaries are byte-preserved',()=>{
   for(const file of ['gallery-ui.css','gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','faq-v38.css',
     'gallery-ui.js','demo-v1.js','quiet-form.js','site.js','contact-direct.js','contact-config.js','quiet-customer.js',
-    'cms-admin.html','faq-admin-v3.js','cms-admin-view.js','cms-content.js','cms-content-ja.js','content/site-content.json',
+    'faq-admin-v3.js','cms-content.js','cms-content-ja.js',
     'worker/src/index-v14.js','robots.txt'])assert.equal(normalized(file.startsWith('cms-content')?withoutW05CmsBridge(read(file)):read(file)),normalized(applyW01ProductCta(file,before(file))),file);
 });

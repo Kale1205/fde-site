@@ -1,13 +1,15 @@
 (()=>{
 const LOADER_SRC=document.currentScript?.src||'';
 const BUILD_KEY=(()=>{try{return new URL(LOADER_SRC,location.href).searchParams.get('v')||''}catch{return''}})();
+const RUNTIMES=['cms-admin.js','news-translation-hook.js','faq-admin-v3.js','cms-admin-view.js'];
 const manifest=()=>{
   const el=document.getElementById('cmsRuntimeManifest');
   if(!el)return[];
-  try{return JSON.parse(el.textContent||'[]')}catch{return[]}
+  try{const paths=JSON.parse(el.textContent||'[]');return Array.isArray(paths)&&paths.length===RUNTIMES.length&&paths.every((path,index)=>path===RUNTIMES[index])?RUNTIMES:[]}catch{return[]}
 };
 const loadScript=(path)=>new Promise((resolve,reject)=>{
   const script=document.createElement('script');
+  if(path==='cms-admin.js')script.type='module';
   script.src=BUILD_KEY?`${path}?v=${encodeURIComponent(BUILD_KEY)}`:path;
   script.async=false;
   script.onload=resolve;
