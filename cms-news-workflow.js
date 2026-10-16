@@ -1,10 +1,13 @@
-import {renderNewsPage} from './news-renderer.js?v=20261016-180132';
+import {renderNewsPage} from './news-renderer.js?v=20261016-210412';
 
 export const REPO='Kale1205/fde-site', API=`https://api.github.com/repos/${REPO}`;
 export const LANGS=['ja','en','zh-CN'];
 const CONTENT='content/site-content.json', NEWS=['news.html','ja/news.html','zh/news.html'];
 const json=value=>JSON.stringify(value,null,2)+'\n';
 const copy=value=>structuredClone(value);
+const isSha=value=>/^[a-f0-9]{40}$/.test(value||'');
+const prErrorCode=value=>typeof value==='string'&&(/^(?:AUTH|PERMISSION|NETWORK|RATE_LIMIT|CONFLICT|INVALID|REQUEST_CHANGED)$/.test(value)||/^HTTP_[45]\d{2}$/.test(value));
+const clearPrError=tx=>{for(const key of ['prErrorStage','prErrorCode','prErrorStatus'])delete tx[key];};
 export class CmsError extends Error {
  constructor(code,status=0){super(code);this.name='CmsError';this.code=code;this.status=status;}
 }
@@ -49,6 +52,11 @@ export function persistedDraft(d){
  out.record=Object.fromEntries(['date','category','featured','image','link','id','translationStatus'].filter(k=>k in d.record).map(k=>[k,d.record[k]]));
  for(const field of ['title','body'])out.record[field]=Object.fromEntries(Object.entries(d.record[field]||{}).filter(([key,value])=>/^[a-z]{2}(?:-[A-Z]{2})?$/.test(key)&&typeof value==='string'));
  out.request=d.request?Object.fromEntries(['fingerprint','baseSha','baseContentSha','createdAt','branch','actor','commitSha','branchReady','prNumber','prUrl'].filter(k=>k in d.request).map(k=>[k,d.request[k]])):null;
+ if(out.request){
+  if(['create','lookup','branch'].includes(d.request.prErrorStage))out.request.prErrorStage=d.request.prErrorStage;
+  if(prErrorCode(d.request.prErrorCode))out.request.prErrorCode=d.request.prErrorCode;
+  if(Number.isInteger(d.request.prErrorStatus)&&d.request.prErrorStatus>=400&&d.request.prErrorStatus<=599)out.request.prErrorStatus=d.request.prErrorStatus;
+ }
  return copy(out);
 }
 export class DraftStore {
@@ -77,14 +85,16 @@ export function applyDraft(content,d,imagePath=''){
  const index=result.news.findIndex(x=>x.id===d.sourceId);
  if(d.operation==='delete'){
   if(index<0)throw new CmsError('CONFLICT');if(result.news.length===1)throw new CmsError('LAST_ARTICLE');
-  const featured=result.news[index].featured;result.news.splice(index,1);if(featured&&!result.news.some(x=>x.featured))result.news[0].featured=true;return result;
+  result.news.splice(index,1);return result;
  }
  if(!['create','edit'].includes(d.operation)||d.operation==='edit'&&index<0)throw new CmsError('CONFLICT');
- const old=index>=0?result.news[index]:{},record={...old,...copy(d.record),id:d.operation==='create'?`cms-${d.id}`:d.sourceId,link:'news.html',title:{...old.title,...d.record.title},body:{...old.body,...d.record.body},translationStatus:'ja-en-zh-reviewed'};
+ const old=index>=0?result.news[index]:{},editable=persistedDraft(d).record,record={...old,...editable,id:d.operation==='create'?`cms-${d.id}`:d.sourceId,title:{...old.title,...editable.title},body:{...old.body,...editable.body}};
+ for(const [key,value]of [['link','news.html'],['translationStatus','ja-en-zh-reviewed']]){
+  if(d.operation==='create')record[key]=value;else if(Object.hasOwn(old,key))record[key]=copy(old[key]);else delete record[key];
+ }
  if(!/^\d{4}-\d{2}-\d{2}$/.test(record.date)||Number.isNaN(Date.parse(record.date))||new Date(record.date).toISOString().slice(0,10)!==record.date||!['Product','Development','Social'].includes(record.category))throw new CmsError('INCOMPLETE');
  for(const locale of LANGS)if(!record.title?.[locale]?.trim()||!record.body?.[locale]?.trim()||record.title[locale].length>120||record.body[locale].length>20000)throw new CmsError('INCOMPLETE');
  if(d.image)record.image=imagePath;else if(d.removeImage)record.image='';
- if(record.featured)result.news.forEach(x=>x.featured=false);
  if(d.operation==='create'){if(result.news.some(x=>x.id===record.id))throw new CmsError('CONFLICT');result.news.push(record);}else result.news[index]=record;
  return result;
 }
@@ -116,6 +126,7 @@ export class NewsPublisher {
  async save(d){const saved=await this.persist(d);d.revision=saved.revision;}
  publish(d,token){if(this.pending.has(d.id))return this.pending.get(d.id);const run=this.perform(d,token).finally(()=>this.pending.delete(d.id));this.pending.set(d.id,run);return run;}
  async verifyBranch(tx,head,token){
+  if(!isSha(tx.commitSha)||!isSha(head))throw new CmsError('CONFLICT');
   if(head===tx.commitSha)return;
   const comparison=await this.api(`/compare/${tx.commitSha}...${head}`,token);
   if(comparison.status!=='ahead'||comparison.files?.length>40||!Array.isArray(comparison.files))throw new CmsError('CONFLICT');
@@ -126,21 +137,64 @@ export class NewsPublisher {
    else if(normalizeCache(a.text)!==normalizeCache(b.text))throw new CmsError('CONFLICT');
   }
  }
+ async notePrError(d,stage,error){
+  const tx=d.request;if(!tx?.commitSha)return;clearPrError(tx);tx.prErrorStage=stage;
+  if(prErrorCode(error?.code))tx.prErrorCode=error.code;
+  if(Number.isInteger(error?.status)&&error.status>=400&&error.status<=599)tx.prErrorStatus=error.status;
+  await this.save(d);
+ }
+ async post(d,token,path,body){
+  const tx=d.request,digest=await fingerprint(d);
+  if(d.request!==tx||d.reviewedFingerprint!==digest||tx?.fingerprint!==digest){const error=new CmsError('REQUEST_CHANGED');await this.notePrError(d,'branch',error);throw error;}
+  return this.api(path,token,{method:'POST',body:JSON.stringify(body)});
+ }
+ async acceptPR(d,token,pr){
+  const tx=d.request;
+  try{
+   if(!isSha(tx.commitSha)||pr.head?.ref!==tx.branch||pr.head?.repo?.full_name!==REPO||pr.base?.ref!=='main'||!Number.isSafeInteger(pr.number)||pr.number<1)throw new CmsError('CONFLICT');
+   await this.verifyBranch(tx,pr.head.sha,token);
+  }catch(error){await this.notePrError(d,'branch',error);throw error;}
+  tx.prNumber=pr.number;tx.prUrl=`https://github.com/${REPO}/pull/${pr.number}`;clearPrError(tx);await this.save(d);return {pr,branch:tx.branch};
+ }
+ async existingPR(d,token){
+  const tx=d.request;let pr;
+  try{pr=tx.prNumber?await this.api(`/pulls/${tx.prNumber}`,token):await this.findPR(tx.branch,token);}
+  catch(error){await this.notePrError(d,'lookup',error);throw error;}
+  if(!pr){if(tx.prNumber)throw new CmsError('CONFLICT');return null;}
+  return this.acceptPR(d,token,pr);
+ }
+ async requestPR(d,token){
+  let existing=await this.existingPR(d,token);if(existing)return existing;const tx=d.request;let pr;
+  try{const operation={create:'新規',edit:'編集',delete:'削除',media:'共通画像'}[d.operation];pr=await this.post(d,token,'/pulls',{head:tx.branch,base:'main',title:`News［${operation}］: ${d.record.title?.ja||'画像の変更'}`.slice(0,180),body:`CMS公開依頼 ${d.id}\n操作：${operation}\n\n日英中の確認済み原稿・画像・静的HTML・sitemapを一括変更します。\nmain保護を維持し、検査通過と本人承認後にのみマージしてください。\nCMSはマージ・自動承認を行いません。`,draft:false});}
+  catch(error){
+   if(['REQUEST_CHANGED','STORAGE','LOCAL_CONFLICT'].includes(error.code))throw error;
+   existing=await this.existingPR(d,token);if(existing)return existing;
+   await this.notePrError(d,'create',error);
+   if(error.code==='PERMISSION')return {branch:tx.branch,manual:true,compareUrl:`https://github.com/${REPO}/compare/main...${encodeURIComponent(tx.branch)}?expand=1`};
+   throw error;
+  }
+  return this.acceptPR(d,token,pr);
+ }
  async perform(d,token){
   if(!token)throw new CmsError('AUTH');
   if(!/^[a-f0-9-]{36}$/.test(d.id||'')||!Number.isInteger(d.revision)||d.revision<0)throw new CmsError('INVALID');
   const digest=await fingerprint(d);
   if(d.reviewedFingerprint!==digest)throw new CmsError('REVIEW');
-  if(d.request&&d.request.fingerprint!==digest)throw new CmsError('REQUEST_CHANGED');
+  if(d.request&&d.request.fingerprint!==digest){const error=new CmsError('REQUEST_CHANGED');await this.notePrError(d,'branch',error);throw error;}
   // Identity is read using this token, never inferred from the CLI's credentials.
   const user=await this.api('/user',token).catch(async e=>{if(e.status!==404)throw e;throw new CmsError('AUTH');});
   if(!/^[\w-]+$/.test(user.login||'')||!Number.isSafeInteger(user.id))throw new CmsError('AUTH');
   let tx=d.request,existing;
   if(tx){
-   if(tx.actor!==user.login)throw new CmsError('AUTH');
-   if(tx.branch!==`cms/news-${d.id}-${tx.fingerprint.slice(0,12)}`||!/^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/.test(tx.createdAt)||!/^\w{40}$/.test(tx.baseSha))throw new CmsError('INVALID');
-   existing=await this.findPR(tx.branch,token);
-   if(existing){if(!tx.commitSha)throw new CmsError('CONFLICT');await this.verifyBranch(tx,existing.head.sha,token);tx.prNumber=existing.number;tx.prUrl=existing.html_url;await this.save(d);return {pr:existing,branch:tx.branch};}
+   if(tx.actor!==user.login){const error=new CmsError('AUTH');await this.notePrError(d,'branch',error);throw error;}
+   if(!/^[a-f0-9]{64}$/.test(tx.fingerprint||'')||tx.branch!==`cms/news-${d.id}-${tx.fingerprint.slice(0,12)}`||!/^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/.test(tx.createdAt)||!isSha(tx.baseSha)||!isSha(tx.baseContentSha)||tx.baseContentSha!==d.baseContentSha||tx.commitSha&&!isSha(tx.commitSha)||tx.prNumber!==undefined&&(!Number.isSafeInteger(tx.prNumber)||tx.prNumber<1)){const error=new CmsError('INVALID');await this.notePrError(d,'branch',error);throw error;}
+   existing=await this.existingPR(d,token);if(existing)return existing;
+   if(tx.commitSha||tx.branchReady){
+    let ref;
+    try{ref=await this.api(`/git/ref/heads/${tx.branch}`,token);await this.verifyBranch(tx,ref.object?.sha,token);}
+    catch(error){if(error.status!==404||tx.branchReady){if(error.status===404)error=new CmsError('CONFLICT',404);await this.notePrError(d,'branch',error);throw error;}}
+    if(ref){tx.branchReady=true;await this.save(d);return this.requestPR(d,token);}
+   }
   }
   const snapshot=await this.snapshot(token);
   if(d.baseContentSha&&d.baseContentSha!==snapshot.contentSha)throw new CmsError('CONFLICT');
@@ -149,8 +203,7 @@ export class NewsPublisher {
   if(!tx){tx=d.request={fingerprint:fingerprintValue,baseSha:snapshot.sha,baseContentSha:snapshot.contentSha,createdAt:this.now(),branch:`cms/news-${d.id}-${fingerprintValue.slice(0,12)}`,actor:user.login};await this.save(d);}
   if(tx.actor!==user.login)throw new CmsError('AUTH');
   // A known PR is never recreated, including after a timeout or after closure.
-  existing=await this.findPR(tx.branch,token);
-  if(existing){if(!tx.commitSha)throw new CmsError('CONFLICT');await this.verifyBranch(tx,existing.head.sha,token);tx.prNumber=existing.number;tx.prUrl=existing.html_url;await this.save(d);return {pr:existing,branch:tx.branch};}
+  existing=await this.existingPR(d,token);if(existing)return existing;
   const original=await this.file(CONTENT,tx.baseSha,token);
   if(original.sha!==tx.baseContentSha)throw new CmsError('CONFLICT');
   const image=d.image?await inspectImage(d.image):null;
@@ -165,22 +218,16 @@ export class NewsPublisher {
   // referenced by a branch. The single ref creation publishes the whole tree.
   await this.save(d);
   const tree=[];
-  for(const [path,file] of Object.entries(files)){const blob=await this.api('/git/blobs',token,{method:'POST',body:JSON.stringify(file.bytes?{content:base64(file.bytes),encoding:'base64'}:{content:file.text,encoding:'utf-8'})});if(!/^[a-f0-9]{40}$/.test(blob.sha||''))throw new CmsError('INVALID');tree.push({path,mode:'100644',type:'blob',sha:blob.sha});}
+  for(const [path,file] of Object.entries(files)){const blob=await this.post(d,token,'/git/blobs',file.bytes?{content:base64(file.bytes),encoding:'base64'}:{content:file.text,encoding:'utf-8'});if(!isSha(blob.sha))throw new CmsError('INVALID');tree.push({path,mode:'100644',type:'blob',sha:blob.sha});}
   const parent=await this.api(`/git/commits/${tx.baseSha}`,token);
-  const built=await this.api('/git/trees',token,{method:'POST',body:JSON.stringify({base_tree:parent.tree.sha,tree})});
+  const built=await this.post(d,token,'/git/trees',{base_tree:parent.tree.sha,tree});
   const identity={name:user.login,email:`${user.id}+${user.login}@users.noreply.github.com`,date:tx.createdAt};
-  const commit=await this.api('/git/commits',token,{method:'POST',body:JSON.stringify({message:`CMS News ${d.id} ${tx.fingerprint}`,tree:built.sha,parents:[tx.baseSha],author:identity,committer:identity})});
-  if(!/^[a-f0-9]{40}$/.test(commit.sha||''))throw new CmsError('INVALID');tx.commitSha=commit.sha;await this.save(d);
-  try{await this.api('/git/refs',token,{method:'POST',body:JSON.stringify({ref:`refs/heads/${tx.branch}`,sha:tx.commitSha})});}
-  catch(e){const current=await this.api(`/git/ref/heads/${tx.branch}`,token).catch(()=>{throw e;});await this.verifyBranch(tx,current.object.sha,token);}
+  const commit=await this.post(d,token,'/git/commits',{message:`CMS News ${d.id} ${tx.fingerprint}`,tree:built.sha,parents:[tx.baseSha],author:identity,committer:identity});
+  if(!isSha(commit.sha))throw new CmsError('INVALID');if(tx.commitSha&&tx.commitSha!==commit.sha)throw new CmsError('CONFLICT');tx.commitSha=commit.sha;await this.save(d);
+  try{await this.post(d,token,'/git/refs',{ref:`refs/heads/${tx.branch}`,sha:tx.commitSha});}
+  catch(e){if(['REQUEST_CHANGED','STORAGE','LOCAL_CONFLICT'].includes(e.code))throw e;const current=await this.api(`/git/ref/heads/${tx.branch}`,token).catch(()=>{throw e;});await this.verifyBranch(tx,current.object.sha,token);}
   tx.branchReady=true;await this.save(d);
-  existing=await this.findPR(tx.branch,token);
-  if(!existing){
-   try{const operation={create:'新規',edit:'編集',delete:'削除',media:'共通画像'}[d.operation];existing=await this.api('/pulls',token,{method:'POST',body:JSON.stringify({head:tx.branch,base:'main',title:`News［${operation}］: ${d.record.title?.ja||'画像の変更'}`.slice(0,180),body:`CMS公開依頼 ${d.id}\n操作：${operation}\n\n日英中の確認済み原稿・画像・静的HTML・sitemapを一括変更します。\nmain保護を維持し、検査通過と本人承認後にのみマージしてください。\nCMSはマージ・自動承認を行いません。`,draft:false})});}
-   catch(e){existing=await this.findPR(tx.branch,token).catch(()=>null);if(!existing){if(e.code==='PERMISSION')return {branch:tx.branch,manual:true,compareUrl:`https://github.com/${REPO}/compare/main...${encodeURIComponent(tx.branch)}?expand=1`};throw e;}}
-  }
-  if(existing.head?.ref!==tx.branch||existing.base?.ref!=='main')throw new CmsError('INVALID');
-  tx.prNumber=existing.number;tx.prUrl=existing.html_url;await this.save(d);return {pr:existing,branch:tx.branch};
+  return this.requestPR(d,token);
  }
  async status(number){
   if(!Number.isInteger(number)||number<1)throw new CmsError('INVALID');
