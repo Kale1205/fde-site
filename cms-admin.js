@@ -1,4 +1,4 @@
-import {DraftStore,NewsPublisher,CmsError,errorText,newDraft,persistedDraft,fingerprint,inspectImage,base64,LANGS} from './cms-news-workflow.js?v=20261016-082819';
+import {DraftStore,NewsPublisher,CmsError,errorText,newDraft,persistedDraft,fingerprint,inspectImage,base64,LANGS} from './cms-news-workflow.js?v=20261016-092023';
 
 // News drafts never leave this browser until an explicit publication request.
 const $=id=>document.getElementById(id),make=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=text;node.className=className;return node;};
