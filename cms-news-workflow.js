@@ -100,7 +100,7 @@ export function updateSitemap(xml,manifest,changed,date){
 }
 const normalizeCache=text=>text.replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
 export class NewsPublisher {
- constructor({fetch=globalThis.fetch,persist=async d=>d,now=()=>new Date().toISOString()}={}){this.fetch=fetch;this.persist=persist;this.now=now;this.pending=new Map();}
+ constructor({fetch=globalThis.fetch.bind(globalThis),persist=async d=>d,now=()=>new Date().toISOString()}={}){this.fetch=fetch;this.persist=persist;this.now=now;this.pending=new Map();}
  async api(path,token,options={}){
   if(!path.startsWith('/')||path.startsWith('//')||options.method&& !['POST','GET'].includes(options.method))throw new CmsError('INVALID');
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),60000);

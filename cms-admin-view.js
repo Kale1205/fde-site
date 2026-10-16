@@ -32,8 +32,8 @@
  function syncTabs(){tabs.querySelectorAll('button').forEach(tab=>tab.setAttribute('aria-pressed',String(tab.classList.contains('active'))))}
  new MutationObserver(syncTabs).observe(tabs,{attributes:true,subtree:true,attributeFilter:['class']});
  let connected=false;
- function syncConnection(){const next=!tabs.classList.contains('hidden');locked.hidden=next;if(next&&!connected)connection.open=false;connected=next;syncTabs()}
- new MutationObserver(syncConnection).observe(tabs,{attributes:true,attributeFilter:['class']});syncConnection();
+ function syncConnection(){const next=tabs.dataset.connectionState==='connected';locked.hidden=next;if(next&&!connected)connection.open=false;else if(!next)connection.open=true;connected=next;syncTabs()}
+ new MutationObserver(syncConnection).observe(tabs,{attributes:true,attributeFilter:['data-connection-state']});syncConnection();
  const panel=document.getElementById('newsPanel');
  const workspace=make('div','admin-news-workspace');
  const listing=make('section','admin-article-list');listing.setAttribute('aria-labelledby','adminArticleHeading');
@@ -50,18 +50,22 @@
  function showEditor(mode,focus=false){createCard.hidden=mode!=='create';editCard.hidden=mode!=='edit';if(focus){const target=mode==='create'?document.getElementById('createTitleJa'):document.getElementById('editTitleJa');target.focus();if(media.matches)target.scrollIntoView({block:'center',behavior:'instant'})}}
  function renderList(){
   rows.replaceChildren();
-  if(!select.options.length){rows.append(make('p','admin-list-empty','記事はありません。新規作成から投稿できます。'));showEditor('create');return}
+  const state=select.dataset.newsState||'idle',ready=state==='loaded';listing.setAttribute('aria-busy',String(state==='loading'));
+  const message=state==='loading'?'記事一覧を取得しています…':state==='error'?'記事一覧を取得できませんでした。接続設定から再接続してください。':ready?`記事一覧を取得しました（${select.options.length}件）。`:'記事一覧は未取得です。接続設定からGitHubへ接続してください。';
+  if(ready&&!select.options.length){rows.append(make('p','admin-list-empty','記事はありません。新規作成から投稿できます。'));return}
+  rows.append(make('p','admin-list-state',message));
+  if(!ready&&select.options.length)rows.append(make('p','admin-list-state','以下は前回取得した一覧です。再接続が成功するまで選択できません。'));
   for(const option of select.options){
-   const row=button('admin-article-row','');row.dataset.articleId=option.value;row.setAttribute('aria-pressed',String(option.value===select.value));
+   const row=button('admin-article-row','');row.dataset.articleId=option.value;row.disabled=!ready;row.setAttribute('aria-pressed',String(option.value===select.value));
    const parts=option.textContent.split(' — ');const date=make('time','',parts.shift()||'');if(/^\d{4}-\d{2}-\d{2}$/.test(date.textContent))date.dateTime=date.textContent;
-   row.append(date,make('span','',parts.join(' — ')||option.textContent));row.addEventListener('click',()=>{select.value=option.value;select.dispatchEvent(new Event('change',{bubbles:true}));showEditor('edit',true);syncSelection()});rows.append(row);
+   row.append(date,make('span','',parts.join(' — ')||option.textContent));row.addEventListener('click',()=>{if(select.dataset.newsState!=='loaded'||select.disabled)return;select.value=option.value;select.dispatchEvent(new Event('change',{bubbles:true}));syncSelection()});rows.append(row);
   }
   syncSelection();
  }
  function syncSelection(){rows.querySelectorAll('button').forEach(row=>row.setAttribute('aria-pressed',String(row.dataset.articleId===select.value)))}
- new MutationObserver(()=>{renderList();if(select.options.length)showEditor('edit')}).observe(select,{childList:true});
- select.addEventListener('change',()=>{syncSelection();showEditor('edit')});
+ new MutationObserver(renderList).observe(select,{childList:true,attributes:true,attributeFilter:['data-news-state']});
+ select.addEventListener('change',syncSelection);
  create.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('fde:cms-new-draft')));
  document.addEventListener('fde:cms-show-editor',event=>{if(['create','edit'].includes(event.detail))showEditor(event.detail,true)});
- renderList();if(select.options.length)showEditor('edit');
+ renderList();showEditor(panel.dataset.editorMode||'create');
 })();

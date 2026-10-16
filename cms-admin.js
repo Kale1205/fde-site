@@ -3,7 +3,7 @@ import {DraftStore,NewsPublisher,CmsError,errorText,newDraft,persistedDraft,fing
 // News drafts never leave this browser until an explicit publication request.
 const $=id=>document.getElementById(id),make=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=text;node.className=className;return node;};
 const store=new DraftStore(),drafts={create:newDraft(),edit:null,media:null};
-let token='',snapshot=null,busy=false,mode='create',saveQueue=Promise.resolve(),timer,unsaved=false;
+let token='',snapshot=null,busy=false,mode='create',saveQueue=Promise.resolve(),timer,unsaved=false,connectionState='idle';
 const previewed=new Map();
 const publisher=new NewsPublisher({persist:async d=>{await saveQueue;return store.put(d);}});
 const status=(text,type='')=>{const el=$('adminStatus');el.dataset.cmsPersistent='true';el.textContent=text;el.className=`status ${type}`;el.hidden=false;};
@@ -11,7 +11,17 @@ const safe=fn=>async(...args)=>{try{await fn(...args);}catch(e){status(errorText
 const suffixes={ja:'Ja',en:'En','zh-CN':'Zh'};
 function button(id,text,action,parent,secondary=true){const b=make('button',text,`admin-button${secondary?' secondary':''}`);b.id=id;b.type='button';b.addEventListener('click',safe(action));parent.append(b);return b;}
 function showPanel(name){document.querySelectorAll('[data-admin-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.adminPanel!==name));document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===name));}
-function showEditor(next){mode=next;document.dispatchEvent(new CustomEvent('fde:cms-show-editor',{detail:next}));}
+function showEditor(next){mode=next;$('newsPanel').dataset.editorMode=next;document.dispatchEvent(new CustomEvent('fde:cms-show-editor',{detail:next}));}
+function setConnectionState(state){
+ connectionState=state;const ready=state==='connected',select=$('editNewsTarget');
+ $('adminTabs').dataset.connectionState=state;select.dataset.newsState=ready?'loaded':state;select.disabled=!ready;
+ document.querySelector('[data-admin-tab="faq"]').disabled=!ready;
+ for(const id of ['createRequest','editRequest','mediaRequest'])if($(id))$(id).disabled=!ready;
+}
+function connectionErrorText(error){
+ const messages={AUTH:'GitHubへ接続できません。トークンを確認して再接続してください。',PERMISSION:'現在の権限ではGitHubへ接続・記事一覧を取得できません。権限は変更せず、管理者へ確認してください。',RATE_LIMIT:'GitHubの利用制限中です。時間を置いて再接続してください。',NETWORK:'GitHubへ接続・記事一覧を取得できませんでした。通信環境を確認して再接続してください。',INVALID:'記事一覧の取得データを確認できませんでした。時間を置いて再接続してください。'};
+ return (error?.status?`HTTP ${error.status}：`:'')+(messages[error?.code]||'GitHub接続と記事一覧の取得を完了できませんでした。時間を置いて再接続してください。')+'編集中の内容は画面に保持しています。公開依頼は開始していません。';
+}
 function capture(which){
  const d=drafts[which];if(!d||which==='media')return d;
  for(const locale of LANGS){d.record.title[locale]=$(which+'Title'+suffixes[locale]).value;d.record.body[locale]=$(which+'Body'+suffixes[locale]).value;}
@@ -42,13 +52,19 @@ function fill(which,d){
  showEditor(which);showResult(d);
 }
 async function connect(){
- if(busy)return;const value=$('token').value.trim();if(!value)throw new CmsError('AUTH');$('connectBtn').disabled=true;
- try{const user=await publisher.api('/user',value),next=await publisher.snapshot(value);token=value;snapshot=next;const sel=$('editNewsTarget');sel.replaceChildren();
- for(const item of [...next.content.news].sort((a,b)=>b.date.localeCompare(a.date)))sel.add(new Option(`${item.date} — ${item.title.ja}${item.featured?' [TOP]':''}`,item.id));
- document.querySelector('[data-admin-tab="faq"]').disabled=false;
- if(next.content.news.length&&!drafts.edit)fill('edit',newDraft(next.content.news.find(n=>n.id===sel.value),next.contentSha));
+ if(busy||connectionState==='loading')return;
+ const value=$('token').value.trim(),sel=$('editNewsTarget'),selectedId=drafts.edit?.sourceId||sel.value;
+ capture(mode);if(drafts.edit)sel.value=selectedId;token='';setConnectionState('loading');$('connectBtn').disabled=true;status('GitHubへ接続し、記事一覧を取得しています…');
+ try{
+ if(!value)throw new CmsError('AUTH');
+ const user=await publisher.api('/user',value),next=await publisher.snapshot(value);
+ const news=next.content?.news;
+ if(!Array.isArray(news)||news.some(item=>!item||typeof item.id!=='string'||!item.id.trim()||typeof item.date!=='string'||typeof item.title?.ja!=='string')||new Set(news.map(item=>item.id)).size!==news.length)throw new CmsError('INVALID');
+ const options=[...news].sort((a,b)=>b.date.localeCompare(a.date)).map(item=>new Option(`${item.date} — ${item.title.ja}${item.featured?' [TOP]':''}`,item.id));
+ sel.replaceChildren(...options);sel.value=news.some(item=>item.id===selectedId)?selectedId:'';
+ token=value;snapshot=next;setConnectionState('connected');
  status(`${user.login} として接続しました。公開依頼は別操作です。mainへ直接保存しません。`,'success');
- }catch(e){token='';throw e;}finally{$('connectBtn').disabled=false;}
+ }catch(e){token='';setConnectionState('error');status(connectionErrorText(e),'error');}finally{$('connectBtn').disabled=false;}
 }
 async function renderPreview(which){
  const d=capture(which);if(!d)throw new CmsError('INCOMPLETE');const content=$('newsPreviewContent');content.replaceChildren();
@@ -66,7 +82,10 @@ function showResult(d){
 }
 async function request(which){
  if(busy)return;const d=capture(which);if(!d)throw new CmsError('INCOMPLETE');
- if(!token)throw new CmsError('AUTH');if(!d.reviewedFingerprint||d.reviewedFingerprint!==await fingerprint(d))throw new CmsError('REVIEW');
+ if(connectionState!=='connected'||!token)throw new CmsError('AUTH');const currentSnapshot=snapshot;
+ if(['edit','delete'].includes(d.operation)&&!snapshot.content.news.some(item=>item.id===d.sourceId))throw new CmsError('CONFLICT');
+ const digest=await fingerprint(d);if(connectionState!=='connected'||!token||snapshot!==currentSnapshot)throw new CmsError('AUTH');
+ if(!d.reviewedFingerprint||d.reviewedFingerprint!==digest)throw new CmsError('REVIEW');
  if(busy)return;
  if(!confirm('公開依頼を作成します。原稿と画像は公開GitHubブランチ・PRへ送信され、誰でも閲覧可能になります。サイトへの反映は検査通過・承認・マージ後です。続けますか？'))return;
  busy=true;const controls=[...document.querySelectorAll('input,textarea,select,button')].filter(x=>!x.disabled);controls.forEach(x=>x.disabled=true);clearTimeout(timer);timer=null;
@@ -116,7 +135,12 @@ async function init(){
  $('createNewsBtn').addEventListener('click',safe(async()=>{await save('create');status('下書きを端末内に保存しました。公開依頼は作成していません。','success');}));
  $('saveNewsBtn').addEventListener('click',safe(async()=>{await save('edit');status('下書きを端末内に保存しました。公開依頼は作成していません。','success');}));
  sel.addEventListener('change',safe(async()=>{const id=sel.value;if(!id)return;await save(mode);const item=(await store.list()).find(d=>d.id===id);if(!item)return;const which=item.operation==='media'?'media':item.operation==='create'?'create':'edit';fill(which,item);if(which==='media'){$('uploaderCard').closest('details').open=true;mode='media';}status('端末内の下書きを復元しました。GitHubへは送信していません。');}));
- $('editNewsTarget').addEventListener('change',safe(async()=>{await save('edit');const record=snapshot?.content.news.find(n=>n.id===$('editNewsTarget').value);if(record)fill('edit',newDraft(record,snapshot.contentSha));}));
+ $('editNewsTarget').addEventListener('change',safe(async()=>{
+  if(connectionState!=='connected')return;const currentSnapshot=snapshot,id=$('editNewsTarget').value;
+  if(id===drafts.edit?.sourceId){showEditor('edit');return;}
+  await save('edit');if(connectionState!=='connected'||snapshot!==currentSnapshot||$('editNewsTarget').value!==id)return;
+  const record=currentSnapshot.content.news.find(n=>n.id===id);if(record)fill('edit',newDraft(record,currentSnapshot.contentSha));
+ }));
  document.addEventListener('fde:cms-new-draft',safe(async()=>{await save(mode);fill('create',newDraft(null,snapshot?.contentSha||''));}));
  $('removeNewsImageBtn').addEventListener('click',safe(async()=>{const d=capture('edit');if(!d)return;d.image=null;d.removeImage=true;drawImage($('editPreview'));drawImage($('editCurrentImage'));dirty('edit');await save('edit');status('画像指定の解除を下書きに保存しました。公開データは未変更です。');}));
  $('deleteNewsBtn').textContent='削除を下書きに設定';$('deleteNewsBtn').addEventListener('click',safe(async()=>{const d=capture('edit');if(!d)return;if(!confirm('削除依頼用の下書きに変更しますか？ 公開依頼までは送信しません。'))return;d.operation='delete';dirty('edit');await save('edit');$('draftOperation').textContent='削除依頼の下書きです。プレビュー・確認後に公開依頼してください。';}));
@@ -124,7 +148,7 @@ async function init(){
  async function mediaDraft(remove=false){const target=document.querySelector('input[name=target]:checked').value,file=$('imageFile').files[0];if(!remove&&!file)throw new CmsError('IMAGE');if(file)await inspectImage(file);if(!snapshot)throw new CmsError('AUTH');let d=drafts.media;if(!d||d.mediaTarget!==target){d=newDraft(null,snapshot.contentSha);d.operation='media';d.mediaTarget=target;}d.image=remove?null:file;d.removeImage=remove;d.reviewedFingerprint='';drafts.media=d;mode='media';$('mediaReviewed').checked=false;await save('media');drawImage($('preview'),d.image);status('共通画像の変更を下書き保存しました。公開依頼は別操作です。');}
  $('uploadBtn').addEventListener('click',safe(()=>mediaDraft()));$('removeBtn').addEventListener('click',safe(()=>mediaDraft(true)));
  const mediaActions=$('uploadBtn').parentElement;button('mediaPreviewBtn','共通画像をプレビュー',()=>renderPreview('media'),mediaActions);const mediaLabel=make('label','','check-row'),mediaCheck=make('input');mediaCheck.type='checkbox';mediaCheck.id='mediaReviewed';mediaCheck.addEventListener('change',safe(()=>review('media')));mediaLabel.append(mediaCheck,document.createTextNode('変更画像・対象を確認しました'));mediaActions.after(mediaLabel);button('mediaRequest','共通画像の公開依頼（PR）',()=>request('media'),mediaActions);
- fill('create',drafts.create);await refreshDraftList();status('下書きはGitHubへ接続せずに作成できます。保存済み原稿は上の一覧から復元できます。');
+ setConnectionState('idle');fill('create',drafts.create);await refreshDraftList();status('下書きはGitHubへ接続せずに作成できます。保存済み原稿は上の一覧から復元できます。');
  window.addEventListener('beforeunload',e=>{if(busy||timer||unsaved){e.preventDefault();e.returnValue='';}});
 }
 safe(init)();
