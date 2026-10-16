@@ -1,9 +1,9 @@
 import {newsImagePath,partitionNews} from './news-books.js?v=20261016-202513';
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const NEWS_UI={
- en:{updates:'Updates',previous:'Previous story',next:'Next story',read:'Read story',close:'Close story',social:'Social',intro:'Want to know more? Explore our official and personal accounts.',instagram:'Open Instagram (external site)',linkedin:'Open LinkedIn (external site)',loading:'Loading posts…',pause:'Pause posts',resume:'Resume posts',stories:'News stories',all:'Stories',emptyTop:'No Top News selected yet.',emptyArchive:'No other stories yet.',category:{Product:'Product',Development:'Development',Social:'Social'}},
- ja:{updates:'アップデート情報',previous:'前の記事',next:'次の記事',read:'記事を読む',close:'記事を閉じる',social:'SNS',intro:'もう少し詳しく知りたい方へ。公式・個人アカウントはこちら。',instagram:'Instagramを開く（外部サイト）',linkedin:'LinkedInを開く（外部サイト）',loading:'投稿を読み込んでいます。',pause:'投稿の動きを止める',resume:'投稿の動きを再開する',stories:'お知らせ記事',all:'記事一覧',emptyTop:'Top Newsはまだありません。',emptyArchive:'ほかのお知らせはまだありません。',category:{Product:'Product',Development:'Development',Social:'Social'}},
- zh:{updates:'更新信息',previous:'上一篇',next:'下一篇',read:'阅读消息',close:'关闭消息',social:'社交媒体',intro:'想了解更多？欢迎访问官方及个人账号。',instagram:'打开 Instagram（外部网站）',linkedin:'打开 LinkedIn（外部网站）',loading:'正在加载动态。',pause:'暂停动态滚动',resume:'继续动态滚动',stories:'消息',all:'消息列表',emptyTop:'暂无 Top News。',emptyArchive:'暂无其他消息。',category:{Product:'Product',Development:'Development',Social:'Social'}}
+ en:{updates:'Updates',previous:'Previous story',next:'Next story',read:'Read story',close:'Close story',social:'Social',intro:'Want to know more? Explore our official and personal accounts.',instagram:'Open Instagram (external site)',linkedin:'Open LinkedIn (external site)',loading:'Loading posts…',pause:'Pause posts',resume:'Resume posts',stories:'News stories',all:'Stories',viewAll:'View all stories',backToTop:'Back to Top News',emptyTop:'No Top News selected yet.',emptyArchive:'No stories yet.',category:{Product:'Product',Development:'Development',Social:'Social'}},
+ ja:{updates:'アップデート情報',previous:'前の記事',next:'次の記事',read:'記事を読む',close:'記事を閉じる',social:'SNS',intro:'もう少し詳しく知りたい方へ。公式・個人アカウントはこちら。',instagram:'Instagramを開く（外部サイト）',linkedin:'LinkedInを開く（外部サイト）',loading:'投稿を読み込んでいます。',pause:'投稿の動きを止める',resume:'投稿の動きを再開する',stories:'お知らせ記事',all:'記事一覧',viewAll:'記事一覧を見る',backToTop:'Top Newsに戻る',emptyTop:'Top Newsはまだありません。',emptyArchive:'お知らせはまだありません。',category:{Product:'Product',Development:'Development',Social:'Social'}},
+ zh:{updates:'更新信息',previous:'上一篇',next:'下一篇',read:'阅读消息',close:'关闭消息',social:'社交媒体',intro:'想了解更多？欢迎访问官方及个人账号。',instagram:'打开 Instagram（外部网站）',linkedin:'打开 LinkedIn（外部网站）',loading:'正在加载动态。',pause:'暂停动态滚动',resume:'继续动态滚动',stories:'消息',all:'消息列表',viewAll:'查看所有消息',backToTop:'返回 Top News',emptyTop:'暂无 Top News。',emptyArchive:'暂无消息。',category:{Product:'Product',Development:'Development',Social:'Social'}}
 };
 export function localNews(content,locale){const key=locale==='zh'?'zh-CN':locale;return [...content.news].sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(a.id).localeCompare(String(b.id))).map(x=>({...x,title:typeof x.title==='string'?x.title:x.title[key]||x.title.en,body:typeof x.body==='string'?x.body:x.body[key]||x.body.en}));}
 export function storyImage(content,item,prefix=''){
@@ -11,12 +11,12 @@ export function storyImage(content,item,prefix=''){
 }
 export function renderNewsPage(source,content,build){
  const locale=source.includes('<html lang="ja"')?'ja':source.includes('<html lang="zh-CN"')?'zh':'en';
- const prefix=locale==='en'?'':'../',ui=NEWS_UI[locale],allItems=localNews(content,locale),{top:items,archive}=partitionNews(allItems);
+ const prefix=locale==='en'?'':'../',ui=NEWS_UI[locale],allItems=localNews(content,locale),{top:items}=partitionNews(allItems);
  const active=0,dateStart=0,empty={id:'',title:'',date:'',category:''};
  const book=(item,offset)=>`<button type="button" class="news-book" data-offset="${offset}" data-book-id="${escape(item.id)}" data-panel-tone="${item.category==='Product'?'forest':'ivory'}" aria-hidden="${offset>=items.length}"${offset===0?' aria-haspopup="dialog"':''} tabindex="${offset===0?0:-1}"><span class="book-accessible sr-only">${escape((offset===0?ui.read:ui.next)+': '+item.title+' — '+item.date)}</span><span class="book-face" aria-hidden="true"><img class="book-art"${storyImage(content,item,prefix)?` src="${escape(storyImage(content,item,prefix))}"`:' hidden'} width="320" height="320" alt="" decoding="async"><span class="book-cover-title"${storyImage(content,item,prefix)?' hidden':''}>${escape(item.title)}</span></span></button>`;
  const selected=items[active]||empty;
  const fallback=allItems.map(item=>`<article data-static-news-id="${escape(item.id)}"><h2>${escape(item.title)}</h2><time datetime="${escape(item.date)}">${escape(item.date.replaceAll('-','.'))}</time>${item.body.split(/\n\n+/).map(p=>`<p>${escape(p).replaceAll('\n','<br>')}</p>`).join('')}</article>`).join('\n');
- const section=`      <section class="news-library section-frame" aria-labelledby="news-updates-title">
+ const section=`      <section class="news-library section-frame" data-news-overview aria-labelledby="news-updates-title">
         <div class="news-library-heading"><h2 id="news-updates-title">${ui.updates}</h2><div class="book-controls" hidden><button type="button" data-book-step="-1" aria-label="${ui.previous}"><img class="arrow-previous" src="${prefix}assets/phosphor-arrow-right.svg" width="22" height="22" alt=""></button><button type="button" data-book-step="1" aria-label="${ui.next}"><img src="${prefix}assets/phosphor-arrow-right.svg" width="22" height="22" alt=""></button></div></div>
         <p class="news-empty" data-top-news-empty${items.length?' hidden':''}>${ui.emptyTop}</p>
         <div class="book-stage"${items.length?'':' hidden'} role="region" aria-roledescription="carousel" aria-label="${ui.stories}">
@@ -26,12 +26,14 @@ export function renderNewsPage(source,content,build){
         </div>
         <div class="book-selection"${items.length?'':' hidden'}><h3 id="selected-story-title">${escape(selected.title)}</h3><time class="chronicle-selected-date" datetime="${escape(selected.date)}">${escape(selected.date.replaceAll('-','.'))}</time><button type="button" class="book-read" aria-haspopup="dialog" hidden>${ui.read}<img src="${prefix}assets/phosphor-arrow-right.svg" width="20" height="20" alt=""></button></div>
         <p class="book-announcement sr-only" aria-live="polite" aria-atomic="true"></p>
+        <a class="button" data-news-view-all href="news.html?view=all">${ui.viewAll}<span aria-hidden="true"> →</span></a>
         <noscript><section class="news-without-js" aria-label="${ui.all}">${fallback}</section></noscript>
       </section>
-      <section class="news-library news-list section-frame" aria-labelledby="news-list-title">
+      <section class="news-library news-list section-frame" data-news-index hidden aria-labelledby="news-list-title">
+        <a class="button" data-news-back href="news.html">${ui.backToTop}</a>
         <div class="news-library-heading"><h2 id="news-list-title">${ui.all}</h2></div>
-        <div class="news-wire-list" data-news-list>${archive.map(item=>`<button type="button" class="wire-row" data-story-id="${escape(item.id)}" aria-haspopup="dialog"><div class="wire-type">${escape(item.category||'Update')}</div><div class="wire-title">${escape(item.title)}</div><time datetime="${escape(item.date)}">${escape(item.date.replaceAll('-','.'))}</time><span class="wire-read-more">${ui.read}</span></button>`).join('')}</div>
-        <p class="news-empty" data-news-list-empty${archive.length?' hidden':''}>${ui.emptyArchive}</p>
+        <div class="news-wire-list" data-news-list>${allItems.map(item=>`<button type="button" class="wire-row" data-story-id="${escape(item.id)}" aria-haspopup="dialog"><div class="wire-type">${escape(item.category||'Update')}</div><div class="wire-title">${escape(item.title)}</div><time datetime="${escape(item.date)}">${escape(item.date.replaceAll('-','.'))}</time><span class="wire-read-more">${ui.read}</span></button>`).join('')}</div>
+        <p class="news-empty" data-news-list-empty${allItems.length?' hidden':''}>${ui.emptyArchive}</p>
       </section>
       <section class="news-social section-frame" aria-labelledby="news-social-title">
         <h2 id="news-social-title">${ui.social}</h2>

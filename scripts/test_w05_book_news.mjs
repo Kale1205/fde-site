@@ -63,17 +63,26 @@ test('Top News mixing, date order and same-day ID tie-break preserve every artic
  const future={...ordinary[0],featured:true,status:'unrelated-existing-field'};
  assert.equal(partitionNews([future]).top[0],future,'no new future-date or status publishing rule');
 });
-for(const [prefix,locale] of [['','en'],['ja/','ja'],['zh/','zh']])for(const count of [0,1,10,11])test(`${locale}: static Top News and lower list agree with the runtime partition for ${count} selected stories`,()=>{
+for(const [prefix,locale] of [['','en'],['ja/','ja'],['zh/','zh']])for(const count of [0,1,10,11])test(`${locale}: Top News links to a separate all-story view for ${count} selected stories`,()=>{
  const news=[...newsFixture(count),...newsFixture(2,false).map((item,i)=>({...item,id:`ordinary-${i}`}))],content={news},source=read(prefix+'news.html'),html=renderNewsPage(source,content,'20261016-180132');
- const seed=JSON.parse(html.match(/id="book-news-data">([\s\S]*?)<\/script>/)[1]),localized=localNews(content,locale),{top,archive}=partitionNews(seed.items);
+ const seed=JSON.parse(html.match(/id="book-news-data">([\s\S]*?)<\/script>/)[1]),localized=localNews(content,locale),{top}=partitionNews(seed.items);
  assert.deepEqual(seed.items,localized,'seed retains every localized article and source metadata');
- assert.equal(top.length,Math.min(count,10));assert.deepEqual(ids(archive),ids(partitionNews(localized).archive));
- assert.deepEqual([...html.matchAll(/data-story-id="([^"]+)"/g)].map(match=>match[1]),ids(archive));
+ assert.equal(top.length,Math.min(count,10));
+ const overview=html.match(/<section\b[^>]*\bdata-news-overview\b[^>]*>([\s\S]*?)<\/section>/),index=html.match(/<section\b[^>]*\bdata-news-index\b[^>]*>([\s\S]*?)<\/section>/);
+ assert(overview,'normal view keeps the approved Top News section');assert(index,'all-story view is saved in the same generated HTML');
+ assert.doesNotMatch(overview[0].split('>')[0],/\shidden(?:\s|$)/);assert.match(index[0].split('>')[0],/\shidden(?:\s|$)/);
+ const allLink=html.match(/<a\b[^>]*\bdata-news-view-all\b[^>]*>/),backLink=html.match(/<a\b[^>]*\bdata-news-back\b[^>]*>/);
+ assert(allLink);assert(backLink);assert.match(allLink[0],/\bhref="news\.html\?view=all"/);assert.match(backLink[0],/\bhref="news\.html"/);
+ assert.doesNotMatch(overview[1],/data-story-id=/,'normal Top News section does not contain an inline article list');
+ const ordered=[...news].sort((a,b)=>b.date.localeCompare(a.date)||a.id.localeCompare(b.id)),listIds=[...index[1].matchAll(/data-story-id="([^"]+)"/g)].map(match=>match[1]);
+ assert.deepEqual(listIds,ids(ordered),'the separate list includes Top News and ordinary stories by date descending, then ID ascending');
+ assert.equal(new Set(listIds).size,news.length,'every stored article appears exactly once in the all-story list');
+ assert.deepEqual([...html.matchAll(/data-story-id="([^"]+)"/g)].map(match=>match[1]),listIds,'there is only one all-story list');
  const visibleBooks=[...html.matchAll(/data-book-id="([^"]*)"[^>]*aria-hidden="false"/g)].map(match=>match[1]);
  assert.deepEqual(visibleBooks,ids(top.slice(0,3)),'visible static cards never duplicate a selected article');
  assert.equal(/class="book-stage" hidden/.test(html),count===0);
  for(const item of news)assert.equal((html.match(new RegExp(`data-static-news-id="${item.id}"`,'g'))||[]).length,1,'one no-JS full article per record');
- for(const item of archive)assert(html.includes(`<div class="wire-type">${item.category}</div>`));
+ for(const item of news)assert(index[1].includes(`<div class="wire-type">${item.category}</div>`));
  for(const category of ['Product','Development','Social'])assert.equal(NEWS_UI[locale].category[category],category);
  assert.equal(renderNewsPage(html,content,'20261016-180132'),html,'static regeneration remains idempotent');
 });

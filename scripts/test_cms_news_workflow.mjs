@@ -8,7 +8,7 @@ import {createHash} from 'node:crypto';
 import vm from 'node:vm';
 import {execFileSync} from 'node:child_process';
 import {NewsPublisher,CmsError,newDraft,fingerprint,applyDraft,persistedDraft,inspectImage,errorText,REPO} from '../cms-news-workflow.js';
-import {renderNewsPage} from '../news-renderer.js';
+import {localNews,renderNewsPage} from '../news-renderer.js';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const hash=value=>createHash('sha1').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');
 const content=JSON.parse(read('content/site-content.json')),main=hash('main'),contentSha=hash(read('content/site-content.json'));
@@ -69,7 +69,15 @@ test('an unrelated script cannot bypass branch verification as a cache follow-up
 test('article-only update: all locales preserved; static HTML and sitemap travel in the same commit; no main PUT',async()=>{
  const f=fixture(),d=await draft(),old=structuredClone(d.record);const result=await f.publisher().publish(d,'synthetic-token');assert.equal(result.pr.number,101);assert.equal(f.refs.size,1);assert.equal(f.pulls.length,1);
  const files=finalFiles(f),cms=JSON.parse(files['content/site-content.json'].content),item=cms.news.find(x=>x.id===d.sourceId);assert.equal(item.body.en,old.body.en);assert.equal(item.body['zh-CN'],old.body['zh-CN']);
- for(const file of ['news.html','ja/news.html','zh/news.html']){const expected=renderNewsPage(read(file),cms,read('build-version.txt').trim());if(expected!==read(file))assert(files[file]);assert.equal(files[file]?.content||read(file),expected);}
+ for(const [file,locale]of [['news.html','en'],['ja/news.html','ja'],['zh/news.html','zh']]){
+  const expected=renderNewsPage(read(file),cms,read('build-version.txt').trim());if(expected!==read(file))assert(files[file]);const generated=files[file]?.content||read(file);assert.equal(generated,expected);
+  const seed=JSON.parse(generated.match(/id="book-news-data">([\s\S]*?)<\/script>/)[1]),index=generated.match(/<section\b[^>]*\bdata-news-index\b[^>]*>([\s\S]*?)<\/section>/);
+  assert.deepEqual(seed.items,localNews(cms,locale),'CMS-generated seed preserves every localized article, Top selection and source metadata');
+  assert(index);assert.match(index[0].split('>')[0],/\shidden(?:\s|$)/);assert.match(generated,/<section\b[^>]*\bdata-news-overview\b/);
+  const rows=[...index[1].matchAll(/data-story-id="([^"]+)"/g)].map(match=>match[1]);assert.deepEqual(rows,seed.items.map(article=>article.id));assert.equal(new Set(rows).size,cms.news.length);
+  for(const marker of ['data-news-view-all','data-news-back'])assert(generated.includes(marker));
+  for(const article of seed.items)assert(index[1].includes(`<div class="wire-type">${article.category}</div>`));
+ }
  assert.equal(JSON.parse(files['sitemap-lastmod.json']?.content||read('sitemap-lastmod.json'))['ja/news.html'],'2026-10-18');
  assert(!f.calls.some(x=>x.method==='PUT'||x.method==='PATCH'));assert(![...f.refs.keys()].includes('refs/heads/main'));assert.deepEqual(content,JSON.parse(read('content/site-content.json')));
 });
@@ -177,6 +185,7 @@ for(const count of [0,1,10,11])test(`saving with ${count} explicit Top News sele
  const source={news:Array.from({length:count+2},(_,i)=>({...structuredClone(content.news[0]),id:`synthetic-${i}`,featured:i<count}))},last=source.news.at(-1),image=newDraft(last,contentSha);image.image=new Blob(['synthetic']);
  const replaced=applyDraft(source,image,'assets/cms/synthetic.png');assert.deepEqual(replaced.news.map(item=>item.featured),source.news.map(item=>item.featured));
  const editing=newDraft(last,contentSha);editing.record.featured=true;const edited=applyDraft(source,editing);assert.deepEqual(edited.news.slice(0,-1),source.news.slice(0,-1));assert.equal(edited.news.filter(item=>item.featured).length,count+1);
+ const restored=persistedDraft(editing);assert.equal(applyDraft(source,restored).news.at(-1).featured,true);assert.equal(newDraft(edited.news.at(-1),contentSha).record.featured,true,'Top News selection survives saving and reopening');
  const creating=newDraft();creating.record={...structuredClone(last),featured:true};const added=applyDraft(source,creating);assert.deepEqual(added.news.slice(0,-1),source.news);assert.equal(added.news.filter(item=>item.featured).length,count+1);
 });
 

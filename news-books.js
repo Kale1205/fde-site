@@ -42,11 +42,22 @@ export function shuffled(items,random=Math.random){const out=[...items];for(let 
 if(typeof document!=='undefined'&&document.body.classList.contains('book-news'))init();
 function init(){
  const seed=JSON.parse(document.getElementById('book-news-data').textContent),ui=seed.ui;
+ const listView=new URLSearchParams(window.location.search).get('view')==='all';
+ document.body.dataset.newsView=listView?'all':'top';
+ document.querySelector('[data-news-overview]').hidden=listView;
+ document.querySelector('[data-news-index]').hidden=!listView;
+ document.querySelector('.news-social').hidden=listView;
+ if(listView){
+  document.querySelector('.news-page-hero h1').textContent=ui.all;
+  document.title=`${ui.all} | ${document.title}`;
+  const preserveListLocale=()=>document.querySelectorAll('a[hreflang]').forEach(link=>{const url=new URL(link.href);if(url.origin===window.location.origin&&url.pathname.endsWith('/news.html')){url.searchParams.set('view','all');link.href=url.href;}});
+  preserveListLocale();document.addEventListener('DOMContentLoaded',preserveListLocale,{once:true});
+ }
  const prefix=seed.locale==='en'?'':'../';
  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
  const stage=document.querySelector('.book-stage'),reader=document.querySelector('.book-reader'),read=document.querySelector('.book-read');
  const title=document.querySelector('#selected-story-title'),live=document.querySelector('.book-announcement');
- let allItems=seed.items,{top:items,archive}=partitionNews(allItems),index=0,busy=false,queued=0,finishTimer,closeTimer,openingTimer,lastTrigger=null,drag=null,dragFrame=0,suppressClick=false,pendingContent=null,followBookFocus=false,bookAnimations=[],coverAnimation=null,liftedBook=null,flightFrom='',wheelDistance=0,lastWheel=0;
+ let allItems=seed.items,{top:items}=partitionNews(allItems),index=0,busy=false,queued=0,finishTimer,closeTimer,openingTimer,lastTrigger=null,drag=null,dragFrame=0,suppressClick=false,pendingContent=null,followBookFocus=false,bookAnimations=[],coverAnimation=null,liftedBook=null,flightFrom='',wheelDistance=0,lastWheel=0;
  document.body.dataset.bookInput='pointer';
  document.addEventListener('pointerdown',()=>{document.body.dataset.bookInput='pointer';},{passive:true});
  document.addEventListener('keydown',event=>{if(['Tab','Enter',' ','ArrowLeft','ArrowRight'].includes(event.key))document.body.dataset.bookInput='keyboard';});
@@ -71,9 +82,9 @@ function init(){
   const dots=stage.querySelector('.chronicle-pagination');if(dots.children.length!==items.length){dots.replaceChildren();for(const _ of items)dots.append(document.createElement('span'));}[...dots.children].forEach((dot,i)=>dot.classList.toggle('is-active',i===index));
   if(announce){live.textContent=`${index+1} / ${items.length} — ${item.title}`;if(!reduce.matches)title.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:360,easing:'ease-out'});}
  }
- function renderArchive(){
+ function renderList(){
   const list=document.querySelector('[data-news-list]');list.replaceChildren();
-  for(const item of archive){
+  for(const item of allItems){
    const button=document.createElement('button');button.type='button';button.className='wire-row';button.dataset.storyId=item.id;button.setAttribute('aria-haspopup','dialog');
    const category=document.createElement('div');category.className='wire-type';category.textContent=item.category||'Update';
    const heading=document.createElement('div');heading.className='wire-title';heading.textContent=item.title;
@@ -81,13 +92,13 @@ function init(){
    const label=document.createElement('span');label.className='wire-read-more';label.textContent=ui.read;
    button.append(category,heading,date,label);list.append(button);
   }
-  document.querySelector('[data-news-list-empty]').hidden=archive.length>0;
+  document.querySelector('[data-news-list-empty]').hidden=allItems.length>0;
  }
  function render(){
   if(!items.length)live.textContent='';
   stage.dataset.count=items.length;stage.hidden=!items.length;document.querySelector('.book-selection').hidden=!items.length;document.querySelector('[data-top-news-empty]').hidden=items.length>0;
   for(const node of slots){if(!items.length){node.tabIndex=-1;node.setAttribute('aria-hidden','true');continue;}const offset=Number(node.dataset.offset);fill(node,offset);position(node,offset);}
-  selection();read.hidden=!items.length;document.querySelector('.book-controls').hidden=items.length<2;renderArchive();
+  selection();read.hidden=!items.length;document.querySelector('.book-controls').hidden=items.length<2;renderList();
  }
  function finish(delta){
   clearTimeout(finishTimer);
@@ -129,7 +140,7 @@ function init(){
  function open(id,trigger){
   const item=allItems.find(i=>i.id===id);if(!item||reader.open)return;
   lastTrigger=trigger;queued=0;clearTimeout(closeTimer);clearTimeout(openingTimer);
-  coverAnimation?.cancel();liftedBook=items[index]?.id===id?slots.find(node=>Number(node.dataset.offset)===0):null;
+  coverAnimation?.cancel();liftedBook=!listView&&items[index]?.id===id?slots.find(node=>Number(node.dataset.offset)===0):null;
   const sourceRect=liftedBook?.getBoundingClientRect();
   reader.classList.remove('is-closing','is-opening','is-ready','is-reduced');reader.classList.add('is-preparing');
   reader.classList.toggle('is-reduced',reduce.matches);
@@ -165,10 +176,10 @@ function init(){
   const current=items[index]?.id;
   const fallback=typeof data.newsFallbackImage==='string'?data.newsFallbackImage:'';
   if(JSON.stringify(allItems)===JSON.stringify(next)&&newsFallbackImage===fallback)return;
-  newsFallbackImage=fallback;allItems=next;({top:items,archive}=partitionNews(allItems));index=Math.max(0,items.findIndex(x=>x.id===current));render();
+  newsFallbackImage=fallback;allItems=next;({top:items}=partitionNews(allItems));index=Math.max(0,items.findIndex(x=>x.id===current));render();
  }
  document.addEventListener('fde:news-content',event=>updateContent(event.detail));
- initInstagram({prefix,ui,reduce,reader});
+ if(!listView)initInstagram({prefix,ui,reduce,reader});
 }
 
 function initInstagram({prefix,ui,reduce,reader}){
