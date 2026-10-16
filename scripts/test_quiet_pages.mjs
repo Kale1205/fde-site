@@ -12,6 +12,7 @@ import { renderQuietNews } from './build_quiet_news.mjs';
 import { renderQuietContact } from './build_quiet_contact.mjs';
 import { renderQuietOrder } from './build_quiet_order.mjs';
 import { renderQuietCustomer } from './build_quiet_customer.mjs';
+import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pages = ['', 'ja/', 'zh/'].flatMap(locale =>
@@ -45,7 +46,7 @@ for (const name of pages) {
         : name.endsWith('contact.html') ? renderQuietContact(original(name))
         : name.endsWith('order.html') ? renderQuietOrder(original(name),readFileSync(path.join(root,name.replace('order.html','index.html')),'utf8')).replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m,'').replace('class="quiet-page ','class="')
         : name.endsWith('customer.html') ? renderQuietCustomer(name.startsWith('ja/')?'ja':name.startsWith('zh/')?'zh':'en',readFileSync(path.join(root,name.replace('customer.html','index.html')),'utf8')).replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m,'').replace('class="quiet-page ','class="') : original(name);
-    assert.equal(normalizeBuildKeys(stripped), normalizeBuildKeys(expected));
+    assert.equal(normalizeBuildKeys(stripped), normalizeBuildKeys(applyApprovedContinuingUsePolicy(name,expected)));
     assert.equal((html.match(/quiet-pages\.css/g) || []).length, 1);
   });
 }

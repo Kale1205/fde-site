@@ -13,6 +13,7 @@ import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews,withoutW05CmsBridge} from './w05_book_news_test_helpers.mjs';
 import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
+import {applyApprovedContinuingUsePolicy,continuingUseFaqAnswers} from './updates_continuing_use_copy.mjs';
 
 const root=new URL('../',import.meta.url);
 const baseline='b714f3d7e3cf2444effb6ca6b0d303c3036857f4';
@@ -28,7 +29,7 @@ for(const prefix of prefixes)for(const page of names){
   const file=prefix+page+'.html';
   test(file+': only reviewed translations and static FAQ change; pricing, metadata and routes stay intact',()=>{
     const current=read(file),old=before(file);
-    assert.equal(normalized(current),normalized(apply(file,old)),file);
+    assert.equal(normalized(current),normalized(applyApprovedContinuingUsePolicy(file,apply(file,old))),file);
     assert.equal(apply(file,current),current,'idempotent');
     assert.deepEqual(meta(normalized(current)),meta(normalized(apply(file,old))),'only pinned Chinese demo descriptions and date-only asset keys change');
     assert.deepEqual(current.match(/<link rel="(?:canonical|alternate)"[^>]*>|<meta name="robots"[^>]*>/g),old.match(/<link rel="(?:canonical|alternate)"[^>]*>|<meta name="robots"[^>]*>/g),'canonical/hreflang/robots remain exact');
@@ -65,7 +66,7 @@ test('current business-policy answers and existing FAQ prices retain their appro
 for(const file of ['content/faq-content.json','content/faq-policy-additions.json'])test(file+': historical migration changes only Chinese translation, labels and two scoped answers',()=>{
   const fixture=readFaqMigrationFixture(file),current=JSON.parse(fixture),old=JSON.parse(before(file));
   assert.equal(fixture,apply(file,before(file)));
-  if(file==='content/faq-policy-additions.json')assert.equal(read(file),fixture,'policy additions are not CMS-editable');
+  if(file==='content/faq-policy-additions.json')assert.equal(read(file),applyApprovedContinuingUsePolicy(file,fixture),'policy additions only receive the separately approved continuing-use policy');
   for(const item of current.faq){
     const original=old.faq.find(x=>x.id===item.id);
     assert.deepEqual({...item,question:null,answer:null,keywords:null,synonyms:null},{...original,question:null,answer:null,keywords:null,synonyms:null});
@@ -101,8 +102,7 @@ test('Chinese stock terms agree with the running demo and do not imply real serv
     assert.match(html,/合成示例数据/);
   }
   for(const id of ['updates-term','license-updates-entitlement','cancel-updates-after-license','cancel-updates-only']){
-    assert.match(data.faq.find(x=>x.id===id).answer['zh-CN'],/购买时的版本/);
-    assert.match(data.faq.find(x=>x.id===id).answer['zh-CN'],/订阅结束后的使用条件.*最终许可条款/);
+    assert.equal(data.faq.find(x=>x.id===id).answer['zh-CN'],continuingUseFaqAnswers[id]['zh-CN'],'current approved continuing-use conditions stay exact');
   }
   assert.match(data.faq.find(x=>x.id==='license-devices').answer['zh-CN'],/单台 Mac.*同一台 Mac/);
   assert.match(data.faq.find(x=>x.id==='demo-not-product-version').answer['zh-CN'],/不代表原生应用支持中文/);

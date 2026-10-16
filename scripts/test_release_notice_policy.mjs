@@ -6,6 +6,7 @@ import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {releaseCopy, applyReleaseNoticePolicy, removePurchaseStatusCopy} from './release_notice_policy.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
+import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mjs';
 
 const root=new URL('../',import.meta.url);
 const read=file=>normalizeAssetBuildKeys(readFileSync(new URL(file,root),'utf8'));
@@ -44,7 +45,7 @@ test('CMS hydration cannot restore purchase-unavailable FAQ or suffixes',()=>{
     expected.answer=Object.fromEntries(Object.entries(expected.answer).map(([lang,text])=>[lang,removePurchaseStatusCopy(text)]));
     assert.deepEqual(item,expected,'All other FAQ questions, terms, prices and search keys are preserved');
   }
-  assert.equal(read('content/faq-policy-additions.json'),before('content/faq-policy-additions.json'));
+  assert.equal(read('content/faq-policy-additions.json'),applyApprovedContinuingUsePolicy('content/faq-policy-additions.json',before('content/faq-policy-additions.json')));
   for(const prefix of ['', 'ja/', 'zh/']) {
     const portal=read(`${prefix}customer.html`);
     assert.ok(portal.includes('quiet-customer.js'));

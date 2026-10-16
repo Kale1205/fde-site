@@ -11,6 +11,7 @@ import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
 import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
+import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mjs';
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
@@ -26,7 +27,7 @@ const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
 for (const file of pages) {
   test(`${file}: only approved product/operator naming and first-use expansion change`, () => {
     const html = read(file);
-    assert.equal(normalizeAssetBuildKeys(html.trimEnd()), normalizeAssetBuildKeys(applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file)))))).trimEnd()));
+    assert.equal(normalizeAssetBuildKeys(html.trimEnd()), normalizeAssetBuildKeys(applyApprovedContinuingUsePolicy(file,applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file))))))).trimEnd()));
     assert.doesNotMatch(html, /FDE IMS/);
     assert.equal(applyApprovedProductNaming(html), html);
   });
