@@ -1,6 +1,7 @@
 import {readFileSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const labels = {
@@ -11,6 +12,7 @@ const labels = {
 
 // Recompose existing text/fields; never replace this simulation with a native-product claim.
 export function renderQuietDemo(source, locale='en') {
+  source=applyApprovedInitialReleaseScope(`${locale==='en'?'':locale+'/'}demo.html`,source);
   const text = labels[locale];
   const finish = html => html
     .replace(/(<nav class="demo-view-switcher"[^>]*aria-label=")[^"]+/, `$1${text.views}`)

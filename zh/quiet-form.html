@@ -22,11 +22,11 @@
 <main id="main-content">
 <section class="quiet-hero" id="product" aria-labelledby="hero-title">
 <div class="section-frame">
-<p class="release-line" data-release-notice><span aria-hidden="true">—</span><span>2026年11月1日发布<span class="release-availability">目前尚不可购买。</span></span></p>
+<p class="release-line" data-release-notice><span aria-hidden="true">—</span><span>目标发布日期：2026年11月1日<span class="release-availability">目前尚不可购买。</span></span></p>
 <h1 id="hero-title"><span>开发自己的系统，</span><span>不必从零开始。</span></h1><p class="quiet-lead">以库存管理系统 IMS（Inventory Management System）及其源代码为起点，打造适合自己业务的工作方式。</p>
 <div class="quiet-actions"><a class="button" href="#license-plus">查看含源代码的方案 <span aria-hidden="true">→</span></a><a class="quiet-text-link" href="#motion-demo">体验演示 <span aria-hidden="true">→</span></a></div>
 <div class="sculpture-pair">
-<figure><img class="sculpture" src="../assets/ims-license-update.webp" alt="" width="960" height="960" fetchpriority="high"><figcaption><h2><span>IMS</span> <span>License</span></h2><p>持续更新，使用最新版 IMS。</p></figcaption></figure>
+<figure><img class="sculpture" src="../assets/ims-license-update.webp" alt="" width="960" height="960" fetchpriority="high"><figcaption><h2><span>IMS</span> <span>License</span></h2><p>按需订阅 Updates，使用最新版 IMS。</p></figcaption></figure>
 <figure><img class="sculpture" src="../assets/ims-license-plus-customize.webp" alt="" width="960" height="960" fetchpriority="high"><figcaption><h2><span>IMS</span> <span>License Plus</span></h2><p>亲手改造，成为自己公司的应用。</p></figcaption></figure>
 </div></div>
 </section>
@@ -38,9 +38,9 @@
 <tbody><tr><td><span aria-hidden="true">✓</span>一次性购买</td><td><span aria-hidden="true">✓</span>一次性购买</td></tr>
 <tr><td><span aria-hidden="true">—</span>不含源代码</td><td><span aria-hidden="true">✓</span>完整源代码</td></tr>
 <tr><td><span aria-hidden="true">—</span>不允许内部修改</td><td><span aria-hidden="true">✓</span>允许内部修改</td></tr>
-<tr><td><span aria-hidden="true">✓</span>官方 Updates<br>须订阅月度服务</td><td><span aria-hidden="true">—</span>不适用官方 Updates<br>由购买方更新和管理</td></tr></tbody></table>
+<tr><td><span aria-hidden="true">✓</span>官方 Updates<br>可选月度订阅</td><td><span aria-hidden="true">—</span>不适用官方 Updates<br>由购买方更新和管理</td></tr></tbody></table>
 <div class="updates-strip"><strong>License Updates</strong><span>含最初3个月</span><span>第4–6个月 <strong>¥4,900/月</strong></span><span>第7个月起 <strong>¥9,800/月</strong></span></div>
-<p class="updates-note">停止 Updates 后，仍可继续使用已有版本。</p>
+<p class="updates-note">Updates 为可选订阅。未订阅时仍可使用购买时的版本，不会自动转为付费订阅。</p>
 </section>
 <section class="quiet-demo section-frame" id="motion-demo" aria-labelledby="demo-title">
 <header class="demo-section-heading"><div><h2 class="quiet-heading" id="demo-title">亲手体验 IMS。</h2><p>公开演示 · 示例数据</p></div><a class="quiet-text-link" href="demo.html">打开完整演示 <span aria-hidden="true">→</span></a></header>
@@ -81,7 +81,7 @@
           <div id="demoDestinationField"><label for="demoDestination">目标位置</label><select id="demoDestination" name="destination"></select></div>
           <label for="demoQuantity" id="demoQuantityLabel">实收数量</label>
           <input id="demoQuantity" name="quantity" type="number" min="1" step="1" value="5" inputmode="numeric" required>
-          <p class="demo-field-help" id="demoOperationHelp">将股票添加到选定的目的地。</p>
+          <p class="demo-field-help" id="demoOperationHelp">向所选目标位置添加库存。</p>
           <button class="button button-primary" id="demoApply" type="submit">收到记录</button>
           <p class="demo-result" id="demoResult" role="status" aria-live="polite">选择更新临时样本清单的操作 。</p>
         </form>
@@ -91,10 +91,10 @@
         <div class="demo-table-wrap"><table class="demo-table demo-history-table"><thead><tr><th>时间</th><th>操作</th><th>产品</th><th>地点</th><th>变动</th><th>参考</th></tr></thead><tbody id="demoHistoryBody"></tbody></table></div>
       </section>
       <div class="demo-scope-grid">
-        <div><strong>包括在模拟中</strong><p>SKU/条码搜索,接收,转移,计数,船舶,非负存量,三态库存健康,移动历史.</p></div>
-        <div><strong>仅供实际产品使用</strong><p>服务器权限,登录和角色,签名本地/局域网通信,审计控制,CSV进出口,加密备份/备份.</p></div>
+        <div><strong>包括在模拟中</strong><p>SKU/条码搜索、入库、调拨、盘点、出库、非负库存数量、三种库存状态及操作记录。</p></div>
+        <div><strong>原生应用仍在开发中</strong><p>首个原生版本面向配备 Apple M2 或更新芯片的单台 Mac，Host 与 Client 在同一台 Mac 上运行。支持的机型与 macOS 版本将在实机测试后确认，且须满足各机型的最低系统要求。多台 Mac 的局域网连接计划通过后续更新提供，时间尚未确定。当前开发版本尚不提供升级、还原与恢复功能。</p></div>
       </div>
-      <p class="demo-note">此预览仅在页面内存中使用合成样本数据. 刷新或重置页面会丢弃每个更改 。</p>
+      <p class="demo-note">本演示仅在当前页面内存中使用合成示例数据。重新加载或重置页面会清除所有更改，不能据此认定原生应用已完成、通过安全验证或正式发布。</p>
     </section>
 <div class="mobile-stock" aria-label="所选商品库存"><strong data-mobile-product>PC-1204</strong><dl><div><dt>总部 / A-01</dt><dd data-mobile-main>326</dd></div><div><dt>大阪 / B-02</dt><dd data-mobile-osaka>20</dd></div><div><dt>合计</dt><dd data-mobile-total>346</dd></div></dl></div>
 <p class="sample-note">示例数据仅在当前页面中运行。重置后，所有更改都会消失。</p><p class="visually-hidden" id="motion-announcement" role="status" aria-live="polite"></p>

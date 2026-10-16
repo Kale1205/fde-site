@@ -332,9 +332,9 @@ QUIET_HOMEPAGES = {
 # The approved Quiet Form home has its own explicit contracts; inner-page
 # commercial policies below remain untouched by this design-only renewal.
 quiet_home_markers = {
-    "index.html": ("Your own system. Not from scratch.", "Two starting points.", "Monthly subscription required", "Purchaser updates and manages", "When Updates ends, you can keep using your existing version.", "Releases November 1, 2026"),
-    "ja/index.html": ("自社開発は、 ゼロからじゃなくていい。", "出発点は2つ", "月額契約必須", "購入者が更新・管理", "Updates終了後も、既存バージョンは利用できます。", "2026年11月1日リリース"),
-    "zh/index.html": ("开发自己的系统， 不必从零开始。", "两种起点。", "须订阅月度服务", "由购买方更新和管理", "停止 Updates 后，仍可继续使用已有版本。", "2026年11月1日发布"),
+    "index.html": ("Your own system. Not from scratch.", "Two starting points.", "Optional monthly subscription", "Purchaser updates and manages", "Updates is optional. You can use the version purchased without a subscription. Paid Updates never starts automatically.", "Target launch: November 1, 2026"),
+    "ja/index.html": ("自社開発は、 ゼロからじゃなくていい。", "出発点は2つ", "任意の月額契約", "購入者が更新・管理", "Updatesは任意契約です。未契約でも購入時のバージョンを利用でき、有料契約へ自動移行しません。", "発売目標：2026年11月1日"),
+    "zh/index.html": ("开发自己的系统， 不必从零开始。", "两种起点。", "可选月度订阅", "由购买方更新和管理", "Updates 为可选订阅。未订阅时仍可使用购买时的版本，不会自动转为付费订阅。", "目标发布日期：2026年11月1日"),
 }
 for rel in sorted(QUIET_HOMEPAGES):
     visible = public_visible_text[rel]
@@ -672,8 +672,8 @@ required_markers = {
     "ja/index.html": ("class=\"news-strip", "id=\"product\"", "id=\"plans\"", "id=\"compare\"", "id=\"security\"", "id=\"faq\"", "gallery-ui.css", "gallery-ui.js", "cms-content-ja.js", "data-demo-open"),
     "goals.html": ('id="fde"', 'id="approach"', 'id="partnership"', "mission-code", "stock_state", "ims-v1-operation-en.mp4"),
     "ja/goals.html": ('id="fde"', 'id="approach"', 'id="partnership"', "mission-code", "stock_state", "ims-v1-operation-ja.mp4"),
-    "news.html": ("cms-content.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
-    "ja/news.html": ("cms-content-ja.js", "cms-news-page", "id=\"cmsNewsLead\"", "id=\"cmsLatestList\"", "id=\"cmsNewsWire\"", "id=\"cmsInstagram\""),
+    "news.html": ("cms-content.js", "cms-news-page", "book-news", "news-books.js", "id=\"book-news-data\"", "id=\"cmsInstagram\""),
+    "ja/news.html": ("cms-content-ja.js", "cms-news-page", "book-news", "news-books.js", "id=\"book-news-data\"", "id=\"cmsInstagram\""),
     "contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
     "ja/contact.html": ("contact-config.js", "contact-direct.js", "faq-cms.js"),
 }
@@ -709,6 +709,23 @@ static_news_titles = {
 }
 for rel, expected_title in static_news_titles.items():
     source = public_source_text.get(rel, "")
+    if 'book-news' in source:
+        # The approved W05 bookshelf removes duplicate visible excerpts/lists.
+        # All current CMS articles remain readable as HTML without JavaScript.
+        locale = 'ja' if rel.startswith('ja/') else 'en'
+        cms = json.loads((ROOT / 'content/site-content.json').read_text(encoding='utf-8'))
+        for item in cms['news']:
+            match = re.search(r'<article data-static-news-id="' + re.escape(item['id']) + r'">([\s\S]*?)</article>', source)
+            if not match:
+                fail(f"{rel}: missing static full article {item['id']}")
+                continue
+            visible = plain_html_text(match.group(1))
+            expected_body = re.sub(r'\s+', ' ', item['body'][locale]).strip()
+            if item['title'][locale] not in visible or expected_body not in visible:
+                fail(f"{rel}: static full article is truncated or differs from CMS: {item['id']}")
+        if any(marker in source for marker in ('id="cmsLatestList"', 'id="cmsNewsWire"')):
+            fail(f"{rel}: removed duplicate News lists were reintroduced")
+        continue
     lead_start = source.find('id="cmsNewsLead"')
     latest_start = source.find('id="cmsLatestList"', lead_start + 1)
     wire_start = source.find('id="cmsNewsWire"', latest_start + 1)
@@ -1091,7 +1108,7 @@ for value in sorted(platform_values):
         fail(f"site.js: Web Demo platform-interest choice missing: {value}")
     if f"'{value}'" not in contact_runtime:
         fail(f"contact-direct.js: inquiry platform allowlist/display missing: {value}")
-for marker in ("source=web-demo", "Web Demo availability does not mean", "browser-based development preview"):
+for marker in ("source=web-demo", "Web Demo availability does not mean", "initial native release scope", "'zh-CN'"):
     if marker not in site_runtime:
         fail(f"site.js: Web Demo/native boundary marker missing: {marker}")
 for marker in ("[Source: Web Demo]", "[Native platform interest:", "message,lang:lang()"):
@@ -1253,8 +1270,8 @@ if site_content_path.exists():
             item_id = item.get("id", "<unknown>")
             for field in ("title", "body"):
                 value = item.get(field, {})
-                if not isinstance(value, dict) or not str(value.get("ja", "")).strip() or not str(value.get("en", "")).strip():
-                    fail(f"content/site-content.json: news {item_id} missing ja/en {field}")
+                if not isinstance(value, dict) or any(not str(value.get(locale, "")).strip() for locale in ("ja", "en", "zh-CN")):
+                    fail(f"content/site-content.json: news {item_id} missing ja/en/zh-CN {field}")
             ja_title = str(item.get("title", {}).get("ja", "")).strip()
             if ja_title.endswith("。"):
                 fail(f"content/site-content.json: Japanese news heading must not end in full stop: {item_id}")
@@ -1269,8 +1286,10 @@ if faq_path.exists():
     try:
         faq_data = json.loads(faq_path.read_text(encoding="utf-8"))
         locales = faq_data.get("locales", [])
-        if locales != ["ja", "en"]:
-            fail(f"content/faq-content.json: locales must be exactly ['ja', 'en'], got {locales!r}")
+        # Existing CMS enrichment still writes ja/en; reviewed Chinese fields
+        # are additive and must not break that editor's current save contract.
+        if locales not in (["ja", "en"], ["ja", "en", "zh-CN"]):
+            fail(f"content/faq-content.json: unsupported locale declaration: {locales!r}")
         for item in faq_data.get("faq", []):
             item_id = item.get("id", "<unknown>")
             for field in ("question", "answer"):
@@ -1333,7 +1352,9 @@ if not any(item.get("id") == "inventory-adoption-migration-fit" for item in faq_
 
 for source, localized in localized_public_data.items():
     for locale, active_text in localized.items():
-        if source != "content/faq-policy-additions.json":
+        # News is editorial content, not the canonical price/plan catalog.
+        # Its fields/three locales/static rendering are checked separately.
+        if source == "content/faq-content.json":
             for plan, pattern in CONTENT_PLAN_NAME_PATTERNS.items():
                 if not pattern.search(active_text):
                     fail(f"{source}: active {locale} content missing plan name: {plan}")
@@ -1341,7 +1362,7 @@ for source, localized in localized_public_data.items():
             if pattern.search(active_text):
                 fail(f"{source}: active {locale} content contains retired price: {label}")
 
-for source in ("content/faq-content.json", "content/site-content.json"):
+for source in ("content/faq-content.json",):
     for locale, base_prices in {
         "en": ("$349", "$699", "$31", "$62"),
         "ja": ("49,800円", "99,800円", "4,900円", "9,800円"),

@@ -20,17 +20,17 @@
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="../gallery-ui.css?v=20261008-000319">
-  <link rel="stylesheet" href="../gallery-pages.css?v=20261008-000319">
-  <link rel="stylesheet" href="../faq-v38.css?v=20261008-000319">
+  <link rel="stylesheet" href="../gallery-ui.css?v=20261016-093034">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20261016-093034">
+  <link rel="stylesheet" href="../faq-v38.css?v=20261016-093034">
   <noscript><style>.faq-a{display:block}.faq-q{cursor:default}.faq-plus{display:none}</style></noscript>
-  <script defer src="../gallery-ui.js?v=20261008-000319"></script>
-  <script defer src="../contact-config.js?v=20261008-000319"></script>
-  <script defer src="../contact-direct.js?v=20261008-000319"></script>
-  <script defer src="../faq-policy-merge.js?v=20261008-000319"></script>
-
-  <link rel="stylesheet" href="../quiet-pages.css?v=20261008-000319">
-  <script defer src="../quiet-contact.js?v=20261008-000319"></script>
+  <script defer src="../gallery-ui.js?v=20261016-093034"></script>
+  <script defer src="../contact-config.js?v=20261016-093034"></script>
+  <script defer src="../contact-direct.js?v=20261016-093034"></script>
+  <script defer src="../faq-policy-merge.js?v=20261016-093034"></script>
+  <script defer src="../faq-cms.js?v=20261016-093034"></script>
+  <link rel="stylesheet" href="../quiet-pages.css?v=20261016-093034">
+  <script defer src="../quiet-contact.js?v=20261016-093034"></script>
 </head>
 <body class="quiet-page gallery-page gallery-subpage refined-page contact-page contact-renewal">
 <a class="skip-link" href="#main-content">跳至主要内容</a>
@@ -60,20 +60,190 @@
         <summary class="section-intro compact"><p>01 / FAQ</p><h2>联系前，先查看常见问题。</h2><span>搜索产品、许可、更新、安全与可用性相关问题。</span><img class="contact-faq-chevron" src="../assets/phosphor-caret-right.svg" width="24" height="24" alt="" aria-hidden="true"></summary>
         <input id="faqSearch" aria-label="搜索常见问题" class="faq-search" type="search" autocomplete="off" placeholder="搜索问答或关键词">
         <div id="cmsFaqList">
-          <article class="faq-item" data-faq-id="license-updates-difference">
-            <button class="faq-q" type="button" aria-expanded="false"><span>License 与 License Plus 有什么区别？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>状态</span><span>产品方案</span></div>
-            <div class="faq-a">License 为一次性购买，不含源代码，可永久用于购买法人内部，并包含前三个月的 Updates；之后可选择继续购买 License 专用的 Updates 附加服务。License Plus 同样为一次性购买，包含源代码与内部修改权，更新和安全由购买方负责。Updates 不是第三种产品方案，也不适用于 License Plus。</div>
+          <article class="faq-item" data-faq-id="license-updates-difference" data-faq-category-key="status" data-faq-subcategory="models" data-faq-terms="产品区别 一次性购买 源代码 内部修改 Updates 产品区别 一次性购买 源代码 内部修改 Updates">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-updates-difference"><span>License 与 License Plus 有什么区别？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>产品与销售状况</span><span>产品方案</span></div>
+            <div class="faq-a" id="faq-answer-license-updates-difference">License 为一次性购买，不含源代码，可永久用于购买法人内部，并包含前三个月的 Updates；之后可选择继续购买 License 专用的 Updates 附加服务。License Plus 同样为一次性购买，包含源代码与内部修改权，更新和安全由购买方负责。Updates 不是第三种产品方案，也不适用于 License Plus。</div>
           </article>
-          <article class="faq-item" data-faq-id="license-plus-price">
-            <button class="faq-q" type="button" aria-expanded="false"><span>License Plus 的预定价格与包含权利是什么？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>License</span><span>License 基本条件</span></div>
-            <div class="faq-a">一次性美元候选价格为 699 美元。计划包含购买法人的永久内部使用权、完整源代码、内部修改权、技术文档以及客户服务器自托管运行。该方案不含 Updates 权利，更新与安全由购买方负责。所有美元金额均为等待最终国际定价的未批准候选价格。</div>
+          <article class="faq-item" data-faq-id="license-price" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License 价格 349 美元 一次性购买 前三个月 License 价格 349 美元 一次性购买 前三个月">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-price"><span>IMS License 的价格是多少？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>License 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-license-price">License 的一次性美元候选价格为 349 美元，不含源代码，允许购买法人永久内部使用，并包含购买后前三个月的 Updates 等效服务，无需另付费用。不会自动转为付费 Updates。所有美元金额均为等待最终国际定价的未批准候选价格。</div>
           </article>
-          <article class="faq-item" data-faq-id="inventory-adoption-migration-fit">
-            <button class="faq-q" type="button" aria-expanded="false"><span>IMS 可以替代纸张、电子表格或现有库存系统吗？</span><span class="faq-plus">＋</span></button>
-            <div class="faq-path"><span>产品</span><span>导入评估</span></div>
-            <div class="faq-a">IMS 面向希望从纸张或电子表格迁移，或正在重新评估现有库存系统的小型企业。现在可以讨论产品适配性，但数据导入格式、迁移服务与最终部署支持范围尚未确定。</div>
+          <article class="faq-item" data-faq-id="license-plus-price" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License Plus 价格 699 美元 源代码 自托管 License Plus 价格 699 美元 源代码 自托管">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-plus-price"><span>License Plus 的预定价格与包含权利是什么？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>License 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-license-plus-price">一次性美元候选价格为 699 美元。计划包含购买法人的永久内部使用权、完整源代码、内部修改权、技术文档以及客户服务器自托管运行。该方案不含 Updates 权利，更新与安全由购买方负责。所有美元金额均为等待最终国际定价的未批准候选价格。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-plus-upgrade" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="升级 差价 独立购买 升级 差价 独立购买">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-plus-upgrade"><span>可以从 License 升级到 License Plus 吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>License 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-license-plus-upgrade">当前的两种产品方案未设置从 License 补差价升级到 License Plus 的条件。License Plus 计划作为独立产品另行购买，最终条件会在正式销售前公布。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-source-code" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="源代码 License License Plus 349 美元 699 美元 源代码 License License Plus 349 美元 699 美元">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-source-code"><span>License 包含源代码吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>License 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-license-source-code">不包含。License 的美元候选价格为 349 美元，不含源代码。需要完整源代码、技术文档、自托管运行与内部修改权的客户可选择美元候选价格为 699 美元的 License Plus。两种产品均允许购买法人永久内部使用。所有美元金额均为未批准候选价格。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-customization" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="内部修改 定制 系统集成 源代码 内部修改 定制 系统集成 源代码">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-customization"><span>哪种产品允许修改源代码以适应内部业务？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>License 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-license-customization">License Plus 计划允许购买法人为内部业务查看、编辑和修改源代码，增加功能、与内部系统集成，并在内部使用修改后的版本。License 不包含源代码。修改权不包含销售、再分发或再许可的权利。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-group-company" data-faq-category-key="license" data-faq-subcategory="entity" data-faq-terms="集团 母公司 子公司 法人 集团 母公司 子公司 法人">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-group-company"><span>一个 License 或 License Plus 可以在集团内共享吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>法人及设备</span></div>
+            <div class="faq-a" id="faq-answer-license-group-company">原则上不可以。每次购买仅适用于一个法人。母公司、子公司、关联公司等具有不同法人资格的组织，原则上需要分别购买。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-security-responsibility" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="安全 更新责任 31 美元 62 美元 自愿订阅 安全 更新责任 31 美元 62 美元 自愿订阅">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-security-responsibility"><span>License 的更新与安全由谁负责？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>License 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-license-security-responsibility">License 包含购买后前三个月的 Updates，在此期间由 FDE 提供功能、安全、兼容性更新及缺陷修复。之后可自愿继续订阅：第 4–6 个月的美元候选价格为每月 31 美元，第 7 个月起为每月 62 美元。未订阅 Updates 的期间，由购买方负责更新与安全。不会自动转为付费服务，License Plus 不适用这项附加服务。所有美元金额均为等待最终国际定价的未批准候选价格。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-resale" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="转售 销售 第三方 内部使用 转售 销售 第三方 内部使用">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-resale"><span>可以把购买的 IMS 转售给第三方吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>限制与再分发</span><span>销售与再分发</span></div>
+            <div class="faq-a" id="faq-answer-no-resale">不可以。License 和 License Plus 均不包含向第三方销售或转售 IMS 原版或修改版的权利，使用权仅限购买法人的内部业务。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-saas" data-faq-category-key="restrictions" data-faq-subcategory="service" data-faq-terms="SaaS ASP 托管 租赁 第三方服务 SaaS ASP 托管 租赁 第三方服务">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-saas"><span>可以把 IMS 作为 SaaS 或托管服务提供给客户吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>限制与再分发</span><span>第三方服务</span></div>
+            <div class="faq-a" id="faq-answer-no-saas">不可以。License 和 License Plus 均不包含把 IMS 本身提供给第三方使用的 SaaS、ASP、托管、软件租赁、服务机构等业务的权利。</div>
+          </article>
+          <article class="faq-item" data-faq-id="updates-price" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="Updates 31 美元 62 美元 自愿订阅 前三个月 Updates 31 美元 62 美元 自愿订阅 前三个月">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-updates-price"><span>License 专用的 Updates 附加服务价格是多少？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates 与维护</span><span>Updates 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-updates-price">License 购买后第 1–3 个月包含 Updates，无需另付费用。之后可自愿继续订阅：第 4–6 个月的美元候选价格为每月 31 美元，第 7 个月起为每月 62 美元。Updates 仅适用于 License，不能单独购买，也不能添加到 License Plus。不会自动转为付费服务，所有美元金额均为等待最终国际定价的未批准候选价格。</div>
+          </article>
+          <article class="faq-item" data-faq-id="formal-order-flow" data-faq-category-key="orders" data-faq-subcategory="purchase" data-faq-terms="订单 购买法人 产品版本 EULA 订单 购买法人 产品版本 EULA">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-formal-order-flow"><span>正式销售时的订单会显示哪些信息？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>订单与 EULA</span><span>正式销售与订单</span></div>
+            <div class="faq-a" id="faq-answer-formal-order-flow">正式订单计划显示选择的产品、价格、购买法人、购买时的产品版本、使用期限、是否包含源代码、License 的 Updates 附加服务及适用的 License Agreement / EULA。License 不含源代码并允许永久使用；License Plus 包含源代码与内部修改权并允许永久使用。</div>
+          </article>
+          <article class="faq-item" data-faq-id="inventory-adoption-migration-fit" data-faq-category-key="product" data-faq-subcategory="adoption" data-faq-terms="库存管理 纸张 Excel 电子表格 迁移 数据导入 库存管理 纸张 Excel 电子表格 迁移 数据导入">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-inventory-adoption-migration-fit"><span>IMS 可以替代纸张、电子表格或现有库存系统吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>产品与导入评估</span><span>导入评估</span></div>
+            <div class="faq-a" id="faq-answer-inventory-adoption-migration-fit">IMS 面向希望从纸张或电子表格迁移，或正在重新评估现有库存系统的小型企业。现在可以讨论产品适配性，但数据导入格式、迁移服务与最终部署支持范围尚未确定。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-updates-entitlement" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="Updates 31 美元 62 美元 自愿订阅 无自动扣费 Updates 31 美元 62 美元 自愿订阅 无自动扣费">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-updates-entitlement"><span>购买 License 后，Updates 如何收费？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates 与维护</span><span>Updates 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-license-updates-entitlement">License 包含购买后前三个月的 Updates。之后可自愿继续订阅：第 4–6 个月的美元候选价格为每月 31 美元，第 7 个月起为每月 62 美元。不继续订阅 Updates，也可以使用购买时的版本。通过 Updates 获取的版本在订阅结束后的使用条件，将在最终许可条款中说明。Updates 不会自动开始收费，所有美元金额均为等待最终国际定价的未批准候选价格。</div>
+          </article>
+          <article class="faq-item" data-faq-id="cancel-updates-after-license" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="结束 Updates 继续 License 永久使用 安全 结束 Updates 继续 License 永久使用 安全">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-cancel-updates-after-license"><span>购买 License 后结束 Updates 会怎样？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates 与维护</span><span>Updates 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-cancel-updates-after-license">订阅结束时，Updates 使用权和 FDE 的持续更新服务停止。不含源代码的已购永久 License 仍允许在内部使用购买时的版本。通过 Updates 获取的版本在订阅结束后的使用条件，将在最终许可条款中说明。之后由购买方负责更新与安全。</div>
+          </article>
+          <article class="faq-item" data-faq-id="cancel-updates-only" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="单独购买 附加服务 License 专用 License Plus 不适用 单独购买 附加服务 License 专用 License Plus 不适用">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-cancel-updates-only"><span>可以不购买 License，只购买 Updates 吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates 与维护</span><span>Updates 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-cancel-updates-only">不可以。Updates 是 License 专用附加服务，不能单独购买，也不适用于 License Plus。结束 Updates 不会取消已购 License 的内部使用权，仍可使用购买时的版本。通过 Updates 获取的版本在订阅结束后的使用条件，将在最终许可条款中说明。</div>
+          </article>
+          <article class="faq-item" data-faq-id="ims-purpose" data-faq-category-key="status" data-faq-subcategory="development" data-faq-terms="库存管理 小型企业 桌面应用 本地运行 库存管理 小型企业 桌面应用 本地运行">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-ims-purpose"><span>IMS 是用于什么的产品？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>产品与销售状况</span><span>开发状况</span></div>
+            <div class="faq-a" id="faq-answer-ims-purpose">IMS 正在作为面向小型企业的库存管理业务软件开发，以桌面应用和本地运行为主要方向。最终功能仍在开发中，本 FAQ 不保证尚未正式确定的功能。</div>
+          </article>
+          <article class="faq-item" data-faq-id="demo-not-product-version" data-faq-category-key="status" data-faq-subcategory="development" data-faq-terms="演示 正式产品 示例数据 开发预览 界面语言 中文 演示 正式产品 示例数据 开发预览 界面语言 中文">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-demo-not-product-version"><span>目前的 IMS 演示是正式发布的产品吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>产品与销售状况</span><span>开发状况</span></div>
+            <div class="faq-a" id="faq-answer-demo-not-product-version">不是。目前的演示是用于了解开发中 IMS 预期操作体验的示例，不代表正式产品版本、已完成功能、更新历史、安全维护记录或交付记录。网站提供英语、日语和简体中文；原生应用首个版本的界面语言仅以英语和日语为目标，网站提供中文不代表原生应用支持中文。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-perpetual" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="永久使用 内部使用 无需月费 EULA 永久使用 内部使用 无需月费 EULA">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-perpetual"><span>License 购买一次后可以永久使用吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>License 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-license-perpetual">可以。License 允许购买法人永久内部使用，使用基本功能无需强制订阅月度服务。最终条件会在正式销售前通过 License Agreement / EULA 公布。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-external-developer" data-faq-category-key="license" data-faq-subcategory="contractor" data-faq-terms="外部开发者 委托 保密 维护 外部开发者 委托 保密 维护">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-external-developer"><span>可以委托外部开发公司或工程师修改 License Plus 吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>外部开发者</span></div>
+            <div class="faq-a" id="faq-answer-license-external-developer">License Plus 允许在购买法人的内部开发、修改或维护所必需的范围内，向外部开发者披露源代码。委托方须确保对方遵守保密、不得用于其他项目、不得销售或再分发等条件。License 不包含源代码，不适用这项许可。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-devices" data-faq-category-key="license" data-faq-subcategory="entity" data-faq-terms="设备数量 Apple M2 Mac 局域网 系统要求 设备数量 Apple M2 Mac 局域网 系统要求">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-devices"><span>License 或 License Plus 可以安装在多少台设备上？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>法人及设备</span></div>
+            <div class="faq-a" id="faq-answer-license-devices">License 和 License Plus 用于购买法人的内部业务。首个原生版本面向配备 Apple M2 或更新芯片的单台 Mac，Host 与 Client 在同一台 Mac 上运行。支持的机型与 macOS 版本将在实机测试后确认，并须满足各机型的最低系统要求。多台 Mac 的局域网连接不在首个版本范围内，后续更新的日期尚未确定。许可允许的设备数量将在最终 EULA 中规定，与连接及同步的技术支持范围分开说明。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-backup" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="备份 还原 恢复 内部使用 备份 还原 恢复 内部使用">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-backup"><span>可以为 License 或 License Plus 创建备份吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>License 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-license-backup">可以。购买法人可创建维持内部使用所必需的备份，不得以向第三方分发为目的制作副本。这项许可不代表应用已经提供还原功能。当前开发版本尚不提供还原与恢复功能。只有在面向客户的还原方法完成并通过验证后，才会开始付费销售。</div>
+          </article>
+          <article class="faq-item" data-faq-id="license-branches" data-faq-category-key="license" data-faq-subcategory="entity" data-faq-terms="总部 分公司 仓库 Location 多台 Mac 总部 分公司 仓库 Location 多台 Mac">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-branches"><span>同一法人的总部、分公司和办事处可以使用一个 License 吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>License 与内部使用</span><span>法人及设备</span></div>
+            <div class="faq-a" id="faq-answer-license-branches">计划允许购买法人内部使用。首个版本的 Host 与 Client 在同一台 Mac 上运行，不包含多台 Mac 的局域网连接、同步或跨地点连接；后续更新的日期尚未确定。在一台 Mac 上管理多个仓库或 Location 信息，与连接和同步多台设备是不同的范围。最终支持环境和使用条件会在销售前公布。不同法人原则上需要分别购买。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-modified-resale" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="修改版 转售 改名 界面 修改版 转售 改名 界面">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-modified-resale"><span>可以把修改后的 IMS 作为其他产品出售吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>限制与再分发</span><span>销售与再分发</span></div>
+            <div class="faq-a" id="faq-answer-no-modified-resale">不可以。即使更改名称、界面或功能，也不得把基于 IMS 的修改版作为面向第三方的产品销售或转售。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-redistribution" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="再分发 源代码 安装程序 外部委托 再分发 源代码 安装程序 外部委托">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-redistribution"><span>可以向第三方再分发源代码或安装程序吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>限制与再分发</span><span>销售与再分发</span></div>
+            <div class="faq-a" id="faq-answer-no-redistribution">不可以。License Plus 提供的源代码、安装程序及 IMS 产品文件不得向第三方再分发。但可在内部修改所必需的范围内，向遵守适用许可条件的外部委托方披露源代码。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-public-repo" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="GitHub 公开仓库 发布 源代码 GitHub 公开仓库 发布 源代码">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-public-repo"><span>可以把 License Plus 源代码放到公开的 GitHub 仓库吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>限制与再分发</span><span>销售与再分发</span></div>
+            <div class="faq-a" id="faq-answer-no-public-repo">不可以。不得把 License Plus 源代码发布到公开 GitHub 仓库、网站、社交媒体、公开文件共享、社区、公开服务器等不特定公众或第三方可访问的位置。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-transfer" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="转让 法人 EULA 转让 法人 EULA">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-transfer"><span>可以把 License 或 License Plus 转让给其他法人吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>限制与再分发</span><span>销售与再分发</span></div>
+            <div class="faq-a" id="faq-answer-no-transfer">禁止未经许可的转让。License 和 License Plus 的使用权授予购买法人，转移给其他法人或第三方须遵守最终 EULA 的条件。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-sublicense" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="再许可 第三方 使用权 再许可 第三方 使用权">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-sublicense"><span>可以向第三方再许可 IMS 的使用权吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>限制与再分发</span><span>销售与再分发</span></div>
+            <div class="faq-a" id="faq-answer-no-sublicense">不可以。License 和 License Plus 均不允许购买企业自行向第三方授予 IMS 使用权。</div>
+          </article>
+          <article class="faq-item" data-faq-id="internal-use-own-business" data-faq-category-key="restrictions" data-faq-subcategory="service" data-faq-terms="内部业务 自身产品 客户服务 内部业务 自身产品 客户服务">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-internal-use-own-business"><span>可以在内部使用 IMS，同时向客户销售自己的产品或服务吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>限制与再分发</span><span>第三方服务</span></div>
+            <div class="faq-a" id="faq-answer-internal-use-own-business">可以。可以把 IMS 用于内部库存管理等业务，同时向客户销售自身的一般产品或服务。限制针对的是让第三方使用 IMS 本身的业务。</div>
+          </article>
+          <article class="faq-item" data-faq-id="updates-no-source" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="Updates 源代码 内部修改 Updates 源代码 内部修改">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-updates-no-source"><span>Updates 包含源代码吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates 与维护</span><span>Updates 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-updates-no-source">不包含。Updates 不提供源代码。需要源代码和内部修改权时，应选择 License Plus。</div>
+          </article>
+          <article class="faq-item" data-faq-id="updates-term" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="订阅结束 停止更新 购买时版本 最终许可条款 订阅结束 停止更新 购买时版本 最终许可条款">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-updates-term"><span>Updates 订阅结束后还可以使用吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates 与维护</span><span>Updates 基本条件</span></div>
+            <div class="faq-a" id="faq-answer-updates-term">Updates 结束后，FDE 将停止提供新的更新。购买的 License 仍允许内部使用购买时的版本。通过 Updates 获取的版本在订阅结束后的使用条件，将在最终许可条款中说明。</div>
+          </article>
+          <article class="faq-item" data-faq-id="updates-managed" data-faq-category-key="updates" data-faq-subcategory="responsibility" data-faq-terms="功能更新 安全 兼容性 SLA 功能更新 安全 兼容性 SLA">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-updates-managed"><span>Updates 期间 FDE 负责什么？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>Updates 与维护</span><span>更新与安全责任</span></div>
+            <div class="faq-a" id="faq-answer-updates-managed">Updates 的设计方向是在订阅期间由 FDE 提供功能、安全和兼容性更新。更新频率、版本管理、SLA 等具体内容尚未确定。</div>
+          </article>
+          <article class="faq-item" data-faq-id="ui-brand-change" data-faq-category-key="rights" data-faq-subcategory="ip" data-faq-terms="标志 界面 品牌 版权声明 标志 界面 品牌 版权声明">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-ui-brand-change"><span>License Plus 可以更改 FDE 标志或应用界面吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>权利、AI 与第三方</span><span>知识产权与声明</span></div>
+            <div class="faq-a" id="faq-answer-ui-brand-change">License Plus 不计划一律禁止为内部使用而修改应用界面中的 FDE 标志、名称等内容。不过，源代码中的版权、许可、权利声明和第三方许可声明等须妥善保留。License 不包含源代码。</div>
+          </article>
+          <article class="faq-item" data-faq-id="no-false-authorship" data-faq-category-key="rights" data-faq-subcategory="ip" data-faq-terms="独立开发 作者 原版 版权 独立开发 作者 原版 版权">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-false-authorship"><span>修改后可以声称 IMS 原版是本公司独立开发的吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>权利、AI 与第三方</span><span>知识产权与声明</span></div>
+            <div class="faq-a" id="faq-answer-no-false-authorship">不可以。即使在 License Plus 下修改界面等内容，也不得虚假声称 IMS 原版由购买企业独立开发。</div>
+          </article>
+          <article class="faq-item" data-faq-id="ai-coding-tools" data-faq-category-key="rights" data-faq-subcategory="ai" data-faq-terms="AI 编程 生成式 AI 模型训练 微调 AI 编程 生成式 AI 模型训练 微调">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-ai-coding-tools"><span>可以使用 AI 编程工具修改 License Plus 吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>权利、AI 与第三方</span><span>AI 使用</span></div>
+            <div class="faq-a" id="faq-answer-ai-coding-tools">内部修改 License Plus 时，可使用设置或合同明确禁止将提交代码用于第三方模型训练的 AI 编程工具。不得把 IMS 代码用于模型训练、微调、第三方训练、公开数据集，或用于重现类似产品的训练。</div>
+          </article>
+          <article class="faq-item" data-faq-id="third-party-components" data-faq-category-key="rights" data-faq-subcategory="thirdparty" data-faq-terms="开源软件 OSS 第三方组件 依赖 许可 开源软件 OSS 第三方组件 依赖 许可">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-third-party-components"><span>开源软件及第三方组件的许可如何处理？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>权利、AI 与第三方</span><span>开源软件与第三方</span></div>
+            <div class="faq-a" id="faq-answer-third-party-components">FDE 独立开发的部分适用 FDE 的 License 条件，开源软件及第三方软件各自适用其许可条件。具体组件将在产品完成时确定。</div>
+          </article>
+          <article class="faq-item" data-faq-id="eula-agreement" data-faq-category-key="orders" data-faq-subcategory="eula" data-faq-terms="EULA 同意 许可协议 购买确认 EULA 同意 许可协议 购买确认">
+            <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-eula-agreement"><span>在线购买需要同意 EULA 吗？</span><span class="faq-plus" aria-hidden="true">＋</span></button>
+            <div class="faq-path"><span>订单与 EULA</span><span>License Agreement / EULA</span></div>
+            <div class="faq-a" id="faq-answer-eula-agreement">需要。正式在线销售计划要求客户在确认购买前阅读并主动同意 License Agreement / EULA。目前的 License 页面仅为产品方针概要，不是最终法律协议。</div>
           </article>
         </div><div id="faqEmpty" class="faq-empty" hidden>未找到匹配的问题。</div>
       </details>

@@ -1,6 +1,6 @@
 (()=>{
 const nativeFetch=window.fetch.bind(window);
-const policyBase=location.pathname.includes('/ja/')?'../':'';
+const policyBase=/\/(?:ja|zh)\//.test(location.pathname)?'../':'';
 window.fetch=async(input,init)=>{
  const url=typeof input==='string'?input:input?.url||'';
  if(!String(url).includes('content/faq-content.json'))return nativeFetch(input,init);

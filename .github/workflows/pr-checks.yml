@@ -43,11 +43,35 @@ jobs:
       - name: Repository consistency checks
         run: npm run validate
 
+      - name: Multilingual FAQ, stock terminology, and internal-link contracts
+        run: node --test scripts/test_multilingual_content.mjs
+
+      - name: Chinese search metadata and unchanged public content
+        run: node --test scripts/test_zh_search_metadata.mjs
+
+      - name: W02 disabled purchase CTA and unchanged commerce boundaries
+        run: node --test scripts/test_w02_purchase_cta.mjs
+
+      - name: W01 approved product conditions CTA presentation
+        run: node --test scripts/test_w01_product_cta.mjs
+
+      - name: W04 layered sample-code and real-recording motion
+        run: |
+          node --test scripts/test_w04_layered_motion.mjs
+          node scripts/build_quiet_goals.mjs --check
+          node scripts/test_goals_content.mjs
+
       - name: Linear-inspired redesign contracts
         run: node scripts/test_linear_redesign.mjs
 
       - name: Approved multilingual Quiet Form pages and CMS presentation contracts
         run: node --test scripts/test_quiet_homepages.mjs scripts/test_quiet_pages.mjs scripts/test_quiet_form_preview.mjs scripts/test_quiet_license.mjs scripts/test_quiet_demo.mjs scripts/test_quiet_goals.mjs scripts/test_quiet_news.mjs scripts/test_quiet_contact.mjs scripts/test_quiet_order.mjs scripts/test_quiet_customer.mjs scripts/test_release_notice_policy.mjs scripts/test_quiet_admin.mjs
+
+      - name: Approved W05 circular books and Instagram-only feed boundary
+        run: node --test scripts/test_w05_book_news.mjs scripts/test_w05_cover_editor.mjs
+
+      - name: CMS private drafts and atomic protected-branch publication
+        run: node --test scripts/test_cms_news_workflow.mjs
 
       - name: Approved W02 License composition is current
         run: node scripts/build_quiet_license.mjs --check
@@ -56,6 +80,12 @@ jobs:
         run: |
           node --test scripts/test_product_naming.mjs
           python scripts/test_static_news_validation.py
+
+      - name: Approved optional License Updates copy and unchanged commerce boundaries
+        run: node --test scripts/test_optional_updates.mjs
+
+      - name: Release target and initial native scope copy contracts
+        run: node --test scripts/test_initial_release_scope.mjs
 
       - name: Selected W03 Demo composition is current
         run: node scripts/build_quiet_demo.mjs --check

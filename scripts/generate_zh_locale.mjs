@@ -6,6 +6,9 @@ import { renderQuietDemo } from './build_quiet_demo.mjs';
 import { renderQuietOrder } from './build_quiet_order.mjs';
 import { renderQuietCustomer } from './build_quiet_customer.mjs';
 import { applyReleaseNoticePolicy, removePurchaseStatusCopy, releaseCopy } from './release_notice_policy.mjs';
+import { renderStaticFaq } from './multilingual_content_copy.mjs';
+import { localizeW04Motion } from './w04_layered_motion.mjs';
+import {renderBookNews} from './build_book_news.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-translations.json'), 'utf8'));
@@ -132,22 +135,33 @@ function renderPage(name) {
     output = output.replace(/<nav class="order-locale"[\s\S]*?<\/nav>/, '<nav class="order-locale" aria-label="选择语言"><a href="../order.html" hreflang="en" lang="en">English</a><a href="../ja/order.html" hreflang="ja" lang="ja">日本語</a><a href="order.html" hreflang="zh-CN" lang="zh-CN" aria-current="page">简体中文</a></nav>');
   }
 
-  if (name === 'contact.html') output = output.replace(/\n?<script defer src="\.\.\/faq-cms\.js[^>]*><\/script>/, '');
   let translated = translateMarkup(output).replace(/\n[ \t]+\n/g, '\n\n');
+  if (name === 'demo.html') {
+    // Social sharing locale follows this Chinese page, not its English source.
+    translated = translated.replace('<meta property="og:locale" content="en_US">', '<meta property="og:locale" content="zh_CN">\n  <meta property="og:locale:alternate" content="en_US">');
+  }
   if (name === 'news.html') {
     // This editorial section is not the commercial Updates product label.
     translated = translated.replace(/(<h2 id="news-updates-title"[^>]*>)[^<]+/, '$1更新信息');
   }
   if (name === 'contact.html') {
     translated = translated.replace('<p>02 / CONTACT FORM</p>', '<p>02 / 咨询表单</p>');
+    translated = renderStaticFaq(translated);
   }
   if (name === 'goals.html') {
+    if (output.includes('data-goals-motion')) {
+      // Localized controls/provenance, identical illustrative code identifiers.
+      const sample=/<code data-code-source>[\s\S]*?<\/code>/;
+      translated=localizeW04Motion(translated,'zh').replace(sample,output.match(sample)[0]);
+    } else {
     // Localize the accessible label, never the actual source identifiers.
     const excerpt = /<div class="mission-code-window">[\s\S]*?<\/code><\/pre><\/div>/;
     const label = translated.match(/<pre[^>]*aria-label="([^"]+)"/)[1];
     translated = translated.replace(excerpt, output.match(excerpt)[0]
       .replace(/(aria-label=")[^"]+/, `$1${label}`));
+    }
   }
+  if(name==='news.html'&&output.includes('book-news'))return renderBookNews(applyReleaseNoticePolicy(translated,'news'));
   return name === 'demo.html' ? renderQuietDemo(translated, 'zh') : applyReleaseNoticePolicy(translated,name.replace('.html',''));
 }
 

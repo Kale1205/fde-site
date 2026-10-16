@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {renderQuietGoals} from './build_quiet_goals.mjs';
+import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 
 const baseline='a5f31f4';
 const head=source=>source.match(/<head>[\s\S]*?<\/head>/)[0];
@@ -24,7 +25,7 @@ for(const folder of ['', 'ja/', 'zh/']) {
   const current=normalizeAssetBuildKeys(readFileSync(name,'utf8'));
   const previous=normalizeAssetBuildKeys(execFileSync('git',['show',`${baseline}:${name}`],{encoding:'utf8'}));
   test(`${name}: approved structure is composed and idempotent`,()=>{
-    assert.equal(renderQuietGoals(previous),current);
+    assert.equal(normalizeAssetBuildKeys(renderQuietGoals(previous)),current);
     assert.equal(renderQuietGoals(current),current);
     assert.equal((current.match(/class="mission-hero-band"/g)||[]).length,1);
     assert.equal((current.match(/class="mission-chapter-heading"/g)||[]).length,3);
@@ -34,16 +35,18 @@ for(const folder of ['', 'ja/', 'zh/']) {
     for(const asset of ['goals-understand-work','goals-open-system','goals-partner-dialogue']) {
       assert.ok(current.includes(`src="${folder?'../':''}assets/${asset}.png" width="1536" height="1024" alt="" loading="lazy" decoding="async"`));
     }
-    assert.match(current,/<div class="mission-proof">[\s\S]*?<figure class="mission-code">[\s\S]*?<figure class="mission-recording">/);
+    assert.match(current,/<div class="mission-proof mission-layered" data-goals-motion data-desk-layout="01">[\s\S]*?<figure class="mission-code">[\s\S]*?<figure class="mission-recording">/);
   });
   test(`${name}: prose and metadata are unchanged, only requested closing CTAs removed`,()=>{
-    assert.equal(head(current),head(previous));
-    assert.deepEqual(prose(current),prose(previous));
+    assert.equal(head(current),normalizeAssetBuildKeys(head(applyW04LayeredMotion(previous))));
+    // W04 may only recompose the proof, mark sample code, and add motion controls.
+    const outsideProof=s=>s.replace(/<div class="mission-proof(?: mission-layered)?"[\s\S]*?(?=<details class="mission-transcript">)/,'').replace(/<figure class="mission-code">[\s\S]*?<figure class="mission-recording">[\s\S]*?<\/figure>/,'');
+    assert.deepEqual(prose(outsideProof(current)),prose(outsideProof(previous)));
     const closing=current.match(/<section id="partnership"[\s\S]*?<\/section>/)[0];
     assert.doesNotMatch(closing,/<a\b|mission-actions|mission-plan-link/);
     assert.ok(current.includes('href="contact.html"'));
     assert.ok(current.includes('href="license.html"'));
-    assert.equal(current.match(/<video[^>]+>/)[0],previous.match(/<video[^>]+>/)[0]);
+    assert.equal(current.match(/<video[^>]+>/)[0].replace(' data-motion-video',''),previous.match(/<video[^>]+>/)[0]);
     assert.equal(current.match(/<source[^>]+>/)[0],previous.match(/<source[^>]+>/)[0]);
     assert.equal(current.match(/<details class="mission-transcript">[\s\S]*?<\/details>/)[0],previous.match(/<details class="mission-transcript">[\s\S]*?<\/details>/)[0]);
   });

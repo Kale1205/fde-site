@@ -1,3 +1,4 @@
+import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
@@ -15,14 +16,14 @@ import { renderQuietCustomer } from './build_quiet_customer.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pages = ['', 'ja/', 'zh/'].flatMap(locale =>
   ['license', 'demo', 'goals', 'news', 'contact', 'order', 'customer'].map(name => `${locale}${name}.html`)
-).concat(['cms-admin.html']);
+); // Intentional CMS workflow/copy changes are tested in the CMS suites.
 // Baseline for this design-only renewal; overridable for future approved copy updates.
 const baseline = process.env.QUIET_PAGES_BASE || 'e13457ad75068fa753b3f6dc6705d1aa1de2a61c';
 const original = name => execFileSync('git', ['show', `${baseline}:${name}`], { cwd: root, encoding: 'utf8' });
 
 for (const name of pages) {
   test(`${name}: content, scripts, links, conditions and SEO are unchanged`, () => {
-    const html = readFileSync(path.join(root, name), 'utf8');
+    const html = withoutW05BookCoverEditor(name,readFileSync(path.join(root, name), 'utf8'));
     let stripped = html
       .replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m, '')
       .replace(/^  <script defer src="(?:\.\.\/)?quiet-contact\.js\?v=[0-9A-Za-z._-]+"><\/script>\n/m, '')

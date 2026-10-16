@@ -17,11 +17,11 @@ for (const lang of ["en", "ja", "zh"]) {
   assert.ok(html.includes('href="goals.html" aria-current="page"'));
   assert.ok(html.includes("Forward Deployed Engineering"));
   assert.ok(html.includes("License Plus"));
-  const code = html.match(/<pre[^>]*>[\s\S]*?<code>([\s\S]*?)<\/code>/)[1].replace(/\s+/g, "");
+  const code = html.match(/<code data-code-source>([\s\S]*?)<\/code>/)[1].replace(/\s+/g, "");
   if (firstCode) assert.equal(code, firstCode);
   firstCode = code;
   for (const state of ["OutOfStock", "LowStock", "Healthy"]) assert.ok(code.includes(state));
-  assert.ok(/<video[^>]*controls[^>]*muted[^>]*loop[^>]*playsinline[^>]*preload="none"/.test(html));
+  assert.ok(/<video[^>]*controls[^>]*muted[^>]*loop[^>]*playsinline[^>]*preload="none"[^>]*data-motion-video/.test(html));
   assert.ok(html.includes('class="mission-transcript"'));
   const mediaLang = lang === "zh" ? "en" : lang;
   const media = fs.readFileSync(path.join(root, "assets/ims-v1-operation-" + mediaLang + ".mp4"));

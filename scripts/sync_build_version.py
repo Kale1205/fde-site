@@ -36,7 +36,7 @@ for path in html_paths:
         changed.append(path.relative_to(ROOT).as_posix())
 
 # Runtime loaders that inject versioned local assets dynamically.
-for name in ("contact-config.js",):
+for name in ("contact-config.js", "cms-admin.js", "cms-news-workflow.js", "news-renderer.js"):
     path = ROOT / name
     if not path.exists():
         continue

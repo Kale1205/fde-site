@@ -19,11 +19,13 @@
   <meta property="og:url" content="https://kale1205.github.io/fde-site/goals.html">
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="gallery-ui.css?v=20261008-000319">
-  <link rel="stylesheet" href="gallery-pages.css?v=20261008-000319">
-  <script defer src="gallery-ui.js?v=20261008-000319"></script>
-  <script defer src="cms-content.js?v=20261008-000319"></script>
-  <link rel="stylesheet" href="quiet-pages.css?v=20261008-000319">
+  <link rel="stylesheet" href="gallery-ui.css?v=20261016-093034">
+  <link rel="stylesheet" href="gallery-pages.css?v=20261016-093034">
+  <script defer src="gallery-ui.js?v=20261016-093034"></script>
+  <script defer src="cms-content.js?v=20261016-093034"></script>
+  <link rel="stylesheet" href="quiet-pages.css?v=20261016-093034">
+  <link rel="stylesheet" href="goals-motion.css?v=20261016-093034">
+  <script defer src="goals-motion.js?v=20261016-093034"></script>
 </head>
 <body class="quiet-page gallery-page gallery-subpage refined-page goals-page mission-page goals-renewal goals-journey">
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -67,26 +69,50 @@
       <section id="approach" class="mission-chapter section-frame" aria-labelledby="approach-title">
         <span class="mission-step" aria-hidden="true">02</span>
         <div class="mission-text mission-visual"><div class="mission-copy"><div class="mission-chapter-heading"><p class="eyebrow">02 / What we do</p><h2 id="approach-title">A working system.<br>And the code behind it.</h2></div><div><p>Business software should be easier to adopt. Baked Kale aims to lower that barrier by offering systems with their source code.</p><p>You do not have to start from zero, or reshape every process around an off-the-shelf tool. Start with a working system, understand how it works, and adapt it to your business. That is the choice we are building with IMS License Plus.</p></div></div><img class="mission-art" src="assets/goals-open-system.png" width="1536" height="1024" alt="" loading="lazy" decoding="async"></div>
-        <div class="mission-proof">
-          <figure class="mission-code">
-          <figcaption><p class="eyebrow">INSIDE IMS</p><h3>Understand what is behind the screen.</h3><p>Zero stock means out of stock. At or below the reorder threshold means low stock. With the source code, the rules behind these decisions are yours to understand.</p><small>Excerpt from the IMS v1.0 implementation in development. Stock-state logic; line breaks adjusted.</small></figcaption>
-          <div class="mission-code-window"><div class="code-file">ims-domain / lib.rs <span>Rust</span></div><pre tabindex="0" aria-label="Rust code for stock-state classification"><code><span class="code-key">pub const fn</span> <span class="code-fn">stock_state</span>(
-    on_hand_atoms: <span class="code-type">i64</span>,
-    low_stock_threshold_atoms: <span class="code-type">i64</span>,
-) -&gt; <span class="code-type">StockState</span> {
-    <span class="code-key">if</span> on_hand_atoms &lt;= 0 {
+        <div class="mission-proof mission-layered" data-goals-motion data-desk-layout="01">
+          <div class="mission-proof-intro" id="layered-desk"><h3>Understand what is behind the screen.</h3></div>
+          <div class="mission-desk">
+            <figure class="mission-code"><div class="mission-code-window">
+              <div class="code-file"><span>SAMPLE CODE</span><span>inventory-example.rs · Rust</span></div>
+              <pre class="mission-code-feed" aria-hidden="true"><code data-code-feed></code></pre>
+            </div></figure>
+            <figure class="mission-recording"><video controls muted loop playsinline preload="none" data-motion-video width="900" height="700" poster="assets/ims-v1-operation-en-poster.jpg" aria-label="Actual IMS v1.0 operation"><source src="assets/ims-v1-operation-en.mp4" type="video/mp4"></video><div class="mission-motion-tools"><button type="button" data-motion-toggle data-pause-label="Pause motion" data-play-label="Play motion" aria-pressed="false" hidden>Play motion</button></div><figcaption><div class="mission-recording-intro"><h3>See the work happen in IMS.</h3><p>Find a product, record a receipt, then check stock and history. This is the native application in development, operated with a separate synthetic dataset made for this capture.</p></div><span>IMS v1.0 / DEVELOPMENT BUILD</span><p>A sequence captured from real development-build operations, not a concept animation or the Web Demo. Screens and behavior may change during development.</p></figcaption></figure>
+          </div>
+          <div class="mission-code-explainer"><p class="eyebrow">INSIDE IMS</p><p>Zero stock means out of stock. At or below the reorder threshold means low stock. With the source code, the rules behind these decisions are yours to understand.</p><small>Illustrative sample code, not the IMS implementation.</small></div>
+          <p class="mission-motion-status" data-motion-status role="status" hidden>The recording could not be played. You can read the operation steps below.</p>
+          <details class="mission-sample"><summary>Read the sample code</summary><pre tabindex="0" aria-label="Sample inventory code"><code data-code-source>// Illustration only — not IMS implementation code.
+enum StockState { OutOfStock, LowStock, Healthy }
+
+fn stock_state(quantity: i64, threshold: i64) -&gt; StockState {
+    if quantity &lt;= 0 {
         StockState::OutOfStock
-    } <span class="code-key">else if</span> on_hand_atoms &lt;= low_stock_threshold_atoms {
+    } else if quantity &lt;= threshold {
         StockState::LowStock
-    } <span class="code-key">else</span> {
+    } else {
         StockState::Healthy
     }
-}</code></pre></div>
-        </figure>
-          <figure class="mission-recording">
-          <video controls muted loop playsinline preload="none" width="900" height="700" poster="assets/ims-v1-operation-en-poster.jpg" aria-label="Actual IMS v1.0 operation"><source src="assets/ims-v1-operation-en.mp4" type="video/mp4"></video>
-          <figcaption><div class="mission-recording-intro"><h3>See the work happen in IMS.</h3><p>Find a product, record a receipt, then check stock and history. This is the native application in development, operated with a separate synthetic dataset made for this capture.</p></div><span>IMS v1.0 / DEVELOPMENT BUILD</span><p>A sequence captured from real development-build operations, not a concept animation or the Web Demo. Screens and behavior may change during development.</p></figcaption>
-        </figure>
+}
+
+struct StockItem {
+    name: String,
+    quantity: i64,
+    threshold: i64,
+}
+
+fn receive(item: &amp;mut StockItem, quantity: i64) {
+    item.quantity += quantity;
+}
+
+fn main() {
+    let mut item = StockItem {
+        name: String::from("Sample product"),
+        quantity: 8,
+        threshold: 3,
+    };
+    receive(&amp;mut item, 2);
+    let state = stock_state(item.quantity, item.threshold);
+}
+</code></pre></details>
         </div>
         <details class="mission-transcript"><summary>Read the operation sequence</summary><ol><li>Find a product in the sample inventory.</li><li>Choose the product and quantity, then record incoming stock.</li><li>Check the updated stock level and operation history.</li></ol></details>
       </section>

@@ -161,7 +161,7 @@
   }
 
   function renderInstagram() {
-    if (!CMS) return;
+    if (!CMS || document.body.classList.contains('book-news')) return;
     const data = CMS.instagram || {};
     const box = document.getElementById('cmsInstagram');
     if (!box) return;
@@ -176,6 +176,10 @@
 
   function renderNews() {
     if (!CMS || !document.body.classList.contains('cms-news-page')) return;
+    if (document.body.classList.contains('book-news')) {
+      document.dispatchEvent(new CustomEvent('fde:news-content', { detail: CMS }));
+      return;
+    }
     const all = newsSorted();
     if (!all.length) return;
     const featured = all.find(item => item.featured) || all[0];

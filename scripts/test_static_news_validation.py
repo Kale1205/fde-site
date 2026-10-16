@@ -32,6 +32,12 @@ class StaticNewsTests(unittest.TestCase):
             html = '<a id="cmsNewsLead"><h2>IMS news</h2><p><' + tag + '>' + "License " * 80 + '</' + tag + '></p></a>'
             self.assertFalse(complete_static_news_lead(html, "IMS news", ("License",)))
 
+    def test_bookshelf_requires_complete_article_in_noscript_not_json(self):
+        article = '<article data-static-news-id="real"><h2>IMS news</h2><p>' + 'License source code Updates ' * 20 + '</p></article>'
+        self.assertTrue(complete_static_news_lead('<noscript>' + article + '</noscript>', 'IMS news', ('License', 'source code', 'Updates')))
+        for html in [article, '<script>' + article + '</script>', '<noscript>' + article.replace('<p>', '<p><template>').replace('</p>', '</template></p>') + '</noscript>']:
+            self.assertFalse(complete_static_news_lead(html, 'IMS news', ('License',)))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -19,11 +19,11 @@
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="gallery-ui.css?v=20261008-000319">
-  <link rel="stylesheet" href="gallery-pages.css?v=20261008-000319">
-  <link rel="stylesheet" href="license.css?v=20261008-000319">
-  <script defer src="gallery-ui.js?v=20261008-000319"></script>
-  <link rel="stylesheet" href="quiet-pages.css?v=20261008-000319">
+  <link rel="stylesheet" href="gallery-ui.css?v=20261016-093034">
+  <link rel="stylesheet" href="gallery-pages.css?v=20261016-093034">
+  <link rel="stylesheet" href="license.css?v=20261016-093034">
+  <script defer src="gallery-ui.js?v=20261016-093034"></script>
+  <link rel="stylesheet" href="quiet-pages.css?v=20261016-093034">
 </head>
 <body class="quiet-page gallery-page gallery-subpage license-page license-renewal" data-selected-plan="plus">
 <div class="site-shell language-en">
@@ -57,7 +57,7 @@
           <div><p class="decision-label">Selected product</p><strong data-license-name>License Plus</strong></div>
           <div class="license-decision-price"><p class="decision-label">Candidate total</p><strong data-license-price>$699</strong><small>one-time USD candidate</small></div>
           <div class="license-decision-responsibility"><p class="decision-label">Primary responsibility</p><ul data-license-points><li>Full source code included</li><li>Internal modification permitted</li><li>Updates and security managed by purchaser</li></ul></div>
-          <a class="button button-primary" href="contact.html">Ask about these terms</a>
+          <button class="button button-primary" type="button" data-license-purchase disabled aria-disabled="true">Buy (not yet available)</button>
         </section>
 
         <div class="license-matrix-region" role="region" aria-labelledby="license-matrix-en" tabindex="0">
@@ -69,18 +69,18 @@
               <tr><th scope="row">Source-code delivery</th><td><span class="matrix-symbol" aria-hidden="true">—</span><span class="sr-only">Not included</span></td><td><span class="matrix-symbol positive" aria-hidden="true">✓</span><span class="sr-only">Included</span></td></tr>
               <tr><th scope="row">Internal modification</th><td><span class="matrix-symbol" aria-hidden="true">—</span><span class="sr-only">Not permitted</span></td><td><span class="matrix-symbol positive" aria-hidden="true">✓</span><span class="sr-only">Permitted</span></td></tr>
               <tr><th scope="row">Updates</th><td>3 months included<br>then optional add-on</td><td>Purchaser managed</td></tr>
-              <tr><th scope="row">Security management</th><td>FDE</td><td>Purchaser</td></tr>
+              <tr><th scope="row">Security management</th><td>FDE during Updates</td><td>Purchaser</td></tr>
             </tbody>
           </table>
         </div>
 
-        <p class="license-note" data-release-notice><strong>Releases November 1, 2026. Not yet available for purchase.</strong><br><strong>Draft product policy.</strong> IMS is still in development. Every USD amount is an unapproved candidate pending final international pricing. Final commercial terms and the License Agreement / EULA will be presented before purchasing is enabled.</p>
+        <p class="license-note" data-release-notice><strong>Target launch: November 1, 2026. Not yet available for purchase.</strong><br><strong>Draft product policy.</strong> IMS is still in development. Every USD amount is an unapproved candidate pending final international pricing. Final commercial terms and the License Agreement / EULA will be presented before purchasing is enabled.<br><span data-initial-release-scope>The initial native release targets one Apple M2-or-later Mac, with Host and Client on that same Mac. Supported models and macOS versions will be confirmed after device testing and must meet each model’s minimum OS requirement. Multiple-Mac LAN support is planned for a later update, with no confirmed date. The initial native app targets English and Japanese; Chinese website content does not indicate native Chinese support.</span><br><span data-restore-release-gate>Restore is not available in the current development build. Purchasing will open only after the customer restore method is completed and verified.</span></p>
 
         <div class="license-details">
           <details id="deliverables" open>
             <summary><span class="license-detail-index">02</span><strong>Deliverables</strong></summary>
             <div class="license-detail-body">
-              <div><h2>License</h2><p>Perpetual internal use by one purchasing legal entity. Source code and source-level modification rights are not included. The first three months of Updates-equivalent service are included.</p></div>
+              <div><h2>License</h2><p>Perpetual internal use by one purchasing legal entity. Source code and source-level modification rights are not included. The first three months of Updates are included.</p></div>
               <div><h2>License Plus</h2><p>Planned for perpetual internal use with full source, internal customization, technical documentation, and customer-server/self-hosted operation. The License Updates add-on is not included or available for Plus.</p></div>
             </div>
           </details>
@@ -89,14 +89,14 @@
             <summary><span class="license-detail-index">03</span><strong>Internal use</strong></summary>
             <div class="license-detail-body">
               <div><h2>What License Plus allows</h2><ul><li>Inspect, edit, extend, and integrate the full source for internal use</li><li>Use internally modified versions</li><li>Engage an external developer under confidentiality and the same restrictions</li><li>Use planned build, deployment, database, API, and backup/restore documentation</li></ul></div>
-              <div><h2>What no plan grants</h2><ul><li>No sale or resale of original or modified versions</li><li>No unauthorized transfer, sublicensing, or redistribution of product files</li><li>No public repositories, websites, social media, or public file shares</li><li>No third-party SaaS, rental, hosting, or service-bureau provision</li></ul></div>
+              <div><h2>What no plan grants</h2><ul><li>No sale or resale of original or modified versions</li><li>No unauthorized transfer, sublicensing, or redistribution of product files</li><li>No publication of IMS source code or product files in public repositories, websites, social media, or public file shares</li><li>No third-party SaaS, rental, hosting, or service-bureau provision</li></ul></div>
             </div>
           </details>
 
           <details id="updates">
             <summary><span class="license-detail-index">04</span><strong>Updates and maintenance</strong></summary>
             <div class="license-detail-body">
-              <div><h2>License Updates</h2><p>Months 1–3 are included. Optional continuation requires explicit opt-in at the $31/month USD candidate price for months 4–6 and $62/month from month 7. The purchased version remains available if Updates is not continued.</p></div>
+              <div><h2>License Updates</h2><p>Months 1–3 are included. Optional continuation requires explicit opt-in at the $31/month USD candidate price for months 4–6 and $62/month from month 7. The version purchased remains available without an Updates subscription. Paid Updates never starts automatically. Terms for using versions obtained through Updates after cancellation will be stated in the final license terms.</p></div>
               <div><h2>License Plus responsibility</h2><p>The purchaser manages source changes, functionality, compatibility, and security. Updates is not a third product and cannot be added to License Plus.</p></div>
             </div>
           </details>

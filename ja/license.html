@@ -19,11 +19,11 @@
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="../assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="../gallery-ui.css?v=20261008-000319">
-  <link rel="stylesheet" href="../gallery-pages.css?v=20261008-000319">
-  <link rel="stylesheet" href="../license.css?v=20261008-000319">
-  <script defer src="../gallery-ui.js?v=20261008-000319"></script>
-  <link rel="stylesheet" href="../quiet-pages.css?v=20261008-000319">
+  <link rel="stylesheet" href="../gallery-ui.css?v=20261016-093034">
+  <link rel="stylesheet" href="../gallery-pages.css?v=20261016-093034">
+  <link rel="stylesheet" href="../license.css?v=20261016-093034">
+  <script defer src="../gallery-ui.js?v=20261016-093034"></script>
+  <link rel="stylesheet" href="../quiet-pages.css?v=20261016-093034">
 </head>
 <body class="quiet-page gallery-page gallery-subpage license-page license-renewal" data-selected-plan="plus">
 <div class="site-shell language-ja">
@@ -57,7 +57,7 @@
           <div><p class="decision-label">選択中のプラン</p><strong data-license-name>License Plus</strong></div>
           <div class="license-decision-price"><p class="decision-label">合計金額</p><strong data-license-price>99,800円</strong><small>（日本円・税込）</small></div>
           <div class="license-decision-responsibility"><p class="decision-label">主な責任範囲</p><ul data-license-points><li>ソースコードの提供：あり</li><li>社内での改変：可能</li><li>更新・セキュリティ：購入者が管理</li></ul></div>
-          <a class="button button-primary" href="contact.html">この条件について相談</a>
+          <button class="button button-primary" type="button" data-license-purchase disabled aria-disabled="true">購入する（販売開始前）</button>
         </section>
 
         <div class="license-matrix-region" role="region" aria-labelledby="license-matrix-ja" tabindex="0">
@@ -68,13 +68,13 @@
               <tr><th scope="row">価格（日本円・税込）</th><td>49,800円</td><td>99,800円</td></tr>
               <tr><th scope="row">ソースコードの提供</th><td><span class="matrix-symbol" aria-hidden="true">—</span><span class="sr-only">提供なし</span></td><td><span class="matrix-symbol positive" aria-hidden="true">✓</span><span class="sr-only">提供あり</span></td></tr>
               <tr><th scope="row">社内での改変</th><td><span class="matrix-symbol" aria-hidden="true">—</span><span class="sr-only">改変不可</span></td><td><span class="matrix-symbol positive" aria-hidden="true">✓</span><span class="sr-only">改変可能</span></td></tr>
-              <tr><th scope="row">アップデート</th><td>3か月含む<br>以降は追加オプション</td><td>購入者が対応</td></tr>
-              <tr><th scope="row">セキュリティ対応の管理</th><td>当社</td><td>購入者</td></tr>
+              <tr><th scope="row">アップデート</th><td>3か月含む<br>以降は任意オプション</td><td>購入者が対応</td></tr>
+              <tr><th scope="row">セキュリティ対応の管理</th><td>当社（Updates契約期間中）</td><td>購入者</td></tr>
             </tbody>
           </table>
         </div>
 
-        <p class="license-note" data-release-notice><strong>2026年11月1日リリース。 現在は購入できません。</strong><br><strong>以下は開発中の予定条件です。</strong> 表示価格は日本円です。最終的な価格・利用条件・License Agreement / EULAは、販売開始前に提示します。</p>
+        <p class="license-note" data-release-notice><strong>発売目標：2026年11月1日。 現在は購入できません。</strong><br><strong>以下は開発中の予定条件です。</strong> 表示価格は日本円です。最終的な価格・利用条件・License Agreement / EULAは、販売開始前に提示します。<br><span data-initial-release-scope>初回のネイティブ版は、Apple M2以降の1台のMac上でHostとClientを利用する構成を対象とします。対応機種とmacOSは、各機種の最低OS要件を満たしたうえで実機検証後に確定します。複数MacのLAN接続は後続アップデートで対応予定ですが、時期は未定です。ネイティブ初回版の画面言語は英語・日本語を対象とし、Webサイトの中国語対応とは別です。</span><br><span data-restore-release-gate>現開発版では復元を提供していません。顧客向け復元方法を完成・検証してから有料販売を開始します。</span></p>
 
         <div class="license-details">
           <details id="deliverables" open>
@@ -96,7 +96,7 @@
           <details id="updates">
             <summary><span class="license-detail-index">04</span><strong>更新と保守</strong></summary>
             <div class="license-detail-body">
-              <div><h2>LicenseのUpdates</h2><p>購入後3か月は追加費用なしです。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。終了後もその時点のバージョンは使い続けられます。</p></div>
+              <div><h2>LicenseのUpdates</h2><p>購入後3か月は追加費用なしです。4〜6か月目は月額4,900円、7か月目以降は月額9,800円で、希望する場合だけ継続できます。Updatesを契約しない場合も、購入時のバージョンを利用できます。有料契約へ自動移行しません。Updatesで取得した版の契約終了後の扱いは、最終利用条件で明示します。</p></div>
               <div><h2>License Plusの管理責任</h2><p>ソースコードの改変、製品の更新、互換性、セキュリティは購入者が管理します。Updatesは第3の商品ではなく、License Plusには追加できません。</p></div>
             </div>
           </details>

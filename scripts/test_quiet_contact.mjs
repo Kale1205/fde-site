@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
@@ -36,13 +37,14 @@ for(const prefix of ['', 'ja/', 'zh/']){
 test('Contact interaction shim has no external requests, persistence or copy replacement',()=>{
   const js=read('quiet-contact.js');
   assert.match(js,/classList.contains\('contact-renewal'\)/);
-  assert.match(js,/lang.startsWith\('zh'\)/);
   assert.match(js,/aria-controls/);
-  assert.match(js,/aria-expanded/);
-  assert.match(js,/empty.hidden = count > 0/);
+  const shared=read('faq-cms.js');
+  assert.match(shared,/language.startsWith\('zh'\)/);
+  assert.match(shared,/aria-expanded/);
+  assert.match(shared,/empty.hidden=count>0/);
   assert.doesNotMatch(js,/fetch\(|localStorage|sessionStorage|innerHTML|\.textContent\s*=/);
   assert.equal(read('contact-direct.js'),original('contact-direct.js'));
-  assert.equal(read('contact-config.js'),original('contact-config.js'));
+  assert.equal(read('contact-config.js'),applyCmsMemoryKey(original('contact-config.js')));
 });
 test('Contact materials are scoped and reuse supplied logo and library icon',()=>{
   const css=read('quiet-pages.css');
