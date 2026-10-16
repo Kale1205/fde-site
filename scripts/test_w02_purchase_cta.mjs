@@ -9,6 +9,7 @@ import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.m
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
 import {renderCurrentFaqFixture,readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
+import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mjs';
 
 const root=new URL('../',import.meta.url);
 const baseline='d1302742d66acd427dbe7aea64bd5fe1dee861fa';
@@ -17,7 +18,7 @@ const before=file=>{const old=execFileSync('git',['show',baseline+':'+file],{cwd
 for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']]) {
   test(locale+': consultation CTA becomes one genuinely disabled purchase button, with no order destination',()=>{
     const file=prefix+'license.html',html=read(file),old=before(file);
-    assert.equal(normalize(html),normalize(applyW02PurchaseCta(file,old)));
+    assert.equal(normalize(html),normalize(applyApprovedContinuingUsePolicy(file,applyW02PurchaseCta(file,old))));
     assert.equal(applyW02PurchaseCta(file,html),html);
     const button=html.match(/<button[^>]*data-license-purchase[^>]*>[\s\S]*?<\/button>/g);
     assert.equal(button.length,1);assert.match(button[0],/type="button"/);
@@ -41,7 +42,8 @@ test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
     'worker/src/index-v14.js','robots.txt','content/faq-content.json','content/faq-policy-additions.json',
     ...['','ja/','zh/'].flatMap(p=>['index','contact','demo','goals','news','order','customer'].map(n=>p+n+'.html'))]){
     const current=file==='content/faq-content.json'?readFaqMigrationFixture(file):read(file);
-    assert.equal(normalize(current),normalize(renderCurrentFaqFixture(file,before(file))),file);
+    const expected=renderCurrentFaqFixture(file,before(file));
+    assert.equal(normalize(current),normalize(file==='content/faq-content.json'?expected:applyApprovedContinuingUsePolicy(file,expected)),file);
   }
   assert.match(read('quiet-pages.css'),/\.quiet-page :is\(button,\[type=submit\]\):disabled \{ transform: none; opacity: \.55; cursor: not-allowed; \}/);
   assert.doesNotMatch(read('gallery-ui.js'),/data-license-purchase/);

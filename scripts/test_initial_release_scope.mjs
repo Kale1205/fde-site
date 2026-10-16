@@ -14,6 +14,7 @@ import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
 import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
+import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mjs';
 
 const root = new URL('../', import.meta.url);
 const baseline = 'd6ab9132810381668d72c9eff7664a87db0a9be1';
@@ -30,7 +31,7 @@ const outsideFaq = source => source.replace(/<div id="cmsFaqList">[\s\S]*?<\/div
 for (const file of pages) {
   test(file + ': only scoped public copy changes; metadata, prices, links and controls stay intact', () => {
     const current = read(file), previous = before(file);
-    assert.equal(normalize(current), normalize(applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, previous))));
+    assert.equal(normalize(current), normalize(applyApprovedContinuingUsePolicy(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, previous)))));
     assert.equal(applyApprovedInitialReleaseScope(file, current), current, 'idempotent migration');
     assert.equal(normalize(current.match(/<head>[\s\S]*?<\/head>/)?.[0] || ''),
       normalize(applyApprovedMultilingualContent(file,previous).match(/<head>[\s\S]*?<\/head>/)?.[0] || ''), 'metadata preserved; Chinese now uses the same FAQ script');
@@ -96,7 +97,7 @@ test('historical FAQ migration changes only three answers; keep legal permission
     for(const locale of ['ja','en'])assert.equal(item.answer[locale],answers[locale],`${id}/${locale}: product scope requires separate approval`);
     assert.equal(item.answer['zh-CN'],current.faq.find(entry=>entry.id===id).answer['zh-CN']);
   }
-  assert.equal(read('content/faq-policy-additions.json'), applyApprovedMultilingualContent('content/faq-policy-additions.json',before('content/faq-policy-additions.json')));
+  assert.equal(read('content/faq-policy-additions.json'), applyApprovedContinuingUsePolicy('content/faq-policy-additions.json',applyApprovedMultilingualContent('content/faq-policy-additions.json',before('content/faq-policy-additions.json'))));
 });
 
 test('Chinese dictionary translates the complete public scope and does not restore retired demo capability claims', () => {

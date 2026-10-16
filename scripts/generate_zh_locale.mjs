@@ -9,6 +9,7 @@ import { applyReleaseNoticePolicy, removePurchaseStatusCopy, releaseCopy } from 
 import { renderStaticFaq } from './multilingual_content_copy.mjs';
 import { localizeW04Motion } from './w04_layered_motion.mjs';
 import {renderBookNews} from './build_book_news.mjs';
+import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-translations.json'), 'utf8'));
@@ -136,6 +137,9 @@ function renderPage(name) {
   }
 
   let translated = translateMarkup(output).replace(/\n[ \t]+\n/g, '\n\n');
+  if (name === 'license.html') {
+    translated = applyApprovedContinuingUsePolicy('zh/license.html', translated);
+  }
   if (name === 'demo.html') {
     // Social sharing locale follows this Chinese page, not its English source.
     translated = translated.replace('<meta property="og:locale" content="en_US">', '<meta property="og:locale" content="zh_CN">\n  <meta property="og:locale:alternate" content="en_US">');

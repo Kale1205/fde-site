@@ -6,6 +6,7 @@ import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.m
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {renderNewsPage} from '../news-renderer.js';
 import {renderCurrentFaqFixture} from './faq_content_test_helpers.mjs';
+import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mjs';
 const root=new URL('../',import.meta.url);
 const read=file=>readFileSync(new URL(file,root),'utf8');
 // Keep the approved shared News images/CMS removal from merged PR #97.
@@ -31,8 +32,8 @@ test('Chinese Demo sharing uses Chinese locale and retains both other locales',(
 });
 test('all visible page content, price, commerce, metadata links and schema stay exact',()=>{
  const strip=html=>normalize(html).replace(/^.*<meta (?:name="description"|property="og:description"|property="og:locale(?::alternate)?")[^>]+>\s*\n/gm,'');
- for(const file of ['zh/index.html','zh/license.html','zh/demo.html'])assert.equal(strip(read(file)),strip(baseline(file)),file);
- for(const file of ['index.html','license.html','demo.html','ja/index.html','ja/license.html','ja/demo.html','zh/contact.html','zh/order.html','zh/customer.html','robots.txt'])assert.equal(normalize(read(file)),normalize(renderCurrentFaqFixture(file,baseline(file))),file);
+ for(const file of ['zh/index.html','zh/license.html','zh/demo.html'])assert.equal(strip(read(file)),strip(applyApprovedContinuingUsePolicy(file,baseline(file))),file);
+ for(const file of ['index.html','license.html','demo.html','ja/index.html','ja/license.html','ja/demo.html','zh/contact.html','zh/order.html','zh/customer.html','robots.txt'])assert.equal(normalize(read(file)),normalize(applyApprovedContinuingUsePolicy(file,renderCurrentFaqFixture(file,baseline(file)))),file);
  assert.equal(normalize(read('zh/news.html')),normalize(renderNewsPage(baseline('zh/news.html'),JSON.parse(read('content/site-content.json')),read('build-version.txt').trim())),'Chinese News keeps its layout/SEO and renders current reviewed content');
 });
 test('translation dictionary changes only the three reviewed metadata values',()=>{
@@ -44,7 +45,7 @@ test('translation dictionary changes only the three reviewed metadata values',()
 });
 test('historical fixture accommodation accepts exactly the same reviewed metadata changes',()=>{
  for(const file of ['zh/index.html','zh/license.html','zh/demo.html','content/zh-translations.json']){
-  assert.equal(normalize(applyReviewedZhSearchMetadata(file,baseline(file))),normalize(read(file)),file);
+  assert.equal(normalize(applyApprovedContinuingUsePolicy(file,applyReviewedZhSearchMetadata(file,baseline(file)))),normalize(read(file)),file);
   assert.equal(applyReviewedZhSearchMetadata(file,read(file)),read(file),'idempotent');
  }
 });
