@@ -26,10 +26,10 @@ if(window.FDE_CONTACT_API && /(?:^|\/)(?:contact|order)\.html$/.test(location.pa
 
 if(location.pathname.endsWith('/cms-admin.html') && !window.__FDE_ADMIN_RUNTIME_LOADED__){
   window.__FDE_ADMIN_RUNTIME_LOADED__=true;
-  const ADMIN_KEY_SESSION='fde-admin-key-session';
+  let adminSessionKey='';
   const KEY_SELECTORS=['#adminKey','#faqAdminKey'];
-  const readSessionKey=()=>{try{return sessionStorage.getItem(ADMIN_KEY_SESSION)||''}catch{return''}};
-  const writeSessionKey=value=>{try{if(value)sessionStorage.setItem(ADMIN_KEY_SESSION,value);else sessionStorage.removeItem(ADMIN_KEY_SESSION)}catch{}};
+  const readSessionKey=()=>adminSessionKey;
+  const writeSessionKey=value=>{adminSessionKey=String(value||'')};
   const syncAdminKeyFields=value=>{const key=String(value??readSessionKey()).trim();if(!key)return;KEY_SELECTORS.forEach(sel=>{const el=document.querySelector(sel);if(el&&el.value!==key)el.value=key})};
   window.FDE_ADMIN_KEY={get:readSessionKey,set(value){const key=String(value||'').trim();writeSessionKey(key);syncAdminKeyFields(key);return key},clear(){writeSessionKey('');KEY_SELECTORS.forEach(sel=>{const el=document.querySelector(sel);if(el)el.value=''})}};
 
@@ -51,7 +51,7 @@ if(location.pathname.endsWith('/cms-admin.html') && !window.__FDE_ADMIN_RUNTIME_
   const expireToastIfNeeded=()=>{if(toastShownAt&&Date.now()-toastShownAt>=4000)hideToast()};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)expireToastIfNeeded()});window.addEventListener('pageshow',expireToastIfNeeded);window.addEventListener('focus',expireToastIfNeeded);
 
-  function watchStatus(){const el=document.getElementById('adminStatus');if(!el||el.dataset.toastBound)return;el.dataset.toastBound='1';const consume=()=>{if(el.hidden)return;const text=el.textContent.trim();if(!text)return;const type=el.classList.contains('error')?'error':el.classList.contains('success')?'success':'';window.FDE_ADMIN_TOAST(text,type);el.hidden=true};new MutationObserver(consume).observe(el,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden']});consume()}
+  function watchStatus(){const el=document.getElementById('adminStatus');if(!el||el.dataset.toastBound)return;el.dataset.toastBound='1';const consume=()=>{if(el.hidden||el.dataset.cmsPersistent==='true')return;const text=el.textContent.trim();if(!text)return;const type=el.classList.contains('error')?'error':el.classList.contains('success')?'success':'';window.FDE_ADMIN_TOAST(text,type);el.hidden=true};new MutationObserver(consume).observe(el,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden']});consume()}
   function hydrateAdminUi(){ensureSharedAdminKeyField();syncAdminKeyFields();watchStatus()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hydrateAdminUi,{once:true});else hydrateAdminUi();
 }

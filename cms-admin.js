@@ -6,7 +6,7 @@ const store=new DraftStore(),drafts={create:newDraft(),edit:null,media:null};
 let token='',snapshot=null,busy=false,mode='create',saveQueue=Promise.resolve(),timer,unsaved=false;
 const previewed=new Map();
 const publisher=new NewsPublisher({persist:async d=>{await saveQueue;return store.put(d);}});
-const status=(text,type='')=>{const el=$('adminStatus');el.textContent=text;el.className=`status ${type}`;el.hidden=false;};
+const status=(text,type='')=>{const el=$('adminStatus');el.dataset.cmsPersistent='true';el.textContent=text;el.className=`status ${type}`;el.hidden=false;};
 const safe=fn=>async(...args)=>{try{await fn(...args);}catch(e){status(errorText(e),'error');}};
 const suffixes={ja:'Ja',en:'En','zh-CN':'Zh'};
 function button(id,text,action,parent,secondary=true){const b=make('button',text,`admin-button${secondary?' secondary':''}`);b.id=id;b.type='button';b.addEventListener('click',safe(action));parent.append(b);return b;}
@@ -110,7 +110,7 @@ async function init(){
  const bar=make('section','','admin-card cms-draft-bar');bar.append(make('h2','端末内の下書き'),make('p','このブラウザだけに保存します。別端末には共有されず、ブラウザのデータ削除・プライベートブラウズ等で消える場合があります。重要な原稿はバックアップしてください。'));
  const field=make('div','','field'),label=make('label','保存済みの下書き');label.htmlFor='localDrafts';const sel=make('select');sel.id='localDrafts';field.append(label,sel);bar.append(field);const actions=make('div','','actions');bar.append(actions);button('backupDraft','現在の下書きをバックアップ',backup,actions);const op=make('p');op.id='draftOperation';bar.append(op);const result=make('div','','cms-publication-result');result.id='publicationResult';result.setAttribute('aria-live','polite');bar.append(result);$('newsPanel').prepend(bar);bar.append($('adminStatus'));
  const dialog=make('dialog','','cms-news-preview');dialog.id='newsPreview';dialog.setAttribute('aria-labelledby','previewHeading');const heading=make('h2','公開前プレビュー');heading.id='previewHeading';dialog.append(heading,make('p','公開ページとは表示幅が異なります。本文と画像を確認し、閉じた後に確認チェックを入れてください。'));const content=make('div');content.id='newsPreviewContent';dialog.append(content);button('closeNewsPreview','閉じる',()=>dialog.close(),dialog);document.body.append(dialog);
- const adminKey=make('div','','field');const keyLabel=make('label','翻訳用 Admin fulfillment key（英訳時のみ）');keyLabel.htmlFor='adminKey';const key=make('input');key.id='adminKey';key.type='password';key.autocomplete='off';adminKey.append(keyLabel,key);bar.append(adminKey);
+ const key=$('adminKey')||make('input'),adminKey=key.closest('.field')||make('div','','field');adminKey.replaceChildren();const keyLabel=make('label','翻訳用 Admin fulfillment key（英訳時のみ）');keyLabel.htmlFor='adminKey';key.id='adminKey';key.type='password';key.autocomplete='off';adminKey.append(keyLabel,key);bar.append(adminKey);
  $('adminTabs').classList.remove('hidden');showPanel('news');document.querySelector('[data-admin-tab="faq"]').disabled=true;document.querySelectorAll('[data-admin-tab]').forEach(b=>b.addEventListener('click',()=>showPanel(b.dataset.adminTab)));
  $('connectBtn').addEventListener('click',safe(connect));
  $('createNewsBtn').addEventListener('click',safe(async()=>{await save('create');status('下書きを端末内に保存しました。公開依頼は作成していません。','success');}));
