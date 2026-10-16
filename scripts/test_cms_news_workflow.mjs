@@ -91,7 +91,7 @@ if(process.env.CMS_GIT_INTEGRATION==='1')test('synthetic editorial deletion pass
   const changed=execFileSync('git',['diff','--name-only','--diff-filter=ACM'],{cwd:root,encoding:'utf8'}).trim().split('\n');
   const untracked=execFileSync('git',['ls-files','--others','--exclude-standard'],{cwd:root,encoding:'utf8'}).trim().split('\n').filter(x=>!x.startsWith('output/'));
   for(const file of [...new Set([...changed,...untracked])].filter(Boolean)){mkdirSync(path.dirname(path.join(repo,file)),{recursive:true});copyFileSync(new URL(file,root),path.join(repo,file));}
-  run('git',['config','user.name','CMS integration test']);run('git',['config','user.email','cms-test@example.invalid']);run('git',['add','.']);run('git',['commit','-m','Local implementation fixture']);
+  run('git',['config','user.name','CMS integration test']);run('git',['config','user.email','cms-test@example.invalid']);run('git',['add','.']);run('git',['commit','--allow-empty','-m','Local implementation fixture']);
   const f=fixture(),d=await draft();d.operation='delete';d.sourceId='ims-license-updates-policy-20260819';d.reviewedFingerprint=await fingerprint(d);await f.publisher().publish(d,'synthetic-token');
   for(const [file,data] of Object.entries(finalFiles(f))){mkdirSync(path.dirname(path.join(repo,file)),{recursive:true});writeFileSync(path.join(repo,file),data.encoding==='base64'?Buffer.from(data.content,'base64'):data.content);}
   run('git',['add','.']);run('git',['commit','-m','Synthetic news deletion'],{GIT_AUTHOR_DATE:'2026-10-18T12:00:00Z',GIT_COMMITTER_DATE:'2026-10-18T12:00:00Z'});

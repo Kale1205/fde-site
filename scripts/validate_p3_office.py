@@ -13,6 +13,7 @@ AGENT_INSTRUCTIONS = ROOT / "docs" / "operations" / "KALES_OFFICE_AGENT_INSTRUCT
 NOTIFIER = ROOT / ".github" / "workflows" / "notify-slack-on-failure.yml"
 PR_CHECKS = ROOT / ".github" / "workflows" / "pr-checks.yml"
 CMS_ADMIN = ROOT / "cms-admin.js"
+CMS_NEWS_WORKFLOW = ROOT / "cms-news-workflow.js"
 NEWS_TRANSLATION = ROOT / "news-translation-hook.js"
 WORKER_CONFIG = ROOT / "worker" / "wrangler.toml"
 WORKER_ENTRY = ROOT / "worker" / "src" / "index-v14.js"
@@ -40,6 +41,7 @@ agent_instructions = read(AGENT_INSTRUCTIONS)
 notifier = read(NOTIFIER)
 pr_checks = read(PR_CHECKS)
 cms_admin = read(CMS_ADMIN)
+cms_news_workflow = read(CMS_NEWS_WORKFLOW)
 news_translation = read(NEWS_TRANSLATION)
 worker_config = read(WORKER_CONFIG)
 worker_entry = read(WORKER_ENTRY)
@@ -173,21 +175,29 @@ for marker in (
         fail(f"PR checks do not enforce P3-6 contract: {marker}")
 
 for marker in (
-    "const OWNER='Kale1205',REPO='fde-site',BRANCH='main';",
-    "async function saveCms",
-    "async function createNews",
-    "CMS: add bilingual News",
+    "new DraftStore()",
+    "publisher.publish(d,token)",
+    "if(!confirm(",
+    "公開依頼（PR）",
 ):
     if marker not in cms_admin:
-        fail(f"Existing CMS publication boundary marker missing unexpectedly: {marker}")
+        fail(f"Protected CMS publication boundary marker missing: {marker}")
+
+for marker in ("REPO='Kale1205/fde-site'", "'/git/refs'", "'/pulls'", "reviewedFingerprint", "REQUEST_CHANGED", "LOCAL_CONFLICT"):
+    if marker not in cms_news_workflow:
+        fail(f"Protected CMS draft/PR boundary marker missing: {marker}")
+for forbidden in ("method:'PUT'", "method:'PATCH'", "force:true", "/merges", "/reviews"):
+    if forbidden in cms_admin or forbidden in cms_news_workflow:
+        fail(f"CMS must not overwrite main, force-update, merge or self-approve: {forbidden}")
 
 for marker in (
     "admin_translate_fields",
-    "prepareAndReplay",
-    "英語版News",
+    "FDE_NEWS_TRANSLATE",
 ):
     if marker not in news_translation:
         fail(f"Existing News translation boundary marker missing unexpectedly: {marker}")
+if "prepareAndReplay" in news_translation or "btn.click()" in news_translation:
+    fail("News translation must not replay save or publication actions")
 
 if 'main = "src/index-v14.js"' not in worker_config:
     fail("Cloudflare production Worker entry changed unexpectedly during P3-6 foundation")
