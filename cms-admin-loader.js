@@ -8,6 +8,7 @@ const manifest=()=>{
 };
 const loadScript=(path)=>new Promise((resolve,reject)=>{
   const script=document.createElement('script');
+  if(path==='cms-admin.js')script.type='module';
   script.src=BUILD_KEY?`${path}?v=${encodeURIComponent(BUILD_KEY)}`:path;
   script.async=false;
   script.onload=resolve;

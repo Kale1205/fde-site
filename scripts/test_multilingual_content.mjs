@@ -119,6 +119,6 @@ test('shared FAQ renderer retains static content on fetch failure/incomplete Chi
 test('visual design except approved W01 CTA, native demo operations, CMS editing/auth, contact submission and commerce boundaries are byte-preserved',()=>{
   for(const file of ['gallery-ui.css','gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','faq-v38.css',
     'gallery-ui.js','demo-v1.js','quiet-form.js','site.js','contact-direct.js','contact-config.js','quiet-customer.js',
-    'cms-admin.html','faq-admin-v3.js','cms-admin-view.js','cms-content.js','cms-content-ja.js','content/site-content.json',
+    'faq-admin-v3.js','cms-content.js','cms-content-ja.js',
     'worker/src/index-v14.js','robots.txt'])assert.equal(normalized(file.startsWith('cms-content')?withoutW05CmsBridge(read(file)):read(file)),normalized(applyW01ProductCta(file,before(file))),file);
 });

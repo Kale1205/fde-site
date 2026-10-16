@@ -19,7 +19,7 @@ const baseline = 'e1ebe999d2acbbf7edc211688a51894eaf7b60a6';
 const previous = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', `${baseline}:${file}`], {cwd:root, encoding:'utf8'})); return applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
   ['index', 'license', 'demo', 'goals', 'news', 'contact', 'order', 'customer', 'quiet-form'].map(page => `${prefix}${page}.html`)
-).concat(['cms-admin.html', 'overview.html', 'products.html']);
+).concat(['overview.html', 'products.html']); // CMS has its own draft/PR behavior suite.
 
 for (const file of pages) {
   test(`${file}: only approved product/operator naming and first-use expansion change`, () => {
@@ -57,7 +57,7 @@ for (const prefix of ['', 'ja/', 'zh/']) {
 }
 
 test('CMS hydration and Chinese dictionary contain the same approved names', () => {
-  for (const file of ['content/site-content.json', 'content/faq-content.json', 'content/zh-translations.json']) {
+  for (const file of ['content/faq-content.json', 'content/zh-translations.json']) {
     assert.equal(read(file), applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file)))))));
     assert.doesNotMatch(read(file), /FDE IMS/);
     JSON.parse(read(file));

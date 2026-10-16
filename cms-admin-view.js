@@ -9,7 +9,7 @@
  const sidebar=make('aside','admin-sidebar');sidebar.setAttribute('aria-label','CMS管理');
  const header=document.querySelector('.admin-header');sidebar.append(header);
  const slot=make('div','admin-nav-slot');slot.append(tabs);sidebar.append(slot);
- const locked=make('p','admin-connection-note','GitHubへ接続すると、News・MediaとFAQを管理できます。');sidebar.append(locked);
+ const locked=make('p','admin-connection-note','下書きはこのブラウザ内。公開依頼時にGitHubへ接続します。');sidebar.append(locked);
  const mark=make('img','admin-sidebar-mark');mark.src='assets/baked-kale-mark.svg';mark.alt='';sidebar.append(mark);
  document.body.prepend(sidebar);
  const intro=document.querySelector('.admin-intro');
@@ -45,6 +45,7 @@
  stage.append(createCard,editCard);workspace.append(listing,stage);panel.prepend(workspace);
  const uploader=document.getElementById('uploaderCard');
  const common=make('details','admin-common-media');common.append(make('summary','','共通メディアを管理'),uploader);panel.append(common);
+ const draftBar=panel.querySelector('.cms-draft-bar');if(draftBar)panel.prepend(draftBar);
  const selectField=select.closest('.field');selectField.classList.add('admin-original-selector');selectField.hidden=true;select.tabIndex=-1;
  function showEditor(mode,focus=false){createCard.hidden=mode!=='create';editCard.hidden=mode!=='edit';if(focus){const target=mode==='create'?document.getElementById('createTitleJa'):document.getElementById('editTitleJa');target.focus();if(media.matches)target.scrollIntoView({block:'center',behavior:'instant'})}}
  function renderList(){
@@ -60,6 +61,7 @@
  function syncSelection(){rows.querySelectorAll('button').forEach(row=>row.setAttribute('aria-pressed',String(row.dataset.articleId===select.value)))}
  new MutationObserver(()=>{renderList();if(select.options.length)showEditor('edit')}).observe(select,{childList:true});
  select.addEventListener('change',()=>{syncSelection();showEditor('edit')});
- create.addEventListener('click',()=>showEditor('create',true));
+ create.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('fde:cms-new-draft')));
+ document.addEventListener('fde:cms-show-editor',event=>{if(['create','edit'].includes(event.detail))showEditor(event.detail,true)});
  renderList();if(select.options.length)showEditor('edit');
 })();

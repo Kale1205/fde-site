@@ -45,6 +45,6 @@ test('no real commerce, external transmission, persistent data or HTML injection
   assert.doesNotMatch(read('quiet-customer.js'),/fetch\(|XMLHttpRequest|sendBeacon|localStorage|sessionStorage|indexedDB|innerHTML|status_lookup|FDE_CONTACT_API/);
   assert.equal(read('worker/src/index-v14.js'),execFileSync('git',['show','f95aa4d:worker/src/index-v14.js'],{cwd:root,encoding:'utf8'}));
   // A01 now has an approved presentation layer; its authentication and writes stay unchanged.
-  for(const file of ['cms-admin.js','news-translation-hook.js','faq-admin-v3.js','contact-config.js','cms-admin-loader.js'])
+  for(const file of ['faq-admin-v3.js','contact-config.js'])
     assert.equal(normalizeAssetBuildKeys(read(file)),normalizeAssetBuildKeys(execFileSync('git',['show',`f95aa4d:${file}`],{cwd:root,encoding:'utf8'})));
 });

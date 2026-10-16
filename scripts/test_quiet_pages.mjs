@@ -16,7 +16,7 @@ import { renderQuietCustomer } from './build_quiet_customer.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pages = ['', 'ja/', 'zh/'].flatMap(locale =>
   ['license', 'demo', 'goals', 'news', 'contact', 'order', 'customer'].map(name => `${locale}${name}.html`)
-).concat(['cms-admin.html']);
+); // Intentional CMS workflow/copy changes are tested in the CMS suites.
 // Baseline for this design-only renewal; overridable for future approved copy updates.
 const baseline = process.env.QUIET_PAGES_BASE || 'e13457ad75068fa753b3f6dc6705d1aa1de2a61c';
 const original = name => execFileSync('git', ['show', `${baseline}:${name}`], { cwd: root, encoding: 'utf8' });

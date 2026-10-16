@@ -19,7 +19,7 @@ const read = file => withoutW05BookCoverEditor(file,readFileSync(new URL(file,ro
 const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
   ['index','license','order','contact','demo','goals','news','customer','quiet-form'].map(page => prefix + page + '.html')
-).concat(['cms-admin.html','overview.html','products.html']);
+).concat(['overview.html','products.html']); // CMS has its own draft/PR behavior suite.
 const normalize = source => normalizeAssetBuildKeys(source.trimEnd());
 const prices = source => source.match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
 const outsideFaq = source => source.replace(/<div id="cmsFaqList">[\s\S]*?<\/div><div id="faqEmpty"/, '<div id="faqEmpty"');
@@ -74,8 +74,9 @@ test('FAQ updates are limited to four answers, without adding questions, changin
   }
 });
 
-test('news keeps the dated article intact and shows the latest policy annotation before it', () => {
-  const current = JSON.parse(read('content/site-content.json')), original = JSON.parse(before('content/site-content.json'));
+test('historical news migration prepends the policy annotation; future reviewed CMS edits are permitted', () => {
+  const original = JSON.parse(before('content/site-content.json'));
+  const current = JSON.parse(applyApprovedOptionalUpdates('content/site-content.json',JSON.stringify(original,null,2)+'\n'));
   const now = current.news.find(x=>x.id==='ims-license-updates-policy-20260819');
   const old = original.news.find(x=>x.id===now.id);
   for (const [locale,note] of Object.entries(updatesNewsNotes)) {
@@ -84,7 +85,7 @@ test('news keeps the dated article intact and shows the latest policy annotation
   assert.deepEqual({...now,body:null},{...old,body:null});
   assert.deepEqual(current.news.filter(x=>x.id!==now.id),original.news.filter(x=>x.id!==now.id));
   assert.deepEqual({...current,news:null},{...original,news:null});
-  assert.equal(applyApprovedOptionalUpdates('content/site-content.json',read('content/site-content.json')),read('content/site-content.json'));
+  assert.equal(applyApprovedOptionalUpdates('content/site-content.json',JSON.stringify(current,null,2)+'\n'),JSON.stringify(current,null,2)+'\n');
 });
 
 test('CSS except approved W01 CTA, runtime, authentication, payment gates, robots and native/back-end code are not changed', () => {

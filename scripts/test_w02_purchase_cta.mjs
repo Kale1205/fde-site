@@ -36,7 +36,7 @@ test('Chinese dictionary adds exactly the purchase-label translation; no other c
 });
 test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
   for(const file of ['gallery-ui.js','gallery-ui.css','quiet-pages.css','license.css','contact-direct.js','contact-config.js','quiet-form.js',
-    'worker/src/index-v14.js','robots.txt','content/faq-content.json','content/faq-policy-additions.json','content/site-content.json',
+    'worker/src/index-v14.js','robots.txt','content/faq-content.json','content/faq-policy-additions.json',
     ...['','ja/','zh/'].flatMap(p=>['index','contact','demo','goals','news','order','customer'].map(n=>p+n+'.html'))]){
     assert.equal(normalize(read(file)),normalize(before(file)),file);
   }
