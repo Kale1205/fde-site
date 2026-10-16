@@ -153,8 +153,8 @@ function init(){
   reader.querySelector('.reader-category').textContent=item.category||'Update';
   reader.querySelector('#book-article-title').textContent=item.title;
   const body=reader.querySelector('.reader-body');body.replaceChildren();
-  for(const paragraph of item.body.split(/\n\n+/)){const p=document.createElement('p');p.textContent=paragraph;body.append(p);}reader.querySelector('.reader-copy').scrollTop=0;
-  reader.showModal();reader.scrollTop=0;document.body.classList.add('book-reader-open');reader.querySelector('.book-close').focus({preventScroll:true});
+  for(const paragraph of item.body.split(/\n\n+/)){const p=document.createElement('p');p.textContent=paragraph;body.append(p);}
+  reader.showModal();reader.scrollTop=0;reader.querySelector('.reader-copy').scrollTop=0;document.body.classList.add('book-reader-open');reader.querySelector('.book-close').focus({preventScroll:true});
   const openingCover=reader.querySelector('.book-opening-cover'),base='translate3d(0,0,0)';
   flightFrom=sourceRect?bookFlightTransform(sourceRect,openingCover.getBoundingClientRect(),base):base;
   if(!reduce.matches){openingCover.style.transform=flightFrom;liftedBook?.classList.add('is-lifted');}
