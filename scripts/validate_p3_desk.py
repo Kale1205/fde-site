@@ -51,7 +51,7 @@ for marker in (
     "python scripts/validate_p3_desk.py",
     "python scripts/test_p3_desk_rules.py",
     "python scripts/kale_desk_dry_run.py --output desk-report",
-    "actions/upload-artifact@v4",
+    "actions/upload-artifact@v7",
     "retention-days: 14",
 ):
     if marker not in workflow:

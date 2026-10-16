@@ -41,7 +41,7 @@ workflow_required = (
     "actions: read",
     "CLOUDFLARE_SENTINEL_TOKEN",
     "python scripts/kale_sentinel_live.py --output sentinel-report",
-    "actions/upload-artifact@v4",
+    "actions/upload-artifact@v7",
     "retention-days: 14",
 )
 for marker in workflow_required:
