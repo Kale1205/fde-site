@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const source=readFileSync(new URL('../cms-admin.js',import.meta.url),'utf8');
 assert.match(source,/\nsafe\(init\)\(\);\s*$/,'Runtime startup must be identified before loading the VM.');
-const runtime=source.replace(/^import[^\n]+\n/,'').replace(/\nsafe\(init\)\(\);\s*$/,'');
+const runtime=source.replace(/^import[^\n]+\n/gm,'').replace(/\nsafe\(init\)\(\);\s*$/,'');
 assert.notEqual(runtime,source,'The test must remove module startup, never run init or a real DraftStore.');
 const removeImageAction=source.match(/\$\('removeNewsImageBtn'\)\.addEventListener\('click',safe\((async\(\)=>\{[^\n]+\})\)\);/)?.[1];
 const beforeUnloadAction=source.match(/window\.addEventListener\('beforeunload',(e=>\{[^\n]+\})\);/)?.[1];
@@ -25,7 +25,7 @@ class CmsError extends Error{constructor(code){super(code);this.code=code;}}
 function fixture(){
  const nodes=new Map(),events=[],timers=new Map(),journal=new Map();
  const counts={put:0,list:0,publish:0,confirm:0,fingerprint:0};
- const hooks={put:null,inspect:null,fingerprint:null,confirm:null,publish:null};let sequence=0,timerSequence=0;
+ const hooks={put:null,inspect:null,fingerprint:null,confirm:null,publish:null,batchList:null};let sequence=0,timerSequence=0;
  function element(tag='div'){
   const classes=new Set();return {tagName:tag.toUpperCase(),value:'',checked:false,disabled:false,hidden:false,dataset:{},children:[],options:[],_text:'',open:false,
    get textContent(){return this._text+this.children.map(child=>typeof child==='string'?child:child.textContent||'').join('');},
@@ -57,10 +57,12 @@ function fixture(){
   async put(value){counts.put++;if(hooks.put)await hooks.put(value);const saved=clone({...value,revision:value.revision+1});journal.set(saved.id,saved);return saved;}
   async list(){counts.list++;return clone([...journal.values()]);}
  }
+ class MemoryBatchStore{async list(){return hooks.batchList?hooks.batchList():[];} async put(value){return {...value,revision:value.revision+1};}}
+ class SyntheticBatchPublisher{}
  class SyntheticPublisher{
   async publish(d,token){counts.publish++;return hooks.publish?hooks.publish(d,token):{pr:{number:123}};}
  }
- const context={document,window:{},DraftStore:MemoryDraftStore,NewsPublisher:SyntheticPublisher,CmsError,errorText:e=>e.code||e.message,newDraft,
+ const context={document,window:{},DraftStore:MemoryDraftStore,NewsPublisher:SyntheticPublisher,BatchStore:MemoryBatchStore,BatchPublisher:SyntheticBatchPublisher,newBatch:()=>({id:'synthetic-batch',revision:0,entries:[],reviewedFingerprint:'',request:null,updatedAt:'2026-10-17T00:00:00.000Z'}),CmsError,errorText:e=>e.code||e.message,newDraft,
   persistedDraft:clone,base64:()=>'',LANGS:locales,
   fingerprint:async d=>{counts.fingerprint++;return hooks.fingerprint?hooks.fingerprint(d):digest(d);},
   inspectImage:async file=>hooks.inspect?hooks.inspect(file):{},
@@ -71,7 +73,7 @@ function fixture(){
   setTimeout:callback=>{const id=++timerSequence;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)
  };
  // Expose the original inline handlers in this private VM without executing init.
- vm.createContext(context);vm.runInContext(runtime+`\nglobalThis.testApi={navigate,preserveCurrent,capture,fill,dirty,chooseImage,renderPreview,review,request,connect,translate,unchanged,version,setConnectionState,showResult,
+ vm.createContext(context);vm.runInContext(runtime+`\nglobalThis.testApi={navigate,preserveCurrent,capture,fill,dirty,chooseImage,renderPreview,review,request,connect,unchanged,version,setConnectionState,showResult,
   removeImage:${removeImageAction},beforeUnload:${beforeUnloadAction},
   drafts,editDrafts,previewed,draftVersions,
   state:()=>({route,routeEpoch,navigating,busy,mode,snapshot,connectionState}),
@@ -86,7 +88,9 @@ function fixture(){
 const editTarget=id=>({section:'news',screen:'editor',articleId:id});
 const actions={section:'news',screen:'actions'};
 async function editing(id='a'){const f=fixture();assert.equal(await f.api.navigate(editTarget(id)),true);return f;}
-function approve(f){const d=f.api.drafts.edit;d.reviewedFingerprint=digest(d);f.node('editReviewed').checked=true;f.api.previewed.set('edit',d.reviewedFingerprint);return d;}
+// These original publication guards exercise only restored single-request journals.
+// New article submission goes through the separate batch UI regression suite.
+function approve(f){const d=f.api.drafts.edit;d.reviewedFingerprint=digest(d);d.request={fingerprint:d.reviewedFingerprint,branch:'cms/news-synthetic-legacy',branchReady:false};f.node('editReviewed').checked=true;f.api.previewed.set('edit',d.reviewedFingerprint);return d;}
 
 test('preserveCurrent clears pending autosave and persists the current three-language inputs',async()=>{
  const f=await editing();f.node('editBodyZh').value='Unsaved synthetic Chinese body';f.api.dirty('edit');assert.equal(f.timers.size,1);
@@ -453,9 +457,9 @@ test('FAQ draft restoration delegates exclusively to the FAQ controller',async()
  faq.calls.length=0;const nextCount=f.counts.list;assert.equal(await f.api.navigate({section:'faq',screen:'drafts'}),true);
  assert.deepEqual(faq.calls[0],'preserve');assert.equal(faq.calls[1][1].screen,'drafts');assert.equal(f.counts.list,nextCount);
 });
-test('FAQ publication lock blocks navigation, News submission, translation and reconnection',async()=>{
+test('FAQ publication lock blocks navigation, News legacy submission and reconnection',async()=>{
  const f=await editing(),faq=attachFaq(f);approve(f);faq.hooks.busy=true;const epoch=f.api.state().routeEpoch;
- assert.equal(await f.api.navigate(actions),false);await f.api.request('edit');await f.api.translate('edit');await f.api.connect();
+ assert.equal(await f.api.navigate(actions),false);await f.api.request('edit');await f.api.connect();
  assert.equal(f.api.state().routeEpoch,epoch);assert.equal(f.counts.confirm,0);assert.equal(f.counts.publish,0);assert.equal(faq.calls.length,0);
 });
 test('FAQ initialization failure keeps the previous editor and refuses editing',async()=>{
@@ -466,4 +470,22 @@ test('connection notifications contain state only, never the transient credentia
  const f=fixture();f.api.configure({token:'synthetic-credential-never-persisted'});f.api.setConnectionState('error');
  const event=f.events.filter(x=>x.type==='fde:cms-connection').at(-1);assert.deepEqual(plain(event.detail),{state:'error'});
  assert(!JSON.stringify(f.events).includes('synthetic-credential-never-persisted'));
+});
+
+test('explicit live article selection starts a fresh draft after its prior ID was submitted, retaining original local content',async()=>{
+ const f=await editing(),old=f.api.drafts.edit;f.node('editBodyEn').value='Synthetic submitted original English';await f.api.preserveCurrent();
+ f.hooks.batchList=async()=>[{request:{snapshot:[{id:old.id}]}}];
+ const live=f.api.state().snapshot.content.news.find(item=>item.id==='a');live.body.en='Synthetic latest main English';
+ assert.equal(await f.api.navigate(editTarget('a')),true);assert.notEqual(f.api.drafts.edit.id,old.id);assert.equal(f.node('editBodyEn').value,live.body.en);assert.equal(f.journal.get(old.id).record.body.en,'Synthetic submitted original English');
+ assert.equal(await f.api.navigate({section:'news',screen:'editor',draftId:old.id}),true);assert.equal(f.api.drafts.edit.id,old.id);assert.equal(f.node('editBodyEn').value,'Synthetic submitted original English');
+});
+
+test('a pending submitted-ID lookup rejects navigation races without replacing the editor',async()=>{
+ const f=await editing(),old=f.api.drafts.edit,lookup=gate(),entered=gate();f.node('editBodyZh').value='Synthetic retained Chinese';f.hooks.batchList=()=>{entered.resolve();return lookup.promise;};
+ const pending=f.api.navigate(editTarget('b'));await entered.promise;f.api.configure({routeEpoch:f.api.state().routeEpoch+1});lookup.resolve([{request:{snapshot:[{id:old.id}]}}]);assert.equal(await pending,false);assert.equal(f.api.drafts.edit,old);assert.equal(f.node('editBodyZh').value,'Synthetic retained Chinese');assert.equal(f.api.state().route.screen,'editor');
+});
+
+test('submitted-ID local storage failure preserves the selected editor and all input',async()=>{
+ const f=await editing(),old=f.api.drafts.edit;f.node('editBodyJa').value='Synthetic retained Japanese';f.hooks.batchList=async()=>{throw new CmsError('STORAGE');};
+ assert.equal(await f.api.navigate(editTarget('b')),false);assert.equal(f.api.drafts.edit,old);assert.equal(f.node('editBodyJa').value,'Synthetic retained Japanese');assert.equal(f.node('adminStatus').textContent,'STORAGE');
 });

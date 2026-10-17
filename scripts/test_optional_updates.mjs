@@ -1,4 +1,5 @@
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
+import {applyApprovedGoalsAutoplay} from './goals_autoplay_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
@@ -105,7 +106,7 @@ test('historical news migration prepends the policy annotation; future reviewed 
 test('CSS except approved W01 CTA, runtime, authentication, payment gates, robots and native/back-end code are not changed', () => {
   for (const file of ['gallery-ui.css','quiet-form.css','quiet-pages.css','gallery-ui.js','quiet-form.js','demo-v1.js',
     'contact-config.js','contact-direct.js','quiet-customer.js','worker/src/index-v14.js','robots.txt']) {
-    assert.equal(normalize(read(file)),normalize(applyW01ProductCta(file,before(file))),file);
+    assert.equal(normalize(read(file)),normalize(applyApprovedGoalsAutoplay(file,applyW01ProductCta(file,before(file)))),file);
   }
 });
 

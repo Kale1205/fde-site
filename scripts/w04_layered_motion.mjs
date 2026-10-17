@@ -34,9 +34,9 @@ fn main() {
 `;
 
 const copy = {
-  en: {note: 'Illustrative sample code, not the IMS implementation.', label: 'Sample inventory code', read: 'Read the sample code', pause: 'Pause motion', play: 'Play motion', error: 'The recording could not be played. You can read the operation steps below.'},
-  ja: {note: '説明用のサンプルコードです。IMSの実装コードではありません。', label: '在庫管理のサンプルコード', read: 'サンプルコードを読む', pause: '動きを一時停止', play: '動きを再生', error: '操作動画を再生できませんでした。下の文章で操作の流れをご確認いただけます。'},
-  zh: {note: '用于说明的示例代码，并非 IMS 的实际实现。', label: '库存管理示例代码', read: '阅读示例代码', pause: '暂停动态演示', play: '播放动态演示', error: '操作视频暂时无法播放。您可以阅读下方的操作步骤。'},
+  en: {note: 'Illustrative sample code, not the IMS implementation.', label: 'Sample inventory code', read: 'Read the sample code', pause: 'Pause motion', play: 'Play motion', error: 'The recording could not be played.'},
+  ja: {note: '説明用のサンプルコードです。IMSの実装コードではありません。', label: '在庫管理のサンプルコード', read: 'サンプルコードを読む', pause: '動きを一時停止', play: '動きを再生', error: '操作動画を再生できませんでした。'},
+  zh: {note: '用于说明的示例代码，并非 IMS 的实际实现。', label: '库存管理示例代码', read: '阅读示例代码', pause: '暂停动态演示', play: '播放动态演示', error: '操作视频暂时无法播放。'},
 };
 const escape = text => text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 
@@ -47,7 +47,7 @@ export function localizeW04Motion(source, locale) {
 }
 
 export function applyW04LayeredMotion(source) {
-  if (source.includes('data-goals-motion')) return applyDeskComposition(source);
+  if (source.includes('data-goals-motion')) return retainMotionDocuments(applyDeskComposition(source));
   const lang = /<html lang="ja">/.test(source) ? 'ja' : /<html lang="zh-CN">/.test(source) ? 'zh' : 'en';
   const prefix = lang === 'en' ? '' : '../';
   const t = copy[lang];
@@ -72,7 +72,21 @@ export function applyW04LayeredMotion(source) {
         </div>
         <details class="mission-transcript">`;
   });
-  return applyDeskComposition(html);
+  return retainMotionDocuments(applyDeskComposition(html));
+}
+
+// Keep the complete source and operation transcript in the document, while
+// removing only these two optional reading controls from the public display.
+function retainMotionDocuments(source) {
+  let html = source.replace(/<details class="mission-(?:sample|transcript)"(?! hidden)/g, '$& hidden');
+  // The reading controls are no longer displayed; do not direct a failed player
+  // to an invisible control. Keep the failure notice itself localized.
+  for (const [before, locale] of [
+    ['The recording could not be played. You can read the operation steps below.', 'en'],
+    ['操作動画を再生できませんでした。下の文章で操作の流れをご確認いただけます。', 'ja'],
+    ['操作视频暂时无法播放。您可以阅读下方的操作步骤。', 'zh'],
+  ]) html = html.replaceAll(before, copy[locale].error);
+  return html;
 }
 
 // Option 1: heading, overlapping desk, full-width caption, then the unchanged

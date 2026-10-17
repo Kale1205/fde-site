@@ -7,7 +7,7 @@
   const isJapanese = locale === "ja";
   // Motion is a real development-build capture, loaded only when in view.
   // Native controls remain available; reduced-motion users opt in to playback.
-  const operationVideo = document.querySelector(".mission-recording video");
+  const operationVideo = document.querySelector(".mission-recording video:not([data-motion-video])");
   if (operationVideo && "IntersectionObserver" in window) {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let started = false;

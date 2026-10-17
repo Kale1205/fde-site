@@ -1,4 +1,5 @@
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
+import {applyApprovedGoalsAutoplay} from './goals_autoplay_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -43,7 +44,7 @@ test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
     ...['','ja/','zh/'].flatMap(p=>['index','contact','demo','goals','news','order','customer'].map(n=>p+n+'.html'))]){
     const current=file==='content/faq-content.json'?readFaqMigrationFixture(file):read(file);
     const expected=renderCurrentFaqFixture(file,before(file));
-    assert.equal(normalize(current),normalize(file==='content/faq-content.json'?expected:applyApprovedContinuingUsePolicy(file,expected)),file);
+    assert.equal(normalize(current),normalize(applyApprovedGoalsAutoplay(file,file==='content/faq-content.json'?expected:applyApprovedContinuingUsePolicy(file,expected))),file);
   }
   assert.match(read('quiet-pages.css'),/\.quiet-page :is\(button,\[type=submit\]\):disabled \{ transform: none; opacity: \.55; cursor: not-allowed; \}/);
   assert.doesNotMatch(read('gallery-ui.js'),/data-license-purchase/);

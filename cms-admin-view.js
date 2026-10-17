@@ -34,7 +34,7 @@
  const options=make('details','cms-editor-options');options.append(make('summary','','その他'));
  const translationSettings=make('details','cms-translation-settings');translationSettings.append(make('summary','','翻訳設定'),$('adminKey').closest('.field'));
  const freshDraft=routeButton('別の下書きを作る',{section:'news',screen:'editor',mode:'create',fresh:true});freshDraft.id='cmsFreshDraft';
- options.append(translationSettings,$('backupDraft'),make('p','cms-small-note','バックアップはこの端末にダウンロードします。'),freshDraft);stage.append(options);
+ options.append($('backupDraft'),make('p','cms-small-note','バックアップはこの端末にダウンロードします。'),freshDraft);stage.append(options);
  const uploader=$('uploaderCard');newsPanel.append(uploader);
  const editorParts={};
  function prepareEditor(which,card){
@@ -57,19 +57,21 @@
    const tab=button(label,'cms-language-tab');tab.id=which+'Language'+suffix;tab.setAttribute('role','tab');tab.setAttribute('aria-controls',which+'LanguagePanel'+suffix);tablist.append(tab);languageTabs.push(tab);
    const pane=make('div','cms-language-panel');pane.id=which+'LanguagePanel'+suffix;pane.lang=lang;pane.setAttribute('role','tabpanel');pane.setAttribute('aria-labelledby',tab.id);
    for(const field of ['Title','Body'])pane.append($(which+field+suffix).closest('.field'));
-   if(suffix==='En'){pane.append($(which+'Translate'),make('p','cms-small-note','空欄だけ翻訳します。翻訳設定は「その他」へ。'));}
+   if(suffix==='En')pane.append(make('p','cms-small-note','原稿を貼り付けて編集できます。'));
+   if(suffix==='Zh')pane.append(make('p','cms-small-note','原稿を貼り付けて編集できます。'));
    languageSection.append(pane);languagePanels.push(pane);
    tab.addEventListener('click',()=>activate(languageTabs.indexOf(tab)));
    tab.addEventListener('keydown',event=>{let next;if(event.key==='ArrowRight')next=(languageTabs.indexOf(tab)+1)%3;else if(event.key==='ArrowLeft')next=(languageTabs.indexOf(tab)+2)%3;else if(event.key==='Home')next=0;else if(event.key==='End')next=2;else return;event.preventDefault();activate(next);languageTabs[next].focus();});
   }
   function activate(index){languageTabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;languagePanels[i].hidden=i!==index;});}
+  const translationNote=make('p','cms-small-note cms-translation-review');translationNote.id=which+'TranslationNote';translationNote.setAttribute('role','status');translationNote.textContent='英語・中国語は原稿を貼り付けて編集してください。';languageSection.append(translationNote);
   activate(0);grid.before(languageSection);
   const metadata=make('details','cms-metadata');metadata.append(make('summary','','記事設定'));const metadataGrid=make('div','admin-form-grid');for(const suffix of ['Category','Date','Featured'])metadataGrid.append($(which+suffix).closest('.field'));metadata.append(metadataGrid);grid.before(metadata);
   if(which==='edit'){const deletion=make('details','cms-delete-settings');deletion.append(make('summary','','削除'),make('p','cms-small-note','削除も下書きと公開依頼で進めます。'),$('deleteNewsBtn'));if($('cancelNewsDeleteBtn'))deletion.append($('cancelNewsDeleteBtn'));grid.before(deletion);}
   const steps=make('nav','cms-progress');steps.setAttribute('aria-label','作業の進捗');const stepButtons=[];
-  for(const [index,label] of ['内容','翻訳','確認','公開依頼'].entries()){const step=index+1,node=button(`${['①','②','③','④'][index]}${label}`,'cms-progress-step');node.dataset.step=String(step);node.setAttribute('aria-current',step===1?'step':'false');node.addEventListener('click',()=>{if(step<=2)navigate({section:'news',screen:'editor',mode:which,step});else{const dialog=$('newsPreview');if(step===4)dialog.dataset.requestFocus='true';else delete dialog.dataset.requestFocus;$(which+'PreviewBtn').click();}});steps.append(node);stepButtons.push(node);}
+  for(const [index,label] of ['内容','翻訳','確認','公開待ち'].entries()){const step=index+1,node=button(`${['①','②','③','④'][index]}${label}`,'cms-progress-step');node.dataset.step=String(step);node.setAttribute('aria-current',step===1?'step':'false');node.addEventListener('click',()=>{if(step<=2)navigate({section:'news',screen:'editor',mode:which,step});else{const dialog=$('newsPreview');if(step===4)dialog.dataset.requestFocus='true';else delete dialog.dataset.requestFocus;$(which+'PreviewBtn').click();}});steps.append(node);stepButtons.push(node);}
   imageSection.before(steps);
-  const footer=make('div','cms-editor-footer'),footerNote=make('p','cms-small-note','保存は端末内。プレビュー後に公開依頼（PR）。'),footerActions=make('div','actions');
+  const footer=make('div','cms-editor-footer'),footerNote=make('p','cms-small-note','保存は端末内。確認後に公開待ちへ。'),footerActions=make('div','actions');
   const save=$(which==='create'?'createNewsBtn':'saveNewsBtn'),preview=$(which+'PreviewBtn');save.textContent='下書き保存';preview.textContent='プレビュー';footerActions.append(save,preview);footer.append(footerNote,footerActions);card.append(footer);
   editorParts[which]={activate,imageSection,languageSection,stepButtons};
   // Keep the original wrapper without showing empty layout tracks.
@@ -135,12 +137,13 @@
  function syncConnection(){const state=tabs.dataset.connectionState||'idle';connection.dataset.connectionState=state;if(state==='error'||(state!=='connected'&&route.screen==='list'))connection.open=true;else if(state==='connected'&&previousConnection!=='connected')connection.open=false;previousConnection=state;}
  function renderChoices(){
   actionChoices.replaceChildren();const faq=route.section==='faq';
-  for(const [label,screen,mode] of [['新規作成','editor','create'],['既存編集','list'],['下書き','drafts']]){const disabled=faq&&!faqEditable()&&screen!=='list',node=routeButton(label,{section:route.section,screen,...(mode?{mode}:{})},'cms-choice');if(disabled){node.disabled=true;node.append(make('small','','準備中'));}actionChoices.append(node);}
+  const choices=[['新規作成','editor','create'],['既存編集','list'],['下書き','drafts']];if(!faq)choices.push(['公開待ち','pending']);
+  for(const [label,screen,mode] of choices){const disabled=faq&&!faqEditable()&&screen!=='list',node=routeButton(label,{section:route.section,screen,...(mode?{mode}:{})},'cms-choice');if(disabled){node.disabled=true;node.append(make('small','','準備中'));}actionChoices.append(node);}
   actionNote.replaceChildren();if(faq){if(!faqEditable())actionNote.textContent='現在は閲覧のみ利用できます。';}else actionNote.append(routeButton('共通画像',{section:'news',screen:'media'},'cms-text-button'));
  }
  function renderBreadcrumbs(){
   crumbs.replaceChildren();const steps=[{label:'メニュー',target:{section:null,screen:'menu'}}];if(route.section)steps.push({label:route.section==='news'?'お知らせ':'FAQ',target:{section:route.section,screen:'actions'}});
-  if(!['menu','actions'].includes(route.screen)){if(route.screen==='editor'&&route.mode==='edit')steps.push({label:'既存編集',target:{section:route.section,screen:'list'}});steps.push({label:route.screen==='list'?'既存編集':route.screen==='drafts'?'下書き':route.screen==='media'?'共通画像':route.section==='faq'&&!faqEditable()?'確認':route.mode==='create'?'新規作成':'編集'});}
+  if(!['menu','actions'].includes(route.screen)){if(route.screen==='editor'&&route.mode==='edit')steps.push({label:'既存編集',target:{section:route.section,screen:'list'}});steps.push({label:route.screen==='list'?'既存編集':route.screen==='drafts'?'下書き':route.screen==='pending'?'公開待ち':route.screen==='media'?'共通画像':route.section==='faq'&&!faqEditable()?'確認':route.mode==='create'?'新規作成':'編集'});}
   steps.forEach((step,index)=>{const item=make('li');if(index===steps.length-1){const current=make('span','',step.label);current.setAttribute('aria-current','page');item.append(current);}else item.append(routeButton(step.label,step.target,'cms-text-button'));crumbs.append(item);});
   visible(back,steps.length>1);back.onclick=()=>navigate(steps.at(-2)?.target||{section:null,screen:'menu'});
  }
@@ -148,12 +151,13 @@
   route={...next};main.dataset.cmsSection=route.section||'';main.dataset.cmsScreen=route.screen;document.body.dataset.cmsScreen=route.screen;
   const news=route.section==='news',faq=route.section==='faq',editor=route.screen==='editor',faqSafe=faqEditable(),activeNews=news&&!['menu','actions'].includes(route.screen),activeFaq=faq&&(['list','editor'].includes(route.screen)||faqSafe&&route.screen==='drafts');
   visible(menuScreen,route.screen==='menu');visible(actionsScreen,route.screen==='actions');visible(newsPanel,activeNews);visible(faqPanel,activeFaq);visible(workspace,news&&['list','editor'].includes(route.screen));visible(listing,news&&(route.screen==='list'||(editor&&route.mode==='edit')));visible(stage,news&&editor);visible(createCard,news&&editor&&route.mode==='create');visible(editCard,news&&editor&&route.mode!=='create');visible(draftBar,news&&route.screen==='drafts');visible(uploader,news&&route.screen==='media');visible(outcome,news&&(editor||route.screen==='media'));visible(options,news&&(editor||route.screen==='media'));visible(faqListing,faq&&route.screen==='list');visible(faqEditor,faq&&editor);
+  visible($('newsPendingCard'),news&&route.screen==='pending');
   if(news&&route.screen==='media')uploader.after(options);else if(news&&editor)stage.append(options);
-  if(news&&editor)options.prepend(translationSettings);else if(faq&&faqSafe&&editor)faqOptions.prepend(translationSettings);
-  visible(translationSettings,editor&&(news||faq&&faqSafe));
+  if(faq&&faqSafe&&editor)faqOptions.prepend(translationSettings);
+  visible(translationSettings,editor&&faq&&faqSafe);
   if(faqUiReady){visible(faqWorkspace,faq&&['list','editor'].includes(route.screen));visible(faqListing,faq&&(route.screen==='list'||faqSafe&&editor&&route.mode==='edit'));visible(faqStage,faq&&editor);visible(faqCreateCard,faq&&faqSafe&&editor&&route.mode==='create');visible(faqEditor,faq&&editor&&(!faqSafe||route.mode==='edit'));visible(faqDraftBar,faq&&faqSafe&&route.screen==='drafts');visible(faqOptions,faq&&faqSafe&&editor);visible(faqOutcome,faq&&faqSafe&&editor);visible($('faqFreshDraft'),faq&&faqSafe&&editor&&route.mode==='create');faqWorkspace.classList.toggle('cms-single-stage',route.screen==='list'||!faqSafe||route.mode!=='edit');faqWorkspace.dataset.screen=route.screen;}
   workspace.classList.toggle('cms-single-stage',route.screen==='list'||route.mode!=='edit');workspace.dataset.screen=route.screen;visible(freshDraft,news&&editor&&route.mode==='create');
-  title.textContent=route.screen==='menu'?'メニュー':route.screen==='actions'?(news?'お知らせ':'FAQ'):route.screen==='list'?(news?'記事一覧':'FAQ一覧'):route.screen==='drafts'?'下書き':route.screen==='media'?'共通画像':faq?faqSafe?route.mode==='create'?'FAQを新規作成':'FAQを編集':'FAQを確認':route.mode==='create'?'新規作成':'記事を編集';
+  title.textContent=route.screen==='menu'?'メニュー':route.screen==='actions'?(news?'お知らせ':'FAQ'):route.screen==='list'?(news?'記事一覧':'FAQ一覧'):route.screen==='drafts'?'下書き':route.screen==='pending'?'公開待ち':route.screen==='media'?'共通画像':faq?faqSafe?route.mode==='create'?'FAQを新規作成':'FAQを編集':'FAQを確認':route.mode==='create'?'新規作成':'記事を編集';
   if(news&&editor&&route.mode==='edit')editCard.querySelector(':scope > p').textContent=route.title||$('editTitleJa').value||'無題';
   if(faq&&faqSafe&&editor&&route.mode==='edit')faqEditor.querySelector(':scope > p').textContent=route.title||$('faqEditQJa').value||'無題';
   if(route.screen==='actions')renderChoices();renderBreadcrumbs();syncSelection();syncFaqSelection();syncConnection();

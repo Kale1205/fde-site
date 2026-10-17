@@ -1,4 +1,5 @@
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
+import {applyApprovedGoalsAutoplay} from './goals_autoplay_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
@@ -70,6 +71,6 @@ test('CMS hydration and Chinese dictionary contain the same approved names', () 
 
 test('naming does not change routing, privacy, commerce keys or operation code', () => {
   for (const file of ['robots.txt', 'contact-direct.js', 'contact-config.js', 'gallery-ui.js', 'demo-v1.js', 'quiet-form.js', 'worker/src/index-v14.js']) {
-    assert.equal(normalizeAssetBuildKeys(read(file)), normalizeAssetBuildKeys(file==='contact-config.js'?applyCmsMemoryKey(previous(file)):previous(file)), file);
+    assert.equal(normalizeAssetBuildKeys(read(file)), normalizeAssetBuildKeys(applyApprovedGoalsAutoplay(file,file==='contact-config.js'?applyCmsMemoryKey(previous(file)):previous(file))), file);
   }
 });

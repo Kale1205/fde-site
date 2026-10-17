@@ -89,6 +89,9 @@ body.book-reader-open{overflow:hidden}
 .book-news .book-reader:is(.is-opening,.is-closing) .book-opening-cover{will-change:transform,opacity}
 .book-news .book-reader.is-ready .book-opening-cover{visibility:hidden}
 .book-news .book-reader.is-closing .book-spread{animation:book-depart 460ms ease-in both}
+.book-news .book-opening-cover[hidden]{display:none}
+.book-news main.is-news-leaving{animation:news-view-leave 240ms ease-in both}
+.book-news main.is-news-arriving{animation:news-view-arrive 680ms cubic-bezier(.2,.75,.22,1) both}
 .book-news :is(button,a,.reader-copy):focus-visible{outline:2px solid var(--forest);outline-offset:3px}
 .book-news .reader-copy:focus-visible{outline-offset:-2px}
 .book-news[data-book-input="pointer"] :is(.news-book,.book-read,.book-close):focus-visible{outline:none}
@@ -97,6 +100,8 @@ body.book-reader-open{overflow:hidden}
 @keyframes book-ink-arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes book-depart{to{opacity:0;transform:translateY(12px) scale(.88)}}
 @keyframes book-cover-dissolve{from{opacity:1}to{opacity:0}}
+@keyframes news-view-leave{to{opacity:0;transform:translateY(-8px)}}
+@keyframes news-view-arrive{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @media(max-width:1050px){.book-news .book-stage{--book-width:280px;--rail-width:128px}.book-news .book-page{padding:28px}.book-news .reader-body p{font-size:14px}.book-news #book-article-title{margin-bottom:14px}}
 @media(max-width:699px){
  .book-news .news-library{padding-top:30px;padding-inline:22px}.book-news .news-library-heading h2,.book-news .news-social h2{font-size:22px}.book-news .book-controls{gap:8px}.book-news .book-controls button{width:44px;height:44px;padding:11px}

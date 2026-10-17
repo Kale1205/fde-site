@@ -20,7 +20,7 @@ class BuildSyncTests(unittest.TestCase):
             for folder in (fixture, fixture / "ja", fixture / "zh"):
                 folder.mkdir(exist_ok=True)
                 (folder / "contact.html").write_text('<script src="cms-admin-loader.js?v=fixture-before"></script>')
-            runtimes = ("contact-config.js", "cms-admin.js", "cms-news-workflow.js", "news-renderer.js", "cms-faq-workflow.js", "faq-admin-safe.js")
+            runtimes = ("contact-config.js", "cms-admin.js", "cms-news-workflow.js", "cms-news-batch-workflow.js", "news-renderer.js", "cms-faq-workflow.js", "faq-admin-safe.js")
             for name in runtimes:
                 # Use the real module imports, including transitive FAQ imports.
                 shutil.copy(ROOT / name, fixture / name)

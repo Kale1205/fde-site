@@ -8,6 +8,7 @@
     const button = root.querySelector('[data-motion-toggle]');
     const status = root.querySelector('[data-motion-status]');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    const connection = typeof navigator === 'undefined' ? null : navigator.connection;
     // The second decoder resets only while invisible, never the visible screen.
     const stage = document.createElement('div');
     stage.className = 'mission-video-loop';
@@ -21,6 +22,8 @@
     stage.append(standby);
     const videos = [video, standby];
     let wanted = !reduced.matches;
+    let manuallyPaused = false;
+    let suspended = false;
     let visible = false;
     let frame = null;
     let previousTime = null;
@@ -34,7 +37,7 @@
     let previousText = '';
     const failed = new Set();
 
-    function running() { return wanted && visible && !document.hidden; }
+    function running() { return wanted && !suspended && !connection?.saveData && visible && !document.hidden; }
     function measureCode() {
       const style = getComputedStyle(feed.parentElement);
       lineHeight = parseFloat(style.lineHeight) || 24;
@@ -59,9 +62,10 @@
       previousTime = null;
     }
     function paintButton() {
-      button.textContent = wanted ? button.dataset.pauseLabel : button.dataset.playLabel;
-      button.setAttribute('aria-pressed', String(wanted));
-      root.dataset.motion = wanted ? 'playing' : 'paused';
+      const enabled = wanted && !suspended && !connection?.saveData;
+      button.textContent = enabled ? button.dataset.pauseLabel : button.dataset.playLabel;
+      button.setAttribute('aria-pressed', String(enabled));
+      root.dataset.motion = enabled ? 'playing' : 'paused';
     }
     function cancelHandoff() {
       if (!handoff) return;
@@ -77,7 +81,9 @@
       const rejected = () => {
         if (!valid()) return; // Ignore a stale play rejected by pause/scroll.
         if (critical) {
-          wanted = false;
+          // Respect autoplay / power-saving refusal without an automatic retry loop.
+          // A later visible-page return may try once; an explicit pause stays paused.
+          suspended = true;
           sync();
         } else {
           cancelHandoff();
@@ -158,16 +164,35 @@
       };
       media.addEventListener('error', error);
       media.querySelector('source')?.addEventListener('error', error);
+      media.addEventListener('pause', () => {
+        // Native media policies can pause a muted video after play() succeeds.
+        // Our own pauses happen after running() is false or on the spare decoder.
+        if (index === active && running() && media.paused) {
+          suspended = true;
+          sync();
+        }
+      });
     });
     measureCode();
     button.hidden = false;
-    button.addEventListener('click', () => { wanted = !wanted; sync(); });
-    document.addEventListener('visibilitychange', sync);
+    button.addEventListener('click', () => {
+      wanted = suspended ? true : !wanted;
+      manuallyPaused = !wanted;
+      suspended = false;
+      sync();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) suspended = false;
+      sync();
+    });
     window.addEventListener('resize', measureCode);
-    reduced.addEventListener('change', () => { wanted = !reduced.matches; sync(); });
+    reduced.addEventListener('change', () => { wanted = !reduced.matches && !manuallyPaused; suspended = false; sync(); });
+    connection?.addEventListener?.('change', () => { suspended = false; sync(); });
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(entries => {
-        visible = entries[0].isIntersecting;
+        const nextVisible = entries[0].isIntersecting;
+        if (nextVisible && !visible) suspended = false;
+        visible = nextVisible;
         sync();
       }, {threshold: 0}).observe(root.querySelector('.mission-desk'));
     } else { visible = true; sync(); }

@@ -57,7 +57,7 @@ jobs:
 
       - name: W04 layered sample-code and real-recording motion
         run: |
-          node --test scripts/test_w04_layered_motion.mjs
+          node --test scripts/test_w04_layered_motion.mjs scripts/test_goals_autoplay.mjs
           node scripts/build_quiet_goals.mjs --check
           node scripts/test_goals_content.mjs
 
@@ -68,10 +68,10 @@ jobs:
         run: node --test scripts/test_quiet_homepages.mjs scripts/test_quiet_pages.mjs scripts/test_quiet_form_preview.mjs scripts/test_quiet_license.mjs scripts/test_quiet_demo.mjs scripts/test_quiet_goals.mjs scripts/test_quiet_news.mjs scripts/test_quiet_contact.mjs scripts/test_quiet_order.mjs scripts/test_quiet_customer.mjs scripts/test_release_notice_policy.mjs scripts/test_quiet_admin.mjs
 
       - name: Approved W05 circular books and Instagram-only feed boundary
-        run: node --test scripts/test_w05_book_news.mjs scripts/test_w05_cover_editor.mjs
+        run: node --test scripts/test_w05_book_news.mjs scripts/test_w05_cover_editor.mjs scripts/test_news_motion.mjs
 
-      - name: CMS private drafts and atomic protected-branch publication
-        run: node --test scripts/test_cms_news_workflow.mjs
+      - name: CMS local drafts, pending batches and atomic protected-branch publication
+        run: node --test scripts/test_cms_news_workflow.mjs scripts/test_cms_news_batch_workflow.mjs scripts/test_cms_news_batch_safety.mjs scripts/test_cms_news_batch_ui.mjs
 
       - name: CMS navigation and FAQ draft and protected-branch publication
         run: |
