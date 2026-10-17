@@ -96,11 +96,11 @@
     },
     {
       "id": "website-update-20260816",
-      "date": "2026-08-16",
+      "date": "2026-10-17",
       "category": "Development",
-      "featured": false,
+      "featured": true,
       "link": "index.html",
-      "image": "",
+      "image": "assets/cms/2026/10/371203e5b8df661085802a98b35f8501952fd5c84ebf174d31b5658c1442524c.png",
       "translationStatus": "translated",
       "title": {
         "ja": "Baked Kale FDEのサイトを更新",
@@ -116,7 +116,7 @@
         "ar": "تم تحديث موقع Kale’s FDE"
       },
       "body": {
-        "ja": "製品、Why FDE、目標、お問い合わせを中心に、情報構成と日英表示を整理しました。",
+        "ja": "製品、Why FDE、目標、お問い合わせを中心に、情報構成と日英中表示を整理しました。",
         "en": "The site structure and multilingual presentation have been refined around Products, Why FDE, Our Goals and Contact.",
         "zh-CN": "我们围绕 Products、Why FDE、Kale’s Goals 和 Contact 优化了网站结构与多语言显示。",
         "zh-TW": "我們圍繞 Products、Why FDE、Kale’s Goals 與 Contact 優化了網站結構與多語言顯示。",
