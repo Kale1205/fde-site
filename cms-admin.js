@@ -1,5 +1,5 @@
-import {DraftStore,NewsPublisher,CmsError,errorText,newDraft,persistedDraft,fingerprint,inspectImage,base64,LANGS} from './cms-news-workflow.js?v=20261017-101036';
-import {BatchStore,BatchPublisher,newBatch,batchFingerprint,removeQueuedDraft} from './cms-news-batch-workflow.js?v=20261017-101036';
+import {DraftStore,NewsPublisher,CmsError,errorText,newDraft,persistedDraft,fingerprint,inspectImage,base64,LANGS} from './cms-news-workflow.js?v=20261017-121639';
+import {BatchStore,BatchPublisher,newBatch,batchFingerprint,removeQueuedDraft} from './cms-news-batch-workflow.js?v=20261017-121639';
 
 // News drafts never leave this browser until an explicit publication request.
 const $=id=>document.getElementById(id),make=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=text;node.className=className;return node;};
