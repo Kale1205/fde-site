@@ -65,7 +65,7 @@ export function applyW04LayeredMotion(source) {
               <div class="code-file"><span>SAMPLE CODE</span><span>inventory-example.rs · Rust</span></div>
               <pre class="mission-code-feed" aria-hidden="true"><code data-code-feed></code></pre>
             </div></figure>
-            <figure class="mission-recording">${video}<div class="mission-motion-tools"><button type="button" data-motion-toggle data-pause-label="${t.pause}" data-play-label="${t.play}" aria-pressed="false" hidden>${t.play}</button></div><figcaption>${caption}</figcaption></figure>
+            <figure class="mission-recording">${video}<figcaption>${caption}</figcaption></figure>
           </div>
           <p class="mission-motion-status" data-motion-status role="status" hidden>${t.error}</p>
           <details class="mission-sample"><summary>${t.read}</summary><pre tabindex="0" aria-label="${t.label}"><code data-code-source>${escape(sampleCode)}</code></pre></details>
@@ -78,7 +78,8 @@ export function applyW04LayeredMotion(source) {
 // Keep the complete source and operation transcript in the document, while
 // removing only these two optional reading controls from the public display.
 function retainMotionDocuments(source) {
-  let html = source.replace(/<details class="mission-(?:sample|transcript)"(?! hidden)/g, '$& hidden');
+  let html = source.replace(/<div class="mission-motion-tools"><button\b[^>]*data-motion-toggle[^>]*>[\s\S]*?<\/button><\/div>/g, '');
+  html = html.replace(/<details class="mission-(?:sample|transcript)"(?! hidden)/g, '$& hidden');
   // The reading controls are no longer displayed; do not direct a failed player
   // to an invisible control. Keep the failure notice itself localized.
   for (const [before, locale] of [

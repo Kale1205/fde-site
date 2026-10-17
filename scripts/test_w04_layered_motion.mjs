@@ -21,7 +21,7 @@ for (const folder of ['', 'ja/', 'zh/']) {
     assert.match(proof, /aria-hidden="true"><code data-code-feed><\/code>/);
     assert.match(proof, /<code data-code-source>/);
     assert.match(proof, /SAMPLE CODE/);
-    assert.equal((proof.match(/data-motion-toggle/g)||[]).length, 1);
+    assert.equal((proof.match(/data-motion-toggle/g)||[]).length, 0);
     assert.match(now, new RegExp(`href="${folder?'../':''}goals-motion.css`));
     assert.equal(now.match(/<source[^>]+>/)[0], before.match(/<source[^>]+>/)[0]);
   });
@@ -75,7 +75,7 @@ test('visible panel starts muted recording and continuous bounded ring typing', 
   assert.notEqual(f.feed.textContent,first);
   assert.ok(f.feed.textContent.split('\n').length<=21);
   assert.ok(f.feed.textContent.length<2000);
-  assert.equal(f.button.attributes['aria-pressed'],'true');
+  assert.equal(f.root.dataset.motion,'playing');
 });
 test('code keeps moving at the same speed through a row boundary and full source wrap', () => {
   const f=fixture();f.intersect(true);f.tick();
@@ -91,32 +91,33 @@ test('code keeps moving at the same speed through a row boundary and full source
   }
   assert.ok(wraps>sourceRows,'continues through the complete source cycle');
 });
-test('one keyboard-compatible button pauses and resumes both surfaces', () => {
-  const f=fixture();f.intersect(true);f.emit('button:click');
-  assert.ok(f.videos.every(v=>v.paused));assert.equal(f.timer(),null);assert.equal(f.button.textContent,'Play');
-  f.emit('button:click');assert.equal(f.video.paused,false);assert.equal(f.button.textContent,'Pause');
+test('system reduced preference pauses both surfaces without a motion button', () => {
+  const f=fixture();f.intersect(true);f.media.matches=true;f.emit('media:change');
+  assert.ok(f.videos.every(v=>v.paused));assert.equal(f.timer(),null);assert.equal(f.root.dataset.motion,'paused');
+  f.media.matches=false;f.emit('media:change');assert.equal(f.video.paused,false);assert.equal(f.root.dataset.motion,'playing');
 });
-test('reduced motion starts static without loading either video until explicitly requested', () => {
+test('reduced motion starts static without loading video until preference changes', () => {
   const f=fixture({reduce:true});f.intersect(true);
   assert.ok(f.videos.every(v=>v.playCalls===0&&v.loadCalls===0));assert.equal(f.timer(),null);
   assert.match(f.feed.textContent,/stock_state/);
-  f.emit('button:click');assert.equal(f.video.paused,false);
+  f.media.matches=false;f.emit('media:change');assert.equal(f.video.paused,false);
   f.media.matches=true;f.emit('media:change');assert.ok(f.videos.every(v=>v.paused));assert.equal(f.timer(),null);
 });
-test('offscreen and background pauses preserve explicit user pause', () => {
+test('offscreen and background pauses preserve reduced motion preference', () => {
   const f=fixture();f.intersect(true);f.intersect(false);assert.ok(f.videos.every(v=>v.paused));
   f.intersect(true);assert.equal(f.video.paused,false);
   f.document.hidden=true;f.emit('document:visibilitychange');assert.equal(f.video.paused,true);
   f.document.hidden=false;f.emit('document:visibilitychange');assert.equal(f.video.paused,false);
-  f.emit('button:click');f.intersect(false);f.intersect(true);assert.equal(f.video.paused,true);
+  f.media.matches=true;f.emit('media:change');f.intersect(false);f.intersect(true);assert.equal(f.video.paused,true);
 });
-test('autoplay rejection offers deliberate replay without an unhandled rejection', async () => {
+test('autoplay rejection suspends video while code continues without retrying every frame', async () => {
   const f=fixture({blocked:true});f.intersect(true);await Promise.resolve();
-  assert.equal(f.button.textContent,'Play');assert.equal(f.timer(),null);assert.equal(f.root.dataset.motion,'paused');
+  assert.equal(f.root.dataset.videoMotion,'blocked');assert.ok(f.timer());assert.equal(f.root.dataset.motion,'playing');
+  const attempts=f.video.playCalls;for(let i=0;i<100;i++)f.tick();assert.equal(f.video.playCalls,attempts);
 });
 test('stale autoplay rejection after pause/resume cannot stop the new playback', async () => {
-  const f=fixture({deferred:true});f.intersect(true);f.emit('button:click');f.emit('button:click');f.rejectFirst();await Promise.resolve();
-  assert.equal(f.button.textContent,'Pause');assert.equal(f.video.paused,false);
+  const f=fixture({deferred:true});f.intersect(true);f.intersect(false);f.intersect(true);f.rejectFirst();await Promise.resolve();
+  assert.equal(f.root.dataset.motion,'playing');assert.equal(f.video.paused,false);
 });
 test('predecoded incoming layer overlaps playback; only hidden outgoing decoder seeks', async () => {
   const f=fixture();f.intersect(true);f.video.currentTime=10.5;f.tick();await Promise.resolve();
@@ -135,12 +136,12 @@ test('fade waits for an actual incoming decoded frame; cannot reveal an empty la
   assert.equal(f.videos[1].style.opacity,'0');assert.equal(f.video.style.opacity,'1');
   f.emit('frame1');f.tick();assert.ok(Number(f.videos[1].style.opacity)>0);
 });
-test('pause freezes an in-flight dissolve and resumes without resetting either visible stream', async () => {
+test('background freezes an in-flight dissolve and resumes without resetting visible streams', async () => {
   const f=fixture();f.intersect(true);f.video.currentTime=10.5;f.tick();await Promise.resolve();
   for(let i=0;i<20;i++)f.tick();
-  const alpha=f.videos[1].style.opacity;f.emit('button:click');f.tick();
+  const alpha=f.videos[1].style.opacity;f.document.hidden=true;f.emit('document:visibilitychange');f.tick();
   assert.equal(f.videos[1].style.opacity,alpha);assert.ok(f.videos.every(v=>v.paused));
-  f.emit('button:click');f.tick();f.tick();assert.ok(Number(f.videos[1].style.opacity)>Number(alpha));
+  f.document.hidden=false;f.emit('document:visibilitychange');f.tick();f.tick();assert.ok(Number(f.videos[1].style.opacity)>Number(alpha));
 });
 test('active media/source failure exposes localized fallback; spare failure retains active playback', () => {
   for(const event of ['video0:error','source0:error']){const f=fixture();f.intersect(true);f.emit(event);assert.equal(f.status.hidden,false);}
@@ -179,7 +180,7 @@ test('option 1 keeps the same proportional overlap on phones and preserves every
       ['操作動画を再生できませんでした。下の文章で操作の流れをご確認いただけます。','操作動画を再生できませんでした。'],
       ['操作视频暂时无法播放。您可以阅读下方的操作步骤。','操作视频暂时无法播放。']
     ]);
-    assert.deepEqual(nodes(now),nodes(before).map(text=>notices.get(text)||text).sort(),file+' preserves every text except the removed-control error direction');
+    assert.deepEqual(nodes(now),nodes(before).filter(text=>!['Play motion','動きを再生','播放动态演示'].includes(text)).map(text=>notices.get(text)||text).sort(),file+' preserves every text except the removed-control error direction');
     assert.match(now,/data-desk-layout="01"/);
     assert.match(now,/<div class="mission-proof-intro" id="layered-desk"><h3>[^<]+<\/h3><\/div>/);
     assert.ok(now.indexOf('class="mission-code-explainer"')>now.indexOf('class="mission-recording"'));

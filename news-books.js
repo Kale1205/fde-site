@@ -13,7 +13,7 @@ export function partitionNews(items){
 
 export const wrapBookOffset=offset=>modulo(offset+1,MAX_BOOKS)-1;
 export function prepareBookOffset(offset,delta){const min=delta===2?0:delta===-2?-2:-1;return modulo(offset-min,MAX_BOOKS)+min;}
-export const BOOK_MOTION={select:680,open:1120,close:680,viewOut:240,viewIn:680};
+export const BOOK_MOTION={select:1200,open:1800,close:1000,viewOut:240,viewIn:680};
 export function bookFlightTransform(source,target,base=''){
  if(![source.left,source.top,source.width,source.height,target.left,target.top,target.width,target.height].every(Number.isFinite)||target.width<=0||target.height<=0)return base;
  return `translate3d(${source.left-target.left}px,${source.top+source.height/2-target.top-target.height/2}px,0) ${base} scale(${source.width/target.width},${source.height/target.height})`;
@@ -56,7 +56,7 @@ function init(){
  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
  const stage=document.querySelector('.book-stage'),reader=document.querySelector('.book-reader'),read=document.querySelector('.book-read');
  const title=document.querySelector('#selected-story-title'),live=document.querySelector('.book-announcement');
- let allItems=seed.items,{top:items}=partitionNews(allItems),index=0,busy=false,queued=0,finishTimer,closeTimer,openingTimer,lastTrigger=null,drag=null,dragFrame=0,suppressClick=false,pendingContent=null,followBookFocus=false,bookAnimations=[],coverAnimation=null,liftedBook=null,flightFrom='',wheelDistance=0,lastWheel=0,viewTimer=0,pendingView=null;
+ let allItems=seed.items,{top:items}=partitionNews(allItems),index=0,busy=false,queued=0,finishTimer,closeTimer,openingTimer,lastTrigger=null,drag=null,dragFrame=0,suppressClick=false,pendingContent=null,followBookFocus=false,bookAnimations=[],coverAnimation=null,liftedBook=null,flightFrom='',wheelDistance=0,lastWheel=0,viewTimer=0,pendingView=null,openingRun=0,closeCompletion=null;
  document.body.dataset.bookInput='pointer';
  document.addEventListener('pointerdown',()=>{document.body.dataset.bookInput='pointer';},{passive:true});
  document.addEventListener('keydown',event=>{if(['Tab','Enter',' ','ArrowLeft','ArrowRight'].includes(event.key))document.body.dataset.bookInput='keyboard';});
@@ -79,7 +79,7 @@ function init(){
   const selectedDate=document.querySelector('.chronicle-selected-date');selectedDate.dateTime=item.date;selectedDate.textContent=item.date.replaceAll('-','.');
   document.querySelectorAll('[data-date-offset]').forEach((button,offset)=>{const target=Math.floor(index/3)*3+offset,story=items[target]||items[0];button.dataset.dateIndex=target;button.parentElement.hidden=target>=items.length;button.querySelector('.chronicle-year').textContent=story.date.slice(0,4);const date=button.querySelector('time');date.dateTime=story.date;date.textContent=story.date.slice(5).replace('-','.');button.setAttribute('aria-label',`${target===index?ui.read:ui.next}: ${story.title} — ${story.date}`);button.setAttribute('aria-pressed',String(target===index));if(target===index){button.setAttribute('aria-haspopup','dialog');const top=button.getBoundingClientRect().top-stage.getBoundingClientRect().top+parseFloat(getComputedStyle(button,'::before').top)-2.5;stage.style.setProperty('--date-marker-y',`${top}px`);}else button.removeAttribute('aria-haspopup');});
   const dots=stage.querySelector('.chronicle-pagination');if(dots.children.length!==items.length){dots.replaceChildren();for(const _ of items)dots.append(document.createElement('span'));}[...dots.children].forEach((dot,i)=>dot.classList.toggle('is-active',i===index));
-  if(announce){live.textContent=`${index+1} / ${items.length} — ${item.title}`;if(!reduce.matches)title.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:360,easing:'ease-out'});}
+  if(announce){live.textContent=`${index+1} / ${items.length} — ${item.title}`;if(!reduce.matches)title.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:650,easing:'cubic-bezier(.4,0,.2,1)'});}
  }
  function renderList(){
   const list=document.querySelector('[data-news-list]');list.replaceChildren();
@@ -118,7 +118,7 @@ function init(){
   selection(true);
   if(focusedPanel)stage.querySelector('[data-offset="0"]').focus({preventScroll:true});
   if(reduce.matches)finish(delta);else{
-   bookAnimations=slots.map((node,i)=>{const to=getComputedStyle(node).transform;return node.animate([{transform:from[i]},{transform:`${to} rotateZ(${-delta*2}deg) scale(1.018)`,offset:.76},{transform:to}],{duration:BOOK_MOTION.select,easing:'cubic-bezier(.2,.75,.22,1)'});});
+   bookAnimations=slots.map((node,i)=>{const to=getComputedStyle(node).transform;return node.animate([{transform:from[i]},{transform:`${to} rotateZ(${-delta*2}deg) scale(1.018)`,offset:.76},{transform:to}],{duration:BOOK_MOTION.select,easing:'cubic-bezier(.4,0,.2,1)'});});
    finishTimer=setTimeout(()=>finish(delta),BOOK_MOTION.select+24);
   }
  }
@@ -150,8 +150,8 @@ function init(){
   event.preventDefault();changeView(url.searchParams.get('view')==='all',{push:true,focus:true});
  }));
  window.addEventListener('popstate',()=>changeView(new URLSearchParams(window.location.search).get('view')==='all'));
- reduce.addEventListener('change',()=>{if(reduce.matches)finishView();});
- document.addEventListener('visibilitychange',()=>{if(document.hidden)finishView();});
+ reduce.addEventListener('change',settleMotionPreference);
+ document.addEventListener('visibilitychange',settleMotionPreference);
  if(!reduce.matches&&!document.hidden){main.classList.add('is-news-arriving');viewTimer=setTimeout(()=>main.classList.remove('is-news-arriving'),BOOK_MOTION.viewIn);}
  if(typeof ResizeObserver!=='undefined')new ResizeObserver(syncDateMarker).observe(stage);else window.addEventListener('resize',syncDateMarker,{passive:true});
  document.querySelectorAll('[data-book-step]').forEach(b=>b.addEventListener('click',()=>rotate(Number(b.dataset.bookStep))));
@@ -167,7 +167,7 @@ function init(){
  document.querySelector('[data-news-list]').addEventListener('click',event=>{const row=event.target.closest('[data-story-id]');if(row)open(row.dataset.storyId,row);});
  function open(id,trigger){
   const item=allItems.find(i=>i.id===id);if(!item||reader.open)return;
-  lastTrigger=trigger;queued=0;clearTimeout(closeTimer);clearTimeout(openingTimer);
+  const run=++openingRun;lastTrigger=trigger;queued=0;clearTimeout(closeTimer);clearTimeout(openingTimer);
   coverAnimation?.cancel();liftedBook=!listView&&items[index]?.id===id?slots.find(node=>Number(node.dataset.offset)===0):null;
   const sourceRect=liftedBook?.getBoundingClientRect();
   reader.classList.remove('is-closing','is-opening','is-ready','is-reduced');reader.classList.add('is-preparing');
@@ -193,16 +193,31 @@ function init(){
   // Static readers must never wait for those frames to reveal their content.
   if(reduce.matches||document.hidden){reader.classList.remove('is-preparing');reader.classList.add('is-ready');return;}
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
-   if(!reader.open||reader.classList.contains('is-closing'))return;
+   if(run!==openingRun||!reader.open||reader.classList.contains('is-closing'))return;
    reader.classList.remove('is-preparing');reader.classList.add('is-opening');
-   if(!reduce.matches&&!listView){openingCover.style.removeProperty('transform');coverAnimation=openingCover.animate([{transform:flightFrom,opacity:1,easing:'cubic-bezier(.22,.65,.18,1)'},{transform:base+' rotateY(-3deg)',opacity:1,offset:.55,easing:'ease-out'},{transform:base,opacity:.3,offset:.82},{transform:base,opacity:0}],{duration:BOOK_MOTION.open,easing:'linear',fill:'forwards'});}
+   if(!reduce.matches&&!listView){openingCover.style.removeProperty('transform');coverAnimation=openingCover.animate([{transform:flightFrom,opacity:1,easing:'cubic-bezier(.4,0,.2,1)'},{transform:base+' rotateY(-3deg)',opacity:1,offset:.55,easing:'ease-out'},{transform:base,opacity:.3,offset:.82},{transform:base,opacity:0}],{duration:BOOK_MOTION.open,easing:'linear',fill:'forwards'});}
    openingTimer=setTimeout(()=>{reader.classList.remove('is-opening');reader.classList.add('is-ready');},reduce.matches?220:BOOK_MOTION.open+24);
   }));
  }
- function close(){if(!reader.open||reader.classList.contains('is-closing'))return;clearTimeout(openingTimer);const cover=reader.querySelector('.book-opening-cover'),current=getComputedStyle(cover),from={transform:current.transform,opacity:current.opacity};coverAnimation?.cancel();cover.style.removeProperty('transform');if(liftedBook)flightFrom=bookFlightTransform(liftedBook.getBoundingClientRect(),cover.getBoundingClientRect(),'translate3d(0,0,0)');reader.classList.remove('is-ready','is-opening','is-preparing');reader.classList.add('is-closing');if(!reduce.matches&&!cover.hidden){coverAnimation=cover.animate([from,{transform:'translate3d(0,0,0)',opacity:1,offset:.48},{transform:flightFrom,opacity:1}],{duration:BOOK_MOTION.close,easing:'cubic-bezier(.3,0,.2,1)',fill:'forwards'});}closeTimer=setTimeout(()=>{coverAnimation?.cancel();coverAnimation=null;cover.style.removeProperty('transform');reader.close();reader.classList.remove('is-closing');liftedBook?.classList.remove('is-lifted');document.body.classList.remove('book-reader-open');if(lastTrigger?.isConnected)lastTrigger.focus({preventScroll:true});lastTrigger=null;if(pendingView)finishView();if(pendingContent){const data=pendingContent;pendingContent=null;updateContent(data);}},reduce.matches?0:BOOK_MOTION.close);}
+ function close(){if(!reader.open||reader.classList.contains('is-closing'))return;++openingRun;clearTimeout(openingTimer);const cover=reader.querySelector('.book-opening-cover'),current=getComputedStyle(cover),from={transform:current.transform,opacity:current.opacity};coverAnimation?.cancel();cover.style.removeProperty('transform');if(liftedBook)flightFrom=bookFlightTransform(liftedBook.getBoundingClientRect(),cover.getBoundingClientRect(),'translate3d(0,0,0)');reader.classList.remove('is-ready','is-opening','is-preparing');reader.classList.add('is-closing');if(!reduce.matches&&!cover.hidden){coverAnimation=cover.animate([from,{transform:'translate3d(0,0,0)',opacity:1,offset:.48},{transform:flightFrom,opacity:1}],{duration:BOOK_MOTION.close,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});}closeCompletion=()=>{if(!reader.open||!reader.classList.contains('is-closing'))return;closeCompletion=null;coverAnimation?.cancel();coverAnimation=null;cover.style.removeProperty('transform');reader.close();reader.classList.remove('is-closing');liftedBook?.classList.remove('is-lifted');document.body.classList.remove('book-reader-open');if(lastTrigger?.isConnected)lastTrigger.focus({preventScroll:true});lastTrigger=null;if(pendingView)finishView();if(pendingContent){const data=pendingContent;pendingContent=null;updateContent(data);}};closeTimer=setTimeout(closeCompletion,reduce.matches?0:BOOK_MOTION.close);}
  reader.querySelector('.book-close').addEventListener('click',close);
  reader.addEventListener('cancel',event=>{event.preventDefault();close();});
  reader.addEventListener('click',event=>{if(event.target!==reader)return;const r=reader.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)close();});
+ function settleMotionPreference(){
+  if(!reduce.matches&&!document.hidden)return;
+  queued=0;++openingRun;
+  clearTimeout(finishTimer);clearTimeout(openingTimer);clearTimeout(closeTimer);
+  if(drag&&stage.hasPointerCapture(drag.id))stage.releasePointerCapture(drag.id);
+  drag=null;cancelAnimationFrame(dragFrame);dragFrame=0;stage.style.removeProperty('--drag');
+  for(const node of [title,stage,reader])for(const animation of node.getAnimations?.({subtree:true})||[])animation.cancel();
+  coverAnimation?.cancel();coverAnimation=null;
+  if(busy)finish();
+  if(reader.open){
+   if(reader.classList.contains('is-closing')&&closeCompletion)closeCompletion();
+   else{reader.classList.remove('is-preparing','is-opening');reader.classList.add('is-ready');reader.querySelector('.book-opening-cover').style.removeProperty('transform');liftedBook?.classList.remove('is-lifted');}
+  }
+  finishView();
+ }
  function updateContent(data){
   if(!Array.isArray(data?.news))return;
   if(busy||reader.open){pendingContent=data;return;}

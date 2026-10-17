@@ -14,7 +14,7 @@ function fixture({reduced=false,hidden=false}={}){
  const move=url=>{const parsed=new URL(url,location.href);Object.assign(location,{href:parsed.href,origin:parsed.origin,pathname:parsed.pathname,search:parsed.search});};
  const window={location,history:{pushState:(_,__,url)=>{history.push(String(url));move(url);}},scrollTo:()=>{},addEventListener:(name,fn)=>handlers['window:'+name]=fn};
  for(const all of [true,false])links.push({href:all?'https://example.test/ja/news.html?view=all':'https://example.test/ja/news.html',target:'',hasAttribute:()=>false,addEventListener:(name,fn)=>handlers[(all?'all:':'back:')+name]=fn});
- const context={document,window,main,reduce,BOOK_MOTION,URL,URLSearchParams,listView:false,viewTimer:0,pendingView:null,busy:false,queued:0,reader:{open:false},heading:{focus:()=>focusCalls++},
+ const context={document,window,main,reduce,BOOK_MOTION,settleMotionPreference(){if(reduce.matches||document.hidden)context.finishView();},URL,URLSearchParams,listView:false,viewTimer:0,pendingView:null,busy:false,queued:0,reader:{open:false},heading:{focus:()=>focusCalls++},
   setTimeout:(fn,ms)=>{timers.set(++id,{fn,at:now+ms});return id;},clearTimeout:key=>timers.delete(key),
   showView(next){context.listView=next;shown.push(next);},syncDateMarker(){markerCalls++;},finish(){context.busy=false;}};
  runInNewContext(navigation,context);
@@ -49,9 +49,9 @@ test('list reading removes only the cover effect and keeps the existing article 
  assert.match(source,/openingCover.hidden=listView/);assert.match(source,/if\(!reduce.matches&&!listView\).*coverAnimation=openingCover.animate/);
  assert.match(source,/if\(!reduce.matches&&!cover.hidden\).*coverAnimation=cover.animate/);
  const css=readFileSync(new URL('../news-books.css',import.meta.url),'utf8');
- assert.match(css,/book-spread\{animation:book-arrive 800ms 160ms/);assert.match(css,/reader-copy\)\{animation:book-ink-arrive 360ms 560ms/);
+ assert.match(css,/book-spread\{animation:book-arrive 1400ms 160ms/);assert.match(css,/reader-copy\)\{animation:book-ink-arrive 700ms 620ms/);
  assert.match(css,/book-opening-cover\[hidden\]\{display:none\}/);assert.match(css,/prefers-reduced-motion:reduce/);
- assert.deepEqual([BOOK_MOTION.select,BOOK_MOTION.open,BOOK_MOTION.close],[680,1120,680]);
+ assert.deepEqual([BOOK_MOTION.select,BOOK_MOTION.open,BOOK_MOTION.close],[1200,1800,1000]);
  assert.doesNotMatch(source,/startViewTransition|navigator\.userAgent|localStorage|sessionStorage/);
 });
 
@@ -61,7 +61,7 @@ function readerFixture({reduced=false,hidden=false}={}){
  const element=()=>({hidden:false,style:{removeProperty(){}},dataset:{},removeAttribute(){},focus(){},getBoundingClientRect:()=>({left:0,top:0,width:100,height:100})});
  const cover=element(),body={replaceChildren(){},append(){}},nodes=Object.fromEntries(['.opening-cover-art','.opening-cover-title','.reader-image','.reader-date','.reader-category','#book-article-title','.reader-copy','.book-close'].map(s=>[s,element()]));
  const reader={open:false,classList,querySelector:s=>s==='.book-opening-cover'?cover:s==='.reader-body'?body:nodes[s],showModal(){this.open=true;}};
- const context={BOOK_MOTION,allItems:[{id:'fixture',title:'Local fixture',body:'Synthetic text',date:'2026-10-17',category:'Update'}],items:[],index:0,reader,listView:true,reduce:{matches:reduced},document:{hidden,body:{classList},createElement:element},resolveImage:()=>'',slots:[],lastTrigger:null,queued:0,closeTimer:0,openingTimer:0,coverAnimation:null,liftedBook:null,flightFrom:'',requestAnimationFrame:fn=>frames.push(fn),setTimeout:(fn,ms)=>timers.push(ms),clearTimeout(){}};
+ const context={openingRun:0,BOOK_MOTION,allItems:[{id:'fixture',title:'Local fixture',body:'Synthetic text',date:'2026-10-17',category:'Update'}],items:[],index:0,reader,listView:true,reduce:{matches:reduced},document:{hidden,body:{classList},createElement:element},resolveImage:()=>'',slots:[],lastTrigger:null,queued:0,closeTimer:0,openingTimer:0,coverAnimation:null,liftedBook:null,flightFrom:'',requestAnimationFrame:fn=>frames.push(fn),setTimeout:(fn,ms)=>timers.push(ms),clearTimeout(){}};
  const start=source.indexOf(' function open(id,trigger)'),end=source.indexOf(' function close()',start);
  runInNewContext(source.slice(start,end)+"\nopen('fixture',{});",context);
  return {classes,frames,timers,reader};
