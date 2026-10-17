@@ -1,4 +1,5 @@
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
+import {applyApprovedGoalsAutoplay} from './goals_autoplay_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
@@ -138,6 +139,6 @@ test('visual styles except approved W01 CTA, demo operations, authentication, co
   for (const file of ['gallery-ui.css','gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','styles.css','responsive.css',
     'gallery-ui.js','demo-v1.js','quiet-form.js','contact-config.js','contact-direct.js','quiet-customer.js',
     'worker/src/index-v14.js','robots.txt']) {
-    assert.equal(normalize(read(file)),normalize(applyW01ProductCta(file,before(file))),file);
+    assert.equal(normalize(read(file)),normalize(applyApprovedGoalsAutoplay(file,applyW01ProductCta(file,before(file)))),file);
   }
 });

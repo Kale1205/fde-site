@@ -16,7 +16,7 @@ for (const folder of ['', 'ja/', 'zh/']) {
     assert.equal(applyW04LayeredMotion(now), now);
     assert.deepEqual(now.match(/<a\b[^>]*>/g), before.match(/<a\b[^>]*>/g));
     assert.deepEqual(now.match(/<(?:meta|link rel="(?:canonical|alternate)")[^>]*>/g), before.match(/<(?:meta|link rel="(?:canonical|alternate)")[^>]*>/g));
-    const proof = now.match(/<div class="mission-proof mission-layered"[\s\S]*?<details class="mission-transcript">/)[0];
+    const proof = now.match(/<div class="mission-proof mission-layered"[\s\S]*?<details class="mission-transcript" hidden>/)[0];
     assert.doesNotMatch(proof, /<a\b|role="tab|data-design-panel|onclick=/);
     assert.match(proof, /aria-hidden="true"><code data-code-feed><\/code>/);
     assert.match(proof, /<code data-code-source>/);
@@ -174,7 +174,12 @@ test('option 1 keeps the same proportional overlap on phones and preserves every
   const nodes=html=>[...html.matchAll(/>([^<>]*)</g)].map(m=>m[1].replace(/\s+/g,' ').trim()).filter(Boolean).sort();
   for(const file of ['goals.html','ja/goals.html','zh/goals.html']) {
     const before=execFileSync('git',['show','5275ec6978745fe3723e53bd5d9cbe9266773aa5:'+file],{encoding:'utf8'}),now=read(file);
-    assert.deepEqual(nodes(now),nodes(before),file+' must preserve all existing text');
+    const notices=new Map([
+      ['The recording could not be played. You can read the operation steps below.','The recording could not be played.'],
+      ['操作動画を再生できませんでした。下の文章で操作の流れをご確認いただけます。','操作動画を再生できませんでした。'],
+      ['操作视频暂时无法播放。您可以阅读下方的操作步骤。','操作视频暂时无法播放。']
+    ]);
+    assert.deepEqual(nodes(now),nodes(before).map(text=>notices.get(text)||text).sort(),file+' preserves every text except the removed-control error direction');
     assert.match(now,/data-desk-layout="01"/);
     assert.match(now,/<div class="mission-proof-intro" id="layered-desk"><h3>[^<]+<\/h3><\/div>/);
     assert.ok(now.indexOf('class="mission-code-explainer"')>now.indexOf('class="mission-recording"'));

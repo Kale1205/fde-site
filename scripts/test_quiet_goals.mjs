@@ -40,7 +40,7 @@ for(const folder of ['', 'ja/', 'zh/']) {
   test(`${name}: prose and metadata are unchanged, only requested closing CTAs removed`,()=>{
     assert.equal(head(current),normalizeAssetBuildKeys(head(applyW04LayeredMotion(previous))));
     // W04 may only recompose the proof, mark sample code, and add motion controls.
-    const outsideProof=s=>s.replace(/<div class="mission-proof(?: mission-layered)?"[\s\S]*?(?=<details class="mission-transcript">)/,'').replace(/<figure class="mission-code">[\s\S]*?<figure class="mission-recording">[\s\S]*?<\/figure>/,'');
+    const outsideProof=s=>s.replace(/<div class="mission-proof(?: mission-layered)?"[\s\S]*?(?=<details class="mission-transcript"(?: hidden)?>)/,'').replace(/<figure class="mission-code">[\s\S]*?<figure class="mission-recording">[\s\S]*?<\/figure>/,'');
     assert.deepEqual(prose(outsideProof(current)),prose(outsideProof(previous)));
     const closing=current.match(/<section id="partnership"[\s\S]*?<\/section>/)[0];
     assert.doesNotMatch(closing,/<a\b|mission-actions|mission-plan-link/);
@@ -48,7 +48,7 @@ for(const folder of ['', 'ja/', 'zh/']) {
     assert.ok(current.includes('href="license.html"'));
     assert.equal(current.match(/<video[^>]+>/)[0].replace(' data-motion-video',''),previous.match(/<video[^>]+>/)[0]);
     assert.equal(current.match(/<source[^>]+>/)[0],previous.match(/<source[^>]+>/)[0]);
-    assert.equal(current.match(/<details class="mission-transcript">[\s\S]*?<\/details>/)[0],previous.match(/<details class="mission-transcript">[\s\S]*?<\/details>/)[0]);
+    assert.equal(current.match(/<details class="mission-transcript" hidden>[\s\S]*?<\/details>/)[0].replace(' hidden>','>'),previous.match(/<details class="mission-transcript">[\s\S]*?<\/details>/)[0]);
   });
 }
 test('scoped responsive media retains readable code on keyboard focus',()=>{

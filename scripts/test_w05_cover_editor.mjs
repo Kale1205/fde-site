@@ -42,7 +42,7 @@ test('opening animation is sequenced after layout, pointer taps have no outline 
  assert.match(css,/data-book-input="pointer"[^\n]*outline:none/);assert.match(css,/data-book-input="keyboard"[^\n]*outline:2px solid var\(--forest\)/);
 });
 test('book motion connects the source bounds to the reader, settles selection and preserves native vertical scrolling',()=>{
- assert.deepEqual(BOOK_MOTION,{select:680,open:1120,close:680});
+ assert.deepEqual(BOOK_MOTION,{select:680,open:1120,close:680,viewOut:240,viewIn:680});
  assert.equal(bookFlightTransform({left:10,top:20,width:100,height:125},{left:50,top:60,width:200,height:250},'translateX(-50%)'),'translate3d(-40px,-102.5px,0) translateX(-50%) scale(0.5,0.5)');
  assert.equal(bookFlightTransform({left:NaN,top:0,width:0,height:0},{left:0,top:0,width:0,height:0},'none'),'none');
  const js=read('news-books.js'),css=read('news-books.css');
@@ -64,7 +64,11 @@ test('static HTML and hydrated CMS content resolve the same shared image and fal
  for(const locale of ['en','ja','zh'])for(const prefix of ['','../'])for(const item of localNews(locale))assert.equal(storyImage(item,prefix),newsImagePath(item,prefix,content.newsFallbackImage));
  for(const id of ['__proto__','toString','constructor'])assert.equal(newsImagePath({id}),'assets/news-fallback-user.svg');
  const js=read('news-books.js');assert.equal((js.match(/const cover=resolveImage\(item\)/g)||[]).length,2);assert.match(js,/image.src=resolveImage\(item\)/);assert.match(js,/newsFallbackImage===fallback/);
- const css=execFileSync('git',['show','5dc6c44da0bb2cc2ac124cef087bdca891b041f2:news-books.css'],{cwd:root,encoding:'utf8'});assert.equal(read('news-books.css'),css,'layout and animation styles unchanged');
+ const css=execFileSync('git',['show','5dc6c44da0bb2cc2ac124cef087bdca891b041f2:news-books.css'],{cwd:root,encoding:'utf8'});
+ // Only the requested list-reader cover suppression and News/list arrival rules
+ // may differ; every existing layout, color and reader timing remains exact.
+ const current=read('news-books.css').split('\n').filter(line=>!/^\.book-news \.book-opening-cover\[hidden\]|^\.book-news main\.is-news-(?:leaving|arriving)|^@keyframes news-view-(?:leave|arrive)/.test(line)).join('\n');
+ assert.equal(current,css,'existing layout, colors and animation timings unchanged');
 });
 test('Chronicle changes leave the approved SNS markup and main social styles byte-identical',()=>{
  for(const file of ['news.html','ja/news.html','zh/news.html']){const previous=execFileSync('git',['show',`6c27def33c7c26a6361184ef6333d287d7d84d50:${file}`],{cwd:root,encoding:'utf8'});const social=html=>html.slice(html.indexOf('      <section class="news-social'),html.indexOf('      <dialog class="book-reader'));assert.equal(social(read(file)),social(previous));}

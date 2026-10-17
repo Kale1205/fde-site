@@ -1,4 +1,4 @@
-import {renderNewsPage} from './news-renderer.js?v=20261017-093643';
+import {renderNewsPage} from './news-renderer.js?v=20261017-101036';
 
 export const REPO='Kale1205/fde-site', API=`https://api.github.com/repos/${REPO}`;
 export const LANGS=['ja','en','zh-CN'];
@@ -26,6 +26,8 @@ export function errorText(error){
   TRANSLATION_KEY:'翻訳用のAdmin fulfillment keyを入力してください。下書き保存には不要です。',
   TRANSLATION:'英訳を取得できませんでした。入力済みの翻訳は変更していません。手動入力するか、時間を置いて翻訳だけ再試行してください。公開依頼は開始していません。',
   REQUEST_CHANGED:'既存の公開依頼と内容が異なります。重複PRは作りません。既存PRの状況を確認し、変更分は別の下書きとして保存してください。',
+  BATCH_EMPTY:'公開待ちの記事がありません。下書きを確認して追加してください。',
+  BATCH_CONFLICT:'同じ記事の編集と削除、または基準の異なる変更が含まれています。公開待ちから取り外し、最新の内容で確認してください。原稿は保持しています。',
   LAST_ARTICLE:'最後の1件は削除できません。ニュース画面を空にする変更は別途確認してください。',
   INVALID:'取得データを検証できません。公開処理を停止しました。入力は保持しています。'
  };
@@ -49,6 +51,7 @@ export function newDraft(record=null,baseContentSha=''){
 // never enter persistent storage or exported draft backups.
 export function persistedDraft(d){
  const out=Object.fromEntries(['id','revision','operation','sourceId','baseContentSha','image','imageName','removeImage','updatedAt','reviewedFingerprint','mediaTarget'].filter(k=>k in d).map(k=>[k,d[k]]));
+ if(typeof d.translationReviewRequired==='boolean')out.translationReviewRequired=d.translationReviewRequired;
  out.record=Object.fromEntries(['date','category','featured','image','link','id','translationStatus'].filter(k=>k in d.record).map(k=>[k,d.record[k]]));
  for(const field of ['title','body'])out.record[field]=Object.fromEntries(Object.entries(d.record[field]||{}).filter(([key,value])=>/^[a-z]{2}(?:-[A-Z]{2})?$/.test(key)&&typeof value==='string'));
  out.request=d.request?Object.fromEntries(['fingerprint','baseSha','baseContentSha','createdAt','branch','actor','commitSha','branchReady','prNumber','prUrl'].filter(k=>k in d.request).map(k=>[k,d.request[k]])):null;
@@ -75,7 +78,7 @@ export async function fingerprint(d){
  const image=d.image?await inspectImage(d.image):null;
  return sha256(JSON.stringify({operation:d.operation,sourceId:d.sourceId,base:d.baseContentSha,record:persistedDraft(d).record,image:image?.hash||'',removeImage:!!d.removeImage,mediaTarget:d.mediaTarget||''}));
 }
-export function applyDraft(content,d,imagePath=''){
+export function applyDraft(content,d,imagePath='',{allowEmpty=false}={}){
  const result=copy(content);if(!Array.isArray(result.news))throw new CmsError('INVALID');
  if(d.operation==='media'){
   if(d.mediaTarget==='fallback')result.newsFallbackImage=d.removeImage?'':imagePath;
@@ -84,7 +87,7 @@ export function applyDraft(content,d,imagePath=''){
  }
  const index=result.news.findIndex(x=>x.id===d.sourceId);
  if(d.operation==='delete'){
-  if(index<0)throw new CmsError('CONFLICT');if(result.news.length===1)throw new CmsError('LAST_ARTICLE');
+  if(index<0)throw new CmsError('CONFLICT');if(result.news.length===1&&!allowEmpty)throw new CmsError('LAST_ARTICLE');
   result.news.splice(index,1);return result;
  }
  if(!['create','edit'].includes(d.operation)||d.operation==='edit'&&index<0)throw new CmsError('CONFLICT');
@@ -131,7 +134,7 @@ export class NewsPublisher {
   const comparison=await this.api(`/compare/${tx.commitSha}...${head}`,token);
   if(comparison.status!=='ahead'||comparison.files?.length>40||!Array.isArray(comparison.files))throw new CmsError('CONFLICT');
   for(const file of comparison.files){
-   if(!/^(?:build-version\.txt|(?:contact-config|cms-admin|cms-news-workflow|news-renderer|cms-faq-workflow|faq-admin-safe)\.js|(?:ja\/|zh\/)?(?:index|license|demo|goals|news|contact|order|customer|cms-admin)\.html)$/.test(file.filename))throw new CmsError('CONFLICT');
+   if(!/^(?:build-version\.txt|(?:contact-config|cms-admin|cms-news-workflow|cms-news-batch-workflow|news-renderer|cms-faq-workflow|faq-admin-safe)\.js|(?:ja\/|zh\/)?(?:index|license|demo|goals|news|contact|order|customer|cms-admin)\.html)$/.test(file.filename))throw new CmsError('CONFLICT');
    const a=await this.file(file.filename,tx.commitSha,token),b=await this.file(file.filename,head,token);
    if(file.filename==='build-version.txt'){if(!/^\d{8}-\d{6}\n$/.test(a.text)||!/^\d{8}-\d{6}\n$/.test(b.text))throw new CmsError('CONFLICT');}
    else if(normalizeCache(a.text)!==normalizeCache(b.text))throw new CmsError('CONFLICT');

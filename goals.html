@@ -19,13 +19,13 @@
   <meta property="og:url" content="https://kale1205.github.io/fde-site/goals.html">
   <meta property="og:image" content="https://kale1205.github.io/fde-site/assets/warehouse-operations.webp">
   <link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">
-  <link rel="stylesheet" href="gallery-ui.css?v=20261017-093643">
-  <link rel="stylesheet" href="gallery-pages.css?v=20261017-093643">
-  <script defer src="gallery-ui.js?v=20261017-093643"></script>
-  <script defer src="cms-content.js?v=20261017-093643"></script>
-  <link rel="stylesheet" href="quiet-pages.css?v=20261017-093643">
-  <link rel="stylesheet" href="goals-motion.css?v=20261017-093643">
-  <script defer src="goals-motion.js?v=20261017-093643"></script>
+  <link rel="stylesheet" href="gallery-ui.css?v=20261017-101036">
+  <link rel="stylesheet" href="gallery-pages.css?v=20261017-101036">
+  <script defer src="gallery-ui.js?v=20261017-101036"></script>
+  <script defer src="cms-content.js?v=20261017-101036"></script>
+  <link rel="stylesheet" href="quiet-pages.css?v=20261017-101036">
+  <link rel="stylesheet" href="goals-motion.css?v=20261017-101036">
+  <script defer src="goals-motion.js?v=20261017-101036"></script>
 </head>
 <body class="quiet-page gallery-page gallery-subpage refined-page goals-page mission-page goals-renewal goals-journey">
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -79,8 +79,8 @@
             <figure class="mission-recording"><video controls muted loop playsinline preload="none" data-motion-video width="900" height="700" poster="assets/ims-v1-operation-en-poster.jpg" aria-label="Actual IMS v1.0 operation"><source src="assets/ims-v1-operation-en.mp4" type="video/mp4"></video><div class="mission-motion-tools"><button type="button" data-motion-toggle data-pause-label="Pause motion" data-play-label="Play motion" aria-pressed="false" hidden>Play motion</button></div><figcaption><div class="mission-recording-intro"><h3>See the work happen in IMS.</h3><p>Find a product, record a receipt, then check stock and history. This is the native application in development, operated with a separate synthetic dataset made for this capture.</p></div><span>IMS v1.0 / DEVELOPMENT BUILD</span><p>A sequence captured from real development-build operations, not a concept animation or the Web Demo. Screens and behavior may change during development.</p></figcaption></figure>
           </div>
           <div class="mission-code-explainer"><p class="eyebrow">INSIDE IMS</p><p>Zero stock means out of stock. At or below the reorder threshold means low stock. With the source code, the rules behind these decisions are yours to understand.</p><small>Illustrative sample code, not the IMS implementation.</small></div>
-          <p class="mission-motion-status" data-motion-status role="status" hidden>The recording could not be played. You can read the operation steps below.</p>
-          <details class="mission-sample"><summary>Read the sample code</summary><pre tabindex="0" aria-label="Sample inventory code"><code data-code-source>// Illustration only — not IMS implementation code.
+          <p class="mission-motion-status" data-motion-status role="status" hidden>The recording could not be played.</p>
+          <details class="mission-sample" hidden><summary>Read the sample code</summary><pre tabindex="0" aria-label="Sample inventory code"><code data-code-source>// Illustration only — not IMS implementation code.
 enum StockState { OutOfStock, LowStock, Healthy }
 
 fn stock_state(quantity: i64, threshold: i64) -&gt; StockState {
@@ -114,7 +114,7 @@ fn main() {
 }
 </code></pre></details>
         </div>
-        <details class="mission-transcript"><summary>Read the operation sequence</summary><ol><li>Find a product in the sample inventory.</li><li>Choose the product and quantity, then record incoming stock.</li><li>Check the updated stock level and operation history.</li></ol></details>
+        <details class="mission-transcript" hidden><summary>Read the operation sequence</summary><ol><li>Find a product in the sample inventory.</li><li>Choose the product and quantity, then record incoming stock.</li><li>Check the updated stock level and operation history.</li></ol></details>
       </section>
 
       <section id="partnership" class="mission-chapter mission-partnership section-frame" aria-labelledby="partnership-title">

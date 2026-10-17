@@ -1,4 +1,4 @@
-import {newsImagePath,partitionNews} from './news-books.js?v=20261017-093643';
+import {newsImagePath,partitionNews} from './news-books.js?v=20261017-101036';
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const NEWS_UI={
  en:{updates:'Updates',previous:'Previous story',next:'Next story',read:'Read story',close:'Close story',social:'Social',intro:'Want to know more? Explore our official and personal accounts.',instagram:'Open Instagram (external site)',linkedin:'Open LinkedIn (external site)',loading:'Loading posts…',pause:'Pause posts',resume:'Resume posts',stories:'News stories',all:'Stories',viewAll:'View all stories',backToTop:'Back to Top News',emptyTop:'No Top News selected yet.',emptyArchive:'No stories yet.',category:{Product:'Product',Development:'Development',Social:'Social'}},

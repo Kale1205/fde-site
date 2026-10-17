@@ -69,11 +69,13 @@ After a squash merge, `main` renders `sitemap.xml` from the persisted manifest w
 
 ## CMS invariant
 
-CMS administration is performed in Japanese. Editors enter Japanese source content. The CMS stores both Japanese and English public fields:
+CMS administration is performed in Japanese. News editors manually enter or paste Japanese, English and Simplified Chinese public content:
 
 - Japanese public pages read the Japanese fields directly.
 - English public pages read the English fields.
-- A CMS save is not complete if required English output was not generated.
+- Simplified Chinese public pages read the Chinese fields.
+- News drafts may be saved with incomplete fields; a publication request requires all three title/body pairs and explicit preview confirmation. Editing Japanese preserves existing translations and prompts an English/Chinese review.
+- News does not call the shared translation endpoint. FAQ's separate translation workflow is unchanged.
 
 Do not add a browser-side translation layer to compensate for missing CMS translations.
 
