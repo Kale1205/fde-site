@@ -21,6 +21,7 @@ for (const file of ['goals.html', 'ja/goals.html', 'zh/goals.html']) {
     const current = read(file);
     let expected = before.replace(/<details class="mission-(?:sample|transcript)"/g, '$& hidden');
     for (const [oldText, newText] of oldErrors) expected = expected.replaceAll(oldText, newText);
+    expected = expected.replace(/<div class="mission-motion-tools"><button\b[^>]*data-motion-toggle[^>]*>[\s\S]*?<\/button><\/div>/g, '');
     assert.equal(normalize(current), normalize(expected));
     assert.equal((current.match(/<details class="mission-(?:sample|transcript)" hidden>/g) || []).length, 2);
     assert.equal((current.match(/<details[^>]* hidden/g) || []).length, 2);
@@ -80,28 +81,26 @@ test('visible desk starts code and muted video without hover, click or focus; lo
   assert.notEqual(f.feed.textContent, initial);
   assert.ok(f.feed.textContent.length < 2000);
   assert.ok(f.feed.textContent.split('\n').length <= 21);
-  assert.equal(f.button.attributes['aria-pressed'], 'true');
+  assert.equal(f.root.dataset.motion, 'playing');
 });
 
-test('scroll and hidden-tab stops resume automatically, preserving a deliberate user pause', () => {
+test('scroll and hidden-tab stops resume automatically while reduced preference stays authoritative', () => {
   const f = fixture(); f.intersect(true); f.tick();
   f.intersect(false); assert.ok(f.videos.every(video => video.paused)); assert.equal(f.scheduled(), false);
   f.intersect(true); assert.equal(f.video.paused, false);
   f.document.hidden = true; f.emit('document:visibilitychange'); assert.equal(f.scheduled(), false);
   f.document.hidden = false; f.emit('document:visibilitychange'); assert.equal(f.video.paused, false);
-  f.emit('button:click');
-  f.intersect(false); f.intersect(true);
   f.reduced.matches = true; f.emit('reduced:change');
-  f.reduced.matches = false; f.emit('reduced:change');
+  f.intersect(false); f.intersect(true);
   assert.ok(f.videos.every(video => video.paused)); assert.equal(f.scheduled(), false);
-  f.emit('button:click'); assert.equal(f.video.paused, false);
+  f.reduced.matches = false; f.emit('reduced:change'); assert.equal(f.video.paused, false);
 });
 
-test('reduced motion remains static and unloaded until explicit playback', () => {
+test('reduced motion stays static and unloaded until the preference changes', () => {
   const f = fixture({reduce: true}); f.intersect(true);
   assert.ok(f.videos.every(video => video.playCalls === 0 && video.loadCalls === 0));
   assert.equal(f.scheduled(), false); assert.match(f.feed.textContent, /stock_state/);
-  f.emit('button:click'); assert.equal(f.video.paused, false);
+  f.reduced.matches = false; f.emit('reduced:change'); assert.equal(f.video.paused, false);
   f.reduced.matches = true; f.emit('reduced:change');
   assert.ok(f.videos.every(video => video.paused)); assert.equal(f.scheduled(), false);
 });
@@ -115,9 +114,9 @@ test('data-saving mode stops the entire desk without loading and resumes when re
   assert.ok(f.videos.every(video => video.paused)); assert.equal(f.scheduled(), false);
 });
 
-test('autoplay refusal suspends without retrying per frame and can recover once on page return', async () => {
+test('autoplay refusal suspends only video without per-frame retry and recovers once on page return', async () => {
   const f = fixture({blocked: true}); f.intersect(true); await Promise.resolve();
-  assert.equal(f.root.dataset.motion, 'paused'); assert.equal(f.scheduled(), false);
+  assert.equal(f.root.dataset.motion, 'playing'); assert.equal(f.root.dataset.videoMotion, 'blocked'); assert.equal(f.scheduled(), true);
   const attempts = f.video.playCalls;
   for (let n = 0; n < 100; n++) f.tick();
   assert.equal(f.video.playCalls, attempts);
@@ -126,10 +125,11 @@ test('autoplay refusal suspends without retrying per frame and can recover once 
   assert.equal(f.video.paused, false); assert.equal(f.video.playCalls, attempts + 1);
 });
 
-test('native policy pause also suspends code and recovers only through explicit/lifecycle resumption', () => {
+test('native policy pause leaves code moving and recovers video on lifecycle resumption', () => {
   const f = fixture(); f.intersect(true); f.tick();
   f.video.paused = true; f.emit('video0:pause');
-  assert.equal(f.scheduled(), false); assert.equal(f.button.textContent, 'Play');
+  assert.equal(f.scheduled(), true); assert.equal(f.root.dataset.videoMotion, 'blocked');
+  const before=f.feed.style.transform;f.tick();f.tick();assert.notEqual(f.feed.style.transform,before);
   f.intersect(false); f.intersect(true);
   assert.equal(f.video.paused, false); assert.equal(f.scheduled(), true);
 });

@@ -5,7 +5,6 @@
     const video = root.querySelector('[data-motion-video]');
     const feed = root.querySelector('[data-code-feed]');
     const lines = root.querySelector('[data-code-source]').textContent.trimEnd().split('\n');
-    const button = root.querySelector('[data-motion-toggle]');
     const status = root.querySelector('[data-motion-status]');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     const connection = typeof navigator === 'undefined' ? null : navigator.connection;
@@ -21,9 +20,7 @@
     standby.setAttribute('tabindex', '-1');
     stage.append(standby);
     const videos = [video, standby];
-    let wanted = !reduced.matches;
-    let manuallyPaused = false;
-    let suspended = false;
+    let videoSuspended = false;
     let visible = false;
     let frame = null;
     let previousTime = null;
@@ -37,7 +34,8 @@
     let previousText = '';
     const failed = new Set();
 
-    function running() { return wanted && !suspended && !connection?.saveData && visible && !document.hidden; }
+    function running() { return !reduced.matches && !connection?.saveData && visible && !document.hidden; }
+    function videoRunning() { return running() && !videoSuspended; }
     function measureCode() {
       const style = getComputedStyle(feed.parentElement);
       lineHeight = parseFloat(style.lineHeight) || 24;
@@ -61,11 +59,9 @@
       frame = null;
       previousTime = null;
     }
-    function paintButton() {
-      const enabled = wanted && !suspended && !connection?.saveData;
-      button.textContent = enabled ? button.dataset.pauseLabel : button.dataset.playLabel;
-      button.setAttribute('aria-pressed', String(enabled));
-      root.dataset.motion = enabled ? 'playing' : 'paused';
+    function paintState() {
+      root.dataset.motion = running() ? 'playing' : 'paused';
+      root.dataset.videoMotion = !running() ? 'paused' : failed.has(active) ? 'unavailable' : videoSuspended ? 'blocked' : videos[active].paused ? 'starting' : 'playing';
     }
     function cancelHandoff() {
       if (!handoff) return;
@@ -74,17 +70,24 @@
       incoming.style.opacity = '0';
       handoff = null;
     }
+    function suspendVideo() {
+      // A decoder/policy pause must not stop the independent sample-code feed.
+      videoSuspended = true;
+      cancelHandoff();
+      videos.forEach(media => media.pause());
+      status.hidden = false;
+      paintState();
+    }
     function play(index, ready, critical = false) {
       const token = epoch;
       const media = videos[index];
-      const valid = () => token === epoch && running();
+      const valid = () => token === epoch && videoRunning();
       const rejected = () => {
         if (!valid()) return; // Ignore a stale play rejected by pause/scroll.
         if (critical) {
           // Respect autoplay / power-saving refusal without an automatic retry loop.
-          // A later visible-page return may try once; an explicit pause stays paused.
-          suspended = true;
-          sync();
+          // A later visible-page return may try once; code continues independently.
+          suspendVideo();
         } else {
           cancelHandoff();
           // Native loop is retained as a low-resource fallback, with no blank layer.
@@ -92,14 +95,19 @@
         }
       };
       const started = () => {
-        if (!valid() || !ready) return;
+        if (!valid()) return;
+        if (critical) status.hidden = true;
+        paintState();
+        if (!ready) return;
         if (media.requestVideoFrameCallback) {
           media.requestVideoFrameCallback(() => { if (valid()) ready(); });
         } else if (media.readyState >= 2) ready();
       };
-      const result = media.play();
-      if (result?.then) result.then(started, rejected);
-      else started();
+      try {
+        const result = media.play();
+        if (result?.then) result.then(started, rejected);
+        else started();
+      } catch { rejected(); }
     }
     function beginHandoff() {
       const incoming = 1 - active;
@@ -118,7 +126,7 @@
       codePosition = (codePosition + delta / 1500) % lines.length;
       renderCode();
       const current = videos[active];
-      if (!handoff && Number.isFinite(current.duration) && current.duration > 3 && current.duration - current.currentTime <= 1.5) beginHandoff();
+      if (videoRunning() && !handoff && Number.isFinite(current.duration) && current.duration > 3 && current.duration - current.currentTime <= 1.5) beginHandoff();
       if (handoff?.decoded) {
         handoff.elapsed += delta;
         videos[handoff.incoming].style.opacity = String(Math.min(1, handoff.elapsed / 900));
@@ -136,19 +144,20 @@
     function sync() {
       epoch++;
       stopFrame();
-      paintButton();
+      paintState();
       if (!running()) {
         videos.forEach(media => media.pause());
         if (handoff && !handoff.decoded) cancelHandoff();
         return;
       }
-      if (!prepared) {
+      if (!prepared && videoRunning()) {
         prepared = true;
         standby.preload = 'auto';
         standby.load();
       }
-      if (!failed.has(active)) play(active, null, true);
-      if (handoff?.decoded) play(handoff.incoming, null);
+      if (videoRunning() && !failed.has(active)) play(active, null, true);
+      if (videoRunning() && handoff?.decoded) play(handoff.incoming, null);
+      paintState();
       frame = requestAnimationFrame(tick);
     }
     videos.forEach((media, index) => {
@@ -159,7 +168,7 @@
       const error = () => {
         failed.add(index);
         media.pause();
-        if (index === active) status.hidden = false;
+        if (index === active) suspendVideo();
         else cancelHandoff();
       };
       media.addEventListener('error', error);
@@ -167,35 +176,25 @@
       media.addEventListener('pause', () => {
         // Native media policies can pause a muted video after play() succeeds.
         // Our own pauses happen after running() is false or on the spare decoder.
-        if (index === active && running() && media.paused) {
-          suspended = true;
-          sync();
-        }
+        if (index === active && videoRunning() && media.paused) suspendVideo();
       });
     });
     measureCode();
-    button.hidden = false;
-    button.addEventListener('click', () => {
-      wanted = suspended ? true : !wanted;
-      manuallyPaused = !wanted;
-      suspended = false;
-      sync();
-    });
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) suspended = false;
+      if (!document.hidden) videoSuspended = false;
       sync();
     });
     window.addEventListener('resize', measureCode);
-    reduced.addEventListener('change', () => { wanted = !reduced.matches && !manuallyPaused; suspended = false; sync(); });
-    connection?.addEventListener?.('change', () => { suspended = false; sync(); });
+    reduced.addEventListener('change', () => { videoSuspended = false; sync(); });
+    connection?.addEventListener?.('change', () => { videoSuspended = false; sync(); });
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(entries => {
         const nextVisible = entries[0].isIntersecting;
-        if (nextVisible && !visible) suspended = false;
+        if (nextVisible && !visible) videoSuspended = false;
         visible = nextVisible;
         sync();
       }, {threshold: 0}).observe(root.querySelector('.mission-desk'));
     } else { visible = true; sync(); }
-    paintButton();
+    paintState();
   }
 })();

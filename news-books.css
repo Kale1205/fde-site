@@ -27,7 +27,7 @@
 .book-news .chronicle-dates button{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;width:100%;min-height:64px;padding:8px 0;border:0;background:transparent;color:var(--muted);font-size:20px;line-height:1.3;cursor:pointer;text-align:left}
 .book-news .chronicle-dates button::before{content:"";position:absolute;left:-21px;top:22px;width:9px;height:9px;border:1px solid var(--muted);border-radius:50%;background:var(--paper)}
 .book-news .chronicle-dates button[aria-pressed="true"]{color:var(--forest);font-size:28px;font-weight:650}
-.book-news .chronicle-current-marker{position:absolute;z-index:12;left:-1px;top:0;width:13px;height:13px;border-radius:50%;background:var(--orange);pointer-events:none;transform:translateY(var(--date-marker-y,20px));transition:transform 680ms cubic-bezier(.2,.75,.22,1)}
+.book-news .chronicle-current-marker{position:absolute;z-index:12;left:-1px;top:0;width:13px;height:13px;border-radius:50%;background:var(--orange);pointer-events:none;transform:translateY(var(--date-marker-y,20px));transition:transform 1200ms cubic-bezier(.4,0,.2,1)}
 .book-news .chronicle-year{font-size:14px;font-weight:400;color:var(--muted)}
 .book-news .chronicle-pagination{position:absolute;bottom:4px;left:var(--rail-width);width:calc(var(--book-width)*1.8);display:flex;align-items:center;justify-content:center;gap:10px}
 .book-news .chronicle-pagination span{width:8px;height:8px;border-radius:50%;background:var(--line)}
@@ -69,8 +69,8 @@ body.book-reader-open{overflow:hidden}
 .book-news .book-reader::backdrop{background:#0d1e1738}
 .book-news .book-spread{position:relative;isolation:isolate;display:grid;grid-template-columns:45% 55%;grid-template-rows:minmax(0,1fr);height:100%;min-height:0;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:var(--surface);box-shadow:0 16px 48px #0d1e1714;transform-origin:center}
 .book-news .book-reader.is-preparing .book-spread{opacity:0}
-.book-news .book-reader.is-opening .book-spread{animation:book-arrive 800ms 160ms cubic-bezier(.2,.7,.2,1) both}
-.book-news .book-reader.is-opening :is(.book-page-image,.reader-copy){animation:book-ink-arrive 360ms 560ms ease-out both}
+.book-news .book-reader.is-opening .book-spread{animation:book-arrive 1400ms 160ms cubic-bezier(.4,0,.2,1) both}
+.book-news .book-reader.is-opening :is(.book-page-image,.reader-copy){animation:book-ink-arrive 700ms 620ms cubic-bezier(.4,0,.2,1) both}
 .book-news .book-page{min-height:0;min-width:0;padding:40px}
 .book-news .book-page-image{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;background:var(--paper-deep)}
 .book-news .reader-image{display:block;max-width:90%;width:360px;height:auto;max-height:70%;object-fit:contain}
@@ -88,7 +88,7 @@ body.book-reader-open{overflow:hidden}
 .book-news .opening-cover-title{position:absolute;inset:20% 12%;display:grid;place-items:center;color:inherit;font-size:28px;line-height:1.5;font-weight:650;text-align:center;text-wrap:balance}
 .book-news .book-reader:is(.is-opening,.is-closing) .book-opening-cover{will-change:transform,opacity}
 .book-news .book-reader.is-ready .book-opening-cover{visibility:hidden}
-.book-news .book-reader.is-closing .book-spread{animation:book-depart 460ms ease-in both}
+.book-news .book-reader.is-closing .book-spread{animation:book-depart 700ms cubic-bezier(.4,0,.2,1) both}
 .book-news .book-opening-cover[hidden]{display:none}
 .book-news main.is-news-leaving{animation:news-view-leave 240ms ease-in both}
 .book-news main.is-news-arriving{animation:news-view-arrive 680ms cubic-bezier(.2,.75,.22,1) both}
