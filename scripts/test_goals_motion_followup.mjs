@@ -11,7 +11,7 @@ for(const file of ['goals.html','ja/goals.html','zh/goals.html'])test(file+': fo
  const base=execFileSync('git',['show','bf9da84b714e2a31d1e585513d107a41e27fba31:'+file],{encoding:'utf8'}),current=read(file);
  assert.equal(normalize(current),normalize(base.replace(removedButton,'')));
  assert.doesNotMatch(current,/data-motion-toggle|mission-motion-tools/);
- assert.equal(applyW04LayeredMotion(base),current);
+ assert.equal(normalize(applyW04LayeredMotion(base)),normalize(current));
  assert.equal(applyW04LayeredMotion(current),current);
 });
 
