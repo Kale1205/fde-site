@@ -4,6 +4,7 @@ import {execFileSync} from 'node:child_process';
 import test from 'node:test';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {applyW01ProductCta,w01CtaCssChanges} from './w01_product_cta_test_helpers.mjs';
+import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 
 const root = new URL('../', import.meta.url);
 const css = await readFile(new URL('quiet-form.css', root), 'utf8');
@@ -43,8 +44,8 @@ for (const directory of ['', 'ja/', 'zh/']) {
     for (const name of ['index.html', 'quiet-form.html']) {
       const file = directory + name;
       const html = await readFile(new URL(file, root), 'utf8');
-      const before = applyReviewedZhSearchMetadata(file,execFileSync('git', ['show', `${base}:${file}`], {cwd:root,encoding:'utf8'}));
-      const normalize = value => value.replace(/\?v=\d{8}-\d{6}/g, '?v=BUILD');
+      const before = applyApprovedInitialReleaseScope(file,applyReviewedZhSearchMetadata(file,execFileSync('git', ['show', `${base}:${file}`], {cwd:root,encoding:'utf8'})));
+      const normalize = value => value.replace(/\?v=\d{8}-\d{6}/g, '?v=BUILD').trimEnd();
       assert.equal(normalize(html), normalize(before), file);
       assert.equal((html.match(/href="license.html#comparison"/g) || []).length, 2);
       assert.match(html, /<caption\b/);
