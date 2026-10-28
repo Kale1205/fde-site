@@ -14,7 +14,6 @@ import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
-import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
 import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -43,23 +42,27 @@ for (const file of pages) {
 
 for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
   const copy = initialReleaseCopy[locale];
-  test(locale + ': November 1 is a target on the three purchase surfaces, not a fixed promise', () => {
+  test(locale + ': January 1, 2027 is a target on the purchase surfaces, not a fixed promise', () => {
     for (const page of ['index','license','order','quiet-form']) {
       const html = read(prefix + page + '.html');
       assert.ok(html.includes(copy.date));
-      assert.doesNotMatch(html, /Releases November 1, 2026|2026年11月1日リリース|>2026年11月1日发布/);
+      assert.doesNotMatch(html, /November 1, 2026|2026年11月1日|2026年11月1日/);
     }
     for (const page of ['goals','demo','news','contact','customer']) {
       assert.ok(!read(prefix + page + '.html').includes(copy.date), 'no extra release notices');
     }
   });
-  test(locale + ': visible terms and order copy explain same-Mac scope, pending model testing, app languages and restore gate in HTML', () => {
+  test(locale + ': visible terms and order copy explain Windows-only launch support, later iOS/iPadOS plans, unsupported macOS and restore gate', () => {
     for (const page of ['license','order']) {
       const html = read(prefix + page + '.html');
       assert.ok(html.includes(`<span data-initial-release-scope>${copy.scope}</span>`));
       assert.ok(html.includes(`<span data-restore-release-gate>${copy.restore}</span>`));
       assert.equal((html.match(/data-initial-release-scope/g)||[]).length, 1);
       assert.equal((html.match(/data-restore-release-gate/g)||[]).length, 1);
+      assert.match(copy.scope,/Windows/);
+      assert.match(copy.scope,/iOS/);
+      assert.match(copy.scope,/iPadOS/);
+      assert.match(copy.scope,/macOS/);
       assert.doesNotMatch(html, /<form|data-buy|stripe\.com|order\.js/);
     }
   });
@@ -75,17 +78,16 @@ for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
 }
 
 test('historical FAQ migration changes only three answers; keep legal permissions separate from technical support', () => {
-  const fixture=readFaqMigrationFixture('content/faq-content.json');
-  const current = JSON.parse(fixture), previous = JSON.parse(applyApprovedMultilingualContent('content/faq-content.json',before('content/faq-content.json')));
-  assert.equal(fixture, applyApprovedMultilingualContent('content/faq-content.json',applyApprovedInitialReleaseScope('content/faq-content.json', before('content/faq-content.json'))));
+  const previousSource=applyApprovedMultilingualContent('content/faq-content.json',before('content/faq-content.json'));
+  const fixture=applyApprovedMultilingualContent('content/faq-content.json',applyApprovedInitialReleaseScope('content/faq-content.json', before('content/faq-content.json')));
+  const current = JSON.parse(fixture), previous = JSON.parse(previousSource);
   assert.deepEqual({...current,faq:null},{...previous,faq:null});
   assert.deepEqual(current.faq.map(item=>item.id),previous.faq.map(item=>item.id));
   for (const item of current.faq) {
     const old = previous.faq.find(x=>x.id===item.id);
     if (initialScopeFaqAnswers[item.id]) {
-      assert.deepEqual({...item,answer:null},{...old,answer:null});
-      for(const locale of ['ja','en'])assert.equal(item.answer[locale], initialScopeFaqAnswers[item.id][locale]);
-      assert.equal(item.answer['zh-CN'],old.answer['zh-CN']);
+      assert.deepEqual({...item,answer:null,keywords:null,synonyms:null},{...old,answer:null,keywords:null,synonyms:null});
+      for(const [locale,answer] of Object.entries(initialScopeFaqAnswers[item.id]))assert.equal(item.answer[locale],answer);
     } else assert.deepEqual(item, old);
   }
   // These existing product-scope facts remain protected even as ordinary FAQ
@@ -95,15 +97,15 @@ test('historical FAQ migration changes only three answers; keep legal permission
   for(const [id,answers] of Object.entries(initialScopeFaqAnswers)){
     const item=live.faq.find(entry=>entry.id===id);
     assert.ok(item,`protected product-scope FAQ is missing: ${id}`);
-    for(const locale of ['ja','en'])assert.equal(item.answer[locale],answers[locale],`${id}/${locale}: product scope requires separate approval`);
-    assert.equal(item.answer['zh-CN'],current.faq.find(entry=>entry.id===id).answer['zh-CN']);
+    for(const [locale,answer] of Object.entries(answers))assert.equal(item.answer[locale],answer,`${id}/${locale}: product scope requires separate approval`);
   }
   assert.equal(read('content/faq-policy-additions.json'), applyApprovedContinuingUsePolicy('content/faq-policy-additions.json',applyApprovedMultilingualContent('content/faq-policy-additions.json',before('content/faq-policy-additions.json'))));
 });
 
 test('Chinese dictionary translates the complete public scope and does not restore retired demo capability claims', () => {
   const dictionary = JSON.parse(read('content/zh-translations.json'));
-  assert.equal(read('content/zh-translations.json'), applyApprovedMultilingualContent('content/zh-translations.json',applyApprovedInitialReleaseScope('content/zh-translations.json', before('content/zh-translations.json'))));
+  const expected=JSON.parse(applyApprovedMultilingualContent('content/zh-translations.json',applyApprovedInitialReleaseScope('content/zh-translations.json', before('content/zh-translations.json'))));
+  assert.deepEqual(dictionary,expected);
   for (const key of ['scope','restore','nativeTitle','nativeScope','preview']) assert.equal(dictionary[initialReleaseCopy.en[key]],initialReleaseCopy.zh[key]);
   assert.ok(!dictionary['Only available in the real product']);
 });

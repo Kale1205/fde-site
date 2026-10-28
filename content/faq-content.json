@@ -776,9 +776,9 @@
         "zh-CN": "License 或 License Plus 可以安装在多少台设备上？"
       },
       "answer": {
-        "ja": "LicenseとLicense Plusは購入した1法人の内部業務向けです。初回のネイティブ版は、Apple M2以降の同一Mac上でHostとClientを利用する構成を対象とします。対応機種とmacOSは実機検証後に確定し、各機種の最低OS要件を満たす必要があります。複数MacのLAN接続は初回の範囲外で、後続アップデートの時期は未定です。ライセンス上の端末数などは正式EULAで定め、接続・同期の技術的な対応範囲とは区別します。",
-        "en": "License and License Plus are for the purchasing legal entity’s internal business use. The initial native release targets an Apple M2-or-later Mac, with Host and Client on that same Mac. Supported models and macOS versions will be confirmed after device testing and must meet each model’s minimum OS requirement. Multiple-Mac LAN access is outside the initial release; the later update has no confirmed date. Device permissions will be defined in the final EULA and are separate from technical connection and synchronization support.",
-        "zh-CN": "License 和 License Plus 用于购买法人的内部业务。首个原生版本面向配备 Apple M2 或更新芯片的单台 Mac，Host 与 Client 在同一台 Mac 上运行。支持的机型与 macOS 版本将在实机测试后确认，并须满足各机型的最低系统要求。多台 Mac 的局域网连接不在首个版本范围内，后续更新的日期尚未确定。许可允许的设备数量将在最终 EULA 中规定，与连接及同步的技术支持范围分开说明。"
+        "ja": "LicenseとLicense Plusは購入した1法人の内部業務向けです。発売時の対応環境はWindowsのみを予定しています。対応するWindowsのバージョンと動作要件は販売開始前に提示します。iOS版・iPadOS版は今後対応予定ですが、提供時期は未定です。macOSには対応していません。ライセンス上の端末数は正式EULAで定め、接続・同期の技術的な対応範囲とは区別します。",
+        "en": "License and License Plus are for the purchasing legal entity’s internal business use. Planned launch support is Windows only. Supported Windows versions and system requirements will be published before sales open. iOS and iPadOS versions are planned for future support, with no confirmed release date. macOS is not supported. Device permissions will be defined in the final EULA and are separate from technical connection and synchronization support.",
+        "zh-CN": "License 和 License Plus 用于购买法人的内部业务。计划在发布时仅支持 Windows。支持的 Windows 版本与系统要求将在开放购买前公布。iOS 与 iPadOS 版本计划在后续提供，发布日期尚未确定。macOS 不受支持。许可允许的设备数量将在最终 EULA 中规定，与连接及同步的技术支持范围分开说明。"
       },
       "keywords": {
         "ja": [
@@ -797,9 +797,10 @@
         ],
         "zh-CN": [
           "设备数量",
-          "Apple M2",
-          "Mac",
-          "局域网",
+          "Windows",
+          "iOS",
+          "iPadOS",
+          "macOS",
           "系统要求"
         ]
       },
@@ -816,9 +817,10 @@
         ],
         "zh-CN": [
           "设备数量",
-          "Apple M2",
-          "Mac",
-          "局域网",
+          "Windows",
+          "iOS",
+          "iPadOS",
+          "macOS",
           "系统要求"
         ]
       }
@@ -947,9 +949,9 @@
         "zh-CN": "同一法人的总部、分公司和办事处可以使用一个 License 吗？"
       },
       "answer": {
-        "ja": "購入法人内での社内利用を予定しています。初回はHostとClientを同一Macで利用する構成です。複数MacのLAN接続・同期や拠点間接続は初回の提供範囲に含めず、後続アップデートの時期は未定です。複数倉庫・Location情報を1台のMacで管理することと、複数端末の接続・同期は別の範囲です。最終的な対応環境・利用条件は販売開始前に提示します。別法人での利用は原則として別途購入が必要です。",
-        "en": "Internal use by the purchasing legal entity is planned. The first release uses Host and Client on the same Mac. Multiple-Mac LAN access, synchronization and cross-site connections are outside the initial release; no date is confirmed for the later update. Managing warehouse or location records on one Mac is separate from connecting and synchronizing multiple devices. Final supported environments and license terms will be presented before sales open. Separate legal entities generally require separate purchases.",
-        "zh-CN": "计划允许购买法人内部使用。首个版本的 Host 与 Client 在同一台 Mac 上运行，不包含多台 Mac 的局域网连接、同步或跨地点连接；后续更新的日期尚未确定。在一台 Mac 上管理多个仓库或 Location 信息，与连接和同步多台设备是不同的范围。最终支持环境和使用条件会在销售前公布。不同法人原则上需要分别购买。"
+        "ja": "購入法人内での社内利用を予定しています。発売時の対応環境はWindowsのみを予定しています。複数のWindows端末間や拠点間の接続・同期は、発売時の対応範囲として確定していません。対応環境内で複数倉庫・Location情報を管理することと、複数端末を接続・同期することは別の範囲です。最終的な対応環境・利用条件は販売開始前に提示します。iOS版・iPadOS版の提供時期は未定で、macOSには対応していません。別法人での利用は原則として別途購入が必要です。",
+        "en": "Internal use by the purchasing legal entity is planned. Planned launch support is Windows only. Connections or synchronization across multiple Windows devices or sites are not confirmed launch scope. Managing warehouse or location records within a supported environment is separate from connecting and synchronizing multiple devices. Final supported environments and license terms will be presented before sales open. iOS and iPadOS versions have no confirmed release date, and macOS is not supported. Separate legal entities generally require separate purchases.",
+        "zh-CN": "计划允许购买法人内部使用。计划在发布时仅支持 Windows。多台 Windows 设备之间或跨地点的连接与同步尚未确定为发布范围。在受支持的环境中管理多个仓库或 Location 信息，与连接和同步多台设备是不同的范围。最终支持环境和使用条件会在销售前公布。iOS 与 iPadOS 版本的发布日期尚未确定，macOS 不受支持。不同法人原则上需要分别购买。"
       },
       "keywords": {
         "ja": [
@@ -971,7 +973,10 @@
           "分公司",
           "仓库",
           "Location",
-          "多台 Mac"
+          "Windows",
+          "iOS",
+          "iPadOS",
+          "macOS"
         ]
       },
       "synonyms": {
@@ -990,7 +995,10 @@
           "分公司",
           "仓库",
           "Location",
-          "多台 Mac"
+          "Windows",
+          "iOS",
+          "iPadOS",
+          "macOS"
         ]
       }
     },

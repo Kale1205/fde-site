@@ -43,6 +43,8 @@ Updates is not a standalone product. It is an optional add-on available only to 
 
 All prices remain planned while FDE IMS is in development. Japanese prices are the current Product Plan v2 proposal; every USD figure is an unapproved candidate pending final international pricing. License Plus is planned to include full source, internal customization rights, technical documentation, and customer-server/self-hosted operation. Local/LAN mode, customer-server requirements, multiple-location registration, and multi-site synchronization remain unconfirmed scope questions under development and must never be described as committed or released features. Deployment, hosting, backup, support-SLA, refund, tax, delivery, and final EULA terms remain unfinalized until separately approved. Production payments, fulfillment, installer release, and customer fulfillment email remain disabled.
 
+The target launch date is January 1, 2027. Planned launch support is Windows only; the exact supported Windows versions and system requirements must be published before sales open. iOS and iPadOS versions are planned for future support, but no release date is confirmed. macOS is not supported. These platform statements do not mean the unreleased product is currently available, and they do not relax any commerce, restore, fulfillment, or release gate.
+
 ### Payment catalog migration boundary
 
 The staging Stripe/Checkout catalog recognizes only the two base product keys: `fde-ims-license` and `fde-ims-license-plus`. The retired standalone `fde-ims-updates` key is rejected. Checkout activation remains off, live payments remain off, and the Updates add-on has no Checkout route until purchase-date entitlement and billing rules receive a separate review.
