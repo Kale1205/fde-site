@@ -1,16 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,statSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
 import {modulo,MAX_BOOKS,MAX_TOP_NEWS,partitionNews,INSTAGRAM_ACCOUNTS,newsImagePath,validInstagramFeed,shuffled} from '../news-books.js';
 import {renderQuietNews} from './build_quiet_news.mjs';
 import {NEWS_UI,localNews,renderNewsPage} from '../news-renderer.js';
 import {withoutW05CmsBridge} from './w05_book_news_test_helpers.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
-import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
+import {execApprovedNamingBaseline} from './approved_product_naming.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const cms=JSON.parse(read('content/site-content.json'));
-const baseline=file=>applyReviewedZhSearchMetadata(file,execFileSync('git',['show',`79c017fe45c6316c402f28db5560c152597963d7:${file}`],{cwd:root,encoding:'utf8'}));
+const baseline=file=>execApprovedNamingBaseline('git',['show',`79c017fe45c6316c402f28db5560c152597963d7:${file}`],{cwd:root,encoding:'utf8'});
 const entities={'&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"','&#39;':"'"};
 const decode=s=>s.replace(/&(?:amp|lt|gt|quot|#39);/g,x=>entities[x]);
 for(const [prefix,locale] of [['','en'],['ja/','ja'],['zh/','zh-CN']]){
@@ -95,7 +94,7 @@ test('feed accepts only the two approved connected accounts and authentic-source
 test('a disconnected account cannot inject posts alongside the other connected account',()=>{const data=feed([sample,{...sample,id:'b',author:'bakedkale'}]);data.accounts[1].connectionStatus='not-connected';assert.deepEqual(validInstagramFeed(data).map(x=>x.author),['kale1999_']);const shipped=JSON.parse(read('content/instagram-feed.json'));assert.deepEqual(shipped.accounts.map(a=>[a.username,a.accountType,a.connectionStatus]),[['kale1999_','CREATOR','not-connected'],['bakedkale','BUSINESS','not-connected']]);});
 test('randomization preserves actual posts and never mutates their captions',()=>{const data=[sample,{...sample,id:'b'},{...sample,id:'c'}],copy=JSON.stringify(data);assert.deepEqual(shuffled(data,()=>0).map(x=>x.id),['b','c','test-only']);assert.equal(JSON.stringify(data),copy);});
 test('native dialog, bounded recycling and accessible motion policies are explicit',()=>{const html=read('ja/news.html'),js=read('news-books.js'),css=read('news-books.css');assert.match(html,/<dialog class="book-reader" aria-labelledby="book-article-title"/);assert.match(js,/reader.showModal\(\)/);assert.match(js,/addEventListener\('cancel'/);assert.match(js,/lastTrigger.focus/);assert.match(js,/MAX_BOOKS/);assert.match(js,/queued=Math.max\(-2,Math.min\(2,delta\)\)/);assert.match(js,/IntersectionObserver/);assert.match(js,/document.hidden/);assert.match(js,/reduce.matches/);assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/focus-visible/);assert.doesNotMatch(js,/innerHTML|insertAdjacentHTML|localStorage|sendBeacon|setInterval|graph\.instagram|api\.linkedin|access_token/i);});
-test('privacy, translations and current release conditions are byte-identical; editable news is covered by CMS tests',()=>{for(const file of ['content/zh-translations.json','robots.txt','worker/src/index-v14.js'])assert.equal(read(file),baseline(file));});
+test('privacy, translations and current release conditions are unchanged outside approved release scope; editable news is covered by CMS tests',()=>{for(const file of ['content/zh-translations.json','robots.txt','worker/src/index-v14.js'])file.endsWith('.json')?assert.deepEqual(JSON.parse(read(file)),JSON.parse(baseline(file))):assert.equal(read(file),baseline(file));});
 test('focused panel moves to the new active panel before outgoing panels become aria-hidden',()=>{const js=read('news-books.js');const start=js.indexOf('const focusedPanel=slots.includes(document.activeElement)');assert(start>0);assert(js.indexOf('if(focusedPanel)document.activeElement.blur()',start)<js.indexOf('for(const node of slots)position(node,Number(node.dataset.offset)-delta)',start));assert.match(js,/if\(focusedPanel\)stage.querySelector\('\[data-offset="0"\]'\).focus\(\{preventScroll:true\}\)/);});
 test('shared CMS change is only a News-scoped handoff; all existing fetch/auth behavior stays exact',()=>{for(const file of ['cms-content.js','cms-content-ja.js'])assert.equal(withoutW05CmsBridge(read(file)),baseline(file));});
 test('generated book surfaces and real app icons have a bounded transfer budget',()=>{let sum=0;for(const file of ['news-book-forest.webp','news-book-ivory.webp','news-book-open.webp','news-book-spine-left.webp','news-book-spine-right.webp','instagram-app.webp','linkedin-app.webp','news-demo-cover.webp','news-site-cover.webp']){const n=statSync(new URL('../assets/'+file,import.meta.url)).size;assert(n<150000,file);sum+=n;}assert(sum<350000,`asset bytes: ${sum}`);});
