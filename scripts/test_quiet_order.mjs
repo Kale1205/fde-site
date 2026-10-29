@@ -35,7 +35,7 @@ for(const prefix of ['', 'ja/', 'zh/']){
     for(const file of ['ims-license-update.webp','ims-license-plus-customize.webp'])assert.ok(page.includes(file));
     for(const price of ['¥49,800','¥99,800','¥4,900','¥9,800'])assert.ok(page.includes(price));
     for(const plan of home.match(/<div class="plan-top">[\s\S]*?<\/div>/g))assert.ok(page.includes(plan.match(/<p>([^<]+)<\/p>/)[1]));
-    assert.match(page,/2026|2026年/);assert.match(page,/11月1日|November 1/);
+    assert.match(page,/2027|2027年/);assert.match(page,/1月1日|January 1/);
     assert.match(page,/<ol class="order-process-rail">/);assert.equal((page.match(/class="order-step-icon"/g)||[]).length,3);
     assert.match(page,/License Agreement \/ EULA/);
     assert.doesNotMatch(page,/<form|stripe\.com|order\.js|customer\.js|\$349|\$699|希望する場合|opt-in|追加オプション|候选价格|予定価格/);

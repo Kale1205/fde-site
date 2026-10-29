@@ -26,7 +26,7 @@ export function applyReleaseNoticePolicy(source, page) {
   if(page==='license') {
     if(source.includes('data-release-notice'))return source;
     return source.replace('<p class="license-note">', `<p class="license-note" data-release-notice><strong>${t.date}。 ${t.unavailable}</strong><br>`)
-      .replace('November 1, 2026。', 'November 1, 2026.');
+      .replace('January 1, 2027。', 'January 1, 2027.');
   }
   if(page==='contact'||page==='news') {
     let html=source.replace(/\s*<article class="faq-item" data-faq-id="ims-sale-status">[\s\S]*?<\/article>/g, '');

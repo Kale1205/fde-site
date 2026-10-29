@@ -1,12 +1,12 @@
 # FDE IMS Web Demo Demand Validation Policy
 
-Status: `ADMINISTRATOR-APPROVED STRATEGY — 2026-09-09`
+Status: `ADMINISTRATOR-UPDATED STRATEGY — 2026-10-28`
 
 ## Purpose
 
 FDE IMS native v1.0 will not wait for every native platform to be packaged and physically validated before release.
 
-The first native release target is Apple M2 or later on macOS 12 Monterey or later, subject to Apple's model-specific minimum OS for the exact Mac model.
+The first native release target is Windows only. Exact supported Windows versions and system requirements will be published before sales open. iOS and iPadOS versions are planned for later support, with no confirmed release date. macOS is not supported.
 
 The browser-based Web Demo is a separate validation surface used to expose the planned inventory workflow broadly and collect demand signals for later native platform releases.
 
@@ -27,8 +27,8 @@ Web Demo availability does **not** mean that the corresponding native applicatio
 Public copy must keep the distinction clear:
 
 - `Web Demo` = browser-based development preview with sample/temporary data;
-- `Native v1.0` = first formally supported installed product, initially M2+ / macOS 12+;
-- `Later native platforms` = M1 compatibility validation, Windows, Linux, iPhone/iPad, and Android according to evidence and demand.
+- `Native v1.0` = first formally supported installed product, initially Windows only;
+- `Later native platforms` = iOS and iPadOS are planned with no confirmed release date; other platforms remain uncommitted demand signals.
 
 ## Demand signals
 
@@ -48,16 +48,15 @@ Do not introduce device fingerprinting, invasive profiling, or new third-party a
 
 ## Native release independence
 
-Windows, iOS/iPadOS, Android, Linux, and M1 physical validation are not blockers for the first M2+ / macOS 12+ native v1.0 release.
+iOS/iPadOS, Android, Linux, and macOS validation are not blockers for the first Windows-only native v1.0 release.
 
 Existing cross-platform compile checks and portable architecture remain useful engineering evidence, but they do not re-enter the initial release critical path.
 
 The Web Demo must not weaken or bypass native release requirements such as:
 
-- Developer ID signing and notarization;
-- Gatekeeper validation;
-- installer lifecycle validation;
-- second physical M2+ Mac private-LAN validation;
+- Windows code-signing validation;
+- Windows installer lifecycle validation;
+- supported Windows hardware and OS validation;
 - security/integrity gates;
 - Kale Review;
 - Kale Guard; and
@@ -67,9 +66,9 @@ The Web Demo must not weaken or bypass native release requirements such as:
 
 Preferred wording:
 
-> Web Demo: available in a modern browser across major operating systems. The first native FDE IMS v1.0 release is planned for Apple M2 or later Macs on macOS 12 or later. Other native platforms will be prioritized using validation and demand data.
+> Web Demo: available in a modern browser across major operating systems. The first native FDE IMS v1.0 release is planned for Windows only. iOS and iPadOS versions are planned for later support, with no confirmed release date. macOS is not supported.
 
-Do not use Web Demo availability as evidence that Windows, Linux, iOS/iPadOS, Android, or M1 native support already exists.
+Do not use Web Demo availability as evidence that the unreleased Windows product, or any Linux, iOS/iPadOS, Android, or macOS native version, is already available.
 
 ## Current commercial safety
 

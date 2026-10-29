@@ -15,6 +15,7 @@ import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews,withoutW05CmsBridge} from './w05_book_news_test_helpers.mjs';
 import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
 import {applyApprovedContinuingUsePolicy,continuingUseFaqAnswers} from './updates_continuing_use_copy.mjs';
+import {applyApprovedInitialReleaseScope,initialScopeFaqAnswers} from './initial_release_copy.mjs';
 
 const root=new URL('../',import.meta.url);
 const baseline='b714f3d7e3cf2444effb6ca6b0d303c3036857f4';
@@ -30,7 +31,7 @@ for(const prefix of prefixes)for(const page of names){
   const file=prefix+page+'.html';
   test(file+': only reviewed translations and static FAQ change; pricing, metadata and routes stay intact',()=>{
     const current=read(file),old=before(file);
-    assert.equal(normalized(current),normalized(applyApprovedContinuingUsePolicy(file,apply(file,old))),file);
+    assert.equal(normalized(current),normalized(applyApprovedContinuingUsePolicy(file,apply(file,applyApprovedInitialReleaseScope(file,old)))),file);
     assert.equal(apply(file,current),current,'idempotent');
     assert.deepEqual(meta(normalized(current)),meta(normalized(apply(file,old))),'only pinned Chinese demo descriptions and date-only asset keys change');
     assert.deepEqual(current.match(/<link rel="(?:canonical|alternate)"[^>]*>|<meta name="robots"[^>]*>/g),old.match(/<link rel="(?:canonical|alternate)"[^>]*>|<meta name="robots"[^>]*>/g),'canonical/hreflang/robots remain exact');
@@ -65,16 +66,17 @@ test('current business-policy answers and existing FAQ prices retain their appro
   for(const item of data.faq)if(approved.has(item.id))assert.deepEqual(prices(item),prices(approved.get(item.id)),`${item.id}: existing prices require separate approval`);
 });
 for(const file of ['content/faq-content.json','content/faq-policy-additions.json'])test(file+': historical migration changes only Chinese translation, labels and two scoped answers',()=>{
-  const fixture=readFaqMigrationFixture(file),current=JSON.parse(fixture),old=JSON.parse(before(file));
-  assert.equal(fixture,apply(file,before(file)));
-  if(file==='content/faq-policy-additions.json')assert.equal(read(file),applyApprovedContinuingUsePolicy(file,fixture),'policy additions only receive the separately approved continuing-use policy');
+  const approved=readFaqMigrationFixture(file);
+  const fixture=apply(file,applyApprovedInitialReleaseScope(file,approved)),current=JSON.parse(fixture),old=JSON.parse(approved);
+  assert.equal(read(file),applyApprovedContinuingUsePolicy(file,fixture),'live FAQ source receives only the separately approved continuing-use policy after the reviewed copy migrations');
   for(const item of current.faq){
     const original=old.faq.find(x=>x.id===item.id);
     assert.deepEqual({...item,question:null,answer:null,keywords:null,synonyms:null},{...original,question:null,answer:null,keywords:null,synonyms:null});
     for(const locale of ['ja','en'])for(const field of ['question','answer','keywords','synonyms']){
       let expected=original[field][locale];
       if(field==='answer'&&item.id==='no-redistribution'&&locale==='en')expected=redistributionAnswer;
-      if(field==='answer'&&item.id==='demo-not-product-version')expected+=demoLanguageNotes[locale];
+      if(field==='answer'&&item.id==='demo-not-product-version'&&!expected.includes(demoLanguageNotes[locale]))expected+=demoLanguageNotes[locale];
+      if(field==='answer'&&initialScopeFaqAnswers[item.id]?.[locale])expected=initialScopeFaqAnswers[item.id][locale];
       assert.deepEqual(item[field][locale],expected,item.id+' '+field+' '+locale);
     }
   }
@@ -94,7 +96,8 @@ for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']])test(local
 });
 test('Chinese stock terms agree with the running demo and do not imply real server/backup support',()=>{
   const dict=JSON.parse(read('content/zh-translations.json'));
-  assert.equal(read('content/zh-translations.json'),apply('content/zh-translations.json',before('content/zh-translations.json')));
+  const expected=JSON.parse(apply('content/zh-translations.json',applyApprovedInitialReleaseScope('content/zh-translations.json',before('content/zh-translations.json'))));
+  assert.deepEqual(dict,expected);
   for(const [key,value] of Object.entries(zhInventoryCopy))assert.equal(dict[key],value);
   for(const prefix of ['zh/'])for(const page of ['index','demo','quiet-form']){
     const html=read(prefix+page+'.html');
@@ -105,7 +108,7 @@ test('Chinese stock terms agree with the running demo and do not imply real serv
   for(const id of ['updates-term','license-updates-entitlement','cancel-updates-after-license','cancel-updates-only']){
     assert.equal(data.faq.find(x=>x.id===id).answer['zh-CN'],continuingUseFaqAnswers[id]['zh-CN'],'current approved continuing-use conditions stay exact');
   }
-  assert.match(data.faq.find(x=>x.id==='license-devices').answer['zh-CN'],/单台 Mac.*同一台 Mac/);
+  assert.match(data.faq.find(x=>x.id==='license-devices').answer['zh-CN'],/仅支持 Windows.*iOS.*iPadOS.*macOS 不受支持/);
   assert.match(data.faq.find(x=>x.id==='demo-not-product-version').answer['zh-CN'],/不代表原生应用支持中文/);
 });
 for(const prefix of prefixes)test((prefix||'en/') + ': internal links resolve locally; deleted Decision Guides stay deleted',()=>{
