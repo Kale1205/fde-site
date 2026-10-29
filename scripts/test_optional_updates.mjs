@@ -61,7 +61,7 @@ for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
 test('historical FAQ migration changes four answers, without changing IDs or prices', () => {
   const ids = new Set(['updates-term','license-updates-entitlement','cancel-updates-after-license','cancel-updates-only']);
   for (const file of ['content/faq-content.json','content/faq-policy-additions.json']) {
-    const fixture=readFaqMigrationFixture(file);
+    const fixture=applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,readFaqMigrationFixture(file)));
     const now = JSON.parse(fixture), old = JSON.parse(applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, before(file))));
     assert.equal(fixture, applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file)))));
     if(file==='content/faq-policy-additions.json')assert.equal(read(file),applyApprovedContinuingUsePolicy(file,fixture),'policy additions only receive the separately approved continuing-use policy');
@@ -167,7 +167,8 @@ test('approved continuing-use copy defines the excluded first six months and six
 });
 
 for(const [file,locale]of policyPages)test(`${file}: only approved Updates paragraphs change, with exact locale copy and unchanged prices`,()=>{
-  const previous=continuingBefore(file),current=read(file),expected=applyApprovedContinuingUsePolicy(file,previous);
+  const historical=continuingBefore(file),previous=applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,historical));
+  const current=read(file),expected=applyApprovedContinuingUsePolicy(file,previous);
   assert.equal(normalize(current),normalize(expected));
   assert.equal(applyApprovedContinuingUsePolicy(file,current),current,'current output is byte-idempotent');
   assert.equal(normalize(current.replace(policyRegion(file,current),'UPDATES_POLICY')),normalize(previous.replace(policyRegion(file,previous),'UPDATES_POLICY')),'all markup outside the Updates region stays exact except asset build keys');
@@ -176,8 +177,9 @@ for(const [file,locale]of policyPages)test(`${file}: only approved Updates parag
 });
 
 for(const [file,ids]of Object.entries(policyFiles))test(`${file}: exactly the approved FAQ answers change; other records, locale data and prices stay intact`,()=>{
-  const previous=JSON.parse(continuingBefore(file)),current=JSON.parse(read(file));
-  assert.equal(read(file),applyApprovedContinuingUsePolicy(file,continuingBefore(file)));
+  const previousSource=applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,continuingBefore(file)));
+  const previous=JSON.parse(previousSource),current=JSON.parse(read(file));
+  assert.equal(read(file),applyApprovedContinuingUsePolicy(file,previousSource));
   assert.equal(applyApprovedContinuingUsePolicy(file,read(file)),read(file),'current JSON is byte-idempotent');
   assert.deepEqual({...current,faq:null},{...previous,faq:null});
   assert.deepEqual(current.faq.map(item=>item.id),previous.faq.map(item=>item.id));

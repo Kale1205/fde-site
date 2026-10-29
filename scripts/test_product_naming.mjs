@@ -62,7 +62,9 @@ for (const prefix of ['', 'ja/', 'zh/']) {
 
 test('CMS hydration and Chinese dictionary contain the same approved names', () => {
   for (const file of ['content/faq-content.json', 'content/zh-translations.json']) {
-    const fixture=file==='content/faq-content.json'?readFaqMigrationFixture(file):read(file);
+    const fixture=file==='content/faq-content.json'
+      ? applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,readFaqMigrationFixture(file)))
+      : read(file);
     assert.equal(fixture, applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file)))))));
     assert.doesNotMatch(read(file), /FDE IMS/);
     JSON.parse(read(file));
