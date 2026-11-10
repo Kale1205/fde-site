@@ -1,4 +1,4 @@
-import {newFaqDraft,persistedFaqDraft,faqFingerprint,FaqDraftStore,FaqPublisher,faqErrorText} from './cms-faq-workflow.js?v=20261110-142326';
+import {newFaqDraft,persistedFaqDraft,faqFingerprint,FaqDraftStore,FaqPublisher,faqErrorText} from './cms-faq-workflow.js?v=20261110-142553';
 
 // FAQ state is independent of News state. Only an explicit reviewed request
 // passes a draft to the protected-branch publisher.
