@@ -5,7 +5,7 @@ import {execFileSync} from 'node:child_process';
 import {runInNewContext} from 'node:vm';
 import {applyW04LayeredMotion, sampleCode} from './w04_layered_motion.mjs';
 import {renderQuietGoals} from './build_quiet_goals.mjs';
-import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
+import {normalizeHistoricalPresentation as normalize} from './approved_motion_test_helpers.mjs';
 
 const read = file => readFileSync(new URL('../' + file, import.meta.url), 'utf8');
 const baseline = '9db3de1248562c0b4e22362a476fd741c3985ad4';

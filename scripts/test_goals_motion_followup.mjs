@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {runInNewContext} from 'node:vm';
 import {applyW04LayeredMotion,sampleCode} from './w04_layered_motion.mjs';
-import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
+import {normalizeHistoricalPresentation as normalize} from './approved_motion_test_helpers.mjs';
 const read=file=>readFileSync(new URL('../'+file,import.meta.url),'utf8');
 const removedButton=/<div class="mission-motion-tools"><button\b[^>]*data-motion-toggle[^>]*>[\s\S]*?<\/button><\/div>/g;
 for(const file of ['goals.html','ja/goals.html','zh/goals.html'])test(file+': follow-up removes only requested button and keeps all media, prose, links and metadata',()=>{

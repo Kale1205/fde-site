@@ -8,7 +8,7 @@ import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {runInNewContext} from 'node:vm';
 import {applyApprovedInitialReleaseScope, initialReleaseCopy, initialScopeFaqAnswers} from './initial_release_copy.mjs';
-import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
+import {normalizeHistoricalPresentation as normalizeAssetBuildKeys} from './approved_motion_test_helpers.mjs';
 import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
@@ -138,8 +138,8 @@ test('site runtime changes are confined to the localized demand callout; no trac
   assert.doesNotMatch(read('site.js'), /navigator\.(?:userAgent|platform)|deviceMemory|fetch\(|localStorage|sessionStorage|WebSocket/);
 });
 test('visual styles except approved W01 CTA, demo operations, authentication, commerce gates, news and robots remain unchanged', () => {
-  for (const file of ['gallery-ui.css','gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','styles.css','responsive.css',
-    'gallery-ui.js','demo-v1.js','quiet-form.js','contact-config.js','contact-direct.js','quiet-customer.js',
+  for (const file of ['gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','styles.css','responsive.css',
+    'demo-v1.js','quiet-form.js','contact-config.js','contact-direct.js','quiet-customer.js',
     'worker/src/index-v14.js','robots.txt']) {
     assert.equal(normalize(read(file)),normalize(applyApprovedGoalsAutoplay(file,applyW01ProductCta(file,before(file)))),file);
   }

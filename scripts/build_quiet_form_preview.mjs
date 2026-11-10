@@ -89,7 +89,8 @@ export async function renderQuietPreview(locale) {
 <title>${c.title}</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#073e2c">
 ${alternates}
 <link rel="icon" type="image/svg+xml" href="${prefix}assets/baked-kale-mark.svg">
-<link rel="stylesheet" href="${prefix}gallery-ui.css"><link rel="stylesheet" href="${prefix}quiet-form.css">
+<link rel="stylesheet" href="${prefix}gallery-ui.css"><link rel="stylesheet" href="${prefix}quiet-form.css"><link rel="stylesheet" href="${prefix}sculpture-motion.css">
+<script type="module" src="${prefix}sculpture-motion.js"></script>
 <script defer src="${prefix}gallery-ui.js"></script><script defer src="${prefix}demo-v1.js"></script><script defer src="${prefix}quiet-form.js"></script>
 </head>
 <body class="gallery-page quiet-home">

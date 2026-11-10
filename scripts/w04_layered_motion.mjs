@@ -1,4 +1,12 @@
 // Approved W04 Layered Desk: a truthful sample-code animation and real recording.
+import {readFileSync} from 'node:fs';
+
+function withIllustrations(source) {
+  if (source.includes('sculpture-motion.js')) return source;
+  const prefix=/<html lang="en">/.test(source)?'':'../';
+  const version=readFileSync(new URL('../build-version.txt',import.meta.url),'utf8').trim();
+  return source.replace('</head>', `  <link rel="stylesheet" href="${prefix}sculpture-motion.css?v=${version}">\n  <script type="module" src="${prefix}sculpture-motion.js?v=${version}"></script>\n</head>`);
+}
 export const sampleCode = `// Illustration only — not IMS implementation code.
 enum StockState { OutOfStock, LowStock, Healthy }
 
@@ -47,7 +55,7 @@ export function localizeW04Motion(source, locale) {
 }
 
 export function applyW04LayeredMotion(source) {
-  if (source.includes('data-goals-motion')) return retainMotionDocuments(applyDeskComposition(source));
+  if (source.includes('data-goals-motion')) return withIllustrations(retainMotionDocuments(applyDeskComposition(source)));
   const lang = /<html lang="ja">/.test(source) ? 'ja' : /<html lang="zh-CN">/.test(source) ? 'zh' : 'en';
   const prefix = lang === 'en' ? '' : '../';
   const t = copy[lang];
@@ -72,7 +80,7 @@ export function applyW04LayeredMotion(source) {
         </div>
         <details class="mission-transcript">`;
   });
-  return retainMotionDocuments(applyDeskComposition(html));
+  return withIllustrations(retainMotionDocuments(applyDeskComposition(html)));
 }
 
 // Keep the complete source and operation transcript in the document, while

@@ -66,6 +66,12 @@
   const menuButton = document.querySelector(".menu-button");
   const mobileNav = document.getElementById("mobile-nav");
   if (menuButton && mobileNav) {
+    const interfaceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const popIn = [
+      { opacity: 0, transform: "translateY(-10px) scale(.82)" },
+      { opacity: 1, transform: "translateY(1px) scale(1.025)", offset: .7 },
+      { opacity: 1, transform: "translateY(0) scale(1)" },
+    ];
     const localeNames = { en: "English", ja: "日本語", "zh-CN": "简体中文" };
     const localeKey = locale === "zh" ? "zh-CN" : locale;
     const localizeAlternateUrl = (href) => {
@@ -107,15 +113,41 @@
       picker.append(summary, menu);
       sourceLocaleButtons[0].before(picker);
       sourceLocaleButtons.forEach((button) => button.remove());
+      let pickerExpanded = false, pickerRun = 0, pickerAnimation;
+      summary.setAttribute("aria-expanded", "false");
+      const setPicker = (open, instant = false) => {
+        const run = ++pickerRun;
+        const from = picker.open ? { opacity: getComputedStyle(menu).opacity, transform: getComputedStyle(menu).transform } : popIn[0];
+        pickerAnimation?.cancel();
+        pickerExpanded = open;
+        summary.setAttribute("aria-expanded", String(open));
+        menu.inert = !open;
+        if (open) picker.open = true;
+        const finish = () => { if (run === pickerRun && !pickerExpanded) picker.open = false; };
+        if (instant || interfaceMotion.matches || document.hidden || !menu.animate) { finish(); return; }
+        pickerAnimation = menu.animate(open ? [from, ...popIn.slice(1)] : [from, { opacity: 0, transform: "translateY(-6px) scale(.94)" }], {
+          duration: open ? 360 : 160, easing: "cubic-bezier(.2,.7,.2,1)",
+        });
+        pickerAnimation.finished.then(finish).catch(() => {});
+      };
+      summary.addEventListener("click", (event) => {
+        event.preventDefault();
+        setPicker(!pickerExpanded);
+      });
       document.addEventListener("pointerdown", (event) => {
-        if (picker.open && !picker.contains(event.target)) picker.open = false;
+        if (pickerExpanded && !picker.contains(event.target)) setPicker(false);
       });
       picker.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
-          picker.open = false;
+          setPicker(false);
           summary.focus();
         }
       });
+      picker.addEventListener("focusout", (event) => {
+        if (!picker.contains(event.relatedTarget)) setPicker(false);
+      });
+      interfaceMotion.addEventListener("change", () => { if (interfaceMotion.matches) setPicker(pickerExpanded, true); });
+      document.addEventListener("visibilitychange", () => { if (document.hidden) setPicker(pickerExpanded, true); });
     }
 
     const desktopNav = document.querySelector(".desktop-nav");
@@ -220,13 +252,39 @@
     document.body.append(backdrop, mobileNav);
     menuButton.setAttribute("aria-haspopup", "true");
 
-    const setMenu = (open) => {
-      mobileNav.hidden = !open;
-      backdrop.hidden = !open;
-      document.documentElement.classList.toggle("mobile-menu-open", open);
+    let menuOpen = false, menuRun = 0, menuAnimations = [];
+    const positionMenu = () => {
+      mobileNav.style.setProperty("--menu-top", `${Math.max(12, menuButton.getBoundingClientRect().bottom + 12)}px`);
+    };
+    const setMenu = (open, instant = false) => {
+      const run = ++menuRun;
+      const from = mobileNav.hidden ? popIn[0] : { opacity: getComputedStyle(mobileNav).opacity, transform: getComputedStyle(mobileNav).transform };
+      const backdropFrom = backdrop.hidden ? "0" : getComputedStyle(backdrop).opacity;
+      menuAnimations.forEach(animation => animation.cancel());
+      menuAnimations = [];
+      menuOpen = open;
+      mobileNav.inert = !open;
+      if (open) {
+        positionMenu();
+        mobileNav.hidden = false;
+        backdrop.hidden = false;
+        document.documentElement.classList.add("mobile-menu-open");
+      }
       menuButton.setAttribute("aria-expanded", String(open));
       menuButton.setAttribute("aria-label", open ? text.closeMenu : text.openMenu);
-      if (open) window.requestAnimationFrame(() => closeButton.focus());
+      const finish = () => {
+        if (run !== menuRun || menuOpen) return;
+        mobileNav.hidden = true;
+        backdrop.hidden = true;
+        document.documentElement.classList.remove("mobile-menu-open");
+      };
+      if (open) window.requestAnimationFrame(() => { if (menuOpen) closeButton.focus({ preventScroll: true }); });
+      if (instant || interfaceMotion.matches || document.hidden || !mobileNav.animate) { finish(); return; }
+      menuAnimations = [
+        mobileNav.animate(open ? [from, ...popIn.slice(1)] : [from, { opacity: 0, transform: "translateY(-8px) scale(.94)" }], { duration: open ? 380 : 180, easing: "cubic-bezier(.2,.7,.2,1)" }),
+        backdrop.animate([{ opacity: backdropFrom }, { opacity: open ? 1 : 0 }], { duration: open ? 240 : 180, easing: "ease-out" }),
+      ];
+      menuAnimations[0].finished.then(finish).catch(() => {});
     };
     menuButton.addEventListener("click", () => setMenu(menuButton.getAttribute("aria-expanded") !== "true"));
     closeButton.addEventListener("click", () => {
@@ -242,15 +300,15 @@
         // Let the browser complete the link's default navigation first. Hiding
         // the link's containing sheet synchronously cancels navigation in
         // iOS Safari, leaving users on the dimmed page with only Close working.
-        window.setTimeout(() => setMenu(false), 0);
+        window.setTimeout(() => setMenu(false, true), 0);
       }
     });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !mobileNav.hidden) {
+      if (event.key === "Escape" && menuOpen) {
         setMenu(false);
         menuButton.focus();
       }
-      if (event.key === "Tab" && !mobileNav.hidden) {
+      if (event.key === "Tab" && menuOpen) {
         const focusable = Array.from(mobileNav.querySelectorAll("a, button"));
         const first = focusable[0];
         const last = focusable.at(-1);
@@ -264,8 +322,11 @@
       }
     });
     window.addEventListener("resize", () => {
-      if (window.innerWidth > 1080 && !mobileNav.hidden) setMenu(false);
+      if (window.innerWidth > 1080 && !mobileNav.hidden) setMenu(false, true);
+      else if (menuOpen) positionMenu();
     });
+    interfaceMotion.addEventListener("change", () => { if (interfaceMotion.matches) setMenu(menuOpen, true); });
+    document.addEventListener("visibilitychange", () => { if (document.hidden) setMenu(menuOpen, true); });
   }
 
   const planButtons = Array.from(document.querySelectorAll("[data-license-plan]"));

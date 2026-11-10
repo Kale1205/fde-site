@@ -23,7 +23,7 @@ function fixture({reduced=false,hidden=false}={}){
  tick(BOOK_MOTION.viewIn);
  return {context,classes,history,shown,handlers,reduce,document,location,move,click,tick,focus:()=>focusCalls,markers:()=>markerCalls};
 }
-test('News views preserve real URLs/history while leaving and arriving at the established slow duration',()=>{
+test('News views preserve real URLs/history while leaving and arriving at the responsive duration',()=>{
  const f=fixture(),event=f.click();assert.equal(event.defaultPrevented,true);assert.equal(f.history.length,1);assert.match(f.location.href,/view=all$/);
  assert.equal(f.context.listView,false);assert(f.classes.has('is-news-leaving'));f.tick(BOOK_MOTION.viewOut-1);assert.equal(f.context.listView,false);
  f.tick(1);assert.equal(f.context.listView,true);assert.equal(f.focus(),1);assert.equal(f.markers(),1);assert(f.classes.has('is-news-arriving'));
@@ -49,26 +49,26 @@ test('list reading removes only the cover effect and keeps the existing article 
  assert.match(source,/openingCover.hidden=listView/);assert.match(source,/if\(!reduce.matches&&!listView\).*coverAnimation=openingCover.animate/);
  assert.match(source,/if\(!reduce.matches&&!cover.hidden\).*coverAnimation=cover.animate/);
  const css=readFileSync(new URL('../news-books.css',import.meta.url),'utf8');
- assert.match(css,/book-spread\{animation:book-arrive 1400ms 160ms/);assert.match(css,/reader-copy\)\{animation:book-ink-arrive 700ms 620ms/);
+ assert.match(css,/book-spread\{animation:book-arrive 500ms 40ms/);assert.match(css,/reader-copy\)\{animation:book-ink-arrive 320ms 120ms/);
  assert.match(css,/book-opening-cover\[hidden\]\{display:none\}/);assert.match(css,/prefers-reduced-motion:reduce/);
- assert.deepEqual([BOOK_MOTION.select,BOOK_MOTION.open,BOOK_MOTION.close],[1200,1800,1000]);
+ assert.deepEqual([BOOK_MOTION.select,BOOK_MOTION.open,BOOK_MOTION.close],[520,680,380]);
  assert.doesNotMatch(source,/startViewTransition|navigator\.userAgent|localStorage|sessionStorage/);
 });
 
 function readerFixture({reduced=false,hidden=false}={}){
- const classes=new Set(),frames=[],timers=[];
+ const classes=new Set(),frames=[],timers=new Map();let timerId=0;
  const classList={add:(...xs)=>xs.forEach(x=>classes.add(x)),remove:(...xs)=>xs.forEach(x=>classes.delete(x)),contains:x=>classes.has(x),toggle:(x,on)=>on?classes.add(x):classes.delete(x)};
  const element=()=>({hidden:false,style:{removeProperty(){}},dataset:{},removeAttribute(){},focus(){},getBoundingClientRect:()=>({left:0,top:0,width:100,height:100})});
  const cover=element(),body={replaceChildren(){},append(){}},nodes=Object.fromEntries(['.opening-cover-art','.opening-cover-title','.reader-image','.reader-date','.reader-category','#book-article-title','.reader-copy','.book-close'].map(s=>[s,element()]));
  const reader={open:false,classList,querySelector:s=>s==='.book-opening-cover'?cover:s==='.reader-body'?body:nodes[s],showModal(){this.open=true;}};
- const context={openingRun:0,BOOK_MOTION,allItems:[{id:'fixture',title:'Local fixture',body:'Synthetic text',date:'2026-10-17',category:'Update'}],items:[],index:0,reader,listView:true,reduce:{matches:reduced},document:{hidden,body:{classList},createElement:element},resolveImage:()=>'',slots:[],lastTrigger:null,queued:0,closeTimer:0,openingTimer:0,coverAnimation:null,liftedBook:null,flightFrom:'',requestAnimationFrame:fn=>frames.push(fn),setTimeout:(fn,ms)=>timers.push(ms),clearTimeout(){}};
+ const context={openingRun:0,BOOK_MOTION,allItems:[{id:'fixture',title:'Local fixture',body:'Synthetic text',date:'2026-10-17',category:'Update'}],items:[],index:0,reader,listView:true,reduce:{matches:reduced},document:{hidden,body:{classList},createElement:element},resolveImage:()=>'',slots:[],lastTrigger:null,queued:0,closeTimer:0,openingTimer:0,preparationTimer:0,coverAnimation:null,liftedBook:null,flightFrom:'',requestAnimationFrame:fn=>frames.push(fn),setTimeout:(fn,ms)=>{timers.set(++timerId,{fn,ms});return timerId;},clearTimeout:id=>timers.delete(id)};
  const start=source.indexOf(' function open(id,trigger)'),end=source.indexOf(' function close()',start);
  runInNewContext(source.slice(start,end)+"\nopen('fixture',{});",context);
  return {classes,frames,timers,reader};
 }
 test('reduced or hidden readers reveal static content immediately without waiting for suspended animation frames',()=>{
- for(const state of [{reduced:true},{hidden:true},{reduced:true,hidden:true}]){const f=readerFixture(state);assert.equal(f.reader.open,true);assert(f.classes.has('is-ready'));assert(!f.classes.has('is-preparing'));assert(!f.classes.has('is-opening'));assert.equal(f.frames.length,0);assert.equal(f.timers.length,0);}
+ for(const state of [{reduced:true},{hidden:true},{reduced:true,hidden:true}]){const f=readerFixture(state);assert.equal(f.reader.open,true);assert(f.classes.has('is-ready'));assert(!f.classes.has('is-preparing'));assert(!f.classes.has('is-opening'));assert.equal(f.frames.length,0);assert.equal(f.timers.size,0);}
 });
-test('normal visible readers retain the two-frame preparation and existing slow article timing',()=>{
- const f=readerFixture();assert(f.classes.has('is-preparing'));assert(!f.classes.has('is-ready'));assert.equal(f.frames.length,1);f.frames.shift()();assert.equal(f.frames.length,1);f.frames.shift()();assert(f.classes.has('is-opening'));assert(!f.classes.has('is-preparing'));assert.deepEqual(f.timers,[BOOK_MOTION.open+24]);
+test('normal visible readers retain the two-frame preparation and responsive article timing',()=>{
+ const f=readerFixture();assert(f.classes.has('is-preparing'));assert(!f.classes.has('is-ready'));assert.equal(f.frames.length,1);f.frames.shift()();assert.equal(f.frames.length,1);f.frames.shift()();assert(f.classes.has('is-opening'));assert(!f.classes.has('is-preparing'));assert.deepEqual([...f.timers.values()].map(t=>t.ms),[BOOK_MOTION.open+24]);
 });

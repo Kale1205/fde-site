@@ -28,6 +28,10 @@ The 2026-09-13 user direction is **preserve the current white/deep-green palette
 - Maintain EN/JA page structure, navigation, locale links and all existing demo, CMS, contact and commerce boundaries.
 - `linear-ui.css` is the shared marketing presentation layer. `gallery-ui.js` owns navigation and progressive motion, never stock mutations.
 
+The home and Our Goals illustrations also use the shared `sculpture-motion.js` / `sculpture-motion.css` layer. The SVG objects animate automatically on every viewport, pause outside the viewport or in background tabs, and obey both the page's illustration pause button and live reduced-motion preferences. Original images remain the no-JavaScript presentation. The shared navigation uses rounded translucent popovers, interruptible opening/closing motion and native link navigation; keep keyboard focus restoration and the deferred mobile-link close intact.
+
+News selection, article opening and closing take 520 ms, 680 ms and 380 ms respectively. CSS content reveals must finish within the corresponding `BOOK_MOTION` lifecycle. Keep reduced-motion/background settlement, article focus restoration, history and the bounded card pool covered by `scripts/test_news_motion_lifecycle.mjs`. Instagram profile photos are local snapshots of the public account images, currently refreshed on November 10, 2026; update the renderer and all locale pages together when replacing them.
+
 Run `node scripts/test_linear_redesign.mjs` alongside the repository validation suite.
 
 ## Public product-plan source of truth

@@ -1,4 +1,4 @@
-import {newsImagePath,partitionNews} from './news-books.js?v=20261017-121639';
+import {newsImagePath,partitionNews} from './news-books.js?v=20261110-142812';
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const NEWS_UI={
  en:{updates:'Updates',previous:'Previous story',next:'Next story',read:'Read story',close:'Close story',social:'Social',intro:'Want to know more? Explore our official and personal accounts.',instagram:'Open Instagram (external site)',linkedin:'Open LinkedIn (external site)',loading:'Loading posts…',pause:'Pause posts',resume:'Resume posts',stories:'News stories',all:'Stories',viewAll:'View all stories',backToTop:'Back to Top News',emptyTop:'No Top News selected yet.',emptyArchive:'No stories yet.',category:{Product:'Product',Development:'Development',Social:'Social'}},
@@ -42,8 +42,8 @@ export function renderNewsPage(source,content,build){
           <div class="social-network social-network-instagram">
             <a class="social-app-link" id="cmsInstagram" href="https://www.instagram.com/kale1999_/" target="_blank" rel="noopener noreferrer" aria-label="${ui.instagram}"><img src="${prefix}assets/instagram-app.webp" width="56" height="56" alt="Instagram" loading="lazy"></a>
             <ul class="social-profiles">
-              <li><a class="social-profile" href="https://www.instagram.com/kale1999_/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @kale1999_"><img class="social-avatar" src="${prefix}assets/instagram-kale1999-profile.jpg" width="100" height="100" alt="" loading="lazy"><span>@kale1999_</span><img class="social-profile-arrow" src="${prefix}assets/phosphor-arrow-right.svg" width="22" height="22" alt=""></a></li>
-              <li><a class="social-profile" href="https://www.instagram.com/bakedkale/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @bakedkale"><img class="social-avatar" src="${prefix}assets/instagram-bakedkale-profile.jpg" width="100" height="100" alt="" loading="lazy"><span>@bakedkale</span><img class="social-profile-arrow" src="${prefix}assets/phosphor-arrow-right.svg" width="22" height="22" alt=""></a></li>
+              <li><a class="social-profile" href="https://www.instagram.com/kale1999_/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @kale1999_"><img class="social-avatar" src="${prefix}assets/instagram-kale1999-profile-20261110.jpg" width="100" height="100" alt="" loading="lazy"><span>@kale1999_</span><img class="social-profile-arrow" src="${prefix}assets/phosphor-arrow-right.svg" width="22" height="22" alt=""></a></li>
+              <li><a class="social-profile" href="https://www.instagram.com/bakedkale/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @bakedkale"><img class="social-avatar" src="${prefix}assets/instagram-bakedkale-profile-20261110.jpg" width="100" height="100" alt="" loading="lazy"><span>@bakedkale</span><img class="social-profile-arrow" src="${prefix}assets/phosphor-arrow-right.svg" width="22" height="22" alt=""></a></li>
             </ul>
           </div>
           <div class="social-network social-network-linkedin">

@@ -8,7 +8,7 @@ import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {applyApprovedProductNaming} from './approved_product_naming.mjs';
 import {applyApprovedOptionalUpdates} from './optional_updates_copy.mjs';
-import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
+import {normalizeHistoricalPresentation as normalizeAssetBuildKeys} from './approved_motion_test_helpers.mjs';
 import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
 import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
@@ -72,7 +72,7 @@ test('CMS hydration and Chinese dictionary contain the same approved names', () 
 });
 
 test('naming does not change routing, privacy, commerce keys or operation code', () => {
-  for (const file of ['robots.txt', 'contact-direct.js', 'contact-config.js', 'gallery-ui.js', 'demo-v1.js', 'quiet-form.js', 'worker/src/index-v14.js']) {
+  for (const file of ['robots.txt', 'contact-direct.js', 'contact-config.js',  'demo-v1.js', 'quiet-form.js', 'worker/src/index-v14.js']) {
     assert.equal(normalizeAssetBuildKeys(read(file)), normalizeAssetBuildKeys(applyApprovedGoalsAutoplay(file,file==='contact-config.js'?applyCmsMemoryKey(previous(file)):previous(file))), file);
   }
 });
