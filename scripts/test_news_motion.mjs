@@ -23,7 +23,7 @@ function fixture({reduced=false,hidden=false}={}){
  tick(BOOK_MOTION.viewIn);
  return {context,classes,history,shown,handlers,reduce,document,location,move,click,tick,focus:()=>focusCalls,markers:()=>markerCalls};
 }
-test('News views preserve real URLs/history while leaving and arriving at the established slow duration',()=>{
+test('News views preserve real URLs/history while leaving and arriving at the responsive duration',()=>{
  const f=fixture(),event=f.click();assert.equal(event.defaultPrevented,true);assert.equal(f.history.length,1);assert.match(f.location.href,/view=all$/);
  assert.equal(f.context.listView,false);assert(f.classes.has('is-news-leaving'));f.tick(BOOK_MOTION.viewOut-1);assert.equal(f.context.listView,false);
  f.tick(1);assert.equal(f.context.listView,true);assert.equal(f.focus(),1);assert.equal(f.markers(),1);assert(f.classes.has('is-news-arriving'));
@@ -49,9 +49,9 @@ test('list reading removes only the cover effect and keeps the existing article 
  assert.match(source,/openingCover.hidden=listView/);assert.match(source,/if\(!reduce.matches&&!listView\).*coverAnimation=openingCover.animate/);
  assert.match(source,/if\(!reduce.matches&&!cover.hidden\).*coverAnimation=cover.animate/);
  const css=readFileSync(new URL('../news-books.css',import.meta.url),'utf8');
- assert.match(css,/book-spread\{animation:book-arrive 1400ms 160ms/);assert.match(css,/reader-copy\)\{animation:book-ink-arrive 700ms 620ms/);
+ assert.match(css,/book-spread\{animation:book-arrive 500ms 40ms/);assert.match(css,/reader-copy\)\{animation:book-ink-arrive 320ms 120ms/);
  assert.match(css,/book-opening-cover\[hidden\]\{display:none\}/);assert.match(css,/prefers-reduced-motion:reduce/);
- assert.deepEqual([BOOK_MOTION.select,BOOK_MOTION.open,BOOK_MOTION.close],[1200,1800,1000]);
+ assert.deepEqual([BOOK_MOTION.select,BOOK_MOTION.open,BOOK_MOTION.close],[520,680,380]);
  assert.doesNotMatch(source,/startViewTransition|navigator\.userAgent|localStorage|sessionStorage/);
 });
 
@@ -69,6 +69,6 @@ function readerFixture({reduced=false,hidden=false}={}){
 test('reduced or hidden readers reveal static content immediately without waiting for suspended animation frames',()=>{
  for(const state of [{reduced:true},{hidden:true},{reduced:true,hidden:true}]){const f=readerFixture(state);assert.equal(f.reader.open,true);assert(f.classes.has('is-ready'));assert(!f.classes.has('is-preparing'));assert(!f.classes.has('is-opening'));assert.equal(f.frames.length,0);assert.equal(f.timers.length,0);}
 });
-test('normal visible readers retain the two-frame preparation and existing slow article timing',()=>{
+test('normal visible readers retain the two-frame preparation and responsive article timing',()=>{
  const f=readerFixture();assert(f.classes.has('is-preparing'));assert(!f.classes.has('is-ready'));assert.equal(f.frames.length,1);f.frames.shift()();assert.equal(f.frames.length,1);f.frames.shift()();assert(f.classes.has('is-opening'));assert(!f.classes.has('is-preparing'));assert.deepEqual(f.timers,[BOOK_MOTION.open+24]);
 });

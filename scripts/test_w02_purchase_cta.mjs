@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {applyW02PurchaseCta,purchaseCtaLabels} from './w02_purchase_cta.mjs';
-import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';
+import {normalizeHistoricalPresentation as normalize} from './approved_motion_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
 import {applyW05BookNews} from './w05_book_news_test_helpers.mjs';
 import {renderCurrentFaqFixture,readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
@@ -43,7 +43,7 @@ test('Chinese dictionary adds exactly the purchase-label translation; no other c
   const now=JSON.parse(read(file)),old=JSON.parse(expected);assert.equal(now[purchaseCtaLabels.en],old[purchaseCtaLabels.en]);
 });
 test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
-  for(const file of ['gallery-ui.js','gallery-ui.css','quiet-pages.css','license.css','contact-direct.js','contact-config.js','quiet-form.js',
+  for(const file of ['quiet-pages.css','license.css','contact-direct.js','contact-config.js','quiet-form.js',
     'worker/src/index-v14.js','robots.txt','content/faq-content.json','content/faq-policy-additions.json',
     ...['','ja/','zh/'].flatMap(p=>['index','contact','demo','goals','news','order','customer'].map(n=>p+n+'.html'))]){
     const current=read(file);

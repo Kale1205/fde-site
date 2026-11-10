@@ -8,7 +8,7 @@ import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {applyApprovedOptionalUpdates, optionalUpdatesCopy, updatesNewsNotes} from './optional_updates_copy.mjs';
-import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
+import {normalizeHistoricalPresentation as normalizeAssetBuildKeys} from './approved_motion_test_helpers.mjs';
 import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
@@ -104,7 +104,7 @@ test('historical news migration prepends the policy annotation; future reviewed 
 });
 
 test('CSS except approved W01 CTA, runtime, authentication, payment gates, robots and native/back-end code are not changed', () => {
-  for (const file of ['gallery-ui.css','quiet-form.css','quiet-pages.css','gallery-ui.js','quiet-form.js','demo-v1.js',
+  for (const file of ['quiet-form.css','quiet-pages.css','quiet-form.js','demo-v1.js',
     'contact-config.js','contact-direct.js','quiet-customer.js','worker/src/index-v14.js','robots.txt']) {
     assert.equal(normalize(read(file)),normalize(applyApprovedGoalsAutoplay(file,applyW01ProductCta(file,before(file)))),file);
   }

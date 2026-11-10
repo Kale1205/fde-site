@@ -22,6 +22,8 @@ export async function renderQuietHomepage(locale) {
   });
   head += `<link rel="stylesheet" href="${prefix}gallery-ui.css?v=${version}">\n`;
   head += `<link rel="stylesheet" href="${prefix}quiet-form.css?v=${version}">\n`;
+  head += `<link rel="stylesheet" href="${prefix}sculpture-motion.css?v=${version}">\n`;
+  head += `<script type="module" src="${prefix}sculpture-motion.js?v=${version}"></script>\n`;
   for (const script of ['gallery-ui.js', 'demo-v1.js', 'quiet-form.js']) {
     head += `<script defer src="${prefix}${script}?v=${version}"></script>\n`;
   }

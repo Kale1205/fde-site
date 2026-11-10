@@ -52,7 +52,7 @@ assert.match(read('gallery-ui.js'), /updateRow|stockButtons/);
 assert.match(read('gallery-ui.js'), /mobile-nav-shortcuts/);
 assert.match(read('gallery-ui.js'), /mobile-nav-backdrop/);
 assert.match(read('gallery-ui.js'), /document\.body\.append\(backdrop, mobileNav\)/);
-assert.match(read('gallery-ui.js'), /setTimeout\(\(\) => setMenu\(false\), 0\)/);
+assert.match(read('gallery-ui.js'), /setTimeout\(\(\) => setMenu\(false, true\), 0\)/);
 assert.match(read('gallery-ui.js'), /data-license-plan/);
 assert.match(read('gallery-ui.js'), /document\.body\.dataset\.selectedPlan = key/);
 assert.match(read('gallery-ui.css'), /\.mobile-sheet/);

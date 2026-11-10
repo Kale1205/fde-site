@@ -8,7 +8,7 @@ import {readFileSync,existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {runInNewContext} from 'node:vm';
 import {applyApprovedMultilingualContent as apply,mergedFaqData,demoLanguageNotes,redistributionAnswer,zhInventoryCopy} from './multilingual_content_copy.mjs';
-import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
+import {normalizeHistoricalPresentation as normalizeAssetBuildKeys} from './approved_motion_test_helpers.mjs';
 import {applyW02PurchaseCta} from './w02_purchase_cta.mjs';
 import {applyW01ProductCta} from './w01_product_cta_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
@@ -139,8 +139,8 @@ test('shared FAQ renderer retains static content on fetch failure/incomplete Chi
   assert.doesNotMatch(js,/https?:\/\/|method:\s*['"]POST|navigator\.|localStorage|sessionStorage|sendBeacon|XMLHttpRequest/);
 });
 test('visual design except approved W01 CTA, native demo operations, CMS editing/auth, contact submission and commerce boundaries are byte-preserved',()=>{
-  for(const file of ['gallery-ui.css','gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','faq-v38.css',
-    'gallery-ui.js','demo-v1.js','quiet-form.js','site.js','contact-direct.js','contact-config.js','quiet-customer.js',
+  for(const file of ['gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','faq-v38.css',
+    'demo-v1.js','quiet-form.js','site.js','contact-direct.js','contact-config.js','quiet-customer.js',
     'cms-content.js','cms-content-ja.js',
     'worker/src/index-v14.js','robots.txt'])assert.equal(normalized(file.startsWith('cms-content')?withoutW05CmsBridge(read(file)):read(file)),normalized(applyApprovedGoalsAutoplay(file,applyW01ProductCta(file,before(file)))),file);
 });

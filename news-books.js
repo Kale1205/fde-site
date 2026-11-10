@@ -13,7 +13,7 @@ export function partitionNews(items){
 
 export const wrapBookOffset=offset=>modulo(offset+1,MAX_BOOKS)-1;
 export function prepareBookOffset(offset,delta){const min=delta===2?0:delta===-2?-2:-1;return modulo(offset-min,MAX_BOOKS)+min;}
-export const BOOK_MOTION={select:1200,open:1800,close:1000,viewOut:240,viewIn:680};
+export const BOOK_MOTION={select:520,open:680,close:380,viewOut:100,viewIn:260};
 export function bookFlightTransform(source,target,base=''){
  if(![source.left,source.top,source.width,source.height,target.left,target.top,target.width,target.height].every(Number.isFinite)||target.width<=0||target.height<=0)return base;
  return `translate3d(${source.left-target.left}px,${source.top+source.height/2-target.top-target.height/2}px,0) ${base} scale(${source.width/target.width},${source.height/target.height})`;
@@ -79,7 +79,7 @@ function init(){
   const selectedDate=document.querySelector('.chronicle-selected-date');selectedDate.dateTime=item.date;selectedDate.textContent=item.date.replaceAll('-','.');
   document.querySelectorAll('[data-date-offset]').forEach((button,offset)=>{const target=Math.floor(index/3)*3+offset,story=items[target]||items[0];button.dataset.dateIndex=target;button.parentElement.hidden=target>=items.length;button.querySelector('.chronicle-year').textContent=story.date.slice(0,4);const date=button.querySelector('time');date.dateTime=story.date;date.textContent=story.date.slice(5).replace('-','.');button.setAttribute('aria-label',`${target===index?ui.read:ui.next}: ${story.title} — ${story.date}`);button.setAttribute('aria-pressed',String(target===index));if(target===index){button.setAttribute('aria-haspopup','dialog');const top=button.getBoundingClientRect().top-stage.getBoundingClientRect().top+parseFloat(getComputedStyle(button,'::before').top)-2.5;stage.style.setProperty('--date-marker-y',`${top}px`);}else button.removeAttribute('aria-haspopup');});
   const dots=stage.querySelector('.chronicle-pagination');if(dots.children.length!==items.length){dots.replaceChildren();for(const _ of items)dots.append(document.createElement('span'));}[...dots.children].forEach((dot,i)=>dot.classList.toggle('is-active',i===index));
-  if(announce){live.textContent=`${index+1} / ${items.length} — ${item.title}`;if(!reduce.matches)title.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:650,easing:'cubic-bezier(.4,0,.2,1)'});}
+  if(announce){live.textContent=`${index+1} / ${items.length} — ${item.title}`;if(!reduce.matches)title.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:260,easing:'cubic-bezier(.4,0,.2,1)'});}
  }
  function renderList(){
   const list=document.querySelector('[data-news-list]');list.replaceChildren();
@@ -185,7 +185,7 @@ function init(){
   reader.showModal();reader.scrollTop=0;reader.querySelector('.reader-copy').scrollTop=0;document.body.classList.add('book-reader-open');reader.querySelector('.book-close').focus({preventScroll:true});
   const openingCover=reader.querySelector('.book-opening-cover'),base='translate3d(0,0,0)';
   // The all-story list opens the article directly. Only a Top News book keeps
-  // its established travelling cover; the article's slow arrival is shared.
+  // its travelling cover; both views reveal the article within 680 ms.
   openingCover.hidden=listView;reader.classList.toggle('is-list-reader',listView);
   flightFrom=sourceRect?bookFlightTransform(sourceRect,openingCover.getBoundingClientRect(),base):base;
   if(!reduce.matches){openingCover.style.transform=flightFrom;liftedBook?.classList.add('is-lifted');}

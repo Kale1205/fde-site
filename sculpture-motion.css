@@ -1,0 +1,55 @@
+/* Object-level motion, shared by every locale and input/viewport size. */
+.animated-sculpture { display: block; position: relative; }
+.animated-sculpture > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.animated-sculpture g { transform-box: fill-box; transform-origin: center; }
+.quiet-home figure:hover .animated-sculpture { transform: none; }
+.quiet-home .sculpture-pair figure:nth-child(2) .animated-sculpture { object-fit: contain; }
+.quiet-page.goals-journey .animated-sculpture.mission-art { aspect-ratio: 3 / 2; }
+.art-motion-toggle { display: block; min-height: 44px; margin: 12px auto 0; padding: 8px 14px; border: 1px solid currentColor; border-radius: 999px; background: transparent; color: inherit; font: 500 12px/1.5 var(--sans); cursor: pointer; opacity: .85; }
+.goals-journey .mission-hero-band { padding-bottom: 16px; }
+.goals-journey .art-motion-toggle { margin: 0 auto; color: var(--paper); }
+.art-motion-toggle:hover { opacity: 1; }
+.art-motion-toggle[hidden] { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .art-update-ring { animation: art-upgrade-orbit 3.6s ease-in-out infinite; }
+  .art-license-body { animation: art-breathe 3.6s ease-in-out infinite; }
+  .art-level { animation: art-level-up 3.6s ease-in-out infinite; }
+  .art-level-two { animation-delay: -.3s; }
+  .art-license .art-row { animation: art-row-update 3.6s ease-in-out infinite; animation-delay: calc(var(--step) * .16s); }
+  .art-wrench { transform-origin: 50% 86%; animation: art-tool-strike 3.4s ease-in-out infinite; }
+  .art-tool-panel { animation: art-tool-impact 3.4s ease-in-out infinite; }
+  .art-sparks { animation: art-impact-spark 3.4s ease-out infinite; }
+  .art-magnifier { animation: art-investigate 5.4s ease-in-out infinite; }
+  .art-discover-arrow { animation: art-discover-flow 5.4s ease-in-out infinite; }
+  .art-discovered { animation: art-discover-pop 5.4s cubic-bezier(.4,0,.2,1) infinite; }
+  .art-assemble .art-wrench, .art-assemble .art-sparks { animation-duration: 6s; }
+  .art-layer-back { animation: art-disassemble-back 6s cubic-bezier(.4,0,.2,1) infinite; }
+  .art-layer-middle { animation: art-disassemble-middle 6s cubic-bezier(.4,0,.2,1) infinite; }
+  .art-layer-front { animation: art-disassemble-front 6s cubic-bezier(.4,0,.2,1) infinite; }
+  .art-system-frame { animation: art-frame-impact 6s ease-in-out infinite; }
+  .art-dialogue-left { animation: art-conversation-left 4.8s ease-in-out infinite; }
+  .art-dialogue-right { animation: art-conversation-right 4.8s ease-in-out infinite; }
+  .art-partner-core { animation: art-partner-grow 4.8s ease-in-out infinite; }
+  .art-partner-core .art-level { animation-duration: 4.8s; }
+  .animated-sculpture[data-motion-state="paused"] * { animation-play-state: paused !important; }
+}
+@keyframes art-upgrade-orbit { 0%,100% { transform: rotate(-8deg); } 55% { transform: rotate(9deg); } }
+@keyframes art-breathe { 0%,100% { transform: translateY(3px); } 55% { transform: translateY(-5px); } }
+@keyframes art-level-up { 0%,100% { opacity: .18; transform: translateY(9px) scale(.86); } 45%,65% { opacity: 1; transform: translateY(-9px) scale(1.06); } }
+@keyframes art-row-update { 0%,100% { opacity: 1; } 30% { opacity: .4; transform: translateX(-3px); } 55%,80% { opacity: 1; transform: translateX(0); } }
+@keyframes art-tool-strike { 0%,100% { transform: rotate(-7deg); } 18% { transform: rotate(-23deg) translateY(-4px); } 29% { transform: rotate(10deg) translateY(3px); } 38% { transform: rotate(-12deg); } 55%,76% { transform: rotate(-3deg); } }
+@keyframes art-tool-impact { 0%,24%,42%,100% { transform: none; } 30% { transform: translateY(5px) scaleY(.98); } 36% { transform: translateY(-2px); } }
+@keyframes art-impact-spark { 0%,24%,48%,100% { opacity: 0; transform: scale(.6); } 30% { opacity: 1; transform: scale(1); } 44% { opacity: 0; transform: scale(1.4); } }
+@keyframes art-investigate { 0%,100% { transform: translate(-14px,5px) rotate(-7deg); } 32% { transform: translate(25px,-18px) rotate(6deg); } 63% { transform: translate(4px,-7px) rotate(-2deg); } }
+@keyframes art-discover-flow { 0%,100% { opacity: .4; transform: translateX(-4px); } 38%,68% { opacity: 1; transform: translateX(7px); } }
+@keyframes art-discover-pop { 0%,100% { opacity: .18; transform: scale(.78); } 32% { opacity: .35; transform: scale(.82); } 47% { opacity: 1; transform: scale(1.07); } 60%,78% { opacity: 1; transform: scale(1); } }
+@keyframes art-disassemble-back { 0%,22%,82%,100% { transform: none; } 44%,60% { transform: translate(-42px,-23px) rotate(-6deg); } }
+@keyframes art-disassemble-middle { 0%,23%,82%,100% { transform: none; } 45%,60% { transform: translate(21px,-2px) rotate(2deg); } }
+@keyframes art-disassemble-front { 0%,24%,82%,100% { transform: none; } 46%,60% { transform: translate(94px,30px) rotate(6deg); } }
+@keyframes art-frame-impact { 0%,24%,40%,100% { transform: none; } 30% { transform: translateY(4px) rotate(-1deg); } }
+@keyframes art-conversation-left { 0%,100% { transform: translate(-4px,7px) scale(.94); } 50% { transform: translate(13px,-10px) scale(1.05); } }
+@keyframes art-conversation-right { 0%,100% { transform: translate(-11px,-8px) scale(1.04); } 50% { transform: translate(5px,9px) scale(.94); } }
+@keyframes art-partner-grow { 0%,100% { transform: translateY(4px) scale(.98); } 52% { transform: translateY(-8px) scale(1.025); } }
+@media (prefers-reduced-motion: reduce) {
+  .animated-sculpture *, .art-motion-toggle { animation: none !important; transition: none !important; }
+}
