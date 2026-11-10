@@ -406,6 +406,8 @@ button { color: inherit; }
 .mobile-nav { display: none; }
 
 .mobile-nav-backdrop {
+  -webkit-appearance: none;
+  appearance: none;
   position: fixed;
   z-index: 1000;
   inset: 0;
@@ -418,6 +420,9 @@ button { color: inherit; }
 }
 
 html.mobile-menu-open { overflow: hidden; }
+/* Also soften the content directly: WebKit can omit a backdrop-filter while
+   compositing an animated popover above another translucent surface. */
+html.mobile-menu-open .site-shell { filter: blur(3px); }
 
 /* Native-style press response uses scale independently of existing transforms. */
 .gallery-page :is(.button,.menu-button,.locale-picker-button,.locale-picker-menu a,.plan-top a,.mobile-nav a,.mobile-nav-close,.book-controls button,.book-read,.book-close,.wire-row,.art-motion-toggle) { transition: scale 140ms cubic-bezier(.2,.7,.2,1), background-color 140ms ease, color 140ms ease; }
