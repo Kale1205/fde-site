@@ -60,7 +60,7 @@ function lifecycleFixture(){
  const items=[{id:'synthetic',title:'Synthetic title',body:'Synthetic body',date:'2026-10-17',category:'Update'},{id:'second',title:'Second',date:'2026-10-16'}];
  const context={BOOK_MOTION,prepareBookOffset,wrapBookOffset,modulo,items,allItems:items,index:0,slots,stage,title,main,heading,read,live,reader,
   busy:false,queued:0,followBookFocus:false,bookAnimations:[],coverAnimation:null,liftedBook:null,flightFrom:'',lastTrigger:null,
-  finishTimer:0,openingTimer:0,closeTimer:0,viewTimer:0,openingRun:0,closeCompletion:null,drag:null,dragFrame:0,pendingView:null,pendingContent:null,listView:false,
+  finishTimer:0,openingTimer:0,preparationTimer:0,closeTimer:0,viewTimer:0,openingRun:0,closeCompletion:null,drag:null,dragFrame:0,pendingView:null,pendingContent:null,listView:false,
   reduce:{matches:false,addEventListener:(name,fn)=>events['reduce:'+name]=fn},
   document:{hidden:false,body:make(),activeElement:null,createElement:make,querySelector:()=>selectedDate,querySelectorAll:()=>[],addEventListener:(name,fn)=>events['document:'+name]=fn},
   window:{scrollTo(){}},getComputedStyle:()=>({transform:'matrix(1,0,0,1,0,0)',opacity:'1'}),resolveImage:()=>'',bookFlightTransform:()=>'',
@@ -115,4 +115,15 @@ test('normal visible selection, open and close keep their full lifecycles and do
 test('normal close during preparation invalidates the old open RAF even if it runs after a new open',()=>{
  const f=lifecycleFixture(),c=f.context;c.open('synthetic',{});c.close();f.tickTimers();c.open('synthetic',{});f.drainFrames();
  assert.equal(f.animations.length,2,'one close and only the new open cover animation');assert(f.reader.classes.has('is-opening'));assert(!f.reader.classes.has('is-preparing'));
+});
+test('a visible reader starts when WebKit does not deliver RAF and late frames cannot replay it',()=>{
+ const f=lifecycleFixture(),c=f.context;c.open('synthetic',{});
+ assert(f.reader.classes.has('is-preparing'));assert.equal(f.animations.length,0);
+ f.tickTimers();assert(f.reader.classes.has('is-ready'));assert.equal(f.animations.length,1);
+ f.drainFrames();assert(f.reader.classes.has('is-ready'));assert.equal(f.animations.length,1);assert.equal(f.timers.size,0);
+});
+test('closing before the preparation deadline cancels its fallback and restores focus once',()=>{
+ const f=lifecycleFixture(),c=f.context,trigger={isConnected:true,focus(){trigger.calls=(trigger.calls||0)+1;}};
+ c.open('synthetic',trigger);c.close();f.tickTimers();f.drainFrames();
+ assert(!f.reader.open);assert.equal(f.closes(),1);assert.equal(trigger.calls,1);assert.equal(f.animations.length,1);assert.equal(f.timers.size,0);
 });
