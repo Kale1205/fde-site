@@ -354,7 +354,7 @@ button { color: inherit; }
   padding: 7px;
   border: 1px solid #ffffffc9;
   border-radius: 20px;
-  background: rgba(250, 248, 244, .94);
+  background: rgba(250, 248, 244, .98);
   -webkit-backdrop-filter: blur(24px) saturate(1.3);
   backdrop-filter: blur(24px) saturate(1.3);
   box-shadow: 0 12px 38px #0d1e171c, 0 2px 6px #0d1e170a, inset 0 1px 0 #fff;
@@ -420,9 +420,6 @@ button { color: inherit; }
 }
 
 html.mobile-menu-open { overflow: hidden; }
-/* Also soften the content directly: WebKit can omit a backdrop-filter while
-   compositing an animated popover above another translucent surface. */
-html.mobile-menu-open .site-shell { filter: blur(3px); }
 
 /* Native-style press response uses scale independently of existing transforms. */
 .gallery-page :is(.button,.menu-button,.locale-picker-button,.locale-picker-menu a,.plan-top a,.mobile-nav a,.mobile-nav-close,.book-controls button,.book-read,.book-close,.wire-row,.art-motion-toggle) { transition: scale 140ms cubic-bezier(.2,.7,.2,1), background-color 140ms ease, color 140ms ease; }
@@ -877,7 +874,7 @@ button.inventory-row { cursor: pointer; }
     border: 1px solid #ffffffc9;
     border-radius: 28px;
     padding: 14px 18px 24px;
-    background: rgba(250, 248, 244, .94);
+    background: rgba(250, 248, 244, .98);
     -webkit-backdrop-filter: blur(24px) saturate(1.3);
     backdrop-filter: blur(24px) saturate(1.3);
     box-shadow: 0 18px 60px #0d1e1729, inset 0 1px 0 #fff;
