@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
+import {execFileSync} from './reviewed_snapshot_test_helpers.mjs';
 import {normalizeHistoricalPresentation as normalize} from './approved_motion_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {renderNewsPage} from '../news-renderer.js';

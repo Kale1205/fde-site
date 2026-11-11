@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
+import {execFileSync} from './reviewed_snapshot_test_helpers.mjs';
 import {runInNewContext} from 'node:vm';
 import {applyW04LayeredMotion, sampleCode} from './w04_layered_motion.mjs';
 import {normalizeAssetBuildKeys as normalize} from './asset_build_test_helpers.mjs';

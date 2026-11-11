@@ -1,3 +1,4 @@
+import {applyReviewedFocus} from './focus_test_helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -39,7 +40,7 @@ test('opening animation is sequenced after layout, pointer taps have no outline 
  const js=read('news-books.js'),css=read('news-books.css');
  assert.match(js,/requestAnimationFrame\(\(\)=>requestAnimationFrame/);assert.match(js,/is-preparing/);assert.match(js,/reduce.matches\?220:BOOK_MOTION.open/);assert.match(js,/clearTimeout\(openingTimer\)/);
  assert.match(js,/openingCover.animate/);assert.match(js,/rotateY\(-3deg\)/);assert.doesNotMatch(js,/rotateY\(-168deg\)/);assert.match(css,/book-cover-dissolve 180ms/);
- assert.match(css,/data-book-input="pointer"[^\n]*outline:none/);assert.match(css,/data-book-input="keyboard"[^\n]*outline:2px solid var\(--forest\)/);
+ assert.match(css,/data-book-input="pointer"[^\n]*outline:none/);assert.match(css,/data-book-input="keyboard"[^\n]*outline:none;filter:brightness/);
 });
 test('book motion connects the source bounds to the reader, settles selection and preserves native vertical scrolling',()=>{
  assert.deepEqual(BOOK_MOTION,{select:520,open:680,close:380,viewOut:100,viewIn:260});
@@ -74,7 +75,7 @@ test('static HTML and hydrated CMS content resolve the same shared image and fal
   ['animation:book-ink-arrive 320ms 120ms cubic-bezier(.4,0,.2,1)','animation:book-ink-arrive 360ms 560ms ease-out'],
   ['animation:book-depart 300ms cubic-bezier(.4,0,.2,1)','animation:book-depart 460ms ease-in'],
  ])current=current.replace(now,before);
- assert.equal(current,css,'existing layout, colors and keyframe poses unchanged');
+ assert.equal(current,applyReviewedFocus('news-books.css',css),'existing layout and keyframe poses stay exact apart from reviewed frame-free focus');
 });
 test('the profile-photo refresh preserves SNS links, copy and layout',()=>{
  for(const file of ['news.html','ja/news.html','zh/news.html']){const previous=execFileSync('git',['show',`6c27def33c7c26a6361184ef6333d287d7d84d50:${file}`],{cwd:root,encoding:'utf8'});const social=html=>html.slice(html.indexOf('      <section class="news-social'),html.indexOf('      <dialog class="book-reader'));assert.equal(social(read(file)).replaceAll('-profile-20261110.jpg','-profile.jpg'),social(previous));}

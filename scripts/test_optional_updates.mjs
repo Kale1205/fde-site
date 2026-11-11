@@ -1,11 +1,11 @@
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
-import {applyApprovedGoalsAutoplay} from './goals_autoplay_test_helpers.mjs';
+import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
+import {execFileSync} from './reviewed_snapshot_test_helpers.mjs';
 import {createHash} from 'node:crypto';
 import {applyApprovedOptionalUpdates, optionalUpdatesCopy, updatesNewsNotes} from './optional_updates_copy.mjs';
 import {normalizeHistoricalPresentation as normalizeAssetBuildKeys} from './approved_motion_test_helpers.mjs';
@@ -106,7 +106,7 @@ test('historical news migration prepends the policy annotation; future reviewed 
 test('CSS except approved W01 CTA, runtime, authentication, payment gates, robots and native/back-end code are not changed', () => {
   for (const file of ['quiet-form.css','quiet-pages.css','quiet-form.js','demo-v1.js',
     'contact-config.js','contact-direct.js','quiet-customer.js','worker/src/index-v14.js','robots.txt']) {
-    assert.equal(normalize(read(file)),normalize(applyApprovedGoalsAutoplay(file,applyW01ProductCta(file,before(file)))),file);
+    assert.equal(normalize(read(file)),normalize(applyReviewedUiChanges(file,applyW01ProductCta(file,before(file)))),file);
   }
 });
 

@@ -168,14 +168,10 @@
     else if (visible && !completed && !userPaused && !reduced.matches) start();
   });
   reduced.addEventListener('change', () => { if (reduced.matches) pause(true); });
-  // The gallery script owns sheet behavior; prevent background tabbing while open.
+  // The gallery script owns navigation interaction; this observer only pauses the demo.
   const nav = document.getElementById('mobile-nav');
   new MutationObserver(() => {
     const open = !nav.hidden;
-    document.querySelector('main').inert = open;
-    document.querySelector('footer').inert = open;
-    document.querySelector('.brand').inert = open;
-    document.querySelector('.locale-picker').inert = open;
     if (open) pause();
   }).observe(nav, { attributes: true, attributeFilter: ['hidden'] });
   const destinationLabel = document.querySelector('#demoDestinationField label');

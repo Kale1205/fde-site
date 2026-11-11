@@ -104,7 +104,7 @@
   "OWNERSHIP": "购买方式",
   "Open menu": "打开菜单",
   "Operation": "操作",
-  "Our Goals": "我们的目标",
+  "Our Goals": "概览",
   "Permitted": "可修改",
   "Purchaser": "购买方",
   "Reference": "参考",
@@ -324,7 +324,7 @@
   "built its own system?": "也能打造自己的系统？",
   "© 2026 Baked Kale FDE": "© 2026 Baked Kale FDE",
   "03 / BEFORE DEPLOYMENT": "03 / BEFORE DEPLOYMENT",
-  "BAKED KALE / OUR GOALS": "BAKED KALE / OUR GOALS",
+  "BAKED KALE / OUR GOALS": "BAKED KALE / 概览",
   "Can I buy IMS now?": "现在可以购买 IMS 吗？",
   "Company / Legal entity": "公司 / 法人名称",
   "Contact Baked Kale FDE": "联系 Baked Kale FDE",
@@ -384,7 +384,7 @@
   "{ StockState::Healthy } }": "{ StockState::Healthy } }",
   "Document language: English": "页面语言：简体中文",
   "Inspect the boundary first": "先检查边界",
-  "Our Goals | Baked Kale FDE": "我们的目标｜Baked Kale FDE",
+  "Our Goals | Baked Kale FDE": "概览｜Baked Kale FDE",
   "Ownership after deployment": "部署后的所有权",
   "View development preview →": "查看开发预览 →",
   "Assess responsibility first": "首先评估责任",
@@ -837,5 +837,9 @@
   "This preview uses synthetic sample data in page memory only. Refreshing or resetting the page discards every change. It does not establish completion, security validation or release of the native app.": "本演示仅在当前页面内存中使用合成示例数据。重新加载或重置页面会清除所有更改，不能据此认定原生应用已完成、通过安全验证或正式发布。",
   "Planned launch support is Windows only. Supported Windows versions and system requirements will be published before sales open. iOS and iPadOS versions are planned for future support, with no confirmed release date. macOS is not supported. The initial native app targets English and Japanese; Chinese website content does not indicate native Chinese support.": "计划在发布时仅支持 Windows。支持的 Windows 版本与系统要求将在开放购买前公布。iOS 与 iPadOS 版本计划在后续提供，发布日期尚未确定。macOS 不受支持。首个原生版本面向英语与日语界面；网站提供中文内容不代表原生应用支持中文。",
   "Restore is not available in the current development build. Purchasing will open only after the customer restore method is completed and verified.": "当前开发版本尚不提供还原功能。只有在面向客户的还原方法完成并通过验证后，才会开始付费销售。",
-  "No publication of IMS source code or product files in public repositories, websites, social media, or public file shares": "不得将 IMS 源代码或产品文件发布到公开代码库、网站、社交媒体或公开文件共享位置"
+  "No publication of IMS source code or product files in public repositories, websites, social media, or public file shares": "不得将 IMS 源代码或产品文件发布到公开代码库、网站、社交媒体或公开文件共享位置",
+  "Business activities": "业务内容",
+  "Development and provision of business software (FDE)": "业务系统开发与交付（FDE）",
+  "Operating base": "活动据点",
+  "Nara Prefecture, Japan": "日本奈良县"
 }

@@ -19,7 +19,7 @@ for (const prefix of ['', 'ja/']) {
   for (const name of ['index.html', 'goals.html', 'demo.html', 'license.html', 'contact.html']) {
     const html = read(prefix + name);
     assert.match(html, /gallery-ui\.css\?v=/);
-    assert.ok(html.includes('Our Goals'));
+    assert.ok(html.includes(prefix ? '概要' : 'Our Goals'));
   }
   const why = read(prefix + 'why.html');
   assert.match(why, /noindex,follow/);
@@ -52,7 +52,7 @@ assert.match(read('gallery-ui.js'), /updateRow|stockButtons/);
 assert.match(read('gallery-ui.js'), /mobile-nav-shortcuts/);
 assert.match(read('gallery-ui.js'), /mobile-nav-backdrop/);
 assert.match(read('gallery-ui.js'), /document\.body\.append\(backdrop, mobileNav\)/);
-assert.match(read('gallery-ui.js'), /setTimeout\(\(\) => setMenu\(false, true\), 0\)/);
+assert.match(read('gallery-ui.js'), /setTimeout\(\(\) => \{ if \(active === expected && run === focusRun\) setPanel\("", \{ instant: true \}\); \}, 0\)/);
 assert.match(read('gallery-ui.js'), /data-license-plan/);
 assert.match(read('gallery-ui.js'), /document\.body\.dataset\.selectedPlan = key/);
 assert.match(read('gallery-ui.css'), /\.mobile-sheet/);

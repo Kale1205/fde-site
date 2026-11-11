@@ -73,7 +73,7 @@ test('shared theme stays scoped and keeps selection stationary', () => {
 
 test('language picker accessible name contains its visible language', () => {
   const runtime = readFileSync(path.join(root, 'gallery-ui.js'), 'utf8');
-  assert(runtime.includes('summary.setAttribute("aria-label", `${text.chooseLanguage}: ${localeNames[localeKey]}`)'));
+  assert(runtime.includes('languageButton.setAttribute("aria-label", `${text.chooseLanguage}: ${localeNames[localeKey]}`)'));
 });
 
 test('mobile shortcuts never select a language alternate as the local contact destination', () => {

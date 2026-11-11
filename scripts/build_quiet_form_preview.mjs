@@ -8,7 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const copy = {
   ja: {
     language: 'ja', title: 'Quiet Form — IMS デザインプレビュー',
-    product: '製品', demo: 'デモ', news: 'お知らせ', contact: 'お問い合わせ', skip: '本文へ移動', menu: 'メニューを開く',
+    product: 'FDE製品', goals: '概要', demo: 'デモ', news: 'お知らせ', contact: 'お問い合わせ', skip: '本文へ移動', menu: 'メニューを開く',
     release: releaseCopy.ja.date, hero: '自社開発は、<br>ゼロからじゃなくていい。',
     lead: '在庫管理システムIMS（Inventory Management System）とソースコードを、自社の業務に合う仕組みの出発点に。',
     primary: 'ソースコード付きプランを見る', secondary: 'デモを見る',
@@ -27,7 +27,7 @@ const copy = {
   },
   en: {
     language: 'en', title: 'Quiet Form — IMS design preview',
-    product: 'Products', demo: 'Demo', news: 'News', contact: 'Contact', skip: 'Skip to content', menu: 'Open menu',
+    product: 'Products', goals: 'Our Goals', demo: 'Demo', news: 'News', contact: 'Contact', skip: 'Skip to content', menu: 'Open menu',
     release: releaseCopy.en.date, hero: 'Your own system.<br>Not from scratch.',
     lead: 'IMS (Inventory Management System) and its source code. A starting point for the way your company works.',
     primary: 'Explore the source-code plan', secondary: 'Try the demo',
@@ -46,7 +46,7 @@ const copy = {
   },
   zh: {
     language: 'zh-CN', title: 'Quiet Form — IMS 设计预览',
-    product: '产品', demo: '演示', news: '动态', contact: '联系我们', skip: '跳至正文', menu: '打开菜单',
+    product: '产品', goals: '概览', demo: '演示', news: '动态', contact: '联系我们', skip: '跳至正文', menu: '打开菜单',
     release: releaseCopy.zh.date, hero: '开发自己的系统，<br>不必从零开始。',
     lead: '以库存管理系统 IMS（Inventory Management System）及其源代码为起点，打造适合自己业务的工作方式。',
     primary: '查看含源代码的方案', secondary: '体验演示',
@@ -68,6 +68,7 @@ const copy = {
 const locales = { en: '', ja: 'ja/', zh: 'zh/' };
 export async function renderQuietPreview(locale) {
   const c = copy[locale];
+  const lpItem = locale === 'ja' ? '<span class="nav-destination-pending" data-lp-destination aria-disabled="true" aria-label="LP制作（準備中）">LP制作 <span class="nav-destination-status">準備中</span></span>' : '';
   const prefix = locale === 'en' ? '' : '../';
   const demo = await readFile(path.join(root, locales[locale], 'demo.html'), 'utf8');
   // W01's approved embedded demo is a separate composition from W03's full page.
@@ -98,9 +99,9 @@ ${alternates}
 <div class="site-shell language-${locale}">
 <header class="site-header">
 <a class="brand" href="quiet-form.html" aria-label="Baked Kale FDE"><img src="${prefix}assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a>
-<nav class="desktop-nav" aria-label="${c.menu}"><a href="#plans">${c.product}</a><a href="demo.html">${c.demo}</a><a href="goals.html">Our Goals</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav>
+<nav class="desktop-nav" aria-label="${c.menu}"><a href="#plans">${c.product}</a>${lpItem}<a href="demo.html">${c.demo}</a><a href="goals.html">${c.goals}</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav>
 <div class="header-actions">${languageLinks}<button class="menu-button" type="button" aria-label="${c.menu}" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
-<nav class="mobile-nav" id="mobile-nav" aria-label="${c.menu}" hidden><a href="#plans">${c.product}</a><a href="goals.html">Our Goals</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav>
+<nav class="mobile-nav" id="mobile-nav" aria-label="${c.menu}" hidden><a href="#plans">${c.product}</a>${lpItem}<a href="goals.html">${c.goals}</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav>
 </header>
 <main id="main-content">
 <section class="quiet-hero" id="product" aria-labelledby="hero-title">
@@ -131,7 +132,7 @@ ${workspace}
 </section>
 <section class="quiet-news section-frame"><div><h2 class="quiet-heading">${c.newsTitle}</h2><p>${c.newsBody}</p></div><a class="button" href="news.html">${c.newsLink} <span aria-hidden="true">→</span></a></section>
 </main>
-<footer class="site-footer section-frame"><a href="quiet-form.html"><img src="${prefix}assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="#plans">${c.product}</a><a href="demo.html">${c.demo}</a><a href="goals.html">Our Goals</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav><small>© 2026 Baked Kale FDE</small></footer>
+<footer class="site-footer section-frame"><a href="quiet-form.html"><img src="${prefix}assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="#plans">${c.product}</a>${lpItem}<a href="demo.html">${c.demo}</a><a href="goals.html">${c.goals}</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav><small>© 2026 Baked Kale FDE</small></footer>
 </div>
 </body></html>`;
   return html;
