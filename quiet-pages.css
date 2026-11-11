@@ -1011,6 +1011,16 @@
 .quiet-page :is(.field input,.field select,.field textarea,.faq-search,.order-field input,.order-field select,.customer-form input,.demo-operation-panel input,.demo-operation-panel select,#demoSearch) { border: 0; border-bottom: 1px solid var(--line-dark); border-radius: 0; background: var(--paper-deep); }
 .quiet-page :is(.field input,.field select,.field textarea,.faq-search,.order-field input,.order-field select,.customer-form input,.demo-operation-panel input,.demo-operation-panel select,#demoSearch):focus { background: #d7eadb; color: var(--forest); }
 .quiet-page :is(.field select,.order-field select,.demo-operation-panel select) { appearance: none; min-height: 48px; padding: 10px 38px 10px 12px; background-image: linear-gradient(45deg,transparent 50%,var(--forest) 50%),linear-gradient(135deg,var(--forest) 50%,transparent 50%); background-position: right 16px center,right 11px center; background-size: 5px 5px; background-repeat: no-repeat; }
+/* Page titles share the Goals full-width green band; content stays unframed. */
+body.quiet-page.news-renewal .page-hero.news-page-hero { width: 100%; max-width: none; border-radius: 0; padding-inline: max(48px,calc((100vw - 1184px)/2)); background: var(--forest); color: var(--paper); }
+body.quiet-page.news-renewal .news-page-hero :is(.eyebrow,h1,.lede) { color: var(--paper); }
+body.quiet-page.news-renewal .news-hero-mark { filter: brightness(0) invert(1); }
+body.quiet-page.license-renewal .license-document { padding-top: 0; }
+body.quiet-page.license-renewal .license-intro { position: relative; isolation: isolate; padding-block: 64px 48px; margin-bottom: 40px; border: 0; border-radius: 0; background: transparent; color: var(--paper); }
+body.quiet-page.license-renewal .license-intro::before { content: ""; position: absolute; z-index: -1; inset-block: 0; left: 50%; width: 100vw; transform: translateX(-50%); background: var(--forest); pointer-events: none; }
+body.quiet-page.license-renewal .license-intro :is(h1,.license-eyebrow,.license-lede) { color: var(--paper); }
+@media(max-width:1080px) { body.quiet-page.news-renewal .page-hero.news-page-hero { padding-inline: 32px; } }
+@media(max-width:760px) { body.quiet-page.news-renewal .page-hero.news-page-hero { padding: 32px 22px; }body.quiet-page.license-renewal .license-intro { padding-block: 40px; margin-bottom: 32px; } }
 @media(max-width:1080px) { .quiet-page.news-renewal .page-hero.news-page-hero { width: 100%; padding-inline: 32px; } }
 @media(max-width:760px) { .quiet-page.news-renewal .page-hero.news-page-hero { width: 100%; padding: 32px 22px; border-radius: 0; }.quiet-page.news-renewal .news-hero-mark { right: -20px; }.quiet-page.license-renewal .license-detail-body>div+div { border-left: 0; padding-left: 0; } }
 /* End open layout. */
