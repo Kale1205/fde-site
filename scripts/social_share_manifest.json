@@ -1,0 +1,163 @@
+{
+  "imagePath": "assets/social/baked-kale-instagram-share-36bd831a4bf1.png",
+  "imageUrl": "https://kale1205.github.io/fde-site/assets/social/baked-kale-instagram-share-36bd831a4bf1.png",
+  "width": 1200,
+  "height": 630,
+  "type": "image/png",
+  "sha256": "36bd831a4bf177312b694834a4c3e9ae03df080ee3ee9235bd9e99dc29070c74",
+  "sourceProfile": "https://www.instagram.com/bakedkale/",
+  "sourceImagePath": "assets/instagram-bakedkale-profile-20261110.jpg",
+  "sourceSha256": "3b2ad8bff9a086767706118651a0c27758c624d0f454291bffffb640193d7ecf",
+  "sourceSize": [
+    150,
+    150
+  ],
+  "sourceVerifiedAt": "2026-11-11T14:38:38.071021+00:00",
+  "compositionSource": "assets/social/baked-kale-instagram-share-source.svg",
+  "nativeImageBox": {
+    "x": 375,
+    "y": 90,
+    "width": 450,
+    "height": 450
+  },
+  "paths": [
+    "about.html",
+    "cms-admin.html",
+    "contact.html",
+    "customer.html",
+    "demo.html",
+    "docs/design-review/home-comparison-20260924/comparison.html",
+    "docs/design-review/license-switcher-20260923/comparison.html",
+    "goals.html",
+    "index.html",
+    "ja/contact.html",
+    "ja/customer.html",
+    "ja/demo.html",
+    "ja/goals.html",
+    "ja/index.html",
+    "ja/license.html",
+    "ja/news.html",
+    "ja/order.html",
+    "ja/quiet-form.html",
+    "ja/why.html",
+    "license.html",
+    "news.html",
+    "order.html",
+    "overview.html",
+    "products.html",
+    "quiet-form.html",
+    "why.html",
+    "zh/contact.html",
+    "zh/customer.html",
+    "zh/demo.html",
+    "zh/goals.html",
+    "zh/index.html",
+    "zh/license.html",
+    "zh/news.html",
+    "zh/order.html",
+    "zh/quiet-form.html"
+  ],
+  "legacyImageTags": {
+    "about.html": [],
+    "cms-admin.html": [],
+    "contact.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "customer.html": [],
+    "demo.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta property=\"og:image:alt\" content=\"IMS inventory operations development preview by Baked Kale FDE\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">",
+      "<meta name=\"twitter:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:image:alt\" content=\"IMS inventory operations development preview by Baked Kale FDE\">",
+      "<meta property=\"og:image:alt\" content=\"FDE IMS inventory operations development preview by Baked Kale FDE\">",
+      "<meta name=\"twitter:image:alt\" content=\"FDE IMS inventory operations development preview by Baked Kale FDE\">"
+    ],
+    "docs/design-review/home-comparison-20260924/comparison.html": [],
+    "docs/design-review/license-switcher-20260923/comparison.html": [],
+    "goals.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">"
+    ],
+    "index.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "ja/contact.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "ja/customer.html": [],
+    "ja/demo.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta property=\"og:image:alt\" content=\"Baked Kale FDEによるIMS在庫管理の開発プレビュー\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">",
+      "<meta name=\"twitter:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:image:alt\" content=\"Baked Kale FDEによるIMS在庫管理の開発プレビュー\">",
+      "<meta property=\"og:image:alt\" content=\"Baked Kale FDEによるFDE IMS在庫管理の開発プレビュー\">",
+      "<meta name=\"twitter:image:alt\" content=\"Baked Kale FDEによるFDE IMS在庫管理の開発プレビュー\">"
+    ],
+    "ja/goals.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">"
+    ],
+    "ja/index.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "ja/license.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "ja/news.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "ja/order.html": [],
+    "ja/quiet-form.html": [],
+    "ja/why.html": [],
+    "license.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "news.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "order.html": [],
+    "overview.html": [],
+    "products.html": [],
+    "quiet-form.html": [],
+    "why.html": [],
+    "zh/contact.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "zh/customer.html": [],
+    "zh/demo.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta property=\"og:image:alt\" content=\"IMS inventory operations development preview by Baked Kale FDE\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">",
+      "<meta name=\"twitter:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:image:alt\" content=\"IMS inventory operations development preview by Baked Kale FDE\">",
+      "<meta property=\"og:image:alt\" content=\"FDE IMS inventory operations development preview by Baked Kale FDE\">",
+      "<meta name=\"twitter:image:alt\" content=\"FDE IMS inventory operations development preview by Baked Kale FDE\">"
+    ],
+    "zh/goals.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">"
+    ],
+    "zh/index.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "zh/license.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "zh/news.html": [
+      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+    ],
+    "zh/order.html": [],
+    "zh/quiet-form.html": []
+  }
+}

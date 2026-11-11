@@ -1,5 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {applyReviewedShareImage} from './social_share_metadata.mjs';
 const approved=JSON.parse(readFileSync(new URL('./site_refinement_fixtures.json',import.meta.url),'utf8'));
 const digest=source=>createHash('sha256').update(source).digest('hex');
 const cssBlocks=Object.fromEntries(Object.entries(approved.css).map(([file,hash])=>{
@@ -17,6 +18,7 @@ export function applyRefinedHtml(source){
  return value.replace('<p class="visually-hidden" id="motion-announcement" role="status" aria-live="polite"></p>','');
 }
 export function applyReviewedSiteRefinement(file,source){
+ source=applyReviewedShareImage(file,source);
  if(/^(?:(?:ja|zh)\/)?(?:goals|index|quiet-form)\.html$/.test(file))return applyRefinedHtml(source);
  const block=cssBlocks[file];
  if(block&&!source.includes('/* Open layout:')&&source.startsWith(file==='news-books.css'?'/* W05':file==='quiet-form.css'?'/* Approved Quiet Form':'/* Quiet Form:'))return source+block;

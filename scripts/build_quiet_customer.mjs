@@ -1,3 +1,4 @@
+import {withSharedImage} from './social_share_metadata.mjs';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -17,7 +18,7 @@ export function renderQuietCustomer(locale,home){
   const header=home.match(/<header class="site-header">[\s\S]*?<\/header>/)[0].replaceAll('href="#plans"','href="index.html#plans"').replace(/href="([^"]*)" hreflang=/g,(_,directory)=>`href="${directory}customer.html" hreflang=`);
   const footer=home.match(/<footer class="site-footer[\s\S]*?<\/footer>/)[0].replaceAll('href="#plans"','href="index.html#plans"');
   const alternates=[['en',''],['ja','ja/'],['zh-CN','zh/'],['x-default','']].map(([language,directory])=>`  <link rel="alternate" hreflang="${language}" href="https://kale1205.github.io/fde-site/${directory}customer.html">`).join('\n');
-  return `<!doctype html>
+  const html = `<!doctype html>
 <html lang="${lang}">
 <head>
   <meta charset="utf-8">
@@ -68,6 +69,7 @@ ${footer}
 </body>
 </html>
 `;
+  return withSharedImage(html);
 }
 
 if(process.argv[1]===fileURLToPath(import.meta.url))for(const locale of ['en','ja','zh']){

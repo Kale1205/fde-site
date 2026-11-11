@@ -1,3 +1,4 @@
+import {withSharedImage} from './social_share_metadata.mjs';
 // A local, noindex design preview. Public homepages and commercial terms stay unchanged.
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -134,7 +135,7 @@ ${workspace}
 <footer class="site-footer section-frame"><a href="quiet-form.html"><img src="${prefix}assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="#plans">${c.product}</a>${lpItem}<a href="demo.html">${c.demo}</a><a href="goals.html">${c.goals}</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav><small>© 2026 Baked Kale FDE</small></footer>
 </div>
 </body></html>`;
-  return html;
+  return withSharedImage(html);
 }
 
 if (path.resolve(process.argv[1] || '') === fileURLToPath(import.meta.url)) {

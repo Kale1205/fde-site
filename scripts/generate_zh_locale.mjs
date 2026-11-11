@@ -1,4 +1,5 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import {withSharedImage} from './social_share_metadata.mjs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { renderQuietHomepage } from './build_quiet_homepages.mjs';
@@ -174,13 +175,13 @@ let stale = false;
 for (const name of pages) {
   // The approved homepage has manually authored three-language copy in one
   // shared renderer. Do not translate it back to the retired source-home UI.
-  const output = name === 'index.html' && /class="gallery-page quiet-home"/.test(readFileSync(path.join(root, name), 'utf8'))
+  const output = withSharedImage(name === 'index.html' && /class="gallery-page quiet-home"/.test(readFileSync(path.join(root, name), 'utf8'))
     ? await renderQuietHomepage('zh')
     : name === 'order.html' && readFileSync(path.join(root,name),'utf8').includes('order-renewal')
       ? renderQuietOrder(readFileSync(path.join(root,'zh',name),'utf8'),await renderQuietHomepage('zh'))
       : name === 'customer.html'
         ? renderQuietCustomer('zh',readFileSync(path.join(root,'zh/index.html'),'utf8'))
-        : renderPage(name);
+        : renderPage(name));
   const outputPath = path.join(root, 'zh', name);
   if (process.argv.includes('--check')) {
     let current = '';
