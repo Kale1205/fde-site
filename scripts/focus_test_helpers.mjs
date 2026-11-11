@@ -1,6 +1,7 @@
 import { applyReviewedBusinessCopy } from './business_copy_test_helpers.mjs';
 import { frameFreeFocusChanges } from './frame_free_focus_changes.mjs';
 import { applyReviewedHeaderOwnership } from './navigation_test_helpers.mjs';
+import {applyReviewedSiteRefinement} from './site_refinement_test_helpers.mjs';
 
 // Exact focus-rule migrations only. Layout, validation and error rules remain pinned.
 const focusChanges = {
@@ -60,7 +61,7 @@ const focusChanges = {
 
 export function applyReviewedFocus(file, source) {
   const migrated = (focusChanges[file] || []).reduce((value, [before, after]) => value.replace(before, after), source);
-  return (frameFreeFocusChanges[file] || []).reduce((value, [before, after]) => before ? value.replace(before, after) : value.endsWith(after) ? value : value + after, migrated);
+  return applyReviewedSiteRefinement(file,(frameFreeFocusChanges[file] || []).reduce((value, [before, after]) => before ? value.replace(before, after) : value.endsWith(after) ? value : value + after, migrated));
 }
 
 export function applyReviewedUiChanges(file, source) {

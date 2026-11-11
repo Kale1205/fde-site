@@ -227,8 +227,7 @@
     mobileNav.classList.add("mobile-sheet");
     mobileNav.setAttribute("aria-label", text.menu);
     mobileNav.replaceChildren(handle, sheetHeader, shortcuts, rows, languageBlock);
-    // A persistent, native checkbox is available inside the menu and through
-    // the footer's visible Display settings disclosure; no pause button overlays art.
+    // The footer keeps a persistent, native still-icon preference.
     import(new URL("motion-preferences.js", galleryScriptURL).href).then(({ motionPreference }) => {
       const style = document.createElement("link"), styleURL = new URL("motion-preferences.css", galleryScriptURL);
       const version = new URL(galleryScriptURL).searchParams.get("v");
@@ -244,9 +243,6 @@
         input.addEventListener("change", () => motionPreference.setReduced(input.checked));
         return label;
       };
-      const section = document.createElement("section"), heading = document.createElement("strong");
-      section.className = "mobile-nav-display-settings"; section.setAttribute("aria-label", text.displaySettings); heading.textContent = text.displaySettings;
-      section.append(heading, control("menu")); mobileNav.append(section);
       const footer = document.querySelector(".site-footer .footer-nav") || document.querySelector(".site-footer nav");
       if (footer) {
         const settings = document.createElement("details"), summary = document.createElement("summary");
