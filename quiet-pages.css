@@ -1003,8 +1003,10 @@
 .quiet-page:is(.order-renewal,.customer-renewal) :is(.quote-sheet,.order-form-card,.customer-card,.customer-help) { padding-inline: 0; }
 .quiet-page.customer-renewal .portal-input-surface { padding-inline: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .quiet-page.customer-renewal .portal-icon { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-.quiet-page.customer-renewal .portal-field input { border: 0; border-bottom: 1px solid var(--line-dark); border-radius: 0; background: var(--paper-deep); }
-.quiet-page.customer-renewal .portal-field input:focus { background: #d7eadb; color: var(--forest); }
+.quiet-page.customer-renewal #portal-form .portal-field input { border: 0; border-bottom: 1px solid var(--line-dark); border-radius: 0; background: var(--paper-deep); box-shadow: none; }
+.quiet-page.customer-renewal #portal-form .portal-field input:focus { background: #d7eadb; color: var(--forest); }
+.quiet-page.customer-renewal #portal-form .portal-field input[aria-invalid=true] { border-bottom-color: #96300d; background: #faece5; }
+.quiet-page.demo-renewal #demoReset { border: 0; background: var(--paper-deep); box-shadow: none; }
 .quiet-page.admin-renewal :is(.admin-connection,.admin-common-media)>summary { border: 0; border-radius: 0; box-shadow: none; background: var(--paper-deep); }
 .quiet-page :is(.field input,.field select,.field textarea,.faq-search,.order-field input,.order-field select,.customer-form input,.demo-operation-panel input,.demo-operation-panel select,#demoSearch) { border: 0; border-bottom: 1px solid var(--line-dark); border-radius: 0; background: var(--paper-deep); }
 .quiet-page :is(.field input,.field select,.field textarea,.faq-search,.order-field input,.order-field select,.customer-form input,.demo-operation-panel input,.demo-operation-panel select,#demoSearch):focus { background: #d7eadb; color: var(--forest); }
