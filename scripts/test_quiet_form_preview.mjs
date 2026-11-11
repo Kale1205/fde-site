@@ -36,12 +36,9 @@ for (const locale of ['', 'ja/', 'zh/']) {
     }
   });
 }
-test('motion is finite and honors reduced motion and user control', async () => {
+test('the embedded demo is manual and retains its stock reflection and reset', async () => {
   const script = await readFile(path.join(root, 'quiet-form.js'), 'utf8');
-  assert.match(script, /prefers-reduced-motion: reduce/);
-  assert.match(script, /visibilitychange/);
-  assert.match(script, /IntersectionObserver/);
-  assert.match(script, /form\.requestSubmit\(\)/);
-  assert.match(script, /manualInteraction/);
-  assert(!/setInterval\(|localStorage|fetch\(|XMLHttpRequest|sendBeacon|WebSocket/.test(script));
+  assert.match(script, /function updateMobile/);assert.match(script, /reset.addEventListener\('click'/);
+  assert.doesNotMatch(script, /requestSubmit|IntersectionObserver|function tick|function start|motion-toggle|setInterval\(|localStorage|fetch\(|XMLHttpRequest|sendBeacon|WebSocket/);
+  for(const prefix of['','ja/','zh/'])for(const file of['index.html','quiet-form.html'])assert.doesNotMatch(await readFile(path.join(root,prefix,file),'utf8'),/motion-toggle|motion-announcement/);
 });

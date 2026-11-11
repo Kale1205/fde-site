@@ -1,5 +1,3 @@
-.mobile-nav-display-settings{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-dark,#d2d6cd)}
-.mobile-nav-display-settings>strong{font-size:11px;font-weight:650}
 .motion-preference-row{display:grid;grid-template-columns:20px 1fr;gap:11px;align-items:center;min-height:48px;cursor:pointer;font-size:12px;line-height:1.55}
 .motion-preference-row input{width:18px;height:18px;margin:0;accent-color:var(--forest,#07543b)}
 .motion-preference-row input:disabled{cursor:default}

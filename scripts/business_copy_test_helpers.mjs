@@ -1,3 +1,4 @@
+import {applyReviewedSiteRefinement} from './site_refinement_test_helpers.mjs';
 const htmlChanges = {
   "ja/quiet-form.html": [
     [
@@ -307,7 +308,7 @@ const dictionaryChanges = [
 ];
 export function applyReviewedBusinessCopy(file, source) {
   let value = (htmlChanges[file] || []).reduce((text, [before, after]) => text.split(before).join(after), source);
-  if (file !== 'content/zh-translations.json') return value;
+  if (file !== 'content/zh-translations.json') return applyReviewedSiteRefinement(file,value);
   let parsed;
   try { parsed = JSON.parse(value); } catch { return value; }
   for (const [key, before, after] of dictionaryChanges) {

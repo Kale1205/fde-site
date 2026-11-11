@@ -2,9 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
-import {BOOK_MOTION,prepareBookOffset,wrapBookOffset,modulo} from '../news-books.js';
+import {BOOK_MOTION,prepareBookOffset,wrapBookOffset,modulo,containedImageRect} from '../news-books.js';
 const read=file=>readFileSync(new URL('../'+file,import.meta.url),'utf8');
 const js=read('news-books.js'),css=read('news-books.css');
+test('shared-image flight uses contained pixels without stretching or letterbox jumps',()=>{
+ assert.deepEqual(containedImageRect({left:10,top:20,width:200,height:300},1000,1000),{left:10,top:70,width:200,height:200});
+ assert.deepEqual(containedImageRect({left:0,top:0,width:300,height:200},400,800),{left:100,top:0,width:100,height:200});
+ const empty={left:10,top:20,width:0,height:0};assert.equal(containedImageRect(empty,0,0),empty);
+});
 function progress([x1,y1,x2,y2],x){
  const cubic=(a,b,t)=>3*(1-t)**2*t*a+3*(1-t)*t*t*b+t**3;
  let lo=0,hi=1;
@@ -17,7 +22,7 @@ test('responsive card selection retains a gradual start and bounded interaction 
  assert(BOOK_MOTION.select<=600&&BOOK_MOTION.open<=800);
  assert(BOOK_MOTION.close<=450&&BOOK_MOTION.viewOut+BOOK_MOTION.viewIn<=400);
  assert.match(js,/duration:BOOK_MOTION.select,easing:'cubic-bezier\(\.4,0,\.2,1\)'/);
- assert.match(js,/transform:flightFrom,opacity:1,easing:'cubic-bezier\(\.4,0,\.2,1\)'/);
+ assert.match(js,/transform:flightFrom,opacity:1\},\{transform:base,opacity:1\}.*duration:BOOK_MOTION.open,easing:'cubic-bezier\(\.4,0,\.2,1\)'/);
 });
 test('reader content and marker finish within the matching JS lifecycles, without a final snap',()=>{
  const spread=css.match(/animation:book-arrive (\d+)ms (\d+)ms/).slice(1).map(Number);
@@ -51,14 +56,14 @@ function lifecycleFixture(){
   };return node;
  };
  const title=make(),stage=make(),main=make(),heading=make(),read=make(),live=make(),selectedDate=make(),dots=make();dots.children.push(make(),make());
- const slots=[-1,0,1,2,3].map(offset=>{const n=make();n.dataset.offset=String(offset);stage.children.push(n);return n;});
+ const slots=[-1,0,1,2,3].map(offset=>{const n=make();n.dataset.offset=String(offset);const image=make();image.naturalWidth=image.naturalHeight=100;n.querySelector=()=>image;stage.children.push(n);return n;});
  stage.contains=()=>false;stage.hasPointerCapture=()=>true;stage.releasePointerCapture=()=>stage.released=true;
  stage.querySelector=s=>s==='.chronicle-pagination'?dots:slots.find(n=>n.dataset.offset==='0');
  const reader=make(),nodes=new Map();
  for(const s of ['.book-opening-cover','.opening-cover-art','.opening-cover-title','.reader-image','.reader-date','.reader-category','#book-article-title','.reader-copy','.book-close','.reader-body']){nodes.set(s,make());reader.children.push(nodes.get(s));}
  reader.open=false;reader.querySelector=s=>nodes.get(s);reader.showModal=()=>reader.open=true;reader.close=()=>{reader.open=false;closes++;};
  const items=[{id:'synthetic',title:'Synthetic title',body:'Synthetic body',date:'2026-10-17',category:'Update'},{id:'second',title:'Second',date:'2026-10-16'}];
- const context={BOOK_MOTION,prepareBookOffset,wrapBookOffset,modulo,items,allItems:items,index:0,slots,stage,title,main,heading,read,live,reader,
+ const context={BOOK_MOTION,prepareBookOffset,wrapBookOffset,modulo,containedImageRect,items,allItems:items,index:0,slots,stage,title,main,heading,read,live,reader,
   busy:false,queued:0,followBookFocus:false,bookAnimations:[],coverAnimation:null,liftedBook:null,flightFrom:'',lastTrigger:null,
   finishTimer:0,openingTimer:0,preparationTimer:0,closeTimer:0,viewTimer:0,openingRun:0,closeCompletion:null,drag:null,dragFrame:0,pendingView:null,pendingContent:null,listView:false,
   reduce:{matches:false,addEventListener:(name,fn)=>events['reduce:'+name]=fn},

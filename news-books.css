@@ -119,3 +119,23 @@ body.book-reader-open{overflow:hidden}
 .book-news .book-reader.is-reduced .book-opening-cover{will-change:auto}
 @media(max-width:359px){.book-news .book-selection h3{min-height:4.5em}}
 @media(prefers-reduced-motion:reduce){.book-news :is(.news-book,.social-profile-arrow,.chronicle-current-marker){transition:none!important}.book-news .book-reader.is-opening .book-opening-cover{animation:book-cover-dissolve 180ms ease-out both!important}.book-news .book-reader.is-opening .book-spread{animation:book-cover-dissolve 180ms reverse ease-out both!important}.book-news .book-reader.is-opening :is(.book-page-image,.reader-copy){animation:none!important}.book-news .book-reader.is-closing .book-spread{animation:none!important}.book-news .bubble-lane{will-change:auto}}
+
+/* Open layout: one paper background and one unframed image from rail to reader. */
+.book-news :is(.news-library,.news-social){max-width:1280px}
+.book-news .news-book,.book-news .news-book[data-panel-tone="forest"]{border:0;border-radius:0;background:transparent;color:var(--forest);box-shadow:none}
+.book-news .book-stage{height:calc(var(--book-width) + 48px)}
+.book-news .news-book{aspect-ratio:1}
+.book-news .news-book[data-offset="0"]{--yaw:0deg;--tilt:0deg}
+.book-news .news-book[data-offset="1"]{--shift:calc(var(--book-width)*.85);--yaw:0deg;--tilt:0deg}
+.book-news .news-book[data-offset="2"]{--shift:calc(var(--book-width)*1.65);--yaw:0deg;--tilt:0deg}
+.book-news .book-reader{inset:0;margin:0;width:100vw;height:100dvh;max-width:none;max-height:none;padding:64px 48px 40px;border:0;border-radius:0;background:var(--paper);overflow:hidden}
+.book-news .book-spread{max-width:1184px;margin-inline:auto;border:0;border-radius:0;background:transparent;box-shadow:none}
+.book-news .book-page-image{background:transparent}
+.book-news .book-close{position:fixed;top:12px;right:24px;border:0;box-shadow:none;background:var(--paper)}
+.book-news .book-opening-cover,.book-news .book-opening-cover[data-panel-tone="forest"]{width:0;height:0;transform-origin:left center;border:0;border-radius:0;background:transparent;color:var(--forest)}
+.book-news .opening-cover-art{inset:0;width:100%;height:100%;object-fit:contain}
+.book-news .book-reader:not(.is-list-reader).is-opening .book-spread{animation:book-cover-dissolve 320ms 120ms reverse ease-out both}
+.book-news .book-reader:not(.is-list-reader).is-opening .book-page-image{animation:none}
+.book-news .book-reader:not(.is-list-reader):is(.is-preparing,.is-opening,.is-closing) .reader-image{visibility:hidden}
+@media(max-width:699px){.book-news .book-reader{padding:64px 22px 24px}.book-news .book-spread{padding:0;border-radius:0}.book-news .book-close{top:12px;right:16px}.book-news .book-page-image{padding:0}.book-news .book-opening-cover{width:0;height:0}}
+/* End open layout. */

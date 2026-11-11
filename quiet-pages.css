@@ -975,3 +975,40 @@
  .quiet-page.admin-renewal .admin-menu-sheet .admin-tab.active { background: var(--forest); color: var(--paper); }
  .admin-renewal .admin-menu-sheet .admin-connection-note { color: var(--muted); }
 }
+
+/* Open layout: keep hierarchy in space, type and rules rather than card shells. */
+.quiet-page :is(.button,.header-contact,.admin-button,.admin-tab,.mini-btn,.faq-category-bar button,.mobile-toggle) { border-color: transparent; box-shadow: none; }
+.quiet-page.news-renewal .page-hero.news-page-hero { width: 100%; max-width: 1280px; padding: 54px 48px; border: 0; border-radius: 0; background: transparent; color: var(--forest); }
+.quiet-page.news-renewal .news-page-hero :is(.eyebrow,h1,.lede) { color: var(--forest); }
+.quiet-page.news-renewal .news-hero-mark { filter: none; right: 48px; }
+.quiet-page.news-renewal :is(#cmsNewsLead,.latest-card,.wire-row) { padding: 26px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; box-shadow: none; }
+.quiet-page.news-renewal :is(#cmsNewsLead,.latest-card,.wire-row):hover { background: #edf1e780; box-shadow: none; border-color: var(--line); }
+.quiet-page.news-renewal :is(#cmsNewsLead,.latest-card,.wire-row):active { box-shadow: none; }
+.quiet-page.news-renewal .news-empty { padding-inline: 0; border: 0; border-radius: 0; }
+.quiet-page.contact-renewal.contact-page :is(.contact-faq,.contact-surface) { padding-inline: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.quiet-page.contact-renewal.contact-page .faq-item { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; box-shadow: none; }
+.quiet-page.license-renewal .license-decision { padding-inline: 0; border-radius: 0; background: transparent; }
+.quiet-page.license-renewal :is(.license-details,.license-plan-switcher) { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+.quiet-page.license-renewal .license-details summary { padding-inline: 0; }
+.quiet-page.license-renewal .license-detail-body { padding-inline: 0; }
+.quiet-page.demo-renewal :is(.demo-operation-panel,.demo-kpis,.demo-scope-grid,.demo-selected-product,.demo-table-wrap) { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+.quiet-page.demo-renewal .demo-operation-panel { padding-inline: 0; }
+.quiet-page.demo-renewal .demo-health { border: 0; border-radius: 0; }
+.quiet-page.goals-renewal :is(.mission-code,.mission-recording video) { border: 0; border-radius: 0; box-shadow: none; }
+.quiet-page.goals-renewal.goals-journey .mission-layered :is(.mission-code-window,.mission-video-loop) { border: 0; border-radius: 0; box-shadow: none; }
+.quiet-page.goals-renewal .mission-sample pre { border: 0; border-radius: 0; }
+.quiet-page.order-renewal .order-notice { border: 0; border-radius: 0; background: transparent; padding-inline: 0; }
+.quiet-page.order-renewal .order-updates { border: 0; border-radius: 0; background: transparent; padding-inline: 0; }
+.quiet-page:is(.order-renewal,.customer-renewal,.admin-renewal) :is(.quote-sheet,.order-form-card,.customer-card,.customer-help,.admin-card,.admin-article-list,.preview-box) { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+.quiet-page:is(.order-renewal,.customer-renewal) :is(.quote-sheet,.order-form-card,.customer-card,.customer-help) { padding-inline: 0; }
+.quiet-page.customer-renewal .portal-input-surface { padding-inline: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.quiet-page.customer-renewal .portal-icon { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.quiet-page.customer-renewal .portal-field input { border: 0; border-bottom: 1px solid var(--line-dark); border-radius: 0; background: var(--paper-deep); }
+.quiet-page.customer-renewal .portal-field input:focus { background: #d7eadb; color: var(--forest); }
+.quiet-page.admin-renewal :is(.admin-connection,.admin-common-media)>summary { border: 0; border-radius: 0; box-shadow: none; background: var(--paper-deep); }
+.quiet-page :is(.field input,.field select,.field textarea,.faq-search,.order-field input,.order-field select,.customer-form input,.demo-operation-panel input,.demo-operation-panel select,#demoSearch) { border: 0; border-bottom: 1px solid var(--line-dark); border-radius: 0; background: var(--paper-deep); }
+.quiet-page :is(.field input,.field select,.field textarea,.faq-search,.order-field input,.order-field select,.customer-form input,.demo-operation-panel input,.demo-operation-panel select,#demoSearch):focus { background: #d7eadb; color: var(--forest); }
+.quiet-page :is(.field select,.order-field select,.demo-operation-panel select) { appearance: none; min-height: 48px; padding: 10px 38px 10px 12px; background-image: linear-gradient(45deg,transparent 50%,var(--forest) 50%),linear-gradient(135deg,var(--forest) 50%,transparent 50%); background-position: right 16px center,right 11px center; background-size: 5px 5px; background-repeat: no-repeat; }
+@media(max-width:1080px) { .quiet-page.news-renewal .page-hero.news-page-hero { width: 100%; padding-inline: 32px; } }
+@media(max-width:760px) { .quiet-page.news-renewal .page-hero.news-page-hero { width: 100%; padding: 32px 22px; border-radius: 0; }.quiet-page.news-renewal .news-hero-mark { right: -20px; }.quiet-page.license-renewal .license-detail-body>div+div { border-left: 0; padding-left: 0; } }
+/* End open layout. */

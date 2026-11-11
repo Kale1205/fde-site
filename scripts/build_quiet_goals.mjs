@@ -24,6 +24,7 @@ function renderJourney(source) {
 
 // Recompose existing HTML rather than substituting the mock's condensed copy.
 export function renderQuietGoals(source) {
+  source=source.replace('<span aria-hidden="true">☰</span>', '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg>');
   if (source.includes('goals-renewal')) return applyW04LayeredMotion(renderJourney(source));
   let html=source.replace(' mission-page"', ' mission-page goals-renewal"');
   html=html.replace(/(      <header class="mission-hero section-frame">[\s\S]*?      <\/header>)/,

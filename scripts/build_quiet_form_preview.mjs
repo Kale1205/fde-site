@@ -19,7 +19,7 @@ const copy = {
     fees: ['最初の3か月は含む', '4〜6か月目 <strong>¥4,900/月</strong>', '7か月目以降 <strong>¥9,800/月</strong>'],
     retained: 'Updatesは任意契約です。未契約でも購入時のバージョンを利用でき、有料契約へ自動移行しません。',
     demoTitle: '触ってわかる、IMS。', sample: '公開デモ・サンプルデータ',
-    fullDemo: 'デモを広く使う', play: '操作例を再生', pause: '一時停止', replay: 'もう一度見る',
+    fullDemo: 'デモを広く使う',
     step: ['商品を選ぶ', '入庫を記録', '在庫に反映'],
     newsTitle: 'Baked Kaleの現在地。', newsBody: 'Baked Kaleの開発について、<br>お知らせをご覧いただけます。', newsLink: 'お知らせを見る',
     temporary: 'サンプルデータはページ内だけで動きます。リセットすると変更は消えます。',
@@ -38,7 +38,7 @@ const copy = {
     fees: ['First 3 months included', 'Months 4–6 <strong>¥4,900/mo</strong>', 'Month 7 onward <strong>¥9,800/mo</strong>'],
     retained: 'Updates is optional. You can use the version purchased without a subscription. Paid Updates never starts automatically.',
     demoTitle: 'Get a feel for IMS.', sample: 'Public demo · Sample data',
-    fullDemo: 'Open the full demo', play: 'Play example', pause: 'Pause', replay: 'Replay example',
+    fullDemo: 'Open the full demo',
     step: ['Choose a product', 'Record receive', 'Stock updated'],
     newsTitle: 'Where Baked Kale is now.', newsBody: 'Follow the development of Baked Kale<br>in our latest news.', newsLink: 'Read the news',
     temporary: 'Sample data runs only in this page. Resetting discards your changes.',
@@ -57,7 +57,7 @@ const copy = {
     fees: ['含最初3个月', '第4–6个月 <strong>¥4,900/月</strong>', '第7个月起 <strong>¥9,800/月</strong>'],
     retained: 'Updates 为可选订阅。未订阅时仍可使用购买时的版本，不会自动转为付费订阅。',
     demoTitle: '亲手体验 IMS。', sample: '公开演示 · 示例数据',
-    fullDemo: '打开完整演示', play: '播放操作示例', pause: '暂停', replay: '重新播放',
+    fullDemo: '打开完整演示',
     step: ['选择商品', '记录入库', '更新库存'],
     newsTitle: 'Baked Kale 的此刻。', newsBody: '在最新动态中，<br>了解 Baked Kale 的开发进展。', newsLink: '查看动态',
     temporary: '示例数据仅在当前页面中运行。重置后，所有更改都会消失。',
@@ -90,8 +90,7 @@ export async function renderQuietPreview(locale) {
 <title>${c.title}</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#073e2c">
 ${alternates}
 <link rel="icon" type="image/svg+xml" href="${prefix}assets/baked-kale-mark.svg">
-<link rel="stylesheet" href="${prefix}gallery-ui.css"><link rel="stylesheet" href="${prefix}quiet-form.css"><link rel="stylesheet" href="${prefix}sculpture-motion.css">
-<script type="module" src="${prefix}sculpture-motion.js"></script>
+<link rel="stylesheet" href="${prefix}gallery-ui.css"><link rel="stylesheet" href="${prefix}quiet-form.css">
 <script defer src="${prefix}gallery-ui.js"></script><script defer src="${prefix}demo-v1.js"></script><script defer src="${prefix}quiet-form.js"></script>
 </head>
 <body class="gallery-page quiet-home">
@@ -125,10 +124,10 @@ ${alternates}
 </section>
 <section class="quiet-demo section-frame" id="motion-demo" aria-labelledby="demo-title">
 <header class="demo-section-heading"><div><h2 class="quiet-heading" id="demo-title">${c.demoTitle}</h2><p>${c.sample}</p></div><a class="quiet-text-link" href="demo.html">${c.fullDemo} <span aria-hidden="true">→</span></a></header>
-<div class="motion-toolbar"><ol class="motion-steps">${c.step.map((s, i) => `<li data-motion-step="${i}"><span aria-hidden="true">0${i + 1}</span>${s}</li>`).join('')}</ol><button class="motion-toggle" type="button" aria-controls="imsDemoRoot" data-play="${c.play}" data-pause="${c.pause}" data-replay="${c.replay}">${c.play}</button></div>
+<div class="motion-toolbar"><ol class="motion-steps">${c.step.map((s, i) => `<li data-motion-step="${i}"><span aria-hidden="true">0${i + 1}</span>${s}</li>`).join('')}</ol></div>
 ${workspace}
 <div class="mobile-stock" aria-label="${c.mobileStock}"><strong data-mobile-product>PC-1204</strong><dl><div><dt>${c.main}</dt><dd data-mobile-main>326</dd></div><div><dt>${c.osaka}</dt><dd data-mobile-osaka>20</dd></div><div><dt>${c.total}</dt><dd data-mobile-total>346</dd></div></dl></div>
-<p class="sample-note">${c.temporary}</p><p class="visually-hidden" id="motion-announcement" role="status" aria-live="polite"></p>
+<p class="sample-note">${c.temporary}</p>
 </section>
 <section class="quiet-news section-frame"><div><h2 class="quiet-heading">${c.newsTitle}</h2><p>${c.newsBody}</p></div><a class="button" href="news.html">${c.newsLink} <span aria-hidden="true">→</span></a></section>
 </main>
@@ -140,6 +139,8 @@ ${workspace}
 
 if (path.resolve(process.argv[1] || '') === fileURLToPath(import.meta.url)) {
   for (const locale of Object.keys(locales)) {
-    await writeFile(path.join(root, locales[locale], 'quiet-form.html'), await renderQuietPreview(locale));
+    const file=path.join(root,locales[locale],'quiet-form.html'),output=(await renderQuietPreview(locale)).trimEnd()+'\n';
+    if(process.argv.includes('--check')){if(await readFile(file,'utf8')!==output)throw Error(`${file} is stale`);}
+    else await writeFile(file,output);
   }
 }

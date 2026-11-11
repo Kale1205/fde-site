@@ -1,0 +1,12 @@
+{
+  "css": {
+    "quiet-form.css": "dcf92ba7e694c5bc474a0fad6307adb9fc7e886a01eafc0658dac03b3d510b40",
+    "quiet-pages.css": "ef9238ba052117b3740049776e0360aed10eb69954389257cf8b355b1a6b241a",
+    "news-books.css": "badeadb4217cd5147bc2ef3a53f65a4dd026f4a78af5c025e28ce939fbdabcc2"
+  },
+  "oldRuntimeHashes": [
+    "51945897bb87040b5579c3be0d9051b1ede04b3673483cae8f2f2433d9acd914",
+    "f5fc19425a7021e61be522556d431cd5e6d9940e8c8e794f1dd210c0fe6fbcf4"
+  ],
+  "manualRuntimeSha256": "597dd90c3fcdfb99c6a557bff1b4392ecc0275f66a446ff4a99f500321e34f46"
+}

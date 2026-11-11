@@ -39,7 +39,7 @@ test('shared image upload, replacement and reset use local drafts and the protec
 test('opening animation is sequenced after layout, pointer taps have no outline and keyboard focus remains visible',()=>{
  const js=read('news-books.js'),css=read('news-books.css');
  assert.match(js,/requestAnimationFrame\(\(\)=>requestAnimationFrame/);assert.match(js,/is-preparing/);assert.match(js,/reduce.matches\?220:BOOK_MOTION.open/);assert.match(js,/clearTimeout\(openingTimer\)/);
- assert.match(js,/openingCover.animate/);assert.match(js,/rotateY\(-3deg\)/);assert.doesNotMatch(js,/rotateY\(-168deg\)/);assert.match(css,/book-cover-dissolve 180ms/);
+ assert.match(js,/openingCover.animate/);assert.match(js,/containedImageRect/);assert.doesNotMatch(js,/rotateY\(-168deg\)/);assert.match(css,/book-cover-dissolve 180ms/);
  assert.match(css,/data-book-input="pointer"[^\n]*outline:none/);assert.match(css,/data-book-input="keyboard"[^\n]*outline:none;filter:brightness/);
 });
 test('book motion connects the source bounds to the reader, settles selection and preserves native vertical scrolling',()=>{
@@ -47,7 +47,7 @@ test('book motion connects the source bounds to the reader, settles selection an
  assert.equal(bookFlightTransform({left:10,top:20,width:100,height:125},{left:50,top:60,width:200,height:250},'translateX(-50%)'),'translate3d(-40px,-102.5px,0) translateX(-50%) scale(0.5,0.5)');
  assert.equal(bookFlightTransform({left:NaN,top:0,width:0,height:0},{left:0,top:0,width:0,height:0},'none'),'none');
  const js=read('news-books.js'),css=read('news-books.css');
- assert.match(js,/bookFlightTransform\(sourceRect/);assert.match(js,/sourceRect=liftedBook\?\.getBoundingClientRect/);
+ assert.match(js,/bookFlightTransform\(sourceRect/);assert.match(js,/sourceRect=sourceImage\?containedImageRect/);
  assert.match(js,/getComputedStyle\(node\)\.transform/);assert.match(js,/velocity/);assert.match(js,/Math.abs\(event.deltaX\)<=Math.abs\(event.deltaY\)/);
  assert.match(js,/if\(offset===1\|\|offset===2\)rotate\(offset\)/);assert.match(css,/touch-action:pan-y/);
  assert.match(js,/offset===0\?ui.read:offset<0\?ui.previous:ui.next/);assert.match(js,/else node.removeAttribute\('aria-haspopup'\)/);

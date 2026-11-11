@@ -188,3 +188,17 @@
   .quiet-home *, .quiet-home *::before, .quiet-home *::after { animation: none !important; transition: none !important; }
   .quiet-home figure:hover .sculpture, .quiet-home .button:hover, .quiet-home .plan-top a:hover { transform: none; }
 }
+
+/* Open layout: surfaces follow the page; controls retain their own hit areas. */
+.quiet-home :is(.demo-inventory-panel,.demo-operation-panel,.mobile-stock) { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.quiet-home :is(.demo-inventory-panel,.demo-operation-panel) { padding: 24px 0; transform: none; }
+.quiet-home .mobile-stock { padding: 22px 0; border-top: 1px solid var(--line); }
+.quiet-home .updates-strip { border-radius: 0; background: transparent; border-block: 1px solid var(--line); }
+.quiet-home :is(.button,.mini-btn,.plan-top a,#demoReset,#demoApply) { border-color: transparent; box-shadow: none; }
+.quiet-home :is(#demoSearch,.demo-operation-panel input,.demo-operation-panel select) { border: 0; border-bottom: 1px solid var(--line-dark); border-radius: 0; background: var(--paper-deep); }
+.quiet-home :is(#demoSearch,.demo-operation-panel input,.demo-operation-panel select):focus { background: #d7eadb; color: var(--forest); }
+.quiet-home .demo-operation-panel select { appearance: none; min-height: 48px; padding: 10px 38px 10px 12px; background-image: linear-gradient(45deg,transparent 50%,var(--forest) 50%),linear-gradient(135deg,var(--forest) 50%,transparent 50%); background-position: right 16px center,right 11px center; background-size: 5px 5px; background-repeat: no-repeat; }
+.quiet-home .demo-health { border: 0; border-radius: 0; background: #e7eee4; }
+.quiet-home .demo-health-low { background: #f4e5d9; }.quiet-home .demo-health-out { background: #f5e2dd; }
+.quiet-home .motion-toolbar { justify-content: space-between; flex-wrap: wrap; }
+/* End open layout. */
