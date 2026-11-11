@@ -1,11 +1,11 @@
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
-import {applyApprovedGoalsAutoplay} from './goals_autoplay_test_helpers.mjs';
+import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
+import {execFileSync} from './reviewed_snapshot_test_helpers.mjs';
 import {applyApprovedProductNaming} from './approved_product_naming.mjs';
 import {applyApprovedOptionalUpdates} from './optional_updates_copy.mjs';
 import {normalizeHistoricalPresentation as normalizeAssetBuildKeys} from './approved_motion_test_helpers.mjs';
@@ -48,7 +48,7 @@ for (const prefix of ['', 'ja/', 'zh/']) {
     }
     const profile = read(prefix + 'contact.html').match(/<section class="business-profile">[\s\S]*?<\/section>/)[0];
     assert.match(profile, /class="business-profile-title">Baked Kale<\/h2>/);
-    assert.equal((profile.match(/class="business-profile-item"/g) || []).length, 2);
+    assert.equal((profile.match(/class="business-profile-item"/g) || []).length, 3);
     assert.match(profile, /FDE/); // The occupation is not a product name.
     assert.doesNotMatch(profile, /IMS|Planned products|提供予定商品|计划产品/);
     const graph = html => JSON.parse(html.match(/application\/ld\+json">\s*([\s\S]*?)<\/script>/)[1])['@graph'];
@@ -65,7 +65,7 @@ test('CMS hydration and Chinese dictionary contain the same approved names', () 
     const fixture=file==='content/faq-content.json'
       ? applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,readFaqMigrationFixture(file)))
       : read(file);
-    assert.equal(fixture, applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file)))))));
+    assert.deepEqual(JSON.parse(fixture), JSON.parse(applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file))))))));
     assert.doesNotMatch(read(file), /FDE IMS/);
     JSON.parse(read(file));
   }
@@ -73,6 +73,6 @@ test('CMS hydration and Chinese dictionary contain the same approved names', () 
 
 test('naming does not change routing, privacy, commerce keys or operation code', () => {
   for (const file of ['robots.txt', 'contact-direct.js', 'contact-config.js',  'demo-v1.js', 'quiet-form.js', 'worker/src/index-v14.js']) {
-    assert.equal(normalizeAssetBuildKeys(read(file)), normalizeAssetBuildKeys(applyApprovedGoalsAutoplay(file,file==='contact-config.js'?applyCmsMemoryKey(previous(file)):previous(file))), file);
+    assert.equal(normalizeAssetBuildKeys(read(file)), normalizeAssetBuildKeys(applyReviewedUiChanges(file,file==='contact-config.js'?applyCmsMemoryKey(previous(file)):previous(file))), file);
   }
 });

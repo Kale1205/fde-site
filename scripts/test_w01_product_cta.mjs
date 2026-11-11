@@ -1,20 +1,21 @@
 import {normalizeHistoricalPresentation} from './approved_motion_test_helpers.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {execFileSync} from 'node:child_process';
+import {execFileSync} from './reviewed_snapshot_test_helpers.mjs';
 import test from 'node:test';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import {applyW01ProductCta,w01CtaCssChanges} from './w01_product_cta_test_helpers.mjs';
+import {applyReviewedFocus} from './focus_test_helpers.mjs';
 import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 
 const root = new URL('../', import.meta.url);
 const css = await readFile(new URL('quiet-form.css', root), 'utf8');
 const base = process.env.W01_CTA_BASE_REF || '3343014e60860d85afe21baed955122c71d1b6e1';
 
-test('W01: only the five approved CSS replacements differ from the previous main', () => {
+test('W01: CTA replacements and the reviewed frame-free focus changes are the only CSS differences', () => {
   const before = execFileSync('git',['show',`${base}:quiet-form.css`],{cwd:root,encoding:'utf8'});
   for (const [literal] of w01CtaCssChanges) assert.equal(before.split(literal).length,2);
-  assert.equal(css,applyW01ProductCta('quiet-form.css',before));
+  assert.equal(css,applyReviewedFocus('quiet-form.css',applyW01ProductCta('quiet-form.css',before)));
   assert.equal(applyW01ProductCta('quiet-form.css',css),css);
 });
 

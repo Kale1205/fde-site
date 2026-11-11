@@ -93,10 +93,11 @@ body.book-reader-open{overflow:hidden}
 .book-news .book-opening-cover[hidden]{display:none}
 .book-news main.is-news-leaving{animation:news-view-leave 100ms ease-in both}
 .book-news main.is-news-arriving{animation:news-view-arrive 260ms cubic-bezier(.2,.75,.22,1) both}
-.book-news :is(button,a,.reader-copy):focus-visible{outline:2px solid var(--forest);outline-offset:3px}
-.book-news .reader-copy:focus-visible{outline-offset:-2px}
+.book-news :is(button,a,.reader-copy):focus-visible { outline: none; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .25em; }
+.book-news .reader-copy:focus-visible {outline:none;text-decoration:none;background-color:#e6efdf}
+.book-news .reader-copy:focus-visible h2{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.25em}
 .book-news[data-book-input="pointer"] :is(.news-book,.book-read,.book-close):focus-visible{outline:none}
-.book-news[data-book-input="keyboard"] .news-book:focus-visible{outline:2px solid var(--forest);outline-offset:5px}
+.book-news[data-book-input="keyboard"] .news-book:focus-visible {outline:none;filter:brightness(.76) saturate(1.1)}
 @keyframes book-arrive{from{opacity:0;transform:translateY(18px) scale(.88)}to{opacity:1;transform:none}}
 @keyframes book-ink-arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes book-depart{to{opacity:0;transform:translateY(12px) scale(.88)}}

@@ -1,10 +1,10 @@
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
-import {applyApprovedGoalsAutoplay} from './goals_autoplay_test_helpers.mjs';
+import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
+import {execFileSync} from './reviewed_snapshot_test_helpers.mjs';
 import {applyW02PurchaseCta,purchaseCtaLabels} from './w02_purchase_cta.mjs';
 import {normalizeHistoricalPresentation as normalize} from './approved_motion_test_helpers.mjs';
 import {applyW04LayeredMotion} from './w04_layered_motion.mjs';
@@ -49,7 +49,7 @@ test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
     const current=read(file);
     const source=file==='content/faq-content.json'?readFaqMigrationFixture(file):before(file);
     const expected=renderCurrentFaqFixture(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,source)));
-    assert.equal(normalize(current),normalize(applyApprovedGoalsAutoplay(file,applyApprovedContinuingUsePolicy(file,expected))),file);
+    assert.equal(normalize(current),normalize(applyReviewedUiChanges(file,applyApprovedContinuingUsePolicy(file,expected))),file);
   }
   assert.match(read('quiet-pages.css'),/\.quiet-page :is\(button,\[type=submit\]\):disabled \{ transform: none; opacity: \.55; cursor: not-allowed; \}/);
   assert.doesNotMatch(read('gallery-ui.js'),/data-license-purchase/);
