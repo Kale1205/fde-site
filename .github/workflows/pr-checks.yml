@@ -49,6 +49,11 @@ jobs:
       - name: Chinese search metadata and unchanged public content
         run: node --test scripts/test_zh_search_metadata.mjs
 
+      - name: Shared official Instagram image and protected page metadata
+        run: |
+          node --test scripts/test_social_share.mjs
+          node scripts/social_share_metadata.mjs --check
+
       - name: W02 disabled purchase CTA and unchanged commerce boundaries
         run: node --test scripts/test_w02_purchase_cta.mjs
 
