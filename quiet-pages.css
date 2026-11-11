@@ -1019,6 +1019,7 @@ body.quiet-page.license-renewal .license-document { padding-top: 0; }
 body.quiet-page.license-renewal .license-intro { position: relative; isolation: isolate; padding-block: 64px 48px; margin-bottom: 40px; border: 0; border-radius: 0; background: transparent; color: var(--paper); }
 body.quiet-page.license-renewal .license-intro::before { content: ""; position: absolute; z-index: -1; inset-block: 0; left: 50%; width: 100vw; transform: translateX(-50%); background: var(--forest); pointer-events: none; }
 body.quiet-page.license-renewal .license-intro :is(h1,.license-eyebrow,.license-lede) { color: var(--paper); }
+body.quiet-page.gallery-page :is(.mission-hero,.contact-page-hero,.demo-hero,.order-hero,.portal-hero) :is(h1,.mission-lead,.lede,.portal-lead,.demo-intro > p,.order-hero > p,.section-intro > span) { color: var(--paper); }
 @media(max-width:1080px) { body.quiet-page.news-renewal .page-hero.news-page-hero { padding-inline: 32px; } }
 @media(max-width:760px) { body.quiet-page.news-renewal .page-hero.news-page-hero { padding: 32px 22px; }body.quiet-page.license-renewal .license-intro { padding-block: 40px; margin-bottom: 32px; } }
 @media(max-width:1080px) { .quiet-page.news-renewal .page-hero.news-page-hero { width: 100%; padding-inline: 32px; } }
