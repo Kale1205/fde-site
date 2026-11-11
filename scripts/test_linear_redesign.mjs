@@ -1,3 +1,4 @@
+import {shareImage} from './social_share_metadata.mjs';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -28,7 +29,7 @@ for (const prefix of ['', 'ja/']) {
   assert.match(goals, /class="mission-chapter\b/);
   assert.match(goals, /class="mission-code"/);
   assert.match(goals, /ims-v1-operation-(?:en|ja)\.mp4/);
-  assert.match(goals, /<meta property="og:image" content="https:\/\/kale1205\.github\.io\/fde-site\/assets\/warehouse-operations\.webp">/);
+  assert.ok(goals.includes(`<meta property="og:image" content="${shareImage.imageUrl}">`));
   assert.ok(goals.includes('License Plus'));
 
   const license = read(prefix + 'license.html');
