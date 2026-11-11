@@ -95,11 +95,12 @@ function preferenceFixture({values=new Map(),reduced=false,blocked=false}={}){
 test('explicit still-icon preference persists across pages and responds to other tabs',()=>{
  const first=preferenceFixture();assert.equal(first.preference.matches,false);first.preference.setReduced(true);assert.equal(first.preference.matches,true);
  const second=preferenceFixture({values:first.values});assert.equal(second.preference.matches,true);first.preference.setReduced(false);second.events.storage({key:'fde:still-icons'});assert.equal(second.preference.matches,false);
+ first.preference.setReduced(true);second.preference.setReduced(false);assert.equal(first.preference.matches,true);first.events.pageshow();assert.equal(first.preference.matches,false);
 });
 test('the device preference cannot be overridden and live changes retain a user pause',()=>{
  const f=preferenceFixture({reduced:true});assert.equal(f.preference.systemReduced,true);f.preference.setReduced(false);assert.equal(f.preference.matches,true);
  f.media.matches=false;f.events.system();assert.equal(f.preference.matches,false);f.preference.setReduced(true);f.media.matches=true;f.events.system();f.media.matches=false;f.events.system();assert.equal(f.preference.matches,true);
 });
 test('a user can still stop and restart icons when browser storage is unavailable',()=>{
- const f=preferenceFixture({blocked:true}),states=[];f.preference.addEventListener('change',e=>states.push(e.matches));f.preference.setReduced(true);assert.equal(f.preference.matches,true);f.preference.setReduced(false);assert.equal(f.preference.matches,false);assert.deepEqual(states,[true,false]);
+ const f=preferenceFixture({blocked:true}),states=[];f.preference.addEventListener('change',e=>states.push(e.matches));f.preference.setReduced(true);assert.equal(f.preference.matches,true);f.events.pageshow();assert.equal(f.preference.matches,true);f.preference.setReduced(false);assert.equal(f.preference.matches,false);assert.deepEqual(states,[true,true,false]);
 });

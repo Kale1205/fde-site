@@ -2,7 +2,7 @@
 const STORAGE_KEY='fde:still-icons';
 const system=typeof matchMedia==='function'?matchMedia('(prefers-reduced-motion: reduce)'):null;
 const listeners=new Set();
-function saved(){try{return localStorage.getItem(STORAGE_KEY)==='1';}catch{return false;}}
+function saved(fallback=false){try{return localStorage.getItem(STORAGE_KEY)==='1';}catch{return fallback;}}
 let userReduced=saved();
 function notify(){const event={matches:motionPreference.matches,userReduced,systemReduced:motionPreference.systemReduced};for(const listener of listeners)listener(event);}
 export const motionPreference=Object.freeze({
@@ -14,4 +14,9 @@ export const motionPreference=Object.freeze({
  removeEventListener(name,listener){if(name==='change')listeners.delete(listener);}
 });
 system?.addEventListener('change',notify);
-if(typeof window!=='undefined')window.addEventListener('storage',event=>{if(event.key===STORAGE_KEY||event.key===null){userReduced=saved();notify();}});
+function refresh(){userReduced=saved(userReduced);notify();}
+if(typeof window!=='undefined'){
+ window.addEventListener('storage',event=>{if(event.key===STORAGE_KEY||event.key===null)refresh();});
+ window.addEventListener('pageshow',refresh);
+}
+if(typeof document!=='undefined')document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
