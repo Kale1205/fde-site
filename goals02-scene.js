@@ -26,7 +26,7 @@ const cache=new WeakMap();
 function nodes(root){let n=cache.get(root);if(!n){n={active:root.querySelector('[data-goals02-active]'),rest:root.querySelector('[data-goals02-rest]'),contact:root.querySelector('[data-contact]'),parts:Object.fromEntries(Object.keys(outline).map(name=>[name,root.querySelector(`[data-part=${name}]`)]))};cache.set(root,n);}return n;}
 const pose=(cx,cy,x=0,y=0,a=0,s=1)=>`translate(${x.toFixed(5)} ${y.toFixed(5)}) translate(${cx} ${cy}) rotate(${a.toFixed(5)}) scale(${s.toFixed(6)}) translate(${-cx} ${-cy})`;
 export function renderGoals02(root,phase){
- const p=clamp(phase),n=nodes(root),blend=smooth((p-.025)/.065)*(1-smooth((p-.91)/.09));n.active.setAttribute('opacity',blend.toFixed(6));n.rest.setAttribute('opacity',(1-blend).toFixed(6));
+ const p=clamp(phase),n=nodes(root),blend=smooth((p-.025)/.025)*(1-smooth((p-.975)/.025));n.active.setAttribute('opacity',blend.toFixed(6));n.rest.setAttribute('opacity',(1-blend).toFixed(6));
  const split=curve([[0,0],[.245,0],[.43,1],[.53,1],[.84,0],[1,0]],p),jolt=curve([[0,0],[.232,0],[.245,1],[.27,-.55],[.30,0],[1,0]],p);
  const rejoin=(start,end)=>p<.53?split:1-smooth((p-start)/(end-start));
  const f=rejoin(.53,.66),r=rejoin(.57,.71),m=rejoin(.61,.77),front=rejoin(.65,.84);
