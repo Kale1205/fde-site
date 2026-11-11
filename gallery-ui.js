@@ -5,6 +5,7 @@
     ? "zh"
     : document.documentElement.lang === "ja" ? "ja" : "en";
   const isJapanese = locale === "ja";
+  const galleryScriptURL = document.currentScript?.src || new URL("gallery-ui.js", document.baseURI).href;
   // Motion is a real development-build capture, loaded only when in view.
   // Native controls remain available; reduced-motion users opt in to playback.
   const operationVideo = document.querySelector(".mission-recording video:not([data-motion-video])");
@@ -27,19 +28,19 @@
   const text = {
     en: {
       openMenu: "Open menu", closeMenu: "Close menu", menu: "Menu", product: "Product", demo: "Demo", contact: "Contact",
-      language: "Language", chooseLanguage: "Choose language",
+      language: "Language", chooseLanguage: "Choose language", displaySettings: "Display settings", stillIcons: "Use still icons", stillHelp: "Keep decorative icons still. Saved in this browser.", systemStillHelp: "Your device's reduced-motion setting is enabled.",
       received: "Received one unit", shipped: "Shipped one unit", ok: "OK", low: "Low stock",
       tools: ["Inventory", "Products", "Records", "Shipping", "Settings"],
     },
     ja: {
       openMenu: "メニューを開く", closeMenu: "メニューを閉じる", menu: "メニュー", product: "FDE製品", demo: "デモ", contact: "お問い合わせ",
-      language: "言語", chooseLanguage: "言語を選択",
+      language: "言語", chooseLanguage: "言語を選択", displaySettings: "表示設定", stillIcons: "アイコンを静止表示", stillHelp: "装飾アイコンの動きを止めます。このブラウザーに保存します。", systemStillHelp: "端末の動作軽減設定が有効です。",
       received: "1点を入庫しました", shipped: "1点を出庫しました", ok: "正常", low: "要補充",
       tools: ["在庫一覧", "商品", "記録", "出荷", "設定"],
     },
     zh: {
       openMenu: "打开菜单", closeMenu: "关闭菜单", menu: "菜单", product: "产品", demo: "演示", contact: "联系我们",
-      language: "语言", chooseLanguage: "选择语言",
+      language: "语言", chooseLanguage: "选择语言", displaySettings: "显示设置", stillIcons: "使用静态图标", stillHelp: "停止装饰图标动画。在此浏览器中保存。", systemStillHelp: "设备已启用减少动态效果。",
       received: "已入库 1 件", shipped: "已出库 1 件", ok: "正常", low: "需要补货",
       tools: ["库存", "产品", "记录", "出库", "设置"],
     },
@@ -226,6 +227,36 @@
     mobileNav.classList.add("mobile-sheet");
     mobileNav.setAttribute("aria-label", text.menu);
     mobileNav.replaceChildren(handle, sheetHeader, shortcuts, rows, languageBlock);
+    // A persistent, native checkbox is available inside the menu and through
+    // the footer's visible Display settings disclosure; no pause button overlays art.
+    import(new URL("motion-preferences.js", galleryScriptURL).href).then(({ motionPreference }) => {
+      const style = document.createElement("link"), styleURL = new URL("motion-preferences.css", galleryScriptURL);
+      const version = new URL(galleryScriptURL).searchParams.get("v");
+      if (version) styleURL.searchParams.set("v", version);
+      style.rel = "stylesheet"; style.href = styleURL.href; document.head.append(style);
+      const controls = [];
+      const control = suffix => {
+        const label = document.createElement("label"), input = document.createElement("input"), copy = document.createElement("span"), title = document.createElement("span"), help = document.createElement("small");
+        label.className = "motion-preference-row"; input.type = "checkbox"; input.dataset.stillIcons = "";
+        input.setAttribute("aria-label", text.stillIcons); input.setAttribute("aria-describedby", `still-icons-help-${suffix}`);
+        title.className = "motion-preference-title"; title.textContent = text.stillIcons; help.id = `still-icons-help-${suffix}`;
+        copy.append(title, help); label.append(input, copy); controls.push({ input, help });
+        input.addEventListener("change", () => motionPreference.setReduced(input.checked));
+        return label;
+      };
+      const section = document.createElement("section"), heading = document.createElement("strong");
+      section.className = "mobile-nav-display-settings"; section.setAttribute("aria-label", text.displaySettings); heading.textContent = text.displaySettings;
+      section.append(heading, control("menu")); mobileNav.append(section);
+      const footer = document.querySelector(".site-footer .footer-nav") || document.querySelector(".site-footer nav");
+      if (footer) {
+        const settings = document.createElement("details"), summary = document.createElement("summary");
+        settings.className = "motion-display-settings"; summary.textContent = text.displaySettings;
+        settings.append(summary, control("footer")); footer.append(settings);
+        settings.addEventListener("keydown", event => { if (event.key === "Escape" && settings.open) { event.preventDefault(); settings.open = false; summary.focus(); } });
+      }
+      const refresh = () => { for (const { input, help } of controls) { input.checked = motionPreference.matches; input.disabled = motionPreference.systemReduced; help.textContent = motionPreference.systemReduced ? text.systemStillHelp : text.stillHelp; } };
+      motionPreference.addEventListener("change", refresh); refresh();
+    }).catch(() => { /* Unsupported module loading also leaves the icon runtime static. */ });
     // Keep both overlay layers in the same top-level stacking context. Leaving
     // the sheet inside the sticky header lets iOS Safari paint the backdrop
     // above it, which makes every visible menu link untappable.
@@ -466,7 +497,7 @@
           target.focus({ preventScroll: true });
         }
       } else if (active === "navigation" && event.key === "Tab") {
-        const items = [...header.querySelectorAll("a[href], button"), ...mobileNav.querySelectorAll("a[href], button")].filter(isVisible);
+        const items = [...header.querySelectorAll("a[href], button"), ...mobileNav.querySelectorAll("a[href], button, input")].filter(isVisible);
         // Safari can omit buttons from its native Tab order. Keep every visible
         // header/sidebar control reachable with the same sequence in all engines.
         event.preventDefault();

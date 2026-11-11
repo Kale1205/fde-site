@@ -1,0 +1,13 @@
+.mobile-nav-display-settings{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-dark,#d2d6cd)}
+.mobile-nav-display-settings>strong{font-size:11px;font-weight:650}
+.motion-preference-row{display:grid;grid-template-columns:20px 1fr;gap:11px;align-items:center;min-height:48px;cursor:pointer;font-size:12px;line-height:1.55}
+.motion-preference-row input{width:18px;height:18px;margin:0;accent-color:var(--forest,#07543b)}
+.motion-preference-row input:disabled{cursor:default}
+.motion-preference-row small{display:block;max-width:280px;margin-top:2px;font-size:11px;color:inherit;opacity:1;font-weight:400}
+.motion-preference-row:focus-within .motion-preference-title{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.25em}
+.motion-display-settings{font-size:12px;line-height:1.6}
+.motion-display-settings summary{display:list-item;min-height:44px;padding-block:12px;cursor:pointer;width:max-content}
+.motion-display-settings summary:focus-visible{outline:none;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.25em}
+.motion-display-settings[open]{flex-basis:100%;width:100%}
+.motion-display-settings .motion-preference-row{max-width:320px;margin-block:2px 8px}
+@media(forced-colors:active){.motion-preference-row input{accent-color:auto}.motion-preference-row:focus-within{color:Highlight}}
