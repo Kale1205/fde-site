@@ -1,7 +1,7 @@
 import {priceBook,money} from '../price-policy.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -28,8 +28,9 @@ for (const locale of ['', 'ja/', 'zh/']) {
       const [resource, fragment] = url.split('#');
       const file = resource.split('?')[0];
       if (!file) { assert(ids.includes(fragment), `Missing local anchor ${fragment}`); continue; }
-      const target = path.resolve(root, locale, file);
+      let target = path.resolve(root, locale, file);
       assert(target.startsWith(root + path.sep));
+      if ((await stat(target)).isDirectory()) target = path.join(target, 'index.html');
       const contents = await readFile(target);
       if (fragment) assert.match(contents.toString(), new RegExp(`id="${fragment}"`));
     }
