@@ -1,5 +1,5 @@
-import {NewsPublisher,CmsError,REPO,persistedDraft,fingerprint,sha256,inspectImage,base64,applyDraft,updateSitemap} from './cms-news-workflow.js?v=20261112-203202';
-import {renderNewsPage} from './news-renderer.js?v=20261112-203202';
+import {NewsPublisher,CmsError,REPO,persistedDraft,fingerprint,sha256,inspectImage,base64,applyDraft,updateSitemap} from './cms-news-workflow.js?v=20261112-221857';
+import {renderNewsPage} from './news-renderer.js?v=20261112-221857';
 
 const CONTENT='content/site-content.json',NEWS=['news.html','ja/news.html','zh/news.html'];
 const clone=value=>structuredClone(value),json=value=>JSON.stringify(value,null,2)+'\n';
