@@ -1,3 +1,4 @@
+import {currentPriceNotice,isPriceHistory} from './price-policy.js';
 // W05: fixed-size circular bookshelf; no feed SDKs, credentials or social API calls.
 export const modulo=(value,length)=>((value%length)+length)%length;
 export const MAX_BOOKS=5;
@@ -60,7 +61,7 @@ function init(){
  showView(listView);document.addEventListener('DOMContentLoaded',preserveListLocale,{once:true});
  const prefix=seed.locale==='en'?'':'../';
  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
- const stage=document.querySelector('.book-stage'),reader=document.querySelector('.book-reader'),read=document.querySelector('.book-read');
+ const stage=document.querySelector('.book-stage'),reader=document.querySelector('.book-reader');
  const title=document.querySelector('#selected-story-title'),live=document.querySelector('.book-announcement');
  let allItems=seed.items,{top:items}=partitionNews(allItems),index=0,busy=false,queued=0,finishTimer,closeTimer,openingTimer,preparationTimer,lastTrigger=null,drag=null,dragFrame=0,suppressClick=false,pendingContent=null,followBookFocus=false,bookAnimations=[],coverAnimation=null,liftedBook=null,flightFrom='',wheelDistance=0,lastWheel=0,viewTimer=0,pendingView=null,openingRun=0,closeCompletion=null;
  document.body.dataset.bookInput='pointer';
@@ -81,7 +82,7 @@ function init(){
  }
  function position(node,offset){node.dataset.offset=offset;node.tabIndex=offset===0?0:-1;node.setAttribute('aria-hidden',String(offset<0||offset>Math.min(2,items.length-1)));node.setAttribute('aria-label',`${offset===0?ui.read:offset<0?ui.previous:ui.next}: ${node.querySelector('.book-cover-title').textContent}`);if(offset===0)node.setAttribute('aria-haspopup','dialog');else node.removeAttribute('aria-haspopup');node.style.zIndex=String(10-offset);}
  function selection(announce=false){
-  const item=items[index];if(!item)return;title.textContent=item.title;read.dataset.article=item.id;stage.dataset.index=index;stage.dataset.count=items.length;
+  const item=items[index];if(!item)return;title.textContent=item.title;stage.dataset.index=index;stage.dataset.count=items.length;
   const selectedDate=document.querySelector('.chronicle-selected-date');selectedDate.dateTime=item.date;selectedDate.textContent=item.date.replaceAll('-','.');
   document.querySelectorAll('[data-date-offset]').forEach((button,offset)=>{const target=Math.floor(index/3)*3+offset,story=items[target]||items[0];button.dataset.dateIndex=target;button.parentElement.hidden=target>=items.length;button.querySelector('.chronicle-year').textContent=story.date.slice(0,4);const date=button.querySelector('time');date.dateTime=story.date;date.textContent=story.date.slice(5).replace('-','.');button.setAttribute('aria-label',`${target===index?ui.read:ui.next}: ${story.title} — ${story.date}`);button.setAttribute('aria-pressed',String(target===index));if(target===index){button.setAttribute('aria-haspopup','dialog');const top=button.getBoundingClientRect().top-stage.getBoundingClientRect().top+parseFloat(getComputedStyle(button,'::before').top)-2.5;stage.style.setProperty('--date-marker-y',`${top}px`);}else button.removeAttribute('aria-haspopup');});
   const dots=stage.querySelector('.chronicle-pagination');if(dots.children.length!==items.length){dots.replaceChildren();for(const _ of items)dots.append(document.createElement('span'));}[...dots.children].forEach((dot,i)=>dot.classList.toggle('is-active',i===index));
@@ -94,8 +95,8 @@ function init(){
    const category=document.createElement('div');category.className='wire-type';category.textContent=item.category||'Update';
    const heading=document.createElement('div');heading.className='wire-title';heading.textContent=item.title;
    const date=document.createElement('time');date.dateTime=item.date;date.textContent=item.date.replaceAll('-','.');
-   const label=document.createElement('span');label.className='wire-read-more';label.textContent=ui.read;
-   button.append(category,heading,date,label);list.append(button);
+   button.setAttribute('aria-label',`${ui.read}: ${item.title} — ${item.date}`);
+   button.append(category,heading,date);list.append(button);
   }
   document.querySelector('[data-news-list-empty]').hidden=allItems.length>0;
  }
@@ -103,7 +104,7 @@ function init(){
   if(!items.length)live.textContent='';
   stage.dataset.count=items.length;stage.hidden=!items.length;document.querySelector('.book-selection').hidden=!items.length;document.querySelector('[data-top-news-empty]').hidden=items.length>0;
   for(const node of slots){if(!items.length){node.tabIndex=-1;node.setAttribute('aria-hidden','true');continue;}const offset=Number(node.dataset.offset);fill(node,offset);position(node,offset);}
-  selection();read.hidden=!items.length;document.querySelector('.book-controls').hidden=items.length<2;renderList();
+  selection();document.querySelector('.book-controls').hidden=items.length<2;renderList();
  }
  function finish(delta){
   clearTimeout(finishTimer);
@@ -169,7 +170,6 @@ function init(){
  stage.addEventListener('pointerup',endDrag);stage.addEventListener('pointercancel',endDrag);
  stage.addEventListener('wheel',event=>{if(reader.open||items.length<2||(!event.shiftKey&&Math.abs(event.deltaX)<=Math.abs(event.deltaY)))return;event.preventDefault();const now=performance.now();if(now-lastWheel>180)wheelDistance=0;lastWheel=now;wheelDistance+=(event.deltaX||event.deltaY)*(event.deltaMode===1?16:event.deltaMode===2?innerWidth:1);if(Math.abs(wheelDistance)>56){rotate(Math.sign(wheelDistance));wheelDistance=0;}},{passive:false});
  stage.addEventListener('click',event=>{if(suppressClick||busy)return;const book=event.target.closest('.news-book');if(!book)return;const offset=Number(book.dataset.offset);if(offset===1||offset===2)rotate(offset);else if(offset===0)open(book.dataset.bookId,book);});
- read.addEventListener('click',()=>{if(items[index])open(items[index].id,read);});
  document.querySelector('[data-news-list]').addEventListener('click',event=>{const row=event.target.closest('[data-story-id]');if(row)open(row.dataset.storyId,row);});
  function open(id,trigger){
   const item=allItems.find(i=>i.id===id);if(!item||reader.open)return;
@@ -188,6 +188,7 @@ function init(){
   reader.querySelector('.reader-category').textContent=item.category||'Update';
   reader.querySelector('#book-article-title').textContent=item.title;
   const body=reader.querySelector('.reader-body');body.replaceChildren();
+  if(isPriceHistory(item)){const note=document.createElement('p');note.className='news-current-prices';note.dataset.currentPriceNotice='';note.textContent=currentPriceNotice(seed.locale);body.append(note);}
   for(const paragraph of item.body.split(/\n\n+/)){const p=document.createElement('p');p.textContent=paragraph;body.append(p);}
   reader.showModal();reader.scrollTop=0;reader.querySelector('.reader-copy').scrollTop=0;document.body.classList.add('book-reader-open');reader.querySelector('.book-close').focus({preventScroll:true});
   const openingCover=reader.querySelector('.book-opening-cover'),base='translate3d(0,0,0)';

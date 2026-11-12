@@ -35,7 +35,7 @@
 <style data-page-loading-critical>#page-loading{display:none;position:fixed;inset:0;z-index:10000;background:#033f1b;color:#faf8f4;place-items:center;padding:20px;font:16px system-ui,sans-serif}html.fde-loading .site-shell,html.fde-loading .skip-link{visibility:hidden}html.fde-loading.fde-loading-visible #page-loading{display:grid}.page-loading-panel{display:grid;justify-items:center;gap:16px;max-width:100%;text-align:center}.page-loading-art{position:relative;width:160px;max-width:42vw}.page-loading-art>img{display:block;width:100%;height:auto}.page-loading-art>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#page-loading progress{width:240px;max-width:76vw}#page-loading button{min-height:44px;padding:10px 18px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit}#page-loading button:focus-visible{outline:3px solid #faf8f4;outline-offset:4px}.page-loading-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}</style>
 <script data-page-loading-bootstrap>(function pageLoadingBootstrap(){
  const root=document.documentElement;
- const state={started:performance.now(),released:false,shown:false,completed:0,total:0,resources:new Map(),tasks:[]};
+ const state={started:performance.now(),released:false,shown:false,shownAt:null,readyAt:null,completed:0,total:0,resources:new Map(),tasks:[]};
  window.__fdePageLoading=state;
  const resource=event=>{
   const node=event.target,tag=node?.tagName;
@@ -46,8 +46,14 @@
  };
  function release(reason){
   if(state.released)return;
+  if(reason==='complete'){
+   state.readyAt??=performance.now();
+   if(state.shownAt===null)return;
+   const remaining=2000-(performance.now()-state.shownAt);
+   if(remaining>0){clearTimeout(state.minimum);state.minimum=setTimeout(()=>release('complete'),remaining);return;}
+  }
   state.released=true;state.result=reason;state.finished=performance.now();
-  clearTimeout(state.deadline);clearTimeout(state.appearance);state.cleanup?.();
+  clearTimeout(state.deadline);clearTimeout(state.minimum);cancelAnimationFrame(state.frame);state.cleanup?.();
   // A stalled stylesheet must not keep the browser's own first paint blocked.
   // Restore its original media if the late response eventually arrives.
   if(reason!=='complete')for(const link of document.querySelectorAll('link[rel="stylesheet"]')){
@@ -74,18 +80,32 @@
  window.addEventListener('pagehide',()=>release('navigation'),{once:true});
  window.addEventListener('pageshow',event=>{if(event.persisted)release('history');});
  try{if(localStorage.getItem('fde:still-icons')==='1')root.dataset.pageLoadingMotion='still';}catch{}
- root.classList.add('fde-loading');
- state.appearance=setTimeout(()=>{if(!state.released){state.shown=true;root.classList.add('fde-loading-visible');}},120);
+ root.classList.add('fde-loading','fde-loading-visible');
+ function observeDisplay(){
+  if(state.released)return;
+  if(!document.getElementById('page-loading')){state.frame=requestAnimationFrame(observeDisplay);return;}
+  state.shown=true;state.shownAt=performance.now();
+  if(state.readyAt!==null)release('complete');
+ }
+ state.frame=requestAnimationFrame(observeDisplay);
  state.deadline=setTimeout(()=>release('timeout'),4000);
 })();</script>
 <link rel="stylesheet" href="page-loading.css?v=20261112-203202">
 <script defer src="page-loading.js?v=20261112-203202" data-page-loading-runtime></script>
 <!-- End FDE page loading -->
+<!-- Shared site chrome -->
+<link rel="stylesheet" href="site-chrome.css?v=20261112-203202">
+<script type="module" src="site-chrome.js?v=20261112-203202"></script>
+<!-- End shared site chrome -->
 <link rel="stylesheet" href="gallery-ui.css?v=20261112-203202">
   <link rel="stylesheet" href="gallery-pages.css?v=20261112-203202">
   <link rel="stylesheet" href="license.css?v=20261112-203202">
   <script defer src="gallery-ui.js?v=20261112-203202"></script>
   <link rel="stylesheet" href="quiet-pages.css?v=20261112-203202">
+<!-- Campaign assets -->
+<link rel="stylesheet" href="campaign-prices.css?v=20261112-203202">
+<script defer src="campaign-prices.js?v=20261112-203202"></script>
+<!-- End campaign assets -->
 </head>
 <body class="quiet-page gallery-page gallery-subpage license-page license-renewal" data-selected-plan="plus">
 <!-- FDE loading panel -->
@@ -94,7 +114,7 @@
 <!-- End FDE loading panel -->
 <div class="site-shell language-en">
   <header class="site-header">
-    <a class="brand" href="index.html" aria-label="Baked Kale FDE home"><img alt="Baked Kale FDE" src="assets/baked-kale-logo.svg"></a>
+    <a class="brand" href="index.html" aria-label="Baked Kale FDE home"><img data-brand-character src="assets/bakedkale-character.svg" width="48" height="45" alt=""><span class="brand-wordmark" aria-hidden="true">Baked Kale<small>FDE / IT Engineering</small></span></a>
     <nav class="desktop-nav" aria-label="Primary navigation"><a href="index.html">Product</a><a href="goals.html">Our Goals</a><a href="news.html">News</a></nav>
     <div class="header-actions">
       <a class="locale-button" data-locale-link href="ja/license.html" hreflang="ja" lang="ja">日本語</a><a class="locale-button" href="zh/license.html" hreflang="zh-CN" lang="zh-CN">中文</a><a class="header-contact" href="contact.html">Contact us</a>
@@ -113,25 +133,30 @@
 
         <section class="license-decision" aria-label="Selected product" data-license-summary>
         <div class="license-plan-switcher" role="group" aria-label="Displayed product">
-          <button type="button" data-license-plan="license" aria-pressed="false"><img src="assets/ims-license-update.webp" alt="" width="32" height="32">License</button>
-          <button type="button" data-license-plan="plus" aria-pressed="true"><img src="assets/ims-license-plus-customize.webp" alt="" width="32" height="32">License Plus</button>
+          <button type="button" data-license-plan="license" aria-pressed="false" data-campaign-standard="$521"><img src="assets/ims-license-update.webp" alt="" width="32" height="32">License</button>
+          <button type="button" data-license-plan="plus" aria-pressed="true" data-campaign-standard="$1,043"><img src="assets/ims-license-plus-customize.webp" alt="" width="32" height="32">License Plus</button>
         </div>
           <figure class="license-spotlight-art" aria-hidden="true">
             <img data-license-art="license" src="assets/ims-license-update.webp" alt="" width="960" height="960" decoding="async">
             <img data-license-art="plus" src="assets/ims-license-plus-customize.webp" alt="" width="960" height="960" decoding="async" fetchpriority="high">
           </figure>
           <div><p class="decision-label">Selected product</p><strong data-license-name>License Plus</strong></div>
-          <div class="license-decision-price"><p class="decision-label">Candidate total</p><strong data-license-price>$699</strong><small>one-time USD candidate</small></div>
+          <div class="license-decision-price"><p class="decision-label">Planned launch price</p><!-- Campaign price plus -->
+<div class="handdrawn-price hp-combined" data-campaign-product="plus"><div class="hp-annotation" aria-hidden="true"><span>Launch offer</span><strong>About 33% OFF</strong><svg class="hp-arrow" viewBox="0 0 92 80" preserveAspectRatio="none" aria-hidden="true"><path d="M80 4C100 44 76 73 12 68M12 68l10-8M12 68l12 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="hp-was"><span>Planned standard price</span><s data-campaign-standard-value>$1,043</s></div><div class="hp-current"><span class="hp-number"><svg class="hp-swash" viewBox="0 0 280 30" preserveAspectRatio="none" aria-hidden="true"><path d="M3 13Q43 8 83 11T164 10T274 7L277 23Q230 24 186 25T102 24T5 28Z" fill="currentColor"/><path d="M7 10Q75 6 130 9T270 4L272 20Q204 21 157 20T10 24Z" fill="currentColor" opacity=".42"/></svg><strong data-license-price>$699</strong></span><small>tax status pending</small></div><span class="hp-duration">Planned launch price · first 6 months after launch</span></div>
+<!-- End campaign price plus --><small>one-time USD · tax status pending</small></div>
           <div class="license-decision-responsibility"><p class="decision-label">Primary responsibility</p><ul data-license-points><li>Full source code included</li><li>Internal modification permitted</li><li>Updates and security managed by purchaser</li></ul></div>
           <button class="button button-primary" type="button" data-license-purchase disabled aria-disabled="true">Buy (not yet available)</button>
         </section>
 
+<!-- Planned campaign terms -->
+<p class="campaign-terms" data-campaign-terms>Planned USD prices: License $521 → $349; License Plus $1,043 → $699. Launch prices apply for the first six months after the actual launch. Standard prices are planned post-campaign prices, not past selling prices. Actual launch and campaign dates and tax treatment are not confirmed. Purchasing is not available. Optional License Updates remains $31/month for months 4–6 after purchase and $62/month from month 7; the first three months are included.</p>
+<!-- End planned campaign terms -->
         <div class="license-matrix-region" role="region" aria-labelledby="license-matrix-en" tabindex="0">
           <table class="license-matrix">
             <caption id="license-matrix-en">Planned License and License Plus comparison</caption>
             <thead><tr><th scope="col">Item</th><th scope="col"><strong>License</strong><small>one-time</small></th><th scope="col"><strong>License Plus</strong><small>one-time</small></th></tr></thead>
             <tbody>
-              <tr><th scope="row">Price (USD candidate)</th><td>$349</td><td>$699</td></tr>
+              <tr><th scope="row">Planned price (USD)</th><td><span class="campaign-matrix-price"><span>Planned standard price <s>$521</s></span><strong>$349</strong><small>Planned launch price · first 6 months after launch</small></span></td><td><span class="campaign-matrix-price"><span>Planned standard price <s>$1,043</s></span><strong>$699</strong><small>Planned launch price · first 6 months after launch</small></span></td></tr>
               <tr><th scope="row">Source-code delivery</th><td><span class="matrix-symbol" aria-hidden="true">—</span><span class="sr-only">Not included</span></td><td><span class="matrix-symbol positive" aria-hidden="true">✓</span><span class="sr-only">Included</span></td></tr>
               <tr><th scope="row">Internal modification</th><td><span class="matrix-symbol" aria-hidden="true">—</span><span class="sr-only">Not permitted</span></td><td><span class="matrix-symbol positive" aria-hidden="true">✓</span><span class="sr-only">Permitted</span></td></tr>
               <tr><th scope="row">Updates</th><td>3 months included<br>then optional add-on</td><td>Purchaser managed</td></tr>
@@ -140,7 +165,7 @@
           </table>
         </div>
 
-        <p class="license-note" data-release-notice><strong>Target launch: January 1, 2027. Not yet available for purchase.</strong><br><strong>Draft product policy.</strong> IMS is still in development. Every USD amount is an unapproved candidate pending final international pricing. Final commercial terms and the License Agreement / EULA will be presented before purchasing is enabled.<br><span data-initial-release-scope>Planned launch support is Windows only. Supported Windows versions and system requirements will be published before sales open. iOS and iPadOS versions are planned for future support, with no confirmed release date. macOS is not supported. The initial native app targets English and Japanese; Chinese website content does not indicate native Chinese support.</span><br><span data-restore-release-gate>Restore is not available in the current development build. Purchasing will open only after the customer restore method is completed and verified.</span></p>
+        <p class="license-note" data-release-notice><strong>Target launch: January 1, 2027. Not yet available for purchase.</strong><br><strong>Draft product policy.</strong> IMS is still in development. USD prices are planned. Tax treatment is not yet confirmed. Final commercial terms and the License Agreement / EULA will be presented before purchasing is enabled.<br><span data-initial-release-scope>Planned launch support is Windows only. Supported Windows versions and system requirements will be published before sales open. iOS and iPadOS versions are planned for future support, with no confirmed release date. macOS is not supported. The initial native app targets English and Japanese; Chinese website content does not indicate native Chinese support.</span><br><span data-restore-release-gate>Restore is not available in the current development build. Purchasing will open only after the customer restore method is completed and verified.</span></p>
 
         <div class="license-details">
           <details id="deliverables" open>
@@ -162,7 +187,7 @@
           <details id="updates">
             <summary><span class="license-detail-index">04</span><strong>Updates and maintenance</strong></summary>
             <div class="license-detail-body">
-              <div><h2>License Updates</h2><p>Months 1–3 are included. Optional continuation requires explicit opt-in at the $31/month USD candidate price for months 4–6 and $62/month from month 7. The version purchased remains available without an Updates subscription. Paid Updates never starts automatically.</p><p>The first six months after purchase (three free months and three months at half price) are excluded from the period used to earn continuing-use rights. After that, every six consecutive months of an uninterrupted Updates subscription earns the right to continue using the version at that milestone after the subscription ends. With no interruption, the milestones are 12, 18, 24 months after purchase, and so on.</p><p>This continuing-use right does not automatically extend to the latest version at the end of the subscription. After the subscription ends, you can use the version purchased and the versions for which you obtained continuing-use rights at these milestones.</p><p>If the subscription ends before you earn new continuing-use rights for that period, you can then use only the version purchased and versions for which you previously earned continuing-use rights. If you end the subscription at or after the six-month point following purchase and then subscribe again, you earn continuing-use rights for the version at each new milestone of six consecutive months from resubscribing. Time from previous subscriptions is not added. You retain the continuing-use rights you previously earned.</p></div>
+              <div><h2>License Updates</h2><p>Months 1–3 are included. Optional continuation requires explicit opt-in at the $31/month planned USD price for months 4–6 and $62/month from month 7. The version purchased remains available without an Updates subscription. Paid Updates never starts automatically.</p><p>The first six months after purchase (three free months and three months at half price) are excluded from the period used to earn continuing-use rights. After that, every six consecutive months of an uninterrupted Updates subscription earns the right to continue using the version at that milestone after the subscription ends. With no interruption, the milestones are 12, 18, 24 months after purchase, and so on.</p><p>This continuing-use right does not automatically extend to the latest version at the end of the subscription. After the subscription ends, you can use the version purchased and the versions for which you obtained continuing-use rights at these milestones.</p><p>If the subscription ends before you earn new continuing-use rights for that period, you can then use only the version purchased and versions for which you previously earned continuing-use rights. If you end the subscription at or after the six-month point following purchase and then subscribe again, you earn continuing-use rights for the version at each new milestone of six consecutive months from resubscribing. Time from previous subscriptions is not added. You retain the continuing-use rights you previously earned.</p></div>
               <div><h2>License Plus responsibility</h2><p>The purchaser manages source changes, functionality, compatibility, and security. Updates is not a third product and cannot be added to License Plus.</p></div>
             </div>
           </details>

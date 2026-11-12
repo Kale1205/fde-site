@@ -25,7 +25,7 @@ function renderQuietLicenseContent(source, prefix='') {
     .replace(/(data-license-plan="plus"[^>]*>)(License Plus<\/button>)/, `$1<img src="${icon('ims-license-plus-customize')}" alt="" width="32" height="32">$2`);
   const spotlight=summary.replace(' data-license-summary>',` data-license-summary>\n${updatedSwitcher}\n          <figure class="license-spotlight-art" aria-hidden="true">\n            <img data-license-art="license" src="${icon('ims-license-update')}" alt="" width="960" height="960" decoding="async">\n            <img data-license-art="plus" src="${icon('ims-license-plus-customize')}" alt="" width="960" height="960" decoding="async" fetchpriority="high">\n          </figure>`);
   let result=source.replace(' license-page"',' license-page license-renewal"').replace(index+'\n\n','').replace(switcher+'\n\n','').replace(summary+'\n\n','').replace(boundary+'\n\n','');
-  result=result.replace(/(        <header class="license-intro"[\s\S]*?        <\/header>)/, `$1\n\n${spotlight}`);
+  result=result.replace(/(        <header class="license-intro"[\s\S]*?        <\/header>)/, (_,intro)=>`${intro}\n\n${spotlight}`);
   result=result.replace(/(<caption id="license-matrix-[^"]+") class="sr-only"/,'$1');
   result=result.replace('\n\n      </article>',`\n\n${boundary}\n\n      </article>`);
   return finalize(result);

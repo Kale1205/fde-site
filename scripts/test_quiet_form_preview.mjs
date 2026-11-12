@@ -1,3 +1,4 @@
+import {priceBook,money} from '../price-policy.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -13,10 +14,7 @@ for (const locale of ['', 'ja/', 'zh/']) {
     assert.equal((html.match(/class="quiet-comparison"/g) || []).length, 1);
     assert.equal((html.match(/<th scope="col"><div class="plan-top"/g) || []).length, 1);
     assert.match(html, /<th scope="col" id="license-plus"/);
-    assert.match(html, /¥49,800/);
-    assert.match(html, /¥99,800/);
-    assert.match(html, /¥4,900/);
-    assert.match(html, /¥9,800/);
+    for(const amount of (locale==='ja/'?['¥49,800','¥99,800','¥4,900','¥9,800']:['$349','$699','$31','$62']))assert(html.includes(amount));
     assert.match(html, /2026/);
     assert.match(html, /demo-v1\.js/);
     assert.equal((html.match(/<link rel="alternate" hreflang=/g) || []).length, 3);

@@ -1,3 +1,4 @@
+import {priceBook,money} from '../price-policy.js';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {execApprovedNamingBaseline as execFileSync} from './approved_product_naming.mjs';
@@ -26,7 +27,7 @@ for (const [locale, directory] of Object.entries({en:'', ja:'ja/', zh:'zh/'})) {
     assert.match(html,/quiet-form\.css\?v=/);
     assert.match(html,/demo-v1\.js\?v=/);
     assert.match(html,/quiet-form\.js\?v=/);
-    for(const value of ['¥49,800','¥99,800','¥4,900','¥9,800','2026']) assert(html.includes(value));
+    for(const value of [...(locale==='ja'?(locale==='ja'?['¥49,800','¥99,800','¥4,900','¥9,800']:['$349','$699','$31','$62']):['$349','$699','$31','$62']),'2026']) assert(html.includes(value));
     for(const page of ['license','demo','goals','news','contact']) assert(html.includes(`${page}.html`));
     assert.doesNotMatch(html,/buy-button|stripe|checkout\.html|data-buy/);
   });

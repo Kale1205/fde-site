@@ -56,7 +56,7 @@ jobs:
 
       - name: Actual loading progress and approved planned campaign prices
         run: |
-          node --test scripts/test_page_loading.mjs scripts/test_campaign_prices.mjs
+          node --test scripts/test_page_loading.mjs scripts/test_campaign_prices.mjs scripts/test_site_chrome.mjs
           node scripts/page_loading_template.mjs --check
 
       - name: W02 disabled purchase CTA and unchanged commerce boundaries

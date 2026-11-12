@@ -1,3 +1,4 @@
+import {approveFaqDocument,approveUsdCopy} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
@@ -46,7 +47,7 @@ for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
       const html = read(prefix + page + '.html');
       assert.ok(html.includes(optionalUpdatesCopy[locale].summary));
       assert.doesNotMatch(html, /Monthly subscription required|Monthly subscription to our Updates required|月額契約必須|月額契約が必須|须订阅(?:官方 Updates|月度服务)/);
-      for (const price of ['¥49,800','¥99,800','¥4,900','¥9,800']) assert.ok(html.includes(price));
+      for (const price of (locale==='ja'?['¥49,800','¥99,800','¥4,900','¥9,800']:['$349','$699','$31','$62'])) assert.ok(html.includes(price));
     }
     assert.ok(read(prefix + 'index.html').includes(optionalUpdatesCopy[locale].label));
     assert.ok(read(prefix + 'order.html').includes(optionalUpdatesCopy[locale].purchaseFact));
@@ -64,7 +65,7 @@ test('historical FAQ migration changes four answers, without changing IDs or pri
     const fixture=applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,readFaqMigrationFixture(file)));
     const now = JSON.parse(fixture), old = JSON.parse(applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, before(file))));
     assert.equal(fixture, applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file)))));
-    if(file==='content/faq-policy-additions.json')assert.equal(read(file),applyApprovedContinuingUsePolicy(file,fixture),'policy additions only receive the separately approved continuing-use policy');
+    if(file==='content/faq-policy-additions.json')assert.equal(read(file),approveFaqDocument(file,applyApprovedContinuingUsePolicy(file,fixture)),'policy additions only receive the separately approved continuing-use policy');
     assert.deepEqual(now.faq.map(x=>x.id), old.faq.map(x=>x.id));
     for (const item of now.faq) {
       const previous = old.faq.find(x=>x.id===item.id);
@@ -79,7 +80,7 @@ test('historical FAQ migration changes four answers, without changing IDs or pri
       assert.deepEqual(prices(JSON.stringify(item)),prices(JSON.stringify(previous)));
     }
     const live=JSON.parse(read(file));
-    const approvedNow=JSON.parse(applyApprovedContinuingUsePolicy(file,fixture));
+    const approvedNow=JSON.parse(approveFaqDocument(file,applyApprovedContinuingUsePolicy(file,fixture)));
     for(const expected of approvedNow.faq.filter(item=>ids.has(item.id))){
       const item=live.faq.find(entry=>entry.id===expected.id);
       assert.ok(item,`protected Updates FAQ is missing: ${expected.id}`);
@@ -177,7 +178,7 @@ for(const [file,locale]of policyPages)test(`${file}: only approved Updates parag
 });
 
 for(const [file,ids]of Object.entries(policyFiles))test(`${file}: exactly the approved FAQ answers change; other records, locale data and prices stay intact`,()=>{
-  const previousSource=applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,continuingBefore(file)));
+  const previousSource=approveFaqDocument(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,continuingBefore(file))));
   const previous=JSON.parse(previousSource),current=JSON.parse(read(file));
   assert.equal(read(file),applyApprovedContinuingUsePolicy(file,previousSource));
   assert.equal(applyApprovedContinuingUsePolicy(file,read(file)),read(file),'current JSON is byte-idempotent');
@@ -187,7 +188,7 @@ for(const [file,ids]of Object.entries(policyFiles))test(`${file}: exactly the ap
     const old=previous.faq.find(entry=>entry.id===item.id);
     if(!ids.includes(item.id)){assert.deepEqual(item,old);continue;}
     assert.deepEqual({...item,answer:null},{...old,answer:null});
-    assert.deepEqual(item.answer,continuingUseFaqAnswers[item.id]);
+    assert.deepEqual(item.answer,Object.fromEntries(Object.entries(continuingUseFaqAnswers[item.id]).map(([l,a])=>[l,approveUsdCopy(l==='zh-CN'?'zh':l,a)])));
     assert.deepEqual(policyPrices(item),policyPrices(old),'FAQ prices are unchanged');
     for(const locale of ['ja','en','zh-CN'])for(const text of Object.values(continuingUseCopy[locale==='zh-CN'?'zh':locale]))assert.ok(item.answer[locale].includes(text),`${item.id}/${locale}: the License-page policy is complete`);
   }

@@ -20,7 +20,7 @@ for(const [prefix,locale] of [['','en'],['ja/','ja'],['zh/','zh-CN']]){
   for(const item of cms.news){const seed=data.items.find(x=>x.id===item.id);assert.equal(seed.body,item.body[locale]);assert.equal(seed.title,item.title[locale]);assert.equal(seed.date,item.date);
    const fallback=html.match(new RegExp(`<article data-static-news-id="${item.id}">([\\s\\S]*?)</article>`))[1];assert(fallback.includes(item.title[locale]));for(const p of item.body[locale].split(/\n\n+/))assert(decode(fallback).includes(p.replaceAll('\n','<br>')));
   }
-  assert.equal((html.match(/class="news-book"/g)||[]).length,3);assert.equal((html.match(/class="book-read"/g)||[]).length,1);
+  assert.equal((html.match(/class="news-book"/g)||[]).length,3);assert.equal((html.match(/class="book-read"/g)||[]).length,0);
   assert.doesNotMatch(html,/id="cmsNewsLead"|id="cmsLatestList"|id="cmsNewsWire"|class="news-archive"/);
  });
  test(`${locale}: SEO, navigation, footer and commerce boundaries unchanged`,()=>{

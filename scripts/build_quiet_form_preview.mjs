@@ -1,3 +1,4 @@
+import {priceBook,money} from '../price-policy.js';
 import {withPublicPresentation,pathFor} from './public_presentation.mjs';
 export async function renderQuietPreview(locale){return withPublicPresentation(`${locale==='en'?'':locale+'/'}quiet-form.html`,await renderQuietPreviewContent(locale));}
 import {withSharedImage} from './social_share_metadata.mjs';
@@ -38,7 +39,7 @@ const copy = {
     comparison: 'Two starting points.', licenseIntro: 'Start. Organize. Keep working.', plusIntro: 'See it. Change it. Build on it.',
     terms: 'Review terms', features: 'Compare products',
     rows: [['One-time purchase', 'One-time purchase'], ['No source code', 'Complete source code'], ['No internal modification', 'Internal modification'], ['Our Updates<br>Optional monthly subscription', 'Not eligible for our Updates<br>Purchaser updates and manages']],
-    fees: ['First 3 months included', 'Months 4–6 <strong>¥4,900/mo</strong>', 'Month 7 onward <strong>¥9,800/mo</strong>'],
+    fees: ['First 3 months included', 'Months 4–6 <strong>$31/mo</strong>', 'Month 7 onward <strong>$62/mo</strong>'],
     retained: 'Updates is optional. You can use the version purchased without a subscription. Paid Updates never starts automatically.',
     demoTitle: 'Get a feel for IMS.', sample: 'Public demo · Sample data',
     fullDemo: 'Open the full demo',
@@ -57,7 +58,7 @@ const copy = {
     comparison: '两种起点。', licenseIntro: '开始使用，理顺流程，持续运作。', plusIntro: '看得见，改得了，用着不断完善。',
     terms: '查看条件', features: '产品对比',
     rows: [['一次性购买', '一次性购买'], ['不含源代码', '完整源代码'], ['不允许内部修改', '允许内部修改'], ['官方 Updates<br>可选月度订阅', '不适用官方 Updates<br>由购买方更新和管理']],
-    fees: ['含最初3个月', '第4–6个月 <strong>¥4,900/月</strong>', '第7个月起 <strong>¥9,800/月</strong>'],
+    fees: ['含最初3个月', '第4–6个月 <strong>$31/月</strong>', '第7个月起 <strong>$62/月</strong>'],
     retained: 'Updates 为可选订阅。未订阅时仍可使用购买时的版本，不会自动转为付费订阅。',
     demoTitle: '亲手体验 IMS。', sample: '公开演示 · 示例数据',
     fullDemo: '打开完整演示',
@@ -119,8 +120,8 @@ ${alternates}
 <section class="quiet-plans section-frame" id="plans" aria-labelledby="plan-title">
 <h2 class="quiet-heading" id="plan-title">${c.comparison}</h2>
 <table class="quiet-comparison"><caption class="visually-hidden">${c.features}</caption>
-<thead><tr><th scope="col"><div class="plan-top">${productImage()}<h3><span>IMS</span> <span>License</span></h3><p>${c.licenseIntro}</p><strong class="plan-price">¥49,800</strong><a href="license.html#comparison">${c.terms} <span aria-hidden="true">→</span></a></div></th>
-<th scope="col" id="license-plus"><div class="plan-top">${productImage(true)}<h3><span>IMS</span> <span>License Plus</span></h3><p>${c.plusIntro}</p><strong class="plan-price">¥99,800</strong><a href="license.html#comparison">${c.terms} <span aria-hidden="true">→</span></a></div></th></tr></thead>
+<thead><tr><th scope="col"><div class="plan-top">${productImage()}<h3><span>IMS</span> <span>License</span></h3><p>${c.licenseIntro}</p><strong class="plan-price">${money(priceBook(locale).license.launch,locale)}</strong><a href="license.html#comparison">${c.terms} <span aria-hidden="true">→</span></a></div></th>
+<th scope="col" id="license-plus"><div class="plan-top">${productImage(true)}<h3><span>IMS</span> <span>License Plus</span></h3><p>${c.plusIntro}</p><strong class="plan-price">${money(priceBook(locale).plus.launch,locale)}</strong><a href="license.html#comparison">${c.terms} <span aria-hidden="true">→</span></a></div></th></tr></thead>
 <tbody>${featureRows}</tbody></table>
 <div class="updates-strip"><strong>License Updates</strong>${c.fees.map(fee => `<span>${fee}</span>`).join('')}</div>
 <p class="updates-note">${c.retained}</p>
