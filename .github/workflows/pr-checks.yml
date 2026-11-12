@@ -63,6 +63,7 @@ jobs:
         run: |
           node --test scripts/test_lp_production.mjs
           node scripts/build_lp_pages.mjs --check
+          for file in ja/lp/*.js; do node --check "$file"; done
 
       - name: W02 disabled purchase CTA and unchanged commerce boundaries
         run: node --test scripts/test_w02_purchase_cta.mjs
