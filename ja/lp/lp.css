@@ -207,3 +207,7 @@ html[data-lp-motion=still] .lp-page .site-header .brand img,html[data-lp-motion=
 .lp-page .lp-static-examples{padding-block:48px}
 @media(max-width:700px){:root{--lp-header-height:105px;--lp-status-height:64px}.lp-page .editorial-header nav{gap:14px}.lp-page .editorial-header nav a{min-height:32px}.lp-page .lp-reception-banner{padding-inline:18px;text-align:left}}
 @media(prefers-reduced-motion:reduce){.lp-page .artifact{transition:none!important}.lp-page *{scroll-behavior:auto!important}}
+/* Keep gallery navigation below the fixed reception notice in every mode. */
+.lp-page #all{top:calc(var(--lp-header-height) + var(--lp-status-height) + 10px)}
+.lp-page #detail{padding-top:calc(var(--lp-header-height) + var(--lp-status-height) + 76px)}
+.lp-page #storygrid{padding-top:calc(var(--lp-header-height) + var(--lp-status-height) + 74px)}
