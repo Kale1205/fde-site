@@ -18,7 +18,7 @@ test('every active pricing surface uses the owner-approved locale book and relat
   const html=read(prefix+name+'.html'),book=priceBook(locale);
   for(const price of [book.license.standard,book.license.launch,book.plus.standard,book.plus.launch])assert(html.includes(money(price,locale))||locale==='ja'&&html.includes(money(price,locale,{word:true})),prefix+name+price);
   assert.equal((html.match(/data-campaign-terms/g)||[]).length,1);assert(html.includes(campaignCopy[locale].terms));
-  if(locale!=='ja'){assert(!/[¥￥]|\d[\d,]*円/.test(html));assert(!/tax incl\.|日本円|含税/.test(html));}
+  if(locale!=='ja'){assert(!/[¥￥]|\d[\d,]*円/.test(html));assert(!/tax incl\.|日本円|含税/.test(html));assert(!/unapproved|未批准|候选/.test(html),'current planned-price copy must not retain an unapproved-candidate label');}
  }
 });
 test('JPY Updates markup, historical article data, existing images and unrelated interaction engines remain exact',()=>{
