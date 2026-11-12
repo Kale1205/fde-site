@@ -1,3 +1,5 @@
+import {withPublicPresentation,pathFor} from './public_presentation.mjs';
+export function renderQuietDemo(source,locale='en'){return withPublicPresentation(pathFor(source,'demo.html'),renderQuietDemoContent(source,locale));}
 import {readFileSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -11,7 +13,7 @@ const labels = {
 };
 
 // Recompose existing text/fields; never replace this simulation with a native-product claim.
-export function renderQuietDemo(source, locale='en') {
+function renderQuietDemoContent(source, locale='en') {
   source=applyApprovedInitialReleaseScope(`${locale==='en'?'':locale+'/'}demo.html`,source);
   const text = labels[locale];
   const finish = html => html

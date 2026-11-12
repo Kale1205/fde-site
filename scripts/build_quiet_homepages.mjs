@@ -1,3 +1,5 @@
+import {withPublicPresentation,pathFor} from './public_presentation.mjs';
+export async function renderQuietHomepage(locale){return withPublicPresentation(`${locale==='en'?'':locale+'/'}index.html`,await renderQuietHomepageContent(locale));}
 // Promote the user-approved homepage without copying preview-only SEO or URLs.
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -8,7 +10,7 @@ import { approvedHeadPrefix } from './approved_head_prefix.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const directories = { en: '', ja: 'ja/', zh: 'zh/' };
 
-export async function renderQuietHomepage(locale) {
+async function renderQuietHomepageContent(locale) {
   const prefix = locale === 'en' ? '' : '../';
   const source = await readFile(path.join(root, directories[locale], 'index.html'), 'utf8');
   const version = (await readFile(path.join(root, 'build-version.txt'), 'utf8')).trim();

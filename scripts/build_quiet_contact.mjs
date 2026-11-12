@@ -1,3 +1,5 @@
+import {withPublicPresentation,pathFor} from './public_presentation.mjs';
+export function renderQuietContact(source){return withPublicPresentation(pathFor(source,'contact.html'),renderQuietContactContent(source));}
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -8,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 // Selected W06 option 2: FAQ first, then one soft form surface. Preserve
 // existing copy, CMS/search anchors, six fields and the confirm/send contract.
-export function renderQuietContact(source) {
+function renderQuietContactContent(source) {
   const file=(source.includes('<html lang="ja">')?'ja/':source.includes('<html lang="zh-CN">')?'zh/':'')+'contact.html';
   if(source.includes('contact-renewal'))return applyApprovedMultilingualContent(file,applyReleaseNoticePolicy(source,'contact'));
   const prefix=/<html lang="en">/.test(source)?'':'../';

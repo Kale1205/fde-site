@@ -1,3 +1,5 @@
+import {withPublicPresentation,pathFor} from './public_presentation.mjs';
+export function renderQuietCustomer(locale,home){return withPublicPresentation(`${locale==='en'?'':locale+'/'}customer.html`,renderQuietCustomerContent(locale,home));}
 import {withSharedImage} from './social_share_metadata.mjs';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
@@ -10,7 +12,7 @@ export const customerCopy={
   zh:{title:'客户门户',description:'集中查看 IMS 订单相关信息。',hero:'订单信息，\n集中查看。',lead:'将订单编号、下单邮箱与报价、付款和交付资料放在一起核对。',form:'订单信息',intro:'请输入报价单或订单确认邮件中注明的信息。',order:'订单编号',email:'下单时使用的邮箱',hint:'示例：BK-20261101-1234ABCD',privacy:'此预览仅在当前页面核对输入内容，不会发送或保存。',submit:'核对输入信息',invalidOrder:'请按 BK-YYYYMMDD-XXXXXXXX 格式输入订单编号。',invalidEmail:'请输入有效的邮箱地址。',review:'核对输入信息',reviewNote:'这里显示的是您输入的信息，并非查询到的订单或付款状态。',edit:'修改输入信息',help:'订单相关信息',items:[['报价与订单','集中查看报价单和订单确认邮件。'],['付款','参照付款说明和确认邮件。'],['交付','整理交付通知及取消订单的相关邮件。']],contactNote:'如有产品或方案方面的问题，欢迎联系我们。',contact:'联系我们',skip:'跳转到正文'}
 };
 
-export function renderQuietCustomer(locale,home){
+function renderQuietCustomerContent(locale,home){
   const t=customerCopy[locale],prefix=locale==='en'?'':'../',lang=locale==='zh'?'zh-CN':locale;
   if(!t)throw Error('Unknown customer locale');
   const version=home.match(/gallery-ui\.css\?v=([^"\s]+)/)[1];

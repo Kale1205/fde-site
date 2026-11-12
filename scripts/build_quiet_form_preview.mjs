@@ -1,3 +1,5 @@
+import {withPublicPresentation,pathFor} from './public_presentation.mjs';
+export async function renderQuietPreview(locale){return withPublicPresentation(`${locale==='en'?'':locale+'/'}quiet-form.html`,await renderQuietPreviewContent(locale));}
 import {withSharedImage} from './social_share_metadata.mjs';
 // A local, noindex design preview. Public homepages and commercial terms stay unchanged.
 import { readFile, writeFile } from 'node:fs/promises';
@@ -67,7 +69,7 @@ const copy = {
 };
 
 const locales = { en: '', ja: 'ja/', zh: 'zh/' };
-export async function renderQuietPreview(locale) {
+async function renderQuietPreviewContent(locale) {
   const c = copy[locale];
   const lpItem = locale === 'ja' ? '<span class="nav-destination-pending" data-lp-destination aria-disabled="true" aria-label="LP制作（準備中）">LP制作 <span class="nav-destination-status">準備中</span></span>' : '';
   const prefix = locale === 'en' ? '' : '../';

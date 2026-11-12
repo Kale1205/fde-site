@@ -54,6 +54,11 @@ jobs:
           node --test scripts/test_social_share.mjs
           node scripts/social_share_metadata.mjs --check
 
+      - name: Actual loading progress and approved planned campaign prices
+        run: |
+          node --test scripts/test_page_loading.mjs scripts/test_campaign_prices.mjs
+          node scripts/page_loading_template.mjs --check
+
       - name: W02 disabled purchase CTA and unchanged commerce boundaries
         run: node --test scripts/test_w02_purchase_cta.mjs
 

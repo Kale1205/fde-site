@@ -1,3 +1,5 @@
+import {withPublicPresentation,pathFor} from './public_presentation.mjs';
+export function renderQuietOrder(source,home){return withPublicPresentation(pathFor(source,'order.html'),renderApprovedQuietOrder(source,home));}
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -14,7 +16,7 @@ const copy={
 
 // W07 uses the exact approved homepage products/assets/JPY prices in all locales.
 // It is still a static, noindex pre-release notice, never a checkout surface.
-export function renderQuietOrder(source,home){
+function renderApprovedQuietOrder(source,home){
   const locale=source.includes('<html lang="ja">')?'ja':source.includes('<html lang="zh-CN">')?'zh':'en';
   return applyApprovedInitialReleaseScope(`${locale==='en'?'':locale+'/'}order.html`,renderQuietOrderContent(source,home));
 }
@@ -34,7 +36,7 @@ function renderQuietOrderContent(source,home){
     .replace(/href="([^"]*)" hreflang=/g,(_,directory)=>`href="${directory}order.html" hreflang=`);
   const footer=home.match(/<footer class="site-footer[\s\S]*?<\/footer>/)[0].replaceAll('href="#plans"','href="index.html#plans"');
   const release=`<p class="release-line">${releaseCopy[key].date}</p>`;
-  const plans=[...home.matchAll(/<div class="plan-top">([\s\S]*?)<\/div>/g)].slice(0,2);
+  const plans=[...home.matchAll(/<div class="plan-top">([\s\S]*?)<\/th>/g)].slice(0,2);
   if(plans.length!==2)throw Error('Approved homepage product anchors missing');
   const products=plans.map((m,i)=>{
     const p=m[1],name=p.match(/<h3>([\s\S]*?)<\/h3>/)[1].replaceAll(/<\/?span>/g,''),tag=p.match(/<p>([\s\S]*?)<\/p>/)[1],price=p.match(/<strong class="plan-price">([^<]+)<\/strong>/)[1];

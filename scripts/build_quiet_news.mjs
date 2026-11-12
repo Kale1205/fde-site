@@ -1,3 +1,5 @@
+import {withPublicPresentation,pathFor} from './public_presentation.mjs';
+export function renderQuietNews(source){return withPublicPresentation(pathFor(source,'news.html'),renderQuietNewsContent(source));}
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -8,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 // Preserve existing articles, SEO, navigation and CMS anchors; only recompose
 // the selected Soft Dispatch layout and translate the approved section label.
-export function renderQuietNews(source) {
+function renderQuietNewsContent(source) {
   if(source.includes('news-renewal'))return renderBookNews(applyReleaseNoticePolicy(source,'news'));
   const prefix=/<html lang="en">/.test(source)?'':'../';
   const heading=/<html lang="ja">/.test(source)?'アップデート情報':/<html lang="zh-CN">/.test(source)?'更新信息':'Updates';
