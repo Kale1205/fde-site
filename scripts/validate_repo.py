@@ -535,6 +535,7 @@ QUIET_ORDER_PAGES = {
     if 'order-renewal' in public_source_text.get(rel, "")
 }
 # Approved W07 follows the all-locale JPY homepage, not the legacy USD book.
+# The launch campaign adds planned standard prices; Updates keeps its price book.
 # Keep the old price-book checks intact for non-renewed commercial pages.
 for rel in sorted(QUIET_ORDER_PAGES):
     source = public_source_text.get(rel, "")
@@ -542,7 +543,7 @@ for rel in sorted(QUIET_ORDER_PAGES):
         if marker not in source:
             fail(f"{rel}: approved W07 fact missing: {marker}")
     found = set(re.findall(r"¥([\d,]+)", source))
-    if found != {"49,800", "99,800", "4,900", "9,800"}:
+    if found != {"74,800", "149,800", "49,800", "99,800", "4,900", "9,800"}:
         fail(f"{rel}: W07 JPY price book drift")
     if re.search(r"<form\b|stripe\.com|\$\s*\d", source):
         fail(f"{rel}: W07 must remain a static, purchase-disabled notice")
@@ -644,7 +645,7 @@ if re.search(r"\bUSD\b|U\.S\.\s*dollars?|US\s*dollars?|\$\s*\d", japanese_plan_s
 
 allowed_money_values = {
     "en": {"349", "699", "31", "62"},
-    "ja": {"49,800", "99,800", "4,900", "9,800"},
+    "ja": {"74,800", "149,800", "49,800", "99,800", "4,900", "9,800"},
 }
 for rel in PUBLIC_PRICE_PAGES:
     locale = "ja" if rel.startswith("ja/") else "en"

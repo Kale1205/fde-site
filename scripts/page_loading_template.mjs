@@ -1,0 +1,85 @@
+import {readFileSync, writeFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+
+export const loadingPages=['','ja/','zh/'].flatMap(prefix=>['index','license','demo','goals','news','contact','order','customer','quiet-form'].map(name=>prefix+name+'.html'));
+export const loadingCopy={
+ en:{label:'Preparing the page',preparing:'Preparing your page',skip:'Show page now',done:'The page is ready.',partial:'Showing the page without waiting for every resource.',image:'Baked Kale character'},
+ ja:{label:'ページの読み込み',preparing:'ページを準備しています',skip:'ページを表示',done:'ページを表示しました。',partial:'一部の読み込みを待たず、ページを表示しました。',image:'Baked Kaleのキャラクター'},
+ zh:{label:'页面加载',preparing:'正在准备页面',skip:'立即显示页面',done:'页面已就绪。',partial:'未等待所有资源，已显示页面。',image:'Baked Kale 角色'},
+};
+
+// Runs before external styles/scripts. The deadline releases content; it never
+// fabricates progress or waits for a decorative animation to finish.
+export function pageLoadingBootstrap(){
+ const root=document.documentElement;
+ const state={started:performance.now(),released:false,shown:false,completed:0,total:0,resources:new Map(),tasks:[]};
+ window.__fdePageLoading=state;
+ const resource=event=>{
+  const node=event.target,tag=node?.tagName;
+  if(tag==='SCRIPT'&&node.src||tag==='LINK'&&node.rel==='stylesheet'){
+   state.resources.set(node.src||node.href,event.type==='load');
+   if(event.type==='error')release('error');
+  }else if(node===window&&event.type==='error')release('error');
+ };
+ function release(reason){
+  if(state.released)return;
+  state.released=true;state.result=reason;state.finished=performance.now();
+  clearTimeout(state.deadline);clearTimeout(state.appearance);state.cleanup?.();
+  // A stalled stylesheet must not keep the browser's own first paint blocked.
+  // Restore its original media if the late response eventually arrives.
+  if(reason!=='complete')for(const link of document.querySelectorAll('link[rel="stylesheet"]')){
+   if(link.sheet||link.media&&!matchMedia(link.media).matches)continue;
+   const media=link.getAttribute('media');link.media='not all';
+   link.addEventListener('load',()=>{if(media===null)link.removeAttribute('media');else link.setAttribute('media',media);},{once:true});
+  }
+  const panel=document.getElementById('page-loading'),focused=panel?.contains(document.activeElement);
+  root.classList.remove('fde-loading','fde-loading-visible');root.dataset.pageLoadingResult=reason;
+  const status=document.getElementById('page-loading-status');
+  if(status)status.textContent=reason==='complete'?status.dataset.done:status.dataset.partial;
+  if(focused||reason==='skip'){
+   const main=document.getElementById('main-content');
+   if(main){const original=main.getAttribute('tabindex');main.setAttribute('tabindex','-1');main.focus({preventScroll:true});main.addEventListener('blur',()=>{if(original===null)main.removeAttribute('tabindex');else main.setAttribute('tabindex',original);},{once:true});}
+  }
+  document.removeEventListener('load',resource,true);window.removeEventListener('error',resource,true);
+  document.removeEventListener('click',skip);document.removeEventListener('keydown',key);
+ }
+ const skip=event=>{if(event.target.closest?.('[data-page-loading-skip]'))release('skip');};
+ const key=event=>{if(event.key==='Escape')release('skip');};
+ state.release=release;
+ document.addEventListener('load',resource,true);window.addEventListener('error',resource,true);
+ document.addEventListener('click',skip);document.addEventListener('keydown',key);
+ window.addEventListener('pagehide',()=>release('navigation'),{once:true});
+ window.addEventListener('pageshow',event=>{if(event.persisted)release('history');});
+ try{if(localStorage.getItem('fde:still-icons')==='1')root.dataset.pageLoadingMotion='still';}catch{}
+ root.classList.add('fde-loading');
+ state.appearance=setTimeout(()=>{if(!state.released){state.shown=true;root.classList.add('fde-loading-visible');}},120);
+ state.deadline=setTimeout(()=>release('timeout'),4000);
+}
+
+const critical='#page-loading{display:none;position:fixed;inset:0;z-index:10000;background:#033f1b;color:#faf8f4;place-items:center;padding:20px;font:16px system-ui,sans-serif}html.fde-loading .site-shell,html.fde-loading .skip-link{visibility:hidden}html.fde-loading.fde-loading-visible #page-loading{display:grid}.page-loading-panel{display:grid;justify-items:center;gap:16px;max-width:100%;text-align:center}.page-loading-art{position:relative;width:160px;max-width:42vw}.page-loading-art>img{display:block;width:100%;height:auto}.page-loading-art>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#page-loading progress{width:240px;max-width:76vw}#page-loading button{min-height:44px;padding:10px 18px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit}#page-loading button:focus-visible{outline:3px solid #faf8f4;outline-offset:4px}.page-loading-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}';
+export function loadingHead(prefix,version){return `<!-- FDE page loading -->\n<style data-page-loading-critical>${critical}</style>\n<script data-page-loading-bootstrap>(${pageLoadingBootstrap.toString()})();</script>\n<link rel="stylesheet" href="${prefix}page-loading.css?v=${version}">\n<script defer src="${prefix}page-loading.js?v=${version}" data-page-loading-runtime></script>\n<!-- End FDE page loading -->\n`;}
+
+export function stripLoadingHead(source,{strict=true}={}){
+ return source.replace(/<!-- FDE page loading -->\n[\s\S]*?<!-- End FDE page loading -->\n/g,block=>{
+  if(strict){const m=block.match(/href="((?:\.\.\/)?)(?:page-loading\.css)\?v=(\d{8}-\d{6}|BUILD)"/);if(!m||block!==loadingHead(m[1],m[2]))throw Error('Unexpected script in loading metadata');}
+  return '';
+ });
+}
+export function loadingBody(file){
+ const locale=file.startsWith('ja/')?'ja':file.startsWith('zh/')?'zh':'en',c=loadingCopy[locale],prefix=locale==='en'?'':'../';
+ return `<!-- FDE loading panel -->\n<section id="page-loading" aria-label="${c.label}"><div class="page-loading-panel"><div class="page-loading-art"><img src="${prefix}assets/instagram-bakedkale-profile-20261110.jpg" width="150" height="150" alt="${c.image}" decoding="async"><svg viewBox="0 0 150 150" aria-hidden="true"><g class="page-loading-mouth"><ellipse cx="90" cy="111" rx="5" ry="3.7" fill="#19452d"/><path d="M86 112q4 2 8 0" fill="none" stroke="#66815c" stroke-width=".7"/></g></svg></div><p>${c.preparing} <span data-page-loading-count></span></p><progress aria-label="${c.label}"></progress><button type="button" data-page-loading-skip>${c.skip}</button></div></section>\n<p id="page-loading-status" class="page-loading-status" role="status" aria-live="polite" data-done="${c.done}" data-partial="${c.partial}"></p>\n<!-- End FDE loading panel -->\n`;
+}
+export function withPageLoading(file,source){
+ if(!loadingPages.includes(file)||!/^<!doctype html>/i.test(source))return source;
+ const version=source.includes('page-loading.css?v=BUILD')?'BUILD':readFileSync(new URL('../build-version.txt',import.meta.url),'utf8').trim(),prefix=file.includes('/')?'../':'';
+ let html=stripLoadingHead(source,{strict:false}).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'');
+ const boundary=html.indexOf('<link rel="stylesheet"');if(boundary<0)throw Error(`Missing stylesheet boundary: ${file}`);
+ html=html.slice(0,boundary)+loadingHead(prefix,version)+html.slice(boundary);
+ return html.replace(/(<body\b[^>]*>\n?)/,(_,tag)=>tag+loadingBody(file));
+}
+export function applyReviewedPageLoading(file,source){return source.includes('<!-- FDE page loading -->')?source:withPageLoading(file,source);}
+
+if(process.argv[1]===fileURLToPath(import.meta.url)){
+ for(const file of loadingPages){const url=new URL('../'+file,import.meta.url),before=readFileSync(url,'utf8'),after=withPageLoading(file,before);if(process.argv.includes('--check')){if(before!==after)throw Error(`Loading screen is stale: ${file}`);}else if(before!==after)writeFileSync(url,after);}
+ console.log('Page loading markup is current.');
+}

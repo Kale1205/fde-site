@@ -1,0 +1,33 @@
+@font-face { font-family: "Campaign Hand"; src: url("assets/fonts/yomogi-campaign-subset.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+.handdrawn-price { position: relative; max-width: 350px; min-height: 196px; margin: 20px auto 0; display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--forest,#073e2c); line-height: 1.4; }
+.hp-was { font-size: 15px; color: #607362; display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 24px; }
+.hp-was>span { font-size: 11px; }
+.hp-was>s { text-decoration-thickness: 1px; text-decoration-color: #788579; }
+.hp-current { display: flex; align-items: baseline; gap: 8px; justify-content: center; margin-top: 8px; white-space: nowrap; }
+.hp-number { position: relative; isolation: isolate; display: inline-block; }
+body .handdrawn-price .hp-number>strong { display: block; position: relative; z-index: 1; margin: 0; font-size: 43px; line-height: 1.2; letter-spacing: -.05em; font-weight: 750; font-variant-numeric: tabular-nums; }
+.hp-current>small { font-size: 11px; font-weight: 400; }
+.hp-duration { font-size: 11px; color: #526956; margin-top: 13px; line-height: 1.6; text-align: center; }
+.hp-annotation { position: absolute; right: 14px; top: -3px; transform: rotate(-7deg); font-family: "Campaign Hand",cursive; font-size: 20px; line-height: 1.1; display: flex; align-items: baseline; gap: 6px; white-space: nowrap; letter-spacing: -.04em; color: #375f43; }
+.hp-annotation>span { font-size: 16px; }
+.hp-annotation>strong { font: inherit; font-size: 22px; }
+.hp-arrow { position: absolute; width: 84px; height: 74px; right: -22px; top: 26px; transform: rotate(7deg); }
+.hp-swash { position: absolute; z-index: 0; left: -6%; bottom: 7px; width: 112%; height: 59%; color: #deedc9; transform: rotate(-1.2deg); overflow: visible; pointer-events: none; }
+.hp-swash path { mix-blend-mode: multiply; }
+.campaign-terms { max-width: 1184px; margin: 20px auto 24px; font-size: 12px; line-height: 1.9; color: #526956; }
+.campaign-matrix-price { display: grid; gap: 5px; }
+.campaign-matrix-price>span,.campaign-matrix-price>small { font-size: 12px; font-weight: 400; }
+.license-decision-price .handdrawn-price { margin: 24px 0 0; }
+.license-decision-price .hp-was>span { font-weight: 400; }
+.order-product .handdrawn-price { margin: 24px auto 8px; }
+@media(max-width:1000px) { .handdrawn-price { max-width: 315px; }.hp-annotation { right: 7px; font-size: 18px; }.hp-annotation>strong { font-size: 21px; }.hp-arrow { right: -9px; width: 72px; } }
+@media(max-width:600px) {
+ .handdrawn-price { min-height: 194px; margin-top: 17px; max-width: 175px; }
+ .hp-was { margin-top: 37px; flex-direction: column; gap: 3px; font-size: 12px; }.hp-was>span { font-size: 10px; }
+ .hp-current { margin-top: 8px; gap: 0; flex-direction: column; align-items: center; }
+ body .handdrawn-price .hp-number>strong { font-size: 30px; letter-spacing: -.05em; }.hp-current>small { font-size: 10px; margin-top: 4px; }
+ .hp-duration { font-size: 11px; margin-top: 10px; max-width: 145px; }
+ .hp-annotation { top: -1px; right: 9px; left: 9px; justify-content: center; flex-direction: column; align-items: flex-end; gap: 0; transform: rotate(-6deg); }
+ .hp-annotation>span { font-size: 12px; }.hp-annotation>strong { font-size: 18px; }.hp-arrow { right: -8px; top: 26px; width: 46px; height: 80px; transform: rotate(15deg); }
+ .hp-swash { left: -5%; width: 110%; height: 61%; bottom: 5px; }.campaign-terms { margin-top: 16px; }
+}

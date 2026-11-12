@@ -1,7 +1,9 @@
 // Recompose a known static document, rather than trying to sanitize HTML.
 // Metadata precedes the generated asset suffix in the approved pages.
 // Unexpected layouts or executable scripts fail closed for human review.
+import {stripLoadingHead} from './page_loading_template.mjs';
 export function approvedHeadPrefix(source, {jsonLd = false} = {}) {
+  source=stripLoadingHead(source);
   const boundary = source.indexOf('<link rel="stylesheet"');
   const end = source.indexOf('</head>');
   if (boundary < 0 || end < boundary) throw Error('Approved asset suffix missing');

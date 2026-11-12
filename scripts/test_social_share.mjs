@@ -4,10 +4,11 @@ import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {shareImage, withSharedImage, applyReviewedShareImage} from './social_share_metadata.mjs';
+import {applyReviewedPublicPresentation} from './public_presentation.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = file => readFileSync(new URL(file, root), 'utf8');
-const baseline = file => execFileSync('git', ['show', `3164e3afe8959a1eb4bb603a864a9c5c2deb21b6:${file}`], {cwd: root});
+const baseline = file => execFileSync('git', ['show', `01010c0cc7a4e03594338d6bd6f0c7fd7bf546fa:${file}`], {cwd: root});
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const tags = html => [...html.matchAll(/<meta\b[^>]*>/g)].map(([tag]) => {
   const attrs = Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map(m => [m[1], m[2]]));
@@ -35,7 +36,7 @@ test('titles, descriptions, canonical, schema, robots, redirects and every body 
     .replace(/<meta\b[^>]*>/g, tag => /(?:property|name)="(?:og:image(?::(?:url|secure_url|type|width|height|alt))?|twitter:(?:image(?::alt)?|card))"/.test(tag) ? '' : tag)
     .replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g, '$1BUILD')
     .replace(/>\s+</g, '><').trim();
-  for (const file of shareImage.paths) assert.equal(strip(read(file)), strip(baseline(file).toString()), file);
+  for (const file of shareImage.paths) assert.equal(strip(read(file)), strip(applyReviewedPublicPresentation(file,baseline(file).toString())), file);
   const ownership = 'google7f844744756e4b18.html';
   assert.equal(read(ownership), baseline(ownership).toString());
 });

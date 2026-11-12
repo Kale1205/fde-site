@@ -1,0 +1,28 @@
+/* Only the loading panel uses the approved bounce and character mouth overlay. */
+#page-loading .page-loading-panel { gap: 16px; }
+#page-loading p { margin: 0; font-size: 14px; line-height: 1.6; }
+#page-loading .page-loading-art { width: 160px; transform-origin: 50% 90%; }
+.fde-loading-visible #page-loading .page-loading-art { animation: page-character-bounce 1.5s both; }
+.page-loading-mouth { transform-box: fill-box; transform-origin: center; transform: scaleY(.2); }
+.fde-loading-visible .page-loading-mouth { animation: page-character-mouth .68s ease-in-out infinite; }
+#page-loading progress { height: 7px; border: 0; border-radius: 0; accent-color: #d6e9ba; background: #ffffff30; appearance: none; }
+#page-loading progress::-webkit-progress-bar { background: #ffffff30; }
+#page-loading progress::-webkit-progress-value { background: #d6e9ba; }
+#page-loading progress::-moz-progress-bar { background: #d6e9ba; }
+#page-loading button { margin-top: 8px; border-radius: 0; cursor: pointer; }
+#page-loading button:hover { background: #ffffff18; }
+@keyframes page-character-bounce {
+ 0% { transform: translateY(-190px) scale(.8); opacity: 0; }
+ 25% { opacity: 1; }
+ 42% { transform: translateY(0) scale(1.22,.72); }
+ 60% { transform: translateY(-42px) scale(.9,1.12); }
+ 76% { transform: translateY(0) scale(1.08,.9); }
+ 90% { transform: translateY(-8px); }
+ 100% { transform: none; opacity: 1; }
+}
+@keyframes page-character-mouth { 0%,100% { transform: scaleY(.18); } 35%,65% { transform: scaleY(1); } }
+html[data-page-loading-motion="still"] #page-loading .page-loading-art,
+html[data-page-loading-motion="still"] .page-loading-mouth { animation: none; }
+@media(prefers-reduced-motion:reduce) { .fde-loading-visible #page-loading .page-loading-art,.fde-loading-visible .page-loading-mouth { animation: none; } }
+@media(max-height:420px) { #page-loading .page-loading-art { width: 90px; }#page-loading .page-loading-panel { gap: 8px; }#page-loading button { margin-top: 0; } }
+@media(forced-colors:active) { #page-loading { background: Canvas; color: CanvasText; }#page-loading button:focus-visible { outline-color: Highlight; } }

@@ -27,7 +27,8 @@ for (const locale of ['', 'ja/', 'zh/']) {
     for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
       const url = match[1];
       assert(!/^https?:/.test(url), 'no third-party links or image requests in this preview');
-      const [file, fragment] = url.split('#');
+      const [resource, fragment] = url.split('#');
+      const file = resource.split('?')[0];
       if (!file) { assert(ids.includes(fragment), `Missing local anchor ${fragment}`); continue; }
       const target = path.resolve(root, locale, file);
       assert(target.startsWith(root + path.sep));
