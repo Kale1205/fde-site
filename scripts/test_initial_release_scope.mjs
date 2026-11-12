@@ -1,3 +1,4 @@
+import {approveFaqDocument,approveUsdCopy} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
@@ -99,7 +100,7 @@ test('historical FAQ migration changes only three answers; keep legal permission
     assert.ok(item,`protected product-scope FAQ is missing: ${id}`);
     for(const [locale,answer] of Object.entries(answers))assert.equal(item.answer[locale],answer,`${id}/${locale}: product scope requires separate approval`);
   }
-  assert.equal(read('content/faq-policy-additions.json'), applyApprovedContinuingUsePolicy('content/faq-policy-additions.json',applyApprovedMultilingualContent('content/faq-policy-additions.json',before('content/faq-policy-additions.json'))));
+  assert.equal(read('content/faq-policy-additions.json'),approveFaqDocument('content/faq-policy-additions.json',applyApprovedContinuingUsePolicy('content/faq-policy-additions.json',applyApprovedMultilingualContent('content/faq-policy-additions.json',before('content/faq-policy-additions.json')))));
 });
 
 test('Chinese dictionary translates the complete public scope and does not restore retired demo capability claims', () => {

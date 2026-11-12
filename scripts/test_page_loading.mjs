@@ -25,7 +25,7 @@ function harness({cached=true,below=false,storage='0',storageFails=false,mainTab
  const image=new Target();Object.assign(image,{tagName:'IMG',src:'https://example.test/hero.webp',currentSrc:'https://example.test/hero.webp',complete:cached,naturalWidth:cached?150:0,loading:'lazy',classList:{contains:()=>false},parentElement:{classList:{contains:n=>n==='site-shell'}},getBoundingClientRect:()=>({width:150,height:150,left:0,right:150,top:below?5000:100,bottom:below?5150:250})});
  Object.assign(document,{documentElement:root,readyState:'loading',hidden:false,activeElement:null,getElementById:id=>({'page-loading':panel,'page-loading-status':status,'main-content':main}[id]),querySelectorAll:s=>s==='link[rel="stylesheet"]'?[sheet]:s==='script[src]'?[script]:s==='.site-shell img'?[image]:[]});
  const set=(fn,delay)=>{const key=++id;timers.set(key,{fn,at:now+delay});return key;};
- const context=vm.createContext({window,document,performance:{now:()=>now},setTimeout:set,clearTimeout:key=>timers.delete(key),requestAnimationFrame:fn=>set(fn,16),innerHeight:900,innerWidth:1200,getComputedStyle:()=>({display:'block',opacity:'1'}),matchMedia:()=>({matches:true}),localStorage:{getItem(){if(storageFails)throw Error('storage denied');return storage;}}});
+ const context=vm.createContext({window,document,performance:{now:()=>now},setTimeout:set,clearTimeout:key=>timers.delete(key),requestAnimationFrame:fn=>set(fn,16),cancelAnimationFrame:key=>timers.delete(key),innerHeight:900,innerWidth:1200,getComputedStyle:()=>({display:'block',opacity:'1'}),matchMedia:()=>({matches:true}),localStorage:{getItem(){if(storageFails)throw Error('storage denied');return storage;}}});
  vm.runInContext(`(${pageLoadingBootstrap.toString()})();`,context);
  const state=window.__fdePageLoading;
  const tick=ms=>{const end=now+ms;while(true){const next=[...timers].filter(([,v])=>v.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;now=next[1].at;timers.delete(next[0]);next[1].fn();}now=end;};
@@ -33,15 +33,15 @@ function harness({cached=true,below=false,storage='0',storageFails=false,mainTab
  return{state,root,document,window,main,status,skip,progress,counter,sheet,script,image,tick,start};
 }
 
-test('cached required resources reveal content without waiting for the animation or appearance timer',async()=>{
- const h=harness();await h.start();assert.equal(h.state.result,'complete');assert.equal(h.state.shown,false);assert.equal(h.progress.value,h.progress.max);assert(h.state.finished<120);h.tick(5000);assert.equal(h.state.shown,false);assert(!h.root.classList.contains('fde-loading'));
+test('cached required resources keep a visible loader for two seconds after real progress completes',async()=>{
+ const h=harness();await h.start();assert.equal(h.state.released,false);assert.equal(h.state.shown,true);assert.equal(h.progress.value,h.progress.max);h.tick(1999);assert.equal(h.state.released,false);h.tick(1);assert.equal(h.state.result,'complete');assert.equal(h.state.finished-h.state.shownAt,2000);assert(!h.root.classList.contains('fde-loading'));
 });
 test('elapsed time cannot fill the gauge while a real required image is pending',async()=>{
  const h=harness({cached:false});await h.start();const count=h.progress.value;h.tick(2000);await flush();assert.equal(h.progress.value,count);assert(count<h.progress.max);assert.equal(h.state.released,false);assert.equal(h.state.shown,true);
  h.image.complete=true;h.image.naturalWidth=150;h.image.emit('load');await flush();assert.equal(h.state.result,'complete');assert.equal(h.progress.value,h.progress.max);
 });
 test('below-fold lazy media never blocks first-view readiness',async()=>{
- const h=harness({cached:false,below:true});await h.start();assert.equal(h.state.result,'complete');assert(!h.state.tasks.some(t=>t.name.includes('hero.webp')));assert.equal(h.image.loading,'lazy');
+ const h=harness({cached:false,below:true});await h.start();h.tick(2000);assert.equal(h.state.result,'complete');assert(!h.state.tasks.some(t=>t.name.includes('hero.webp')));assert.equal(h.image.loading,'lazy');
 });
 test('a stalled request releases at the deadline without claiming complete progress',async()=>{
  const h=harness({cached:false});await h.start();h.tick(4000);await flush();assert.equal(h.state.result,'timeout');assert(h.progress.value<h.progress.max);assert.equal(h.status.textContent,'partial');assert(!h.root.classList.contains('fde-loading'));
@@ -59,10 +59,10 @@ test('the visible skip control works without the external readiness controller',
  const h=harness();h.tick(120);h.document.emit('click',{target:h.skip});assert.equal(h.state.result,'skip');assert.equal(h.document.activeElement,h.main);
 });
 test('history restoration does not replay a previously pending loader',async()=>{
- const h=harness({cached:false});await h.start();h.window.emit('pagehide');h.window.emit('pageshow',{persisted:true});h.tick(5000);assert.equal(h.state.result,'navigation');assert(!h.root.classList.contains('fde-loading'));assert.equal(h.state.shown,false);
+ const h=harness({cached:false});await h.start();h.window.emit('pagehide');h.window.emit('pageshow',{persisted:true});h.tick(5000);assert.equal(h.state.result,'navigation');assert(!h.root.classList.contains('fde-loading'));assert.equal(h.state.shown,true);
 });
 test('saved still-icon preferences and denied storage are safe',async()=>{
- const still=harness({storage:'1'});assert.equal(still.root.dataset.pageLoadingMotion,'still');await still.start();assert.equal(still.state.result,'complete');const denied=harness({storageFails:true});await denied.start();assert.equal(denied.state.result,'complete');
+ const still=harness({storage:'1'});assert.equal(still.root.dataset.pageLoadingMotion,'still');await still.start();still.tick(2000);assert.equal(still.state.result,'complete');const denied=harness({storageFails:true});await denied.start();denied.tick(2000);assert.equal(denied.state.result,'complete');
 });
 test('only the exact owned bootstrap passes static metadata script protection',()=>{
  const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert(approvedHeadPrefix(home,{jsonLd:true}).includes('application/ld+json'));

@@ -11,7 +11,8 @@ for (const prefix of ['', 'ja/']) {
   assert.match(home, /class="quiet-text-link" href="#motion-demo"/);
   assert.doesNotMatch(home, /href="#preview-panel"/);
   assert.doesNotMatch(home, /gallery-pages\.css\?v=/);
-  assert.equal(home.match(/alt="Baked Kale FDE" width="980" height="240"/g)?.length, 2);
+  assert.equal(home.match(/alt="Baked Kale FDE" width="980" height="240"/g)?.length, 1);
+  assert.equal((home.match(/data-brand-character/g)||[]).length,1);
   assert.match(home, /id="imsDemoRoot"/);
   assert.match(home, /id="demoOperationForm"/);
   assert.match(home, /quiet-form\.css\?v=/);

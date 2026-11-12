@@ -1,3 +1,4 @@
+import {approveFaqDocument} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
@@ -49,7 +50,7 @@ test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
     const current=read(file);
     const source=file==='content/faq-content.json'?readFaqMigrationFixture(file):before(file);
     const expected=renderCurrentFaqFixture(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,source)));
-    assert.equal(normalize(current),normalize(applyReviewedUiChanges(file,applyApprovedContinuingUsePolicy(file,expected))),file);
+    assert.equal(normalize(current),normalize(approveFaqDocument(file,applyReviewedUiChanges(file,applyApprovedContinuingUsePolicy(file,expected)))),file);
   }
   assert.match(read('quiet-pages.css'),/\.quiet-page :is\(button,\[type=submit\]\):disabled \{ transform: none; opacity: \.55; cursor: not-allowed; \}/);
   assert.doesNotMatch(read('gallery-ui.js'),/data-license-purchase/);

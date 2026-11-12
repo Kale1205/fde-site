@@ -23,7 +23,7 @@
 <style data-page-loading-critical>#page-loading{display:none;position:fixed;inset:0;z-index:10000;background:#033f1b;color:#faf8f4;place-items:center;padding:20px;font:16px system-ui,sans-serif}html.fde-loading .site-shell,html.fde-loading .skip-link{visibility:hidden}html.fde-loading.fde-loading-visible #page-loading{display:grid}.page-loading-panel{display:grid;justify-items:center;gap:16px;max-width:100%;text-align:center}.page-loading-art{position:relative;width:160px;max-width:42vw}.page-loading-art>img{display:block;width:100%;height:auto}.page-loading-art>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#page-loading progress{width:240px;max-width:76vw}#page-loading button{min-height:44px;padding:10px 18px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit}#page-loading button:focus-visible{outline:3px solid #faf8f4;outline-offset:4px}.page-loading-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}</style>
 <script data-page-loading-bootstrap>(function pageLoadingBootstrap(){
  const root=document.documentElement;
- const state={started:performance.now(),released:false,shown:false,completed:0,total:0,resources:new Map(),tasks:[]};
+ const state={started:performance.now(),released:false,shown:false,shownAt:null,readyAt:null,completed:0,total:0,resources:new Map(),tasks:[]};
  window.__fdePageLoading=state;
  const resource=event=>{
   const node=event.target,tag=node?.tagName;
@@ -34,8 +34,14 @@
  };
  function release(reason){
   if(state.released)return;
+  if(reason==='complete'){
+   state.readyAt??=performance.now();
+   if(state.shownAt===null)return;
+   const remaining=2000-(performance.now()-state.shownAt);
+   if(remaining>0){clearTimeout(state.minimum);state.minimum=setTimeout(()=>release('complete'),remaining);return;}
+  }
   state.released=true;state.result=reason;state.finished=performance.now();
-  clearTimeout(state.deadline);clearTimeout(state.appearance);state.cleanup?.();
+  clearTimeout(state.deadline);clearTimeout(state.minimum);cancelAnimationFrame(state.frame);state.cleanup?.();
   // A stalled stylesheet must not keep the browser's own first paint blocked.
   // Restore its original media if the late response eventually arrives.
   if(reason!=='complete')for(const link of document.querySelectorAll('link[rel="stylesheet"]')){
@@ -62,18 +68,28 @@
  window.addEventListener('pagehide',()=>release('navigation'),{once:true});
  window.addEventListener('pageshow',event=>{if(event.persisted)release('history');});
  try{if(localStorage.getItem('fde:still-icons')==='1')root.dataset.pageLoadingMotion='still';}catch{}
- root.classList.add('fde-loading');
- state.appearance=setTimeout(()=>{if(!state.released){state.shown=true;root.classList.add('fde-loading-visible');}},120);
+ root.classList.add('fde-loading','fde-loading-visible');
+ function observeDisplay(){
+  if(state.released)return;
+  if(!document.getElementById('page-loading')){state.frame=requestAnimationFrame(observeDisplay);return;}
+  state.shown=true;state.shownAt=performance.now();
+  if(state.readyAt!==null)release('complete');
+ }
+ state.frame=requestAnimationFrame(observeDisplay);
  state.deadline=setTimeout(()=>release('timeout'),4000);
 })();</script>
-<link rel="stylesheet" href="../page-loading.css?v=20261112-203202">
-<script defer src="../page-loading.js?v=20261112-203202" data-page-loading-runtime></script>
+<link rel="stylesheet" href="../page-loading.css?v=20261112-221857">
+<script defer src="../page-loading.js?v=20261112-221857" data-page-loading-runtime></script>
 <!-- End FDE page loading -->
+<!-- Shared site chrome -->
+<link rel="stylesheet" href="../site-chrome.css?v=20261112-221857">
+<script type="module" src="../site-chrome.js?v=20261112-221857"></script>
+<!-- End shared site chrome -->
 <link rel="stylesheet" href="../gallery-ui.css"><link rel="stylesheet" href="../quiet-form.css">
 <script defer src="../gallery-ui.js"></script><script defer src="../demo-v1.js"></script><script defer src="../quiet-form.js"></script>
 <!-- Campaign assets -->
-<link rel="stylesheet" href="../campaign-prices.css?v=20261112-203202">
-<script defer src="../campaign-prices.js?v=20261112-203202"></script>
+<link rel="stylesheet" href="../campaign-prices.css?v=20261112-221857">
+<script defer src="../campaign-prices.js?v=20261112-221857"></script>
 <!-- End campaign assets -->
 </head>
 <body class="gallery-page quiet-home">
@@ -84,7 +100,7 @@
 <a class="skip-link" href="#main-content">跳至正文</a>
 <div class="site-shell language-zh">
 <header class="site-header">
-<a class="brand" href="quiet-form.html" aria-label="Baked Kale FDE"><img src="../assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a>
+<a class="brand" href="quiet-form.html" aria-label="Baked Kale FDE"><img data-brand-character src="../assets/bakedkale-character.svg" width="48" height="45" alt=""><span class="brand-wordmark" aria-hidden="true">Baked Kale<small>FDE / IT Engineering</small></span></a>
 <nav class="desktop-nav" aria-label="打开菜单"><a href="#plans">产品</a><a href="demo.html">演示</a><a href="goals.html">概览</a><a href="news.html">动态</a><a href="contact.html">联系我们</a></nav>
 <div class="header-actions"><a class="locale-button" data-locale-link href="../quiet-form.html" hreflang="en" lang="en">English</a><a class="locale-button" data-locale-link href="../ja/quiet-form.html" hreflang="ja" lang="ja">日本語</a><button class="menu-button" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
 <nav class="mobile-nav" id="mobile-nav" aria-label="打开菜单" hidden><a href="#plans">产品</a><a href="goals.html">概览</a><a href="news.html">动态</a><a href="contact.html">联系我们</a></nav>
@@ -104,19 +120,19 @@
 <h2 class="quiet-heading" id="plan-title">两种起点。</h2>
 <table class="quiet-comparison"><caption class="visually-hidden">产品对比</caption>
 <thead><tr><th scope="col"><div class="plan-top"><img class="comparison-sculpture" src="../assets/ims-license-update.webp" alt="" width="960" height="960" loading="lazy"><h3><span>IMS</span> <span>License</span></h3><p>开始使用，理顺流程，持续运作。</p><!-- Campaign price license -->
-<div class="handdrawn-price hp-combined" data-campaign-product="license"><div class="hp-annotation" aria-hidden="true"><span>上市优惠</span><strong>约33% OFF</strong><svg class="hp-arrow" viewBox="0 0 92 80" preserveAspectRatio="none" aria-hidden="true"><path d="M80 4C100 44 76 73 12 68M12 68l10-8M12 68l12 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="hp-was"><span>计划常规价格</span><s>¥74,800</s></div><div class="hp-current"><span class="hp-number"><svg class="hp-swash" viewBox="0 0 280 30" preserveAspectRatio="none" aria-hidden="true"><path d="M3 13Q43 8 83 11T164 10T274 7L277 23Q230 24 186 25T102 24T5 28Z" fill="currentColor"/><path d="M7 10Q75 6 130 9T270 4L272 20Q204 21 157 20T10 24Z" fill="currentColor" opacity=".42"/></svg><strong class="plan-price">¥49,800</strong></span><small>含税</small></div><span class="hp-duration">上市后前6个月・计划优惠价格</span></div>
+<div class="handdrawn-price hp-combined" data-campaign-product="license"><div class="hp-annotation" aria-hidden="true"><span>上市优惠</span><strong>约33% OFF</strong><svg class="hp-arrow" viewBox="0 0 92 80" preserveAspectRatio="none" aria-hidden="true"><path d="M80 4C100 44 76 73 12 68M12 68l10-8M12 68l12 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="hp-was"><span>计划常规价格</span><s>$521</s></div><div class="hp-current"><span class="hp-number"><svg class="hp-swash" viewBox="0 0 280 30" preserveAspectRatio="none" aria-hidden="true"><path d="M3 13Q43 8 83 11T164 10T274 7L277 23Q230 24 186 25T102 24T5 28Z" fill="currentColor"/><path d="M7 10Q75 6 130 9T270 4L272 20Q204 21 157 20T10 24Z" fill="currentColor" opacity=".42"/></svg><strong class="plan-price">$349</strong></span><small>税务处理未定</small></div><span class="hp-duration">上市后前6个月・计划优惠价格</span></div>
 <!-- End campaign price license --><a href="license.html#comparison">查看条件 <span aria-hidden="true">→</span></a></div></th>
 <th scope="col" id="license-plus"><div class="plan-top"><img class="comparison-sculpture" src="../assets/ims-license-plus-customize.webp" alt="" width="960" height="960" loading="lazy"><h3><span>IMS</span> <span>License Plus</span></h3><p>看得见，改得了，用着不断完善。</p><!-- Campaign price plus -->
-<div class="handdrawn-price hp-combined" data-campaign-product="plus"><div class="hp-annotation" aria-hidden="true"><span>上市优惠</span><strong>约33% OFF</strong><svg class="hp-arrow" viewBox="0 0 92 80" preserveAspectRatio="none" aria-hidden="true"><path d="M80 4C100 44 76 73 12 68M12 68l10-8M12 68l12 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="hp-was"><span>计划常规价格</span><s>¥149,800</s></div><div class="hp-current"><span class="hp-number"><svg class="hp-swash" viewBox="0 0 280 30" preserveAspectRatio="none" aria-hidden="true"><path d="M3 13Q43 8 83 11T164 10T274 7L277 23Q230 24 186 25T102 24T5 28Z" fill="currentColor"/><path d="M7 10Q75 6 130 9T270 4L272 20Q204 21 157 20T10 24Z" fill="currentColor" opacity=".42"/></svg><strong class="plan-price">¥99,800</strong></span><small>含税</small></div><span class="hp-duration">上市后前6个月・计划优惠价格</span></div>
+<div class="handdrawn-price hp-combined" data-campaign-product="plus"><div class="hp-annotation" aria-hidden="true"><span>上市优惠</span><strong>约33% OFF</strong><svg class="hp-arrow" viewBox="0 0 92 80" preserveAspectRatio="none" aria-hidden="true"><path d="M80 4C100 44 76 73 12 68M12 68l10-8M12 68l12 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="hp-was"><span>计划常规价格</span><s>$1,043</s></div><div class="hp-current"><span class="hp-number"><svg class="hp-swash" viewBox="0 0 280 30" preserveAspectRatio="none" aria-hidden="true"><path d="M3 13Q43 8 83 11T164 10T274 7L277 23Q230 24 186 25T102 24T5 28Z" fill="currentColor"/><path d="M7 10Q75 6 130 9T270 4L272 20Q204 21 157 20T10 24Z" fill="currentColor" opacity=".42"/></svg><strong class="plan-price">$699</strong></span><small>税务处理未定</small></div><span class="hp-duration">上市后前6个月・计划优惠价格</span></div>
 <!-- End campaign price plus --><a href="license.html#comparison">查看条件 <span aria-hidden="true">→</span></a></div></th></tr></thead>
 <tbody><tr><td><span aria-hidden="true">✓</span>一次性购买</td><td><span aria-hidden="true">✓</span>一次性购买</td></tr>
 <tr><td><span aria-hidden="true">—</span>不含源代码</td><td><span aria-hidden="true">✓</span>完整源代码</td></tr>
 <tr><td><span aria-hidden="true">—</span>不允许内部修改</td><td><span aria-hidden="true">✓</span>允许内部修改</td></tr>
 <tr><td><span aria-hidden="true">✓</span>官方 Updates<br>可选月度订阅</td><td><span aria-hidden="true">—</span>不适用官方 Updates<br>由购买方更新和管理</td></tr></tbody></table>
 <!-- Planned campaign terms -->
-<p class="campaign-terms" data-campaign-terms>日本市场价格，以日元计价并含税。计划优惠价格适用于实际上市后的前6个月。计划常规价格是优惠结束后的计划价格，不代表过去的销售价格。实际上市日、优惠开始日和结束日尚未确定，目前不能购买。Updates 的价格与条件保持不变。</p>
+<p class="campaign-terms" data-campaign-terms>美元计划价格：License $521 → $349；License Plus $1,043 → $699。优惠价格适用于实际上市后的前6个月。常规价格是优惠结束后的计划价格，不代表过去的销售价格。实际上市日、优惠开始日、结束日和税务处理尚未确定，目前不能购买。License 的可选 Updates 仍为购买后第4–6个月每月 $31、第7个月起每月 $62，最初3个月包含在内。</p>
 <!-- End planned campaign terms -->
-<div class="updates-strip"><strong>License Updates</strong><span>含最初3个月</span><span>第4–6个月 <strong>¥4,900/月</strong></span><span>第7个月起 <strong>¥9,800/月</strong></span></div>
+<div class="updates-strip"><strong>License Updates</strong><span>含最初3个月</span><span>第4–6个月 <strong>$31/月</strong></span><span>第7个月起 <strong>$62/月</strong></span></div>
 <p class="updates-note">Updates 为可选订阅。未订阅时仍可使用购买时的版本，不会自动转为付费订阅。</p>
 </section>
 <section class="quiet-demo section-frame" id="motion-demo" aria-labelledby="demo-title">

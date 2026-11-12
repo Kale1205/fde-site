@@ -1,3 +1,4 @@
+import {approveUsdCopy,campaignCopy} from '../price-policy.js';
 import {withPublicPresentation} from './public_presentation.mjs';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import {withSharedImage} from './social_share_metadata.mjs';
@@ -20,6 +21,9 @@ const translations = JSON.parse(readFileSync(path.join(root, 'content/zh-transla
 const noticeTranslations = new Map(Object.entries(translations).map(([en, zh]) =>
   [removePurchaseStatusCopy(en), removePurchaseStatusCopy(zh)]));
 noticeTranslations.set(`${releaseCopy.en.date}. ${releaseCopy.en.unavailable}`, `${releaseCopy.zh.date}。 ${releaseCopy.zh.unavailable}`);
+for(const [en,zh]of [...noticeTranslations])noticeTranslations.set(approveUsdCopy('en',en),approveUsdCopy('zh',zh));
+for(const key of Object.keys(campaignCopy.en))noticeTranslations.set(campaignCopy.en[key],campaignCopy.zh[key]);
+for(const [en,zh]of [['Planned launch price','计划优惠价格'],['Planned price (USD)','计划价格（美元）'],['one-time USD · tax status pending','一次性美元计划价格・税务处理未定']])noticeTranslations.set(en,zh);
 const pages = [
   'index.html',
   'license.html',

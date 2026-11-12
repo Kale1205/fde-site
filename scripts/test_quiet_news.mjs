@@ -9,7 +9,7 @@ import {applyReleaseNoticePolicy} from './release_notice_policy.mjs';
 const root=new URL('../',import.meta.url);
 const read=name=>normalizeAssetBuildKeys(readFileSync(new URL(name,root),'utf8'));
 const base='95fc1e5';
-for(const [prefix,heading] of [['','Updates'],['ja/','アップデート情報'],['zh/','更新信息']]){
+for(const [prefix,heading] of [['','Click ↓'],['ja/','Click ↓'],['zh/','点击 ↓']]){
   test(`${prefix}news: selected composition is deterministic and idempotent`,()=>{
     const original=normalizeAssetBuildKeys(execFileSync('git',['show',`${base}:${prefix}news.html`],{cwd:root,encoding:'utf8'}));
     const html=read(`${prefix}news.html`);

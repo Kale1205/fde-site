@@ -57,7 +57,7 @@ test('the PNG has a fresh content-hash URL and the complete native source remain
 });
 
 test('warehouse, site artwork, feed, motion and operational scripts remain byte-identical', () => {
-  for (const file of ['assets/warehouse-operations.webp', 'assets/instagram-bakedkale-profile-20261110.jpg', 'assets/instagram-kale1999-profile-20261110.jpg', 'content/instagram-feed.json', 'content/site-content.json', 'gallery-ui.js', 'quiet-form.js', 'demo-v1.js', 'quiet-customer.js', 'contact-direct.js', 'news-books.js', 'sculpture-motion.js', 'motion-preferences.js', 'goals02-scene.js', 'quiet-pages.css', 'quiet-form.css', 'news-books.css']) assert.deepEqual(readFileSync(new URL(file, root)), baseline(file), file);
+  for (const file of ['assets/warehouse-operations.webp', 'assets/instagram-bakedkale-profile-20261110.jpg', 'assets/instagram-kale1999-profile-20261110.jpg', 'content/instagram-feed.json', 'content/site-content.json', 'gallery-ui.js', 'quiet-form.js', 'demo-v1.js', 'quiet-customer.js', 'contact-direct.js', 'sculpture-motion.js', 'motion-preferences.js', 'goals02-scene.js', 'quiet-pages.css', 'quiet-form.css', 'news-books.css']) assert.deepEqual(readFileSync(new URL(file, root)), baseline(file), file);
 });
 
 test('historical snapshot adaptation cannot hide unknown metadata or unrelated content', () => {

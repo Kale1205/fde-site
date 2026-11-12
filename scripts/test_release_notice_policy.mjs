@@ -1,3 +1,4 @@
+import {approveFaqDocument,approveUsdCopy} from '../price-policy.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -47,7 +48,7 @@ test('CMS hydration cannot restore purchase-unavailable FAQ or suffixes',()=>{
     expected.answer=Object.fromEntries(Object.entries(expected.answer).map(([lang,text])=>[lang,removePurchaseStatusCopy(text)]));
     assert.deepEqual(item,expected,'All other FAQ questions, terms, prices and search keys are preserved');
   }
-  assert.equal(read('content/faq-policy-additions.json'),applyApprovedContinuingUsePolicy('content/faq-policy-additions.json',before('content/faq-policy-additions.json')));
+  assert.equal(read('content/faq-policy-additions.json'),approveFaqDocument('content/faq-policy-additions.json',applyApprovedContinuingUsePolicy('content/faq-policy-additions.json',before('content/faq-policy-additions.json'))));
   for(const prefix of ['', 'ja/', 'zh/']) {
     const portal=read(`${prefix}customer.html`);
     assert.ok(portal.includes('quiet-customer.js'));

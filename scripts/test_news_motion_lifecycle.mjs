@@ -63,7 +63,7 @@ function lifecycleFixture(){
  for(const s of ['.book-opening-cover','.opening-cover-art','.opening-cover-title','.reader-image','.reader-date','.reader-category','#book-article-title','.reader-copy','.book-close','.reader-body']){nodes.set(s,make());reader.children.push(nodes.get(s));}
  reader.open=false;reader.querySelector=s=>nodes.get(s);reader.showModal=()=>reader.open=true;reader.close=()=>{reader.open=false;closes++;};
  const items=[{id:'synthetic',title:'Synthetic title',body:'Synthetic body',date:'2026-10-17',category:'Update'},{id:'second',title:'Second',date:'2026-10-16'}];
- const context={BOOK_MOTION,prepareBookOffset,wrapBookOffset,modulo,containedImageRect,items,allItems:items,index:0,slots,stage,title,main,heading,read,live,reader,
+ const context={isPriceHistory:()=>false,currentPriceNotice:()=>'',seed:{locale:'en'},BOOK_MOTION,prepareBookOffset,wrapBookOffset,modulo,containedImageRect,items,allItems:items,index:0,slots,stage,title,main,heading,read,live,reader,
   busy:false,queued:0,followBookFocus:false,bookAnimations:[],coverAnimation:null,liftedBook:null,flightFrom:'',lastTrigger:null,
   finishTimer:0,openingTimer:0,preparationTimer:0,closeTimer:0,viewTimer:0,openingRun:0,closeCompletion:null,drag:null,dragFrame:0,pendingView:null,pendingContent:null,listView:false,
   reduce:{matches:false,addEventListener:(name,fn)=>events['reduce:'+name]=fn},

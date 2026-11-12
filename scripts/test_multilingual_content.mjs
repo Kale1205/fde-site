@@ -1,3 +1,4 @@
+import {approveFaqDocument,approveUsdCopy} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
@@ -56,7 +57,7 @@ test('current FAQ IDs and counts follow both source files; all three locales com
   for(const [locale,note]of Object.entries(demoLanguageNotes))assert.ok(data.faq.find(item=>item.id==='demo-not-product-version')?.answer[locale]?.includes(note),'native-language scope remains protected');
 });
 test('current business-policy answers and existing FAQ prices retain their approved values',()=>{
-  const approved=new Map(['content/faq-content.json','content/faq-policy-additions.json'].flatMap(file=>JSON.parse(readFaqMigrationFixture(file)).faq).map(item=>[item.id,item]));
+  const approved=new Map(['content/faq-content.json','content/faq-policy-additions.json'].flatMap(file=>JSON.parse(approveFaqDocument(file,readFaqMigrationFixture(file))).faq).map(item=>[item.id,item]));
   for(const id of ['no-redistribution','demo-not-product-version']){
     const item=data.faq.find(entry=>entry.id===id);
     assert.ok(item,`protected policy FAQ is missing: ${id}`);
@@ -68,7 +69,7 @@ test('current business-policy answers and existing FAQ prices retain their appro
 for(const file of ['content/faq-content.json','content/faq-policy-additions.json'])test(file+': historical migration changes only Chinese translation, labels and two scoped answers',()=>{
   const approved=readFaqMigrationFixture(file);
   const fixture=apply(file,applyApprovedInitialReleaseScope(file,approved)),current=JSON.parse(fixture),old=JSON.parse(approved);
-  assert.equal(read(file),applyApprovedContinuingUsePolicy(file,fixture),'live FAQ source receives only the separately approved continuing-use policy after the reviewed copy migrations');
+  assert.equal(read(file),approveFaqDocument(file,applyApprovedContinuingUsePolicy(file,fixture)),'live FAQ source receives only the separately approved continuing-use policy after the reviewed copy migrations');
   for(const item of current.faq){
     const original=old.faq.find(x=>x.id===item.id);
     assert.deepEqual({...item,question:null,answer:null,keywords:null,synonyms:null},{...original,question:null,answer:null,keywords:null,synonyms:null});
@@ -106,7 +107,7 @@ test('Chinese stock terms agree with the running demo and do not imply real serv
     assert.match(html,/合成示例数据/);
   }
   for(const id of ['updates-term','license-updates-entitlement','cancel-updates-after-license','cancel-updates-only']){
-    assert.equal(data.faq.find(x=>x.id===id).answer['zh-CN'],continuingUseFaqAnswers[id]['zh-CN'],'current approved continuing-use conditions stay exact');
+    assert.equal(data.faq.find(x=>x.id===id).answer['zh-CN'],approveUsdCopy('zh',continuingUseFaqAnswers[id]['zh-CN']),'current approved continuing-use conditions stay exact');
   }
   assert.match(data.faq.find(x=>x.id==='license-devices').answer['zh-CN'],/仅支持 Windows.*iOS.*iPadOS.*macOS 不受支持/);
   assert.match(data.faq.find(x=>x.id==='demo-not-product-version').answer['zh-CN'],/不代表原生应用支持中文/);

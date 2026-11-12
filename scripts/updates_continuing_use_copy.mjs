@@ -1,3 +1,4 @@
+import {approveUsdCopy} from '../price-policy.js';
 // Approved Updates continuing-use policy. Historical copy migrations stay unchanged.
 // Only the three License Updates regions and four FAQ answers are in scope.
 export const continuingUseCopy = Object.freeze({
@@ -92,7 +93,7 @@ const scopedFaqIds = {
   'content/faq-content.json': ['updates-term'],
   'content/faq-policy-additions.json': ['license-updates-entitlement', 'cancel-updates-after-license', 'cancel-updates-only'],
 };
-const nextLicenseRegion = ({locale, heading, previous}) => {
+const nextLicenseRegion = ({locale, heading, previous}, approved=true) => {
   const copy = continuingUseCopy[copyLocale(locale)];
   // The License page's older Chinese copy uses 获得 rather than 获取.
   const priorPending = locale === 'zh-CN' ? previousPendingTerms[locale].replace('获取', '获得') : previousPendingTerms[locale];
@@ -102,7 +103,8 @@ const nextLicenseRegion = ({locale, heading, previous}) => {
     joinCopy(locale, [copy.endVersion, copy.afterEnd]),
     joinCopy(locale, [copy.noNewRights, copy.resubscription]),
   ];
-  return `<div><h2>${heading}</h2>${paragraphs.map(text => `<p>${escapeHtml(text)}</p>`).join('')}</div>`;
+  const html=`<div><h2>${heading}</h2>${paragraphs.map(text => `<p>${escapeHtml(text)}</p>`).join('')}</div>`;
+  return approved?approveUsdCopy(copyLocale(locale),html):html;
 };
 
 export function applyApprovedContinuingUsePolicy(file, source) {
@@ -111,13 +113,13 @@ export function applyApprovedContinuingUsePolicy(file, source) {
     const {heading, previous} = region;
     const oldRegion = `<div><h2>${heading}</h2><p>${previous}</p></div>`;
     const nextRegion = nextLicenseRegion(region);
-    const reviewedInputs = [oldRegion, nextRegion];
+    const reviewedInputs = [oldRegion, nextRegion, nextLicenseRegion(region,false),approveUsdCopy(copyLocale(region.locale),oldRegion)];
     if (file === 'zh/license.html') {
       // The Chinese generator translates known headings before this scoped copy
       // step. Accept only this exact reviewed English body, never arbitrary text.
       reviewedInputs.push(nextLicenseRegion({...licenseRegions['license.html'], heading}));
     }
-    const matches = reviewedInputs.flatMap(input => Array(source.split(input).length - 1).fill(input));
+    const matches = [...new Set(reviewedInputs)].flatMap(input => Array(source.split(input).length - 1).fill(input));
     if (matches.length !== 1) throw Error(`Continuing-use policy: expected one reviewed Updates region in ${file}`);
     return matches[0] === nextRegion ? source : source.replace(matches[0], nextRegion);
   }
@@ -132,9 +134,10 @@ export function applyApprovedContinuingUsePolicy(file, source) {
     const record = records[0];
     for (const locale of locales) {
       const previous = previousFaqAnswers[id][locale], next = continuingUseFaqAnswers[id][locale];
-      if (record.answer?.[locale] === next) continue;
-      if (record.answer?.[locale] !== previous) throw Error(`Continuing-use policy: unreviewed FAQ answer ${id}/${locale}`);
-      record.answer[locale] = next;
+      if (record.answer?.[locale] === next || record.answer?.[locale] === approveUsdCopy(copyLocale(locale),next)) continue;
+      const approvedPrevious=approveUsdCopy(copyLocale(locale),previous);
+      if (record.answer?.[locale] !== previous && record.answer?.[locale] !== approvedPrevious) throw Error(`Continuing-use policy: unreviewed FAQ answer ${id}/${locale}`);
+      record.answer[locale] = record.answer[locale]===approvedPrevious?approveUsdCopy(copyLocale(locale),next):next;
       changed = true;
     }
   }

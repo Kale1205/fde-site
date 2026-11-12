@@ -35,7 +35,7 @@
 <style data-page-loading-critical>#page-loading{display:none;position:fixed;inset:0;z-index:10000;background:#033f1b;color:#faf8f4;place-items:center;padding:20px;font:16px system-ui,sans-serif}html.fde-loading .site-shell,html.fde-loading .skip-link{visibility:hidden}html.fde-loading.fde-loading-visible #page-loading{display:grid}.page-loading-panel{display:grid;justify-items:center;gap:16px;max-width:100%;text-align:center}.page-loading-art{position:relative;width:160px;max-width:42vw}.page-loading-art>img{display:block;width:100%;height:auto}.page-loading-art>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#page-loading progress{width:240px;max-width:76vw}#page-loading button{min-height:44px;padding:10px 18px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit}#page-loading button:focus-visible{outline:3px solid #faf8f4;outline-offset:4px}.page-loading-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}</style>
 <script data-page-loading-bootstrap>(function pageLoadingBootstrap(){
  const root=document.documentElement;
- const state={started:performance.now(),released:false,shown:false,completed:0,total:0,resources:new Map(),tasks:[]};
+ const state={started:performance.now(),released:false,shown:false,shownAt:null,readyAt:null,completed:0,total:0,resources:new Map(),tasks:[]};
  window.__fdePageLoading=state;
  const resource=event=>{
   const node=event.target,tag=node?.tagName;
@@ -46,8 +46,14 @@
  };
  function release(reason){
   if(state.released)return;
+  if(reason==='complete'){
+   state.readyAt??=performance.now();
+   if(state.shownAt===null)return;
+   const remaining=2000-(performance.now()-state.shownAt);
+   if(remaining>0){clearTimeout(state.minimum);state.minimum=setTimeout(()=>release('complete'),remaining);return;}
+  }
   state.released=true;state.result=reason;state.finished=performance.now();
-  clearTimeout(state.deadline);clearTimeout(state.appearance);state.cleanup?.();
+  clearTimeout(state.deadline);clearTimeout(state.minimum);cancelAnimationFrame(state.frame);state.cleanup?.();
   // A stalled stylesheet must not keep the browser's own first paint blocked.
   // Restore its original media if the late response eventually arrives.
   if(reason!=='complete')for(const link of document.querySelectorAll('link[rel="stylesheet"]')){
@@ -74,24 +80,34 @@
  window.addEventListener('pagehide',()=>release('navigation'),{once:true});
  window.addEventListener('pageshow',event=>{if(event.persisted)release('history');});
  try{if(localStorage.getItem('fde:still-icons')==='1')root.dataset.pageLoadingMotion='still';}catch{}
- root.classList.add('fde-loading');
- state.appearance=setTimeout(()=>{if(!state.released){state.shown=true;root.classList.add('fde-loading-visible');}},120);
+ root.classList.add('fde-loading','fde-loading-visible');
+ function observeDisplay(){
+  if(state.released)return;
+  if(!document.getElementById('page-loading')){state.frame=requestAnimationFrame(observeDisplay);return;}
+  state.shown=true;state.shownAt=performance.now();
+  if(state.readyAt!==null)release('complete');
+ }
+ state.frame=requestAnimationFrame(observeDisplay);
  state.deadline=setTimeout(()=>release('timeout'),4000);
 })();</script>
-<link rel="stylesheet" href="page-loading.css?v=20261112-203202">
-<script defer src="page-loading.js?v=20261112-203202" data-page-loading-runtime></script>
+<link rel="stylesheet" href="page-loading.css?v=20261112-221857">
+<script defer src="page-loading.js?v=20261112-221857" data-page-loading-runtime></script>
 <!-- End FDE page loading -->
-<link rel="stylesheet" href="gallery-ui.css?v=20261112-203202">
-  <link rel="stylesheet" href="gallery-pages.css?v=20261112-203202">
-  <link rel="stylesheet" href="faq-v38.css?v=20261112-203202">
+<!-- Shared site chrome -->
+<link rel="stylesheet" href="site-chrome.css?v=20261112-221857">
+<script type="module" src="site-chrome.js?v=20261112-221857"></script>
+<!-- End shared site chrome -->
+<link rel="stylesheet" href="gallery-ui.css?v=20261112-221857">
+  <link rel="stylesheet" href="gallery-pages.css?v=20261112-221857">
+  <link rel="stylesheet" href="faq-v38.css?v=20261112-221857">
   <noscript><style>.faq-a{display:block}.faq-q{cursor:default}.faq-plus{display:none}</style></noscript>
-  <script defer src="gallery-ui.js?v=20261112-203202"></script>
-  <script defer src="contact-config.js?v=20261112-203202"></script>
-  <script defer src="contact-direct.js?v=20261112-203202"></script>
-  <script defer src="faq-policy-merge.js?v=20261112-203202"></script>
-  <script defer src="faq-cms.js?v=20261112-203202"></script>
-  <link rel="stylesheet" href="quiet-pages.css?v=20261112-203202">
-  <script defer src="quiet-contact.js?v=20261112-203202"></script>
+  <script defer src="gallery-ui.js?v=20261112-221857"></script>
+  <script defer src="contact-config.js?v=20261112-221857"></script>
+  <script defer src="contact-direct.js?v=20261112-221857"></script>
+  <script defer src="faq-policy-merge.js?v=20261112-221857"></script>
+  <script defer src="faq-cms.js?v=20261112-221857"></script>
+  <link rel="stylesheet" href="quiet-pages.css?v=20261112-221857">
+  <script defer src="quiet-contact.js?v=20261112-221857"></script>
 </head>
 <body class="quiet-page gallery-page gallery-subpage refined-page contact-page contact-renewal">
 <!-- FDE loading panel -->
@@ -101,7 +117,7 @@
 <a class="skip-link" href="#main-content">Skip to content</a>
 <div class="site-shell language-en">
   <header class="site-header">
-    <a class="brand" href="index.html" aria-label="Baked Kale FDE home"><img alt="Baked Kale FDE" src="assets/baked-kale-logo.svg"></a>
+    <a class="brand" href="index.html" aria-label="Baked Kale FDE home"><img data-brand-character src="assets/bakedkale-character.svg" width="48" height="45" alt=""><span class="brand-wordmark" aria-hidden="true">Baked Kale<small>FDE / IT Engineering</small></span></a>
     <nav class="desktop-nav" aria-label="Primary navigation">
       <a href="index.html">Product</a><a href="goals.html">Our Goals</a><a href="news.html">News</a>
     </nav>
@@ -129,15 +145,15 @@
             <div class="faq-path"><span>Product &amp; Availability</span><span>Product models</span></div>
             <div class="faq-a" id="faq-answer-license-updates-difference">License is a one-time purchase without source code and permits perpetual internal use. It includes the first three months of Updates, with optional continuation as a License-only add-on. License Plus is a one-time purchase with source code and internal-modification rights; the purchaser manages updates and security. Updates is not a third product plan, and License Plus is not eligible.</div>
           </article>
-          <article class="faq-item" data-faq-id="license-price" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License price $349 candidate cost one-time how much fee one-time price">
+          <article class="faq-item" data-faq-id="license-price" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License price $349 planned launch cost one-time how much fee one-time price">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-price"><span>What is the planned price of IMS License?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
             <div class="faq-path"><span>License &amp; Internal Use</span><span>License basics</span></div>
-            <div class="faq-a" id="faq-answer-license-price">The planned one-time price is a $349 USD candidate. Source code is not included. The plan permits perpetual internal use and includes the first three months of Updates-equivalent service at no additional charge. It does not automatically convert into paid Updates. All USD figures are unapproved candidates pending final international pricing.</div>
+            <div class="faq-a" id="faq-answer-license-price">The planned one-time launch price is $349 USD. Source code is not included. The plan permits perpetual internal use and includes the first three months of Updates-equivalent service at no additional charge. It does not automatically convert into paid Updates. USD prices are planned. Tax treatment is not yet confirmed. Planned USD prices: License $521 → $349; License Plus $1,043 → $699. Launch prices apply for the first six months after the actual launch. Standard prices are planned post-campaign prices, not past selling prices. Actual launch and campaign dates and tax treatment are not confirmed. Optional License Updates remains $31/month for months 4–6 after purchase and $62/month from month 7; the first three months are included.</div>
           </article>
-          <article class="faq-item" data-faq-id="license-plus-price" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License Plus $699 candidate full source self-hosted internal modification one-time purchase Plus price source-code plan customizable plan">
+          <article class="faq-item" data-faq-id="license-plus-price" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License Plus $699 planned launch full source self-hosted internal modification one-time purchase Plus price source-code plan customizable plan">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-plus-price"><span>What are the planned price and included rights for License Plus?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
             <div class="faq-path"><span>License &amp; Internal Use</span><span>License basics</span></div>
-            <div class="faq-a" id="faq-answer-license-plus-price">The planned one-time price is a $699 USD candidate. It is planned to include perpetual internal use, full source, internal-modification rights, technical documentation, and customer-server/self-hosted operation for the purchasing legal entity. It has no Updates entitlement; the purchaser manages updates and security. All USD figures are unapproved candidates pending final international pricing.</div>
+            <div class="faq-a" id="faq-answer-license-plus-price">The planned one-time price is a $699 planned USD launch price. It is planned to include perpetual internal use, full source, internal-modification rights, technical documentation, and customer-server/self-hosted operation for the purchasing legal entity. It has no Updates entitlement; the purchaser manages updates and security. USD prices are planned. Tax treatment is not yet confirmed. Planned USD prices: License $521 → $349; License Plus $1,043 → $699. Launch prices apply for the first six months after the actual launch. Standard prices are planned post-campaign prices, not past selling prices. Actual launch and campaign dates and tax treatment are not confirmed. Optional License Updates remains $31/month for months 4–6 after purchase and $62/month from month 7; the first three months are included.</div>
           </article>
           <article class="faq-item" data-faq-id="license-plus-upgrade" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="License Plus upgrade separate purchase full source self-hosted move to Plus upgrade to source code higher plan">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-plus-upgrade"><span>Can License be upgraded to License Plus?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
@@ -147,7 +163,7 @@
           <article class="faq-item" data-faq-id="license-source-code" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="source code License copyright intellectual property code included source included IP ownership">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-source-code"><span>Does License include source code?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
             <div class="faq-path"><span>License &amp; Internal Use</span><span>License basics</span></div>
-            <div class="faq-a" id="faq-answer-license-source-code">No. The License has a $349 USD candidate price and does not include source code. Customers that need full source, technical documentation, self-hosted operation, and internal-modification rights should choose License Plus at the $699 USD candidate price. Both plans permit perpetual internal use by the purchasing legal entity. All USD figures are unapproved candidates.</div>
+            <div class="faq-a" id="faq-answer-license-source-code">No. The License has a $349 planned USD launch price and does not include source code. Customers that need full source, technical documentation, self-hosted operation, and internal-modification rights should choose License Plus at the $699 planned USD launch price. Both plans permit perpetual internal use by the purchasing legal entity. USD prices are planned. Tax treatment is not yet confirmed. Planned USD prices: License $521 → $349; License Plus $1,043 → $699. Launch prices apply for the first six months after the actual launch. Standard prices are planned post-campaign prices, not past selling prices. Actual launch and campaign dates and tax treatment are not confirmed. Optional License Updates remains $31/month for months 4–6 after purchase and $62/month from month 7; the first three months are included.</div>
           </article>
           <article class="faq-item" data-faq-id="license-customization" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="customize modify edit internal development source code internal customization change code extend features">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-customization"><span>Which plan allows internal source-code modification?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
@@ -162,7 +178,7 @@
           <article class="faq-item" data-faq-id="license-security-responsibility" data-faq-category-key="license" data-faq-subcategory="license-basics" data-faq-terms="security updates maintenance responsibility License security patches who updates customer-managed">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-security-responsibility"><span>Who manages updates and security for License?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
             <div class="faq-path"><span>License &amp; Internal Use</span><span>License basics</span></div>
-            <div class="faq-a" id="faq-answer-license-security-responsibility">License includes three months of Updates, during which FDE provides functionality, security, compatibility, and bug-fix updates. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. When Updates is inactive, the customer manages updates and security. There is no automatic paid conversion, and License Plus is not eligible for the add-on. All USD figures are unapproved candidates pending final international pricing.</div>
+            <div class="faq-a" id="faq-answer-license-security-responsibility">License includes three months of Updates, during which FDE provides functionality, security, compatibility, and bug-fix updates. Optional continuation is a $31/month planned USD price for months 4–6 and $62/month from month 7. When Updates is inactive, the customer manages updates and security. There is no automatic paid conversion, and License Plus is not eligible for the add-on. USD prices are planned. Tax treatment is not yet confirmed.</div>
           </article>
           <article class="faq-item" data-faq-id="no-resale" data-faq-category-key="restrictions" data-faq-subcategory="redistribution" data-faq-terms="resale sell third party reselling can I resell resell software sell onward">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-no-resale"><span>Can we resell IMS to a third party?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
@@ -177,7 +193,7 @@
           <article class="faq-item" data-faq-id="updates-price" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="Updates $31 candidate $62 candidate monthly price subscription monthly fee subscription price how much">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-updates-price"><span>What is the planned price of the License Updates add-on?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
             <div class="faq-path"><span>Updates &amp; Maintenance</span><span>Updates basics</span></div>
-            <div class="faq-a" id="faq-answer-updates-price">Months 1–3 are included with License. Optional continuation is a $31/month USD candidate for months 4–6 and $62/month from month 7. Updates is a License-only add-on; it cannot be purchased alone or added to License Plus. It never starts automatically, and all USD figures are unapproved candidates pending final international pricing.</div>
+            <div class="faq-a" id="faq-answer-updates-price">Months 1–3 are included with License. Optional continuation is a $31/month planned USD price for months 4–6 and $62/month from month 7. Updates is a License-only add-on; it cannot be purchased alone or added to License Plus. It never starts automatically, and USD prices are planned. Tax treatment is not yet confirmed.</div>
           </article>
           <article class="faq-item" data-faq-id="formal-order-flow" data-faq-category-key="orders" data-faq-subcategory="purchase" data-faq-terms="order legal entity product version EULA License order form quotation purchase details">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-formal-order-flow"><span>What information is planned for a formal IMS order?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
@@ -192,7 +208,7 @@
           <article class="faq-item" data-faq-id="license-updates-entitlement" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="License Updates three months included $31 candidate $62 candidate no automatic conversion post-purchase Updates Updates entitlement standard price automatic paid subscription">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-license-updates-entitlement"><span>How does Updates pricing work after purchasing License?</span><span class="faq-plus" aria-hidden="true">＋</span></button>
             <div class="faq-path"><span>Updates &amp; Maintenance</span><span>Updates basics</span></div>
-            <div class="faq-a" id="faq-answer-license-updates-entitlement">License includes the first three months of Updates. Optional continuation is a $31/month USD candidate for months 4–6 and a $62/month USD candidate from month 7. Customers can keep using the version purchased without continuing Updates. Updates never starts automatically, and all USD figures are unapproved candidates pending final international pricing. The first six months after purchase (three free months and three months at half price) are excluded from the period used to earn continuing-use rights. After that, every six consecutive months of an uninterrupted Updates subscription earns the right to continue using the version at that milestone after the subscription ends. With no interruption, the milestones are 12, 18, 24 months after purchase, and so on. This continuing-use right does not automatically extend to the latest version at the end of the subscription. After the subscription ends, you can use the version purchased and the versions for which you obtained continuing-use rights at these milestones. If the subscription ends before you earn new continuing-use rights for that period, you can then use only the version purchased and versions for which you previously earned continuing-use rights. If you end the subscription at or after the six-month point following purchase and then subscribe again, you earn continuing-use rights for the version at each new milestone of six consecutive months from resubscribing. Time from previous subscriptions is not added. You retain the continuing-use rights you previously earned.</div>
+            <div class="faq-a" id="faq-answer-license-updates-entitlement">License includes the first three months of Updates. Optional continuation is a $31/month planned USD price for months 4–6 and a $62/month planned USD price from month 7. Customers can keep using the version purchased without continuing Updates. Updates never starts automatically, and USD prices are planned. Tax treatment is not yet confirmed. The first six months after purchase (three free months and three months at half price) are excluded from the period used to earn continuing-use rights. After that, every six consecutive months of an uninterrupted Updates subscription earns the right to continue using the version at that milestone after the subscription ends. With no interruption, the milestones are 12, 18, 24 months after purchase, and so on. This continuing-use right does not automatically extend to the latest version at the end of the subscription. After the subscription ends, you can use the version purchased and the versions for which you obtained continuing-use rights at these milestones. If the subscription ends before you earn new continuing-use rights for that period, you can then use only the version purchased and versions for which you previously earned continuing-use rights. If you end the subscription at or after the six-month point following purchase and then subscribe again, you earn continuing-use rights for the version at each new milestone of six consecutive months from resubscribing. Time from previous subscriptions is not added. You retain the continuing-use rights you previously earned.</div>
           </article>
           <article class="faq-item" data-faq-id="cancel-updates-after-license" data-faq-category-key="updates" data-faq-subcategory="updates-model" data-faq-terms="cancel Updates keep License perpetual use no source code security stop Updates end monthly plan continue perpetual License">
             <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-answer-cancel-updates-after-license"><span>What happens if Updates ends after purchasing License?</span><span class="faq-plus" aria-hidden="true">＋</span></button>

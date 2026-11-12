@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 
@@ -8,11 +9,11 @@ export const loadingCopy={
  zh:{label:'页面加载',preparing:'正在准备页面',skip:'立即显示页面',done:'页面已就绪。',partial:'未等待所有资源，已显示页面。',image:'Baked Kale 角色'},
 };
 
-// Runs before external styles/scripts. The deadline releases content; it never
-// fabricates progress or waits for a decorative animation to finish.
+// Normal pages show the real loader for at least two visible seconds.
+// Progress is resource-driven; errors, user skip and the deadline always fail open.
 export function pageLoadingBootstrap(){
  const root=document.documentElement;
- const state={started:performance.now(),released:false,shown:false,completed:0,total:0,resources:new Map(),tasks:[]};
+ const state={started:performance.now(),released:false,shown:false,shownAt:null,readyAt:null,completed:0,total:0,resources:new Map(),tasks:[]};
  window.__fdePageLoading=state;
  const resource=event=>{
   const node=event.target,tag=node?.tagName;
@@ -23,8 +24,14 @@ export function pageLoadingBootstrap(){
  };
  function release(reason){
   if(state.released)return;
+  if(reason==='complete'){
+   state.readyAt??=performance.now();
+   if(state.shownAt===null)return;
+   const remaining=2000-(performance.now()-state.shownAt);
+   if(remaining>0){clearTimeout(state.minimum);state.minimum=setTimeout(()=>release('complete'),remaining);return;}
+  }
   state.released=true;state.result=reason;state.finished=performance.now();
-  clearTimeout(state.deadline);clearTimeout(state.appearance);state.cleanup?.();
+  clearTimeout(state.deadline);clearTimeout(state.minimum);cancelAnimationFrame(state.frame);state.cleanup?.();
   // A stalled stylesheet must not keep the browser's own first paint blocked.
   // Restore its original media if the late response eventually arrives.
   if(reason!=='complete')for(const link of document.querySelectorAll('link[rel="stylesheet"]')){
@@ -51,8 +58,14 @@ export function pageLoadingBootstrap(){
  window.addEventListener('pagehide',()=>release('navigation'),{once:true});
  window.addEventListener('pageshow',event=>{if(event.persisted)release('history');});
  try{if(localStorage.getItem('fde:still-icons')==='1')root.dataset.pageLoadingMotion='still';}catch{}
- root.classList.add('fde-loading');
- state.appearance=setTimeout(()=>{if(!state.released){state.shown=true;root.classList.add('fde-loading-visible');}},120);
+ root.classList.add('fde-loading','fde-loading-visible');
+ function observeDisplay(){
+  if(state.released)return;
+  if(!document.getElementById('page-loading')){state.frame=requestAnimationFrame(observeDisplay);return;}
+  state.shown=true;state.shownAt=performance.now();
+  if(state.readyAt!==null)release('complete');
+ }
+ state.frame=requestAnimationFrame(observeDisplay);
  state.deadline=setTimeout(()=>release('timeout'),4000);
 }
 
@@ -73,11 +86,19 @@ export function withPageLoading(file,source){
  if(!loadingPages.includes(file)||!/^<!doctype html>/i.test(source))return source;
  const version=source.includes('page-loading.css?v=BUILD')?'BUILD':readFileSync(new URL('../build-version.txt',import.meta.url),'utf8').trim(),prefix=file.includes('/')?'../':'';
  let html=stripLoadingHead(source,{strict:false}).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'');
- const boundary=html.indexOf('<link rel="stylesheet"');if(boundary<0)throw Error(`Missing stylesheet boundary: ${file}`);
+ const firstStyle=html.indexOf('<link rel="stylesheet"'),chrome=html.indexOf('<!-- Shared site chrome -->');
+ const boundary=chrome>=0?Math.min(firstStyle,chrome):firstStyle;if(boundary<0)throw Error(`Missing stylesheet boundary: ${file}`);
  html=html.slice(0,boundary)+loadingHead(prefix,version)+html.slice(boundary);
  return html.replace(/(<body\b[^>]*>\n?)/,(_,tag)=>tag+loadingBody(file));
 }
-export function applyReviewedPageLoading(file,source){return source.includes('<!-- FDE page loading -->')?source:withPageLoading(file,source);}
+const priorLoadingHeads=new Set(["73928a6b6c108f7f334bd476f70642656bb3b17812e6dec10173187b54358606", "0292c1c5369cd292600a7b1636a10919ffeedffc1a67f996bad823ff337d7f92"]);
+export function applyReviewedPageLoading(file,source){
+ const block=source.match(/<!-- FDE page loading -->\n[\s\S]*?<!-- End FDE page loading -->\n/)?.[0];
+ if(!block)return withPageLoading(file,source);
+ const normalized=block.replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
+ if(priorLoadingHeads.has(createHash('sha256').update(normalized).digest('hex')))return withPageLoading(file,source);
+ return source;
+}
 
 if(process.argv[1]===fileURLToPath(import.meta.url)){
  for(const file of loadingPages){const url=new URL('../'+file,import.meta.url),before=readFileSync(url,'utf8'),after=withPageLoading(file,before);if(process.argv.includes('--check')){if(before!==after)throw Error(`Loading screen is stale: ${file}`);}else if(before!==after)writeFileSync(url,after);}

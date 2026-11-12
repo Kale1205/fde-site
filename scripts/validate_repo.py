@@ -340,7 +340,7 @@ quiet_home_markers = {
 for rel in sorted(QUIET_HOMEPAGES):
     visible = public_visible_text[rel]
     source = public_source_text[rel]
-    for marker in quiet_home_markers[rel] + ("¥49,800", "¥99,800", "¥4,900", "¥9,800", "IMS", "License", "License Plus"):
+    for marker in quiet_home_markers[rel] + (("¥49,800", "¥99,800", "¥4,900", "¥9,800") if rel.startswith("ja/") else ("$349", "$699", "$31", "$62")) + ("IMS", "License", "License Plus"):
         if marker not in visible:
             fail(f"{rel}: approved Quiet Form content missing: {marker}")
     for marker in ('id="product"', 'id="plans"', 'id="license-plus"', 'id="motion-demo"', 'id="imsDemoRoot"', 'class="quiet-comparison"', 'scope="col"', 'quiet-form.css', 'quiet-form.js', 'demo-v1.js', 'license.html#comparison', 'goals.html', 'news.html', 'contact.html'):
@@ -539,13 +539,16 @@ QUIET_ORDER_PAGES = {
 # Keep the old price-book checks intact for non-renewed commercial pages.
 for rel in sorted(QUIET_ORDER_PAGES):
     source = public_source_text.get(rel, "")
-    for marker in ("¥49,800", "¥99,800", "¥4,900", "¥9,800", "JPY", "License Updates", "noindex,follow", 'class="order-process-rail"'):
+    japanese = rel.startswith("ja/")
+    amounts = ("¥49,800", "¥99,800", "¥4,900", "¥9,800", "JPY") if japanese else ("$349", "$699", "$31", "$62", "USD")
+    for marker in amounts + ("License Updates", "noindex,follow", 'class="order-process-rail"'):
         if marker not in source:
             fail(f"{rel}: approved W07 fact missing: {marker}")
-    found = set(re.findall(r"¥([\d,]+)", source))
-    if found != {"74,800", "149,800", "49,800", "99,800", "4,900", "9,800"}:
-        fail(f"{rel}: W07 JPY price book drift")
-    if re.search(r"<form\b|stripe\.com|\$\s*\d", source):
+    found = set(re.findall(r"¥([\d,]+)" if japanese else r"\$([\d,]+)", source))
+    expected = {"74,800", "149,800", "49,800", "99,800", "4,900", "9,800"} if japanese else {"521", "1,043", "349", "699", "31", "62"}
+    if found != expected:
+        fail(f"{rel}: W07 locale price book drift")
+    if re.search(r"<form\b|stripe\.com", source):
         fail(f"{rel}: W07 must remain a static, purchase-disabled notice")
 PUBLIC_PRICE_PAGES = tuple(rel for rel in PUBLIC_PRICE_PAGES if rel not in QUIET_HOMEPAGES and rel not in QUIET_ORDER_PAGES)
 CONTENT_PLAN_NAME_PATTERNS = {
@@ -644,7 +647,7 @@ if re.search(r"\bUSD\b|U\.S\.\s*dollars?|US\s*dollars?|\$\s*\d", japanese_plan_s
     fail("active Japanese plan source/metadata must not contain USD/dollar pricing")
 
 allowed_money_values = {
-    "en": {"349", "699", "31", "62"},
+    "en": {"521", "1,043", "349", "699", "31", "62"},
     "ja": {"74,800", "149,800", "49,800", "99,800", "4,900", "9,800"},
 }
 for rel in PUBLIC_PRICE_PAGES:
@@ -657,8 +660,8 @@ for rel in PUBLIC_PRICE_PAGES:
 
 currency_disclosure_markers = {
     "index.html": "UNAPPROVED USD CANDIDATE",
-    "license.html": "unapproved candidate",
-    "order.html": "JPY",
+    "license.html": "USD",
+    "order.html": "USD",
     "ja/index.html": "日本円",
     "ja/license.html": "日本円",
     "ja/order.html": "JPY",
@@ -1332,8 +1335,12 @@ for source, items in (
             for field in ("answer", "body")
             if isinstance(item.get(field), dict)
         )
-        if "$" in english and not ("candidate" in english.lower() and "unapproved" in english.lower()):
-            fail(f"{source}: English price-bearing item {item_id} must identify USD amounts as unapproved candidates")
+        if "$" in english:
+            if source == "content/site-content.json":
+                if not ("candidate" in english.lower() and "unapproved" in english.lower()):
+                    fail(f"{source}: historical price-bearing article {item_id} must retain its dated candidate status")
+            elif not ("planned" in english.lower() and "tax treatment is not yet confirmed" in english.lower()):
+                fail(f"{source}: price-bearing FAQ {item_id} must disclose planned USD pricing and pending tax treatment")
 
 if not any(item.get("id") == "inventory-adoption-migration-fit" for item in faq_data.get("faq", [])):
     fail("content/faq-content.json: inventory adoption / migration FAQ is missing")
