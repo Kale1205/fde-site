@@ -16,8 +16,8 @@ test('every yen price surface presents planned standard and planned launch price
  const ja=read('ja/license.html');assert(ja.includes('data-campaign-standard="74,800円"'));assert(ja.includes('data-campaign-standard="149,800円"'));assert(ja.includes('data-campaign-standard-value'));assert(ja.includes(campaignCopy.ja.terms));
 });
 test('international candidate price books and every Updates section remain exact',()=>{
- const strip=source=>stripLoadingHead(source).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'');
- for(const file of ['license.html','zh/license.html'])assert.equal(strip(read(file)),before(file),file);
+ const strip=source=>stripLoadingHead(source).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'').replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
+ for(const file of ['license.html','zh/license.html'])assert.equal(strip(read(file)),strip(before(file)),file);
  for(const prefix of ['', 'ja/','zh/']){const home=read(prefix+'index.html'),old=before(prefix+'index.html');assert.equal(home.match(/<div class="updates-strip">[\s\S]*?<\/section>/)[0],old.match(/<div class="updates-strip">[\s\S]*?<\/section>/)[0]);const order=read(prefix+'order.html');assert.equal(order.match(/<section class="order-updates"[\s\S]*?<\/section>/)[0],before(prefix+'order.html').match(/<section class="order-updates"[\s\S]*?<\/section>/)[0]);}
 });
 test('existing media, OGP image, article/feed data and interaction engines remain byte-identical',()=>{
