@@ -24,6 +24,7 @@ html_paths = (
     sorted(ROOT.glob("*.html"))
     + sorted((ROOT / "ja").glob("*.html"))
     + sorted((ROOT / "zh").glob("*.html"))
+    + sorted((ROOT / "ja" / "lp").glob("*.html"))
 )
 for path in html_paths:
     text = path.read_text(encoding="utf-8")

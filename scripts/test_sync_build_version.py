@@ -17,9 +17,9 @@ class BuildSyncTests(unittest.TestCase):
             (fixture / "scripts").mkdir()
             shutil.copy(ROOT / "scripts/sync_build_version.py", fixture / "scripts/")
             (fixture / "build-version.txt").write_text("fixture-before\n")
-            for folder in (fixture, fixture / "ja", fixture / "zh"):
-                folder.mkdir(exist_ok=True)
-                (folder / "contact.html").write_text('<script src="cms-admin-loader.js?v=fixture-before"></script>')
+            for folder in (fixture, fixture / "ja", fixture / "zh", fixture / "ja/lp"):
+                folder.mkdir(parents=True, exist_ok=True)
+                (folder / ("index.html" if folder.name == "lp" else "contact.html")).write_text('<script src="cms-admin-loader.js?v=fixture-before"></script>')
             runtimes = ("contact-config.js", "cms-admin.js", "cms-news-workflow.js", "cms-news-batch-workflow.js", "news-renderer.js", "cms-faq-workflow.js", "faq-admin-safe.js")
             for name in runtimes:
                 # Use the real module imports, including transitive FAQ imports.
@@ -38,6 +38,7 @@ class BuildSyncTests(unittest.TestCase):
             (fixture / "build-version.txt").write_text("fixture-after\n")
             subprocess.run(["python3", "scripts/sync_build_version.py"], cwd=fixture, check=True, capture_output=True)
             rewritten = set(git("diff", "--name-only").splitlines())
+            self.assertIn("ja/lp/index.html", rewritten)
             self.assertIn("cms-faq-workflow.js", rewritten)
             self.assertIn("faq-admin-safe.js", rewritten)
             for name in runtimes:

@@ -149,7 +149,8 @@ EN_PAGES = INDEXED_PAGE_NAMES | {"order.html", "customer.html"}
 JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
 ZH_PAGES = {f"zh/{name}" for name in EN_PAGES}
 ROOT_ONLY_PUBLIC = set()
-ALL_PUBLIC = EN_PAGES | JA_PAGES | ZH_PAGES | ROOT_ONLY_PUBLIC
+LP_PAGES = {f"ja/lp/{name}.html" for name in ("index", "examples", "service", "diagnosis")}
+ALL_PUBLIC = EN_PAGES | JA_PAGES | ZH_PAGES | ROOT_ONLY_PUBLIC | LP_PAGES
 
 for prefix in ("", "ja/", "zh/"):
     for name in REMOVED_DECISION_PAGE_NAMES:

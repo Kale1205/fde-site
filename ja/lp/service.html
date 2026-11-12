@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<!-- Shared official Instagram image -->
+<meta property="og:image" content="https://kale1205.github.io/fde-site/assets/social/baked-kale-instagram-share-36bd831a4bf1.png">
+<meta property="og:image:secure_url" content="https://kale1205.github.io/fde-site/assets/social/baked-kale-instagram-share-36bd831a4bf1.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="緑の背景にBaked Kaleの文字と白い立体アイコン。公式Instagramのプロフィール画像。">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kale1205.github.io/fde-site/assets/social/baked-kale-instagram-share-36bd831a4bf1.png">
+<meta name="twitter:image:alt" content="緑の背景にBaked Kaleの文字と白い立体アイコン。公式Instagramのプロフィール画像。">
+<!-- End shared official Instagram image -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="index,follow"><meta name="theme-color" content="#073e2c">
+<title>LP制作のサービス・予定料金 | Baked Kale</title><meta name="description" content="日本語LP制作の範囲と予定料金、制作の流れをご案内します。50,000円〜。税区分・追加費用・契約の未確定事項を明記しています。">
+<link rel="canonical" href="https://kale1205.github.io/fde-site/ja/lp/service.html"><meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:title" content="LP制作のサービス・予定料金 | Baked Kale"><meta property="og:description" content="日本語LP制作の範囲と予定料金、制作の流れをご案内します。50,000円〜。税区分・追加費用・契約の未確定事項を明記しています。"><meta property="og:url" content="https://kale1205.github.io/fde-site/ja/lp/service.html">
+<link rel="icon" type="image/svg+xml" href="../../assets/baked-kale-mark.svg">
+<!-- FDE page loading -->
+<style data-page-loading-critical>#page-loading{display:none;position:fixed;inset:0;z-index:10000;background:#033f1b;color:#faf8f4;place-items:center;padding:20px;font:16px system-ui,sans-serif}html.fde-loading .site-shell,html.fde-loading .skip-link{visibility:hidden}html.fde-loading.fde-loading-visible #page-loading{display:grid}.page-loading-panel{display:grid;justify-items:center;gap:16px;max-width:100%;text-align:center}.page-loading-art{position:relative;width:160px;max-width:42vw}.page-loading-art>img{display:block;width:100%;height:auto}.page-loading-art>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#page-loading progress{width:240px;max-width:76vw}#page-loading button{min-height:44px;padding:10px 18px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit}#page-loading button:focus-visible{outline:3px solid #faf8f4;outline-offset:4px}.page-loading-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}</style>
+<script data-page-loading-bootstrap>(function pageLoadingBootstrap(){
+ const root=document.documentElement;
+ const state={started:performance.now(),released:false,shown:false,shownAt:null,readyAt:null,completed:0,total:0,resources:new Map(),tasks:[]};
+ window.__fdePageLoading=state;
+ const resource=event=>{
+  const node=event.target,tag=node?.tagName;
+  if(tag==='SCRIPT'&&node.src||tag==='LINK'&&node.rel==='stylesheet'){
+   state.resources.set(node.src||node.href,event.type==='load');
+   if(event.type==='error')release('error');
+  }else if(node===window&&event.type==='error')release('error');
+ };
+ function release(reason){
+  if(state.released)return;
+  if(reason==='complete'){
+   state.readyAt??=performance.now();
+   if(state.shownAt===null)return;
+   const remaining=2000-(performance.now()-state.shownAt);
+   if(remaining>0){clearTimeout(state.minimum);state.minimum=setTimeout(()=>release('complete'),remaining);return;}
+  }
+  state.released=true;state.result=reason;state.finished=performance.now();
+  clearTimeout(state.deadline);clearTimeout(state.minimum);cancelAnimationFrame(state.frame);state.cleanup?.();
+  // A stalled stylesheet must not keep the browser's own first paint blocked.
+  // Restore its original media if the late response eventually arrives.
+  if(reason!=='complete')for(const link of document.querySelectorAll('link[rel="stylesheet"]')){
+   if(link.sheet||link.media&&!matchMedia(link.media).matches)continue;
+   const media=link.getAttribute('media');link.media='not all';
+   link.addEventListener('load',()=>{if(media===null)link.removeAttribute('media');else link.setAttribute('media',media);},{once:true});
+  }
+  const panel=document.getElementById('page-loading'),focused=panel?.contains(document.activeElement);
+  root.classList.remove('fde-loading','fde-loading-visible');root.dataset.pageLoadingResult=reason;
+  const status=document.getElementById('page-loading-status');
+  if(status)status.textContent=reason==='complete'?status.dataset.done:status.dataset.partial;
+  if(focused||reason==='skip'){
+   const main=document.getElementById('main-content');
+   if(main){const original=main.getAttribute('tabindex');main.setAttribute('tabindex','-1');main.focus({preventScroll:true});main.addEventListener('blur',()=>{if(original===null)main.removeAttribute('tabindex');else main.setAttribute('tabindex',original);},{once:true});}
+  }
+  document.removeEventListener('load',resource,true);window.removeEventListener('error',resource,true);
+  document.removeEventListener('click',skip);document.removeEventListener('keydown',key);
+ }
+ const skip=event=>{if(event.target.closest?.('[data-page-loading-skip]'))release('skip');};
+ const key=event=>{if(event.key==='Escape')release('skip');};
+ state.release=release;
+ document.addEventListener('load',resource,true);window.addEventListener('error',resource,true);
+ document.addEventListener('click',skip);document.addEventListener('keydown',key);
+ window.addEventListener('pagehide',()=>release('navigation'),{once:true});
+ window.addEventListener('pageshow',event=>{if(event.persisted)release('history');});
+ try{if(localStorage.getItem('fde:still-icons')==='1')root.dataset.pageLoadingMotion='still';}catch{}
+ root.classList.add('fde-loading','fde-loading-visible');
+ function observeDisplay(){
+  if(state.released)return;
+  if(!document.getElementById('page-loading')){state.frame=requestAnimationFrame(observeDisplay);return;}
+  state.shown=true;state.shownAt=performance.now();
+  if(state.readyAt!==null)release('complete');
+ }
+ state.frame=requestAnimationFrame(observeDisplay);
+ state.deadline=setTimeout(()=>release('timeout'),4000);
+})();</script>
+<link rel="stylesheet" href="../../page-loading.css?v=20261112-225125">
+<script defer src="../../page-loading.js?v=20261112-225125" data-page-loading-runtime></script>
+<!-- End FDE page loading -->
+<link rel="stylesheet" href="../../gallery-ui.css?v=20261112-225125">
+<link rel="stylesheet" href="../../gallery-pages.css?v=20261112-225125">
+<link rel="stylesheet" href="../../quiet-pages.css?v=20261112-225125">
+<link rel="stylesheet" href="lp.css?v=20261112-225125">
+<script defer src="../../gallery-ui.js?v=20261112-225125"></script>
+<script defer src="lp-chrome.js?v=20261112-225125"></script>
+</head><body class="quiet-page gallery-page gallery-subpage refined-page lp-page">
+<!-- FDE loading panel -->
+<section id="page-loading" aria-label="ページの読み込み"><div class="page-loading-panel"><div class="page-loading-art"><img src="assets/bakedkale-character.png" width="150" height="150" alt="Baked Kaleのキャラクター" decoding="async"><svg viewBox="0 0 150 150" aria-hidden="true"><g class="page-loading-mouth"><ellipse cx="90" cy="111" rx="5" ry="3.7" fill="#19452d"/><path d="M86 112q4 2 8 0" fill="none" stroke="#66815c" stroke-width=".7"/></g></svg></div><p>ページを準備しています <span data-page-loading-count></span></p><progress aria-label="ページの読み込み"></progress><button type="button" data-page-loading-skip>ページを表示</button></div></section>
+<p id="page-loading-status" class="page-loading-status" role="status" aria-live="polite" data-done="ページを表示しました。" data-partial="一部の読み込みを待たず、ページを表示しました。"></p>
+<!-- End FDE loading panel -->
+<a class="skip-link" href="#main-content">本文へスキップ</a>
+<div class="site-shell language-ja">
+<header class="editorial-header"><a href="index.html" class="editorial-brand"><img src="assets/bakedkale-character.png" width="42" height="42" alt=""><b>bakedkale</b><em>design archive</em></a><nav aria-label="LPメニュー"><a href="../index.html">FDE製品</a><a href="index.html">作品</a><a href="service.html" aria-current="page">サービス・料金</a><a href="diagnosis.html" target="_blank" rel="noopener">12問の診断 ↗</a></nav></header>
+<p class="lp-reception-banner" data-lp-reception>受付開始予定：2026年12月1日。現在は参考プレビューです。正規見積の受付・送信は準備中のため利用できません。</p>
+<main id="main-content" class="lp-content">
+<section class="intro section"><div class="intro-copy"><p class="eyebrow">日本全国へ、オンラインで。</p><h1>あなたの事業に、<br><em>伝わる1ページ。</em></h1><div class="price"><span>LP制作</span><strong>50,000</strong><span>円〜</span></div><p>魅力が伝わり、次の行動へつながる。<br>必要な情報を、無理なくひとつに。</p><a class="button button-primary" href="diagnosis.html" target="_blank" rel="noopener">12問の参考見積をはじめる <span aria-hidden="true">↗</span></a><p class="fine">50,000円〜は予定の開始価格です。税込／税別・追加料金は未確定で、受付開始前にご案内します。<br>診断は新しいタブで開きます。現在は参考プレビューで、正規見積の受付・送信はできません。</p></div><div class="intro-art service-prints" aria-label="架空のLPデザイン案"><div class="paper study-0"><div class="paperinside"><span>COFFEE / DESIGN CONCEPT</span><strong>一杯から、<br>はじまる朝。</strong><div class="shape"></div></div></div><div class="paper study-2"><div class="paperinside"><span>RENOVATION / DESIGN CONCEPT</span><strong>暮らしを、<br>編みなおす。</strong><div class="shape"></div></div></div><small>架空の制作例。実際の受注実績ではありません。</small></div></section>
+<section class="section schedule-section" id="schedule"><div class="section-main"><div class="section-heading"><h2>一緒に確認しながら、<br><em>2週間で納品。</em></h2><p>お客様の確認タイミングも、<br>はじめにわかるように。</p></div><div class="before"><span>簡易見積</span><i>→</i><span>正規見積</span><i>→</i><span>受注</span></div><div class="calendar-top"><strong>制作カレンダー</strong><span>入金確認から14日間</span></div><p class="fine">月曜開始の場合の配置例です。実際の開始日は受注時に決めます。</p><div class="weekdays" aria-hidden="true"><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span><span>日</span></div><div class="calendar" aria-label="入金確認から14日間の制作工程"><div class="calendar-day milestone" style="--d:0"><small>0<span class="day-label">日目</span></small><b>入金確認</b><span>制作スタート</span></div><div class="calendar-day " style="--d:1"><small>1<span class="day-label">日目</span></small></div><div class="calendar-day milestone" style="--d:2"><small>2<span class="day-label">日目</span></small><b>1案目提出</b><span>雰囲気と構成を確認</span></div><div class="calendar-day " style="--d:3"><small>3<span class="day-label">日目</span></small></div><div class="calendar-day " style="--d:4"><small>4<span class="day-label">日目</span></small></div><div class="calendar-day milestone customer" style="--d:5"><small>5<span class="day-label">日目</span></small><b>修正回答</b><span>お客様からご返信</span></div><div class="calendar-day " style="--d:6"><small>6<span class="day-label">日目</span></small></div><div class="calendar-day milestone" style="--d:7"><small>7<span class="day-label">日目</span></small><b>2案目提出</b><span>修正版をお届け</span></div><div class="calendar-day " style="--d:8"><small>8<span class="day-label">日目</span></small></div><div class="calendar-day " style="--d:9"><small>9<span class="day-label">日目</span></small></div><div class="calendar-day milestone customer" style="--d:10"><small>10<span class="day-label">日目</span></small><b>修正回答</b><span>最後の修正をご返信</span></div><div class="calendar-day " style="--d:11"><small>11<span class="day-label">日目</span></small></div><div class="calendar-day " style="--d:12"><small>12<span class="day-label">日目</span></small></div><div class="calendar-day milestone" style="--d:13"><small>13<span class="day-label">日目</span></small><b>最終提出</b><span>内容を最終チェック</span></div><div class="calendar-day milestone" style="--d:14"><small>14<span class="day-label">日目</span></small><b>納品</b><span>ファイルのお渡し・公開</span></div></div><p class="fine">日数は支払い確認日を0日とする暦日です。必要素材・ご返信が遅れる場合は、日程をご相談します。2案目は別デザインではなく、1案目の修正版です。</p></div><div class="scope-under"><div class="scope-detail"><div><h3>基本料金に含むこと</h3><ul><li>既存パターンの色・文字・画像を調整</li><li>原稿の軽い整理と、支給画像の配置</li><li>電話・メール・LINE・既存予約先へのリンク</li><li>軽微な修正2回、ファイル納品</li><li>既存公開先への公開1回、表示とリンクの確認</li></ul></div><div><h3>事前にご確認ください</h3><p>原稿は3,000字、画像は8点まで。<br>独自機能・基本構成を超える制作・急ぎの案件は対象外です。</p><p>ドメイン・サーバー・有料素材・外部サービスの料金は別途。文章作成・画像選定・新規フォームなどは、対応可否と費用を個別に確認します。</p></div></div></div></section>
+<section class="section start-section"><div class="section-main"><p class="eyebrow">まずは、決まっていることから。</p><h2>どんな1ページに<br><em>しましょうか。</em></h2><p>12問に答えて、構成イメージと参考見積を確認。<br>そのあとで、正規見積に進むか決められます。</p><a class="button button-primary" href="diagnosis.html" target="_blank" rel="noopener">12問の参考見積をはじめる <span aria-hidden="true">↗</span></a><p class="fine">連絡先なしで結果を確認できます。新しいタブで開きます。</p></div></section>
+<section class="section terms-section" id="terms"><div class="section-main"><h2>大切なことを、<em>短く。</em></h2><details><summary><span>01</span>契約・支払い・納品後<i>＋</i></summary><div><p>診断は参考見積です。正規見積の内容と金額に合意してから受注し、支払い確認後に制作します。支払い方法は口座振込またはクレジットカードを予定しています（未接続）。</p><p>税区分・支払期限・手数料・キャンセル費用・納品後のサポートは、受付開始前に確定し、契約前に説明します。診断だけでは契約や支払いは発生しません。</p></div></details><details><summary><span>02</span>お預かりする情報<i>＋</i></summary><div><p>正規見積の回答と連絡先は、見積の確認・返信に利用します。原稿や写真は、使用できる権利のあるものをご用意ください。</p><p>依頼しない場合の市場調査への協力は任意です。同意した方の業種・地域（都道府県）・簡易見積価格・内訳のみを集計する予定です。氏名・連絡先・詳しい住所・自由記述は集計しません。AIモデルの学習ではありません。</p><p>診断の回答はこの画面内だけで使い、外部へ送信・永続保存しません。受付に必要な保管期間・削除窓口・正式な送信と統計機能は準備中です。</p></div></details><details><summary><span>03</span>広告の配信条件<i>＋</i></summary><div><p>LP制作費に広告費や広告運用は含みません。広告を出す場合は、媒体・予算・期間・停止条件を別途決めます。</p><p>広告媒体の審査に従い、掲載や売上・問い合わせ件数は保証しません。このサイトを利用するだけで広告が配信されることはありません。</p></div></details><aside class="review-state"><b>受付開始予定：2026年12月1日。</b><p>現在はサービス案内と診断の参考プレビューです。制作例10件は架空のCSSレイアウトで、受注実績ではありません。正規見積の送信・決済・統計保存は未接続です。価格・契約条件の整備と機能の接続が完了するまで、受付・送信は利用できません。</p></aside></div></section>
+</main>
+<footer class="editorial-footer"><a href="../index.html">BAKEDKALE · FDE製品</a><span>架空のデザイン例 / 参考診断 / 受付準備中</span><a href="index.html">作品へ戻る ↑</a></footer>
+<div class="toast" role="status" aria-live="polite"></div>
+</div>
+
+</body></html>
