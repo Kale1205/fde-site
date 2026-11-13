@@ -307,3 +307,7 @@ html[data-lp-motion=still] .lp-page .site-header .brand img,html[data-lp-motion=
 .lp-page .story-swatch{position:absolute;left:5%;bottom:18px;width:42%;height:80px;background:repeating-linear-gradient(0deg,#e4d7b9 0,#e4d7b9 1px,#eee6d4 1px,#eee6d4 5px);transform:rotate(-12deg);z-index:1}
 .lp-page .story:nth-child(2n) .story-swatch{background:#b6c6b3;transform:rotate(10deg)}
 @media(max-width:700px){.lp-page .story-swatch{height:50px;bottom:12px}}
+
+/* Detail reading owns its toolbar; archive controls must not cover Return. */
+.lp-page.lp-detail-open .lp-example-switch,.lp-page.lp-detail-open .archive-caption{display:none}
+.lp-page.lp-detail-open #all{position:fixed;z-index:98;top:calc(var(--lp-header-height) + var(--lp-status-height) + 10px);background:#e4ece0;padding:12px 10px;min-height:48px}
