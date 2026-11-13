@@ -1,4 +1,4 @@
-import {renderNewsPage} from './news-renderer.js?v=20261113-084915';
+import {renderNewsPage} from './news-renderer.js?v=20261113-135534';
 
 export const REPO='Kale1205/fde-site', API=`https://api.github.com/repos/${REPO}`;
 export const LANGS=['ja','en','zh-CN'];
