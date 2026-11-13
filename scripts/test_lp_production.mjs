@@ -24,7 +24,7 @@ test('Japanese menus replace only the known pending LP destination and retain FD
 test('approved LP pages have real canonical routes, current loader and unambiguous public status',()=>{
  for(const name of ['index','examples','service','diagnosis']){
   const html=read('ja/lp/'+name+'.html');assert.equal(renderLpPage(name),html);assert(!/<base\b|lp-preview\/|非公開確認版|本番への反映は、別途/.test(html));assert.equal((html.match(/data-lp-reception/g)||[]).length,1);assert(html.includes('受付開始予定：2026年12月1日'));assert(html.includes('正規見積の受付・送信は準備中'));
-  assert(html.includes('assets/bakedkale-character.png'));assert(html.includes('../../page-loading.js?v='));assert(html.includes('const remaining=2000-'));assert(html.includes('4000'));assert(html.includes('https://kale1205.github.io/fde-site/ja/lp/'));assert(!/<form\b|action=|href="mailto:|contact-direct\.js/.test(html));
+  assert(html.includes('assets/bakedkale-character.png'));assert(html.includes('../../page-loading.js?v='));assert(html.includes('const remaining=2000-'));assert(html.includes('4000'));const canonical=html.match(/<link rel="canonical" href="([^"]+)"/);assert(canonical);assert.equal(new URL(canonical[1]).href,'https://kale1205.github.io/fde-site/ja/lp/'+(name==='index'?'':name+'.html'));assert(!/<form\b|action=|href="mailto:|contact-direct\.js/.test(html));
  }
 });
 test('diagnostic controls describe a preview, never a completed quote or collected consent',()=>{
