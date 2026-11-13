@@ -311,3 +311,6 @@ html[data-lp-motion=still] .lp-page .site-header .brand img,html[data-lp-motion=
 /* Detail reading owns its toolbar; archive controls must not cover Return. */
 .lp-page.lp-detail-open .lp-example-switch,.lp-page.lp-detail-open .archive-caption{display:none}
 .lp-page.lp-detail-open #all{position:fixed;z-index:98;top:calc(var(--lp-header-height) + var(--lp-status-height) + 10px);background:#e4ece0;padding:12px 10px;min-height:48px}
+/* Keep the disclosure readable without overlapping mobile story artwork. */
+.lp-page .lp-content .archive-caption{font-size:10px;line-height:1.7}
+@media(max-width:700px){.lp-page .lp-content .archive-caption{font-size:9px;line-height:1.7}}
