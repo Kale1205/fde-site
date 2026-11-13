@@ -1,0 +1,42 @@
+name: LP browser regression
+on:
+  pull_request:
+    paths:
+      - 'ja/lp/**'
+      - 'scripts/lp_browser_qa.cjs'
+      - '.github/workflows/lp-browser-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install isolated browser test tools
+        run: |
+          npm install --prefix "$RUNNER_TEMP/lp-qa-tools" playwright@1.61.1
+          "$RUNNER_TEMP/lp-qa-tools/node_modules/.bin/playwright" install --with-deps ${{ matrix.browser }}
+      - name: Verify responsive pages and closed reception
+        env:
+          BROWSER: ${{ matrix.browser }}
+          QA_OUTPUT: qa-results
+        run: |
+          node scripts/dev-server.mjs --host 127.0.0.1 --port 4197 > "$RUNNER_TEMP/lp-server.log" 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" || true' EXIT
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:4197/ja/lp/ > /dev/null && break || sleep 1; done
+          PLAYWRIGHT_MODULE="$RUNNER_TEMP/lp-qa-tools/node_modules/playwright" node scripts/lp_browser_qa.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lp-qa-${{ matrix.browser }}
+          path: qa-results/
