@@ -1,5 +1,6 @@
 export const LP_MANIFEST='ja/lp/media-manifest.json';
 export const LP_IDS=Array.from({length:10},(_,i)=>String(i+1).padStart(2,'0'));
+export const LP_MAX_VIDEO=24*1024**2;
 export const LIMITS={title:100,description:1200,alt:180};
 const fields=['title','description','alt','photo','video','poster'];
 const plain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);

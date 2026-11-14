@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {LP_IDS,LP_MANIFEST,validateMediaManifest} from '../ja/lp/media-schema.js';
+import {LP_IDS,LP_MANIFEST,LP_MAX_VIDEO,validateMediaManifest} from '../ja/lp/media-schema.js';
 import {inspectLpAsset,LpPublisher,LP_MAX_IMAGE,prepareLpDraft} from '../cms-lp-workflow.js';
 const blank={version:1,cases:{}};
 const a='a'.repeat(40),b='b'.repeat(40),c='c'.repeat(40),hash='a'.repeat(64);
@@ -31,6 +31,19 @@ test('asset inspector rejects incorrect signatures, oversized photo or unsupport
  const input=(duration)=>inspectLpAsset(mp4,'video',{probe:async()=>({width:1280,height:720,duration})});
  await assert.rejects(input(32),/LP_DIMENSIONS/);
  assert.equal((await input(5)).ext,'mp4');
+});
+test('video cap accepts above the previous limit and exactly 24 MiB, rejects one byte over',async()=>{
+ assert.equal(LP_MAX_VIDEO,24*1024**2);
+ const header=Uint8Array.of(0,0,0,24,102,116,121,112,105,115,111,109);
+ const mp4=size=>new Blob([header,new Uint8Array(size-header.length)],{type:'video/mp4'});
+ let probes=0;
+ const inspect=f=>inspectLpAsset(f,'video',{probe:async()=>{probes++;return {width:1920,height:1080,duration:30}}});
+ for(const size of [12*1024**2+1,LP_MAX_VIDEO]){
+  const result=await inspect(mp4(size));
+  assert.equal(result.bytes.length,size);assert.match(result.hash,/^[a-f0-9]{64}$/);
+ }
+ await assert.rejects(inspect(mp4(LP_MAX_VIDEO+1)),/LP_MEDIA/);
+ assert.equal(probes,2,'reject oversized input before browser decoding');
 });
 test('draft overrides preserve original case IDs, support separate video+poster and removal',async()=>{
  const data={...draft,files:{photo:1,video:2,poster:3}},inspect=async(_,kind)=>({bytes:new Uint8Array([1]),ext:kind==='video'?'mp4':'jpg',hash});

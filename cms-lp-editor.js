@@ -1,5 +1,5 @@
 import {LpPublisher,prepareLpDraft,inspectLpAsset} from './cms-lp-workflow.js';
-import {LP_IDS,LIMITS,validateMediaManifest} from './ja/lp/media-schema.js';
+import {LP_IDS,LP_MAX_VIDEO,LIMITS,validateMediaManifest} from './ja/lp/media-schema.js';
 import {errorText} from './cms-news-workflow.js';
 
 const labels=['自家焙煎カフェ','少人数ピラティス','住宅リノベーション','フラワーアトリエ','革小物ブランド','税理士事務所','金属加工工場','陶芸体験工房','個別指導塾','ビジネス写真スタジオ'];
@@ -55,7 +55,7 @@ export function buildLpEditor(api,getToken){
  }
  const order=field('Storiesの掲載順',m('select'));
  LP_IDS.forEach((id,i)=>order.add(new Option(String(i+1)+'番目',id)));
- const kinds={photo:['写真（JPEG・PNG・WebP、4MB以下）','image/jpeg,image/png,image/webp'],poster:['動画の表紙画像（動画がある場合は必須）','image/jpeg,image/png,image/webp'],video:['動画（MP4、30秒・12MB以下、推奨H.264）','video/mp4']};
+ const kinds={photo:['写真（JPEG・PNG・WebP、4MB以下）','image/jpeg,image/png,image/webp'],poster:['動画の表紙画像（動画がある場合は必須）','image/jpeg,image/png,image/webp'],video:[`動画（MP4、30秒・${LP_MAX_VIDEO/1024**2} MB以下、推奨H.264）`,'video/mp4']};
  const files={};
  for(const [kind,[label,accept]] of Object.entries(kinds)){
   const input=field(label,m('input'));input.type='file';input.accept=accept;files[kind]=input;
