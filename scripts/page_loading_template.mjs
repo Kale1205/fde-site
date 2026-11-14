@@ -4,9 +4,9 @@ import {fileURLToPath} from 'node:url';
 
 export const loadingPages=['','ja/','zh/'].flatMap(prefix=>['index','license','demo','goals','news','contact','order','customer','quiet-form'].map(name=>prefix+name+'.html'));
 export const loadingCopy={
- en:{label:'Preparing the page',preparing:'Preparing your page',skip:'Show page now',done:'The page is ready.',partial:'Showing the page without waiting for every resource.',image:'Baked Kale character'},
- ja:{label:'ページの読み込み',preparing:'ページを準備しています',skip:'ページを表示',done:'ページを表示しました。',partial:'一部の読み込みを待たず、ページを表示しました。',image:'Baked Kaleのキャラクター'},
- zh:{label:'页面加载',preparing:'正在准备页面',skip:'立即显示页面',done:'页面已就绪。',partial:'未等待所有资源，已显示页面。',image:'Baked Kale 角色'},
+ en:{label:'Preparing the page',preparing:'Preparing your page',done:'The page is ready.',partial:'Showing the page without waiting for every resource.',image:'Baked Kale character'},
+ ja:{label:'ページの読み込み',preparing:'ページを準備しています',done:'ページを表示しました。',partial:'一部の読み込みを待たず、ページを表示しました。',image:'Baked Kaleのキャラクター'},
+ zh:{label:'页面加载',preparing:'正在准备页面',done:'页面已就绪。',partial:'未等待所有资源，已显示页面。',image:'Baked Kale 角色'},
 };
 
 // Normal pages show the real loader for at least two visible seconds.
@@ -80,7 +80,7 @@ export function stripLoadingHead(source,{strict=true}={}){
 }
 export function loadingBody(file){
  const locale=file.startsWith('ja/')?'ja':file.startsWith('zh/')?'zh':'en',c=loadingCopy[locale],prefix=locale==='en'?'':'../';
- return `<!-- FDE loading panel -->\n<section id="page-loading" aria-label="${c.label}"><div class="page-loading-panel"><div class="page-loading-art"><img src="${prefix}assets/instagram-bakedkale-profile-20261110.jpg" width="150" height="150" alt="${c.image}" decoding="async"><svg viewBox="0 0 150 150" aria-hidden="true"><g class="page-loading-mouth"><ellipse cx="90" cy="111" rx="5" ry="3.7" fill="#19452d"/><path d="M86 112q4 2 8 0" fill="none" stroke="#66815c" stroke-width=".7"/></g></svg></div><p>${c.preparing} <span data-page-loading-count></span></p><progress aria-label="${c.label}"></progress><button type="button" data-page-loading-skip>${c.skip}</button></div></section>\n<p id="page-loading-status" class="page-loading-status" role="status" aria-live="polite" data-done="${c.done}" data-partial="${c.partial}"></p>\n<!-- End FDE loading panel -->\n`;
+ return `<!-- FDE loading panel -->\n<section id="page-loading" aria-label="${c.label}"><div class="page-loading-panel"><div class="page-loading-art"><img src="${prefix}assets/instagram-bakedkale-profile-20261110.jpg" width="150" height="150" alt="${c.image}" decoding="async"><svg viewBox="0 0 150 150" aria-hidden="true"><g class="page-loading-mouth"><ellipse cx="90" cy="111" rx="5" ry="3.7" fill="#19452d"/><path d="M86 112q4 2 8 0" fill="none" stroke="#66815c" stroke-width=".7"/></g></svg></div><p>${c.preparing} <span data-page-loading-count></span></p><progress aria-label="${c.label}"></progress></div></section>\n<p id="page-loading-status" class="page-loading-status" role="status" aria-live="polite" data-done="${c.done}" data-partial="${c.partial}"></p>\n<!-- End FDE loading panel -->\n`;
 }
 export function withPageLoading(file,source){
  if(!loadingPages.includes(file)||!/^<!doctype html>/i.test(source))return source;

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import {pageLoadingBootstrap,loadingPages,stripLoadingHead} from './page_loading_template.mjs';
 import {approvedHeadPrefix} from './approved_head_prefix.mjs';
@@ -55,8 +56,8 @@ test('a failed controller or style fails open even before DOMContentLoaded',()=>
 test('Escape releases the page and restores the original keyboard focus contract',async()=>{
  for(const original of [null,'0']){const h=harness({cached:false,mainTabindex:original});await h.start();h.document.activeElement=h.skip;h.document.emit('keydown',{key:'Escape'});assert.equal(h.state.result,'skip');assert.equal(h.document.activeElement,h.main);h.main.emit('blur');assert.equal(h.main.getAttribute('tabindex'),original);assert(h.progress.value<h.progress.max);}
 });
-test('the visible skip control works without the external readiness controller',()=>{
- const h=harness();h.tick(120);h.document.emit('click',{target:h.skip});assert.equal(h.state.result,'skip');assert.equal(h.document.activeElement,h.main);
+test('Escape works without the external readiness controller or a rendered button',()=>{
+ const h=harness();h.tick(120);h.document.emit('keydown',{key:'Escape'});assert.equal(h.state.result,'skip');assert.equal(h.document.activeElement,h.main);
 });
 test('history restoration does not replay a previously pending loader',async()=>{
  const h=harness({cached:false});await h.start();h.window.emit('pagehide');h.window.emit('pageshow',{persisted:true});h.tick(5000);assert.equal(h.state.result,'navigation');assert(!h.root.classList.contains('fde-loading'));assert.equal(h.state.shown,true);
@@ -70,5 +71,15 @@ test('only the exact owned bootstrap passes static metadata script protection',(
  assert.throws(()=>approvedHeadPrefix(home.replace('<title>','<script>unexpected()</script><title>'),{jsonLd:true}),/Only the approved JSON-LD/);
 });
 test('all current page shells own exactly one loader and original source character',()=>{
- assert.equal(loadingPages.length,27);for(const file of loadingPages){const html=readFileSync(new URL('../'+file,import.meta.url),'utf8');assert.equal((html.match(/id="page-loading"/g)||[]).length,1,file);assert(html.includes('assets/instagram-bakedkale-profile-20261110.jpg'));assert.equal((html.match(/data-page-loading-bootstrap/g)||[]).length,1,file);}
+ assert.equal(loadingPages.length,27);for(const file of loadingPages){const html=readFileSync(new URL('../'+file,import.meta.url),'utf8');assert.equal((html.match(/id="page-loading"/g)||[]).length,1,file);assert(html.includes('assets/instagram-bakedkale-profile-20261110.jpg'));assert.equal((html.match(/data-page-loading-bootstrap/g)||[]).length,1,file);assert(!html.includes('<button type="button" data-page-loading-skip'),file);assert(html.includes('<span data-page-loading-count></span>'),file);assert(html.includes('const remaining=2000-'),file);}
+});
+
+test('FDE page changes are limited to the removed localized loading button and cache keys',()=>{
+ const root=new URL('../',import.meta.url),baseline='fca6cc8511fa8a2297f326132be6ce2ff53e6bfb';
+ const normalize=html=>html.replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
+ for(const file of loadingPages){
+  const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});
+  const want=old.replace(/<button type="button" data-page-loading-skip>(?:Show page now|ページを表示|立即显示页面)<\/button>/,'');
+  assert.notEqual(want,old,file);assert.equal(normalize(readFileSync(new URL(file,root),'utf8')),normalize(want),file);
+ }
 });
