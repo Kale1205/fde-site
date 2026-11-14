@@ -35,9 +35,13 @@ test('the 12 approved question IDs stay in order and the ten layouts stay fictio
  assert.equal(hash(prefix),'fb905cd0e0ed02e8aeb072481c572f6eae0f1195bfd3f08a55178f750d1539d7');assert.equal(hash(read('ja/lp/studies.js')),'a8396b8357c0b782bdee58abed1d38613394ab42da08577deee2e84fde86179f');assert.equal(d.q.length,12);assert.deepEqual(d.selectedQuestionIds,[1,2,3,5,8,6,7,9,10,11,13,14]);assert.equal(d.studies.length,10);assert(d.q[1][1].includes('大阪府'));assert(d.q[1][1].includes('海外'));assert(d.q[4][1].includes('おまかせ'));assert.equal(d.q[10][0],'一番伝えたい強みは何ですか？');assert.equal(d.q[11][0],'LPにはどこから来てもらう予定ですか？');
  assert(read('ja/lp/archive.js').includes('完成したLPや受注実績ではありません'));assert(read('ja/lp/service.html').includes('架空のCSSレイアウト'));assert(!/\b(?:85000|130000)\b/.test(js));assert(js.includes('未確定の費用を0円として計算していません'));
 });
-test('motion respects OS and existing saved preference, pauses on focus and can be stopped',()=>{
- const js=read('ja/lp/archive.js');for(const token of ['motionPreference.matches','data-lp-pause','focusin','visibilitychange','cancelAnimationFrame','mode===\'archive\''])assert(js.includes(token),token);assert(js.includes("b.tabIndex=-1"));assert(js.includes("setmode('stories');grid.children[lastSelected]?.focus()"));
- const css=read('ja/lp/lp.css');assert(css.includes('prefers-reduced-motion:reduce'));assert(css.includes('position:fixed'));assert(css.includes('scroll-padding-top'));assert(css.includes('[hidden]{display:none!important}'));
+test('approved showcase is a repeating material archive with ten separately navigable fictional Stories',()=>{
+ const js=read('ja/lp/parallel.js'),css=read('ja/lp/parallel.css'),html=read('ja/lp/index.html');
+ for(const token of ['prefers-reduced-motion','pointermove','setPointerCapture','cancelAnimationFrame','wrap(x,W*z)','showModal()','hashchange',"b.tabIndex=-1"])assert(js.includes(token),token);
+ assert(js.includes("tile.setAttribute('aria-hidden','true')"));
+ assert(!js.includes('mini-number'));assert(html.includes('>Archive</a>'));assert(html.includes('>Stories</a>'));
+ assert(css.includes('prefers-reduced-motion:reduce'));assert(css.includes('touch-action:none'));
+ for(let i=1;i<=10;i++){const n=String(i).padStart(2,'0'),path='cases/'+n,detail=read('ja/lp/'+path+'.html');assert(html.includes(path+'.html'));assert.equal(renderLpPage(path),detail);assert(detail.includes('完成したLPや受注実績ではありません'));assert(detail.includes('../diagnosis.html'));assert(!/mailto:|contact-direct\.js/.test(detail));}
 });
 test('LP source uses an isolated approved cutout without replacing existing images or services',()=>{
  const png=readFileSync(new URL('../ja/lp/assets/bakedkale-character.png',import.meta.url));assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');assert.equal(hash(png),'fb2c331387feb995604b940e7361ee5d72c61704f8bda323aa875afeff7ab497');

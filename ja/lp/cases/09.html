@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<!-- Shared official Instagram image -->
+<meta property="og:image" content="https://kale1205.github.io/fde-site/assets/social/baked-kale-instagram-share-36bd831a4bf1.png">
+<meta property="og:image:secure_url" content="https://kale1205.github.io/fde-site/assets/social/baked-kale-instagram-share-36bd831a4bf1.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="緑の背景にBaked Kaleの文字と白い立体アイコン。公式Instagramのプロフィール画像。">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kale1205.github.io/fde-site/assets/social/baked-kale-instagram-share-36bd831a4bf1.png">
+<meta name="twitter:image:alt" content="緑の背景にBaked Kaleの文字と白い立体アイコン。公式Instagramのプロフィール画像。">
+<!-- End shared official Instagram image -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,follow"><meta name="theme-color" content="#e8ede2">
+<title>個別指導塾の制作例 | Baked Kale</title><meta name="description" content="Baked Kaleによる架空のLP制作例です。受注実績ではありません。">
+<link rel="canonical" href="https://kale1205.github.io/fde-site/ja/lp/cases/09.html"><meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:title" content="個別指導塾の制作例 | Baked Kale"><meta property="og:description" content="Baked Kaleによる架空のLP制作例です。受注実績ではありません。"><meta property="og:url" content="https://kale1205.github.io/fde-site/ja/lp/cases/09.html">
+<link rel="icon" type="image/svg+xml" href="../../../assets/baked-kale-mark.svg">
+<!-- FDE page loading -->
+<style data-page-loading-critical>#page-loading{display:none;position:fixed;inset:0;z-index:10000;background:#033f1b;color:#faf8f4;place-items:center;padding:20px;font:16px system-ui,sans-serif}html.fde-loading .site-shell,html.fde-loading .skip-link{visibility:hidden}html.fde-loading.fde-loading-visible #page-loading{display:grid}.page-loading-panel{display:grid;justify-items:center;gap:16px;max-width:100%;text-align:center}.page-loading-art{position:relative;width:160px;max-width:42vw}.page-loading-art>img{display:block;width:100%;height:auto}.page-loading-art>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#page-loading progress{width:240px;max-width:76vw}#page-loading button{min-height:44px;padding:10px 18px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit}#page-loading button:focus-visible{outline:3px solid #faf8f4;outline-offset:4px}.page-loading-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}</style>
+<script data-page-loading-bootstrap>(function pageLoadingBootstrap(){
+ const root=document.documentElement;
+ const state={started:performance.now(),released:false,shown:false,shownAt:null,readyAt:null,completed:0,total:0,resources:new Map(),tasks:[]};
+ window.__fdePageLoading=state;
+ const resource=event=>{
+  const node=event.target,tag=node?.tagName;
+  if(tag==='SCRIPT'&&node.src||tag==='LINK'&&node.rel==='stylesheet'){
+   state.resources.set(node.src||node.href,event.type==='load');
+   if(event.type==='error')release('error');
+  }else if(node===window&&event.type==='error')release('error');
+ };
+ function release(reason){
+  if(state.released)return;
+  if(reason==='complete'){
+   state.readyAt??=performance.now();
+   if(state.shownAt===null)return;
+   const remaining=2000-(performance.now()-state.shownAt);
+   if(remaining>0){clearTimeout(state.minimum);state.minimum=setTimeout(()=>release('complete'),remaining);return;}
+  }
+  state.released=true;state.result=reason;state.finished=performance.now();
+  clearTimeout(state.deadline);clearTimeout(state.minimum);cancelAnimationFrame(state.frame);state.cleanup?.();
+  // A stalled stylesheet must not keep the browser's own first paint blocked.
+  // Restore its original media if the late response eventually arrives.
+  if(reason!=='complete')for(const link of document.querySelectorAll('link[rel="stylesheet"]')){
+   if(link.sheet||link.media&&!matchMedia(link.media).matches)continue;
+   const media=link.getAttribute('media');link.media='not all';
+   link.addEventListener('load',()=>{if(media===null)link.removeAttribute('media');else link.setAttribute('media',media);},{once:true});
+  }
+  const panel=document.getElementById('page-loading'),focused=panel?.contains(document.activeElement);
+  root.classList.remove('fde-loading','fde-loading-visible');root.dataset.pageLoadingResult=reason;
+  const status=document.getElementById('page-loading-status');
+  if(status)status.textContent=reason==='complete'?status.dataset.done:status.dataset.partial;
+  if(focused||reason==='skip'){
+   const main=document.getElementById('main-content');
+   if(main){const original=main.getAttribute('tabindex');main.setAttribute('tabindex','-1');main.focus({preventScroll:true});main.addEventListener('blur',()=>{if(original===null)main.removeAttribute('tabindex');else main.setAttribute('tabindex',original);},{once:true});}
+  }
+  document.removeEventListener('load',resource,true);window.removeEventListener('error',resource,true);
+  document.removeEventListener('click',skip);document.removeEventListener('keydown',key);
+ }
+ const skip=event=>{if(event.target.closest?.('[data-page-loading-skip]'))release('skip');};
+ const key=event=>{if(event.key==='Escape')release('skip');};
+ state.release=release;
+ document.addEventListener('load',resource,true);window.addEventListener('error',resource,true);
+ document.addEventListener('click',skip);document.addEventListener('keydown',key);
+ window.addEventListener('pagehide',()=>release('navigation'),{once:true});
+ window.addEventListener('pageshow',event=>{if(event.persisted)release('history');});
+ try{if(localStorage.getItem('fde:still-icons')==='1')root.dataset.pageLoadingMotion='still';}catch{}
+ root.classList.add('fde-loading','fde-loading-visible');
+ function observeDisplay(){
+  if(state.released)return;
+  if(!document.getElementById('page-loading')){state.frame=requestAnimationFrame(observeDisplay);return;}
+  state.shown=true;state.shownAt=performance.now();
+  if(state.readyAt!==null)release('complete');
+ }
+ state.frame=requestAnimationFrame(observeDisplay);
+ state.deadline=setTimeout(()=>release('timeout'),4000);
+})();</script>
+<link rel="stylesheet" href="../../../page-loading.css?v=20261113-142959">
+<script defer src="../../../page-loading.js?v=20261113-142959" data-page-loading-runtime></script>
+<!-- End FDE page loading -->
+
+<link rel="stylesheet" href="../showcase.css?v=20261113-142959">
+
+</head><body class="page-case">
+<!-- FDE loading panel -->
+<section id="page-loading" aria-label="ページの読み込み"><div class="page-loading-panel"><div class="page-loading-art"><img src="../assets/bakedkale-character.png" width="150" height="150" alt="Baked Kaleのキャラクター" decoding="async"><svg viewBox="0 0 150 150" aria-hidden="true"><g class="page-loading-mouth"><ellipse cx="90" cy="111" rx="5" ry="3.7" fill="#19452d"/><path d="M86 112q4 2 8 0" fill="none" stroke="#66815c" stroke-width=".7"/></g></svg></div><p>ページを準備しています <span data-page-loading-count></span></p><progress aria-label="ページの読み込み"></progress><button type="button" data-page-loading-skip>ページを表示</button></div></section>
+<p id="page-loading-status" class="page-loading-status" role="status" aria-live="polite" data-done="ページを表示しました。" data-partial="一部の読み込みを待たず、ページを表示しました。"></p>
+<!-- End FDE loading panel -->
+
+<div class="site-shell"><a class="skip skip-link" href="#main-content">本文へスキップ</a><header class="sitehead"><a class="brand" href="../index.html"><img src="../assets/bakedkale-character.png" width="38" height="38" alt=""><span>Baked Kale</span></a><nav aria-label="LPメニュー"><a href="../index.html#works">制作例</a><a href="../service.html#schedule">制作の流れ</a><a class="estimate-link" href="../diagnosis.html" target="_blank" rel="noopener">12問簡易見積 ↗</a></nav></header><main id="main-content" class="case-main"><div class="case-meta"><a class="textlink" href="../index.html#works">← 制作例一覧</a><span>09 / 10 · 架空の制作例</span></div>
+<section class="case-hero" style="--mat:#e5cc6f"><div><p class="eyebrow">LEARNING / DESIGN CONCEPT</p><h1>わかった、を<br>ひとつずつ。</h1><p>One step at a time</p></div><div class="case-picture"><span class="sample sample-8" aria-hidden="true" style="--paper:#f9efb7;--ink:#183858;--accent:#2d639e"><span class="sample-nav"><b>あおぞら個別</b><span>MENU <b>☰</b></span></span><span class="sample-picture"><span class="photo " aria-hidden="true" style="--px:0%;--py:100%"></span></span><span class="sample-copy"><span>One step at a time</span><strong>わかった、を<br>ひとつずつ。</strong><span class="sample-cta">体験授業 <b>↗</b></span></span><span class="sample-end"><span>01 — ABOUT</span><span>個別指導塾</span></span></span></div></section>
+<section class="case-copy"><div><p class="eyebrow">ABOUT THIS CONCEPT</p><h2>個別指導塾</h2><p>保護者へ指導方針を伝え、体験授業へ。</p></div><div><dl><dt>雰囲気</dt><dd>青 × 黄 × 白</dd><dt>ページ構成の例</dt><dd>体験の案内 / 指導の特徴 / コース / 通塾の流れ / よくある質問 / お問い合わせ</dd></dl><p>合格実績や口コミは作らず、指導内容を中心に構成する想定。</p><p class="muted">写真は架空の制作例用に生成した素材です。完成したLPや受注実績ではありません。</p></div></section>
+<div class="case-next"><a href="../service.html">サービスと料金 ↗</a><a href="10.html">次の制作例：ビジネス写真スタジオ ↗</a></div></main></div>
+</body></html>

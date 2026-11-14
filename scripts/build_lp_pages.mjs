@@ -1,7 +1,8 @@
-import {readFileSync,writeFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {loadingHead,loadingBody} from './page_loading_template.mjs';
 import {withSharedImage} from './social_share_metadata.mjs';
+import {showcaseBody,showcaseCaseBody,showcaseCases} from './lp_showcase.mjs';
 import {LP_RECEPTION_NOTICE} from '../ja/lp/lp-policy.js';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const pages=JSON.parse(read('content/lp-pages.json'));
@@ -11,7 +12,31 @@ const metadata={
  service:{title:'LP制作のサービス・予定料金 | Baked Kale',description:'日本語LP制作の範囲と予定料金、制作の流れをご案内します。50,000円〜。税区分・追加費用・契約の未確定事項を明記しています。',robots:'index,follow'},
  diagnosis:{title:'12問のLP参考診断 | Baked Kale',description:'連絡先なしでLPの方向性と参考見積を確認するプレビューです。回答は外部へ送信・永続保存しません。',robots:'noindex,nofollow,noarchive'},
 };
+function renderShowcase(name,version){
+ const i=showcaseCases.findIndex(c=>name==='cases/'+c.num),isCase=i>=0;
+ const prefix=isCase?'../../../':'../../', local=isCase?'../':'./';
+ const c=isCase?showcaseCases[i]:null;
+ const meta=isCase?{title:c.title+'の制作例 | Baked Kale',description:'Baked Kaleによる架空のLP制作例です。受注実績ではありません。',robots:'noindex,follow'}:metadata[name];
+ const canonical='https://kale1205.github.io/fde-site/ja/lp/'+(name==='index'?'':name+'.html');
+ const brand=`<img src="${local}assets/bakedkale-character.png" width="38" height="38" alt=""><span>Baked Kale</span>`;
+ const content=isCase?`<a class="skip skip-link" href="#main-content">本文へスキップ</a><header class="sitehead"><a class="brand" href="../index.html">${brand}</a><nav aria-label="LPメニュー"><a href="../index.html#works">制作例</a><a href="../service.html#schedule">制作の流れ</a><a class="estimate-link" href="../diagnosis.html" target="_blank" rel="noopener">12問簡易見積 ↗</a></nav></header>${showcaseCaseBody(i)}`:showcaseBody();
+ return withSharedImage(`<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="${meta.robots}"><meta name="theme-color" content="#e8ede2">
+<title>${meta.title}</title><meta name="description" content="${meta.description}">
+<link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:title" content="${meta.title}"><meta property="og:description" content="${meta.description}"><meta property="og:url" content="${canonical}">
+<link rel="icon" type="image/svg+xml" href="${prefix}assets/baked-kale-mark.svg">
+${loadingHead(prefix,version)}
+<link rel="stylesheet" href="${local}showcase.css?v=${version}">
+${isCase?'':`<link rel="stylesheet" href="${local}parallel.css?v=${version}"><script defer src="${local}parallel.js?v=${version}"></script>`}
+</head><body class="${isCase?'page-case':'parallel-page'}">
+${loadingBody('ja/index.html').replace('../assets/instagram-bakedkale-profile-20261110.jpg',local+'assets/bakedkale-character.png')}
+<div class="site-shell">${content}</div>
+</body></html>
+`);
+}
 export function renderLpPage(name){
+ if(name==='index'||name==='examples'||showcaseCases.some(c=>name==='cases/'+c.num))return renderShowcase(name,read('build-version.txt').trim());
  if(!Object.hasOwn(pages,name))throw Error('Unknown LP page');
  const page=pages[name],meta=metadata[name],version=read('build-version.txt').trim();
  const canonical='https://kale1205.github.io/fde-site/ja/lp/'+(name==='index'?'':name+'.html');
@@ -22,6 +47,6 @@ export function renderLpPage(name){
  return withSharedImage(html);
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){
- let stale=false;for(const name of Object.keys(pages)){const path=new URL(`ja/lp/${name}.html`,root),html=renderLpPage(name);if(process.argv.includes('--check')){if(readFileSync(path,'utf8')!==html){console.error('Stale LP page: '+name);stale=true;}}else writeFileSync(path,html);}
+ let stale=false;for(const name of [...Object.keys(pages),...showcaseCases.map(c=>'cases/'+c.num)]){const path=new URL(`ja/lp/${name}.html`,root),html=renderLpPage(name);if(process.argv.includes('--check')){if(readFileSync(path,'utf8')!==html){console.error('Stale LP page: '+name);stale=true;}}else {mkdirSync(new URL('.',path),{recursive:true});writeFileSync(path,html);}}
  if(stale)process.exit(1);console.log('LP pages are current.');
 }
