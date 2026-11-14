@@ -4,6 +4,11 @@ const fs=require('node:fs');
 const {createHash}=require('node:crypto');
 const jpeg=Buffer.from('/9j/4AAQSkZJRgABAgAAAQABAAD//gAQTGF2YzYxLjE5LjEwMQD/2wBDAAgEBAQEBAUFBQUFBQYGBgYGBgYGBgYGBgYHBwcICAgHBwcGBgcHCAgICAkJCQgICAgJCQoKCgwMCwsODg4RERT/xABMAAEBAAAAAAAAAAAAAAAAAAAABgEBAQAAAAAAAAAAAAAAAAAAAAYQAQAAAAAAAAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAD/wAARCAB4AKADASIAAhEAAxEA/9oADAMBAAIRAxEAPwCLASqJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/2Q==','base64');
 const mp4=Buffer.from('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','base64');
+// Pad the tiny synthetic clip with a valid MP4 free-space atom. No media file is
+// committed or sent to real GitHub; the route below captures all API traffic.
+const limit=24*1024**2,largeMp4=Buffer.alloc(limit);
+mp4.copy(largeMp4);largeMp4.writeUInt32BE(limit-mp4.length,mp4.length);largeMp4.write('free',mp4.length+4);
+const expectedVideoHash=createHash('sha256').update(largeMp4).digest('hex');
 const blank=fs.readFileSync('ja/lp/media-manifest.json');
 const sha='a'.repeat(40),gitBlob=createHash('sha1').update('blob '+blank.length+'\0').update(blank).digest('hex');
 module.exports=async function verifyLpCms(browser,base,out,engine){
@@ -18,7 +23,13 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
   api.push([req.method(),p]);
   if(req.method()==='OPTIONS')return r.fulfill({status:204,headers:cors});
   if(req.method()==='POST'){
-   const data=req.postDataJSON();writes.push([p,data]);
+   const data=req.postDataJSON();
+   if(p==='/git/blobs'&&data.content.length>limit){
+    const bytes=Buffer.from(data.content,'base64');
+    data.byteLength=bytes.length;data.sha256=createHash('sha256').update(bytes).digest('hex');
+    delete data.content;
+   }
+   writes.push([p,data]);
    return reply(r,p==='/pulls'?{number:1234}:{sha});
   }
   if(p==='/user')return reply(r,{login:'fixture',id:123});
@@ -41,7 +52,7 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
  await d().getByLabel('写真・動画の説明（読み上げ用）').fill('単色のテスト素材');
  await d().getByLabel('Storiesの掲載順').selectOption('02');
  const poster=d().getByLabel('動画の表紙画像（動画がある場合は必須）');
- const video=d().getByLabel('動画（MP4、30秒・12MB以下、推奨H.264）');
+ const video=d().getByLabel('動画（MP4、30秒・24 MB以下、推奨H.264）');
  // Browser canPlayType can claim H.264 on CI hosts without a functioning decoder.
  const hasH264=await page.evaluate(encoded=>new Promise(resolve=>{
   const v=document.createElement('video');
@@ -53,7 +64,7 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
  if(hasH264){
   await poster.setInputFiles({name:'synthetic.jpg',mimeType:'image/jpeg',buffer:jpeg});
   await status('ファイルを選択しました');
-  await video.setInputFiles({name:'synthetic.mp4',mimeType:'video/mp4',buffer:mp4});
+  await video.setInputFiles({name:'synthetic.mp4',mimeType:'video/mp4',buffer:largeMp4});
   await status('ファイルを選択しました');
   await preview.click();
   try{await d().locator('video').waitFor({timeout:15000});}
@@ -85,6 +96,12 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
  await d().getByRole('button',{name:'公開依頼（PR）'}).click();
  await d().getByRole('link',{name:'PR #1234 を確認'}).waitFor({timeout:15000});
  assert.equal(writes.filter(([p])=>p==='/git/blobs').length,hasH264?3:2);
+ if(hasH264){
+  const upload=writes.find(([p,data])=>p==='/git/blobs'&&data.byteLength);
+  assert.equal(upload?.[1].encoding,'base64');
+  assert.equal(upload?.[1].byteLength,limit);
+  assert.equal(upload?.[1].sha256,expectedVideoHash,'reopened draft produces the original MP4 bytes');
+ }
  assert.equal(writes.at(-1)[1].draft,true);
  assert.match(writes.find(([p])=>p==='/git/refs')[1].ref,/^refs\/heads\/cms\/lp\//);
  assert.deepEqual(pageErrors,[]);
@@ -106,6 +123,6 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
   assert.match(await page.locator('.case-copy').textContent(),/テスト紹介/);
   assert.equal(await videoNode.evaluate(v=>v.paused&&v.controls&&v.preload==='none'),true);
  }
- console.log(engine,'LP CMS draft, review, fake publication and media flow checked',hasH264?'(MP4 + poster)':'(browser cannot decode H.264; photo exercised)');
+ console.log(engine,'LP CMS draft, review, fake publication and media flow checked',hasH264?'(24 MiB MP4 + poster)':'(browser cannot decode H.264; photo exercised)');
  }finally{await ctx.close();}
 };

@@ -1,7 +1,7 @@
 import {CmsError,base64,sha256} from './cms-news-workflow.js';
-import {LP_MANIFEST,LP_IDS,LIMITS,validateMediaManifest} from './ja/lp/media-schema.js';
+import {LP_MANIFEST,LP_IDS,LP_MAX_VIDEO,LIMITS,validateMediaManifest} from './ja/lp/media-schema.js';
 
-export const LP_MAX_IMAGE=4*1024*1024, LP_MAX_VIDEO=12*1024*1024;
+export const LP_MAX_IMAGE=4*1024*1024;
 const isSha=value=>/^[a-f0-9]{40}$/.test(value||'');
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const imageTypes={'image/png':'png','image/jpeg':'jpg','image/webp':'webp'};
