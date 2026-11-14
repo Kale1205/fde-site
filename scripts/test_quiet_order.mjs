@@ -11,8 +11,8 @@ test('head recomposition removes uppercase and re-formed executable tags',()=>{
   const fixture=page.replace('</head>','<ScRiPt>UNEXPECTED_UPPERCASE</sCrIpT><scr<script>UNEXPECTED_INNER</script>ipt>UNEXPECTED_REFORMED</script></head>');
   const output=renderQuietOrder(fixture,home);
   assert.doesNotMatch(output,/UNEXPECTED_/);
-  assert.equal((output.match(/<script\b/gi)||[]).length,5);
-  assert(output.includes('data-page-loading-bootstrap')&&output.includes('page-loading.js')&&output.includes('campaign-prices.js'));
+  assert.equal((output.match(/<script\b/gi)||[]).length,3);
+  assert(!output.includes('data-page-loading-bootstrap')&&!output.includes('page-loading.js')&&output.includes('campaign-prices.js'));
   assert.equal(output,page);
 });
 test('static metadata rejects executable scripts and missing asset boundaries',()=>{
@@ -58,5 +58,5 @@ test('W07 responsive styles and icon provenance remain scoped, only approved sha
   assert.match(css,/order-process-rail \{ grid-template-columns: minmax\(0,1fr\)/);
   assert.match(css,/order-step-arrow[^}]*transform: rotate\(90deg\)/);
   assert.match(read('assets/phosphor-icons-LICENSE.txt'),/Copyright \(c\) 2023 Phosphor Icons/);
-  for(const prefix of ['', 'ja/', 'zh/'])assert.equal((read(prefix+'order.html').match(/<script/g)||[]).length,5);
+  for(const prefix of ['', 'ja/', 'zh/'])assert.equal((read(prefix+'order.html').match(/<script/g)||[]).length,3);
 });

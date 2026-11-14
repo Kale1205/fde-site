@@ -15,7 +15,7 @@ for (const [locale, directory] of Object.entries({en:'', ja:'ja/', zh:'zh/'})) {
     const html = await readFile(path.join(root, name), 'utf8');
     const preview = await readFile(path.join(root, directory, 'quiet-form.html'), 'utf8');
     const approvedBody = preview.slice(preview.indexOf('<body ')).replaceAll('quiet-form.html','index.html').replace(/href="([^"]*)index\.html"/g,(_,dir)=>`href="${dir||'./'}"`).trim();
-    assert.equal(html.slice(html.indexOf('<body ')).trim(), approvedBody);
+    assert.equal(html.slice(html.indexOf('<body ')).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'').trim(), approvedBody);
     assert.equal(html, await renderQuietHomepage(locale), 'generation is idempotent');
     assert.doesNotMatch(html, /noindex|quiet-form\.html|source-home|night-lab/);
     const original = execFileSync('git', ['show', `${baseline}:${name}`], {cwd:root,encoding:'utf8'});

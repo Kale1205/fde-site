@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
-import {pageLoadingBootstrap,loadingPages,stripLoadingHead} from './page_loading_template.mjs';
+import {pageLoadingBootstrap,loadingPages,loadingEntryPages,stripLoadingHead} from './page_loading_template.mjs';
 import {approvedHeadPrefix} from './approved_head_prefix.mjs';
 const runtime=readFileSync(new URL('../page-loading.js',import.meta.url),'utf8');
 const flush=async()=>{for(let i=0;i<10;i++)await Promise.resolve();};
-function harness({cached=true,below=false,storage='0',storageFails=false,mainTabindex=null}={}){
+function harness({cached=true,below=false,storage='0',storageFails=false,mainTabindex=null,navigationType='navigate',legacyType=0}={}){
  let now=0,id=0;const timers=new Map();
  class Target{
   constructor(){this.listeners=new Map();this.attributes=new Map();}
@@ -26,7 +26,7 @@ function harness({cached=true,below=false,storage='0',storageFails=false,mainTab
  const image=new Target();Object.assign(image,{tagName:'IMG',src:'https://example.test/hero.webp',currentSrc:'https://example.test/hero.webp',complete:cached,naturalWidth:cached?150:0,loading:'lazy',classList:{contains:()=>false},parentElement:{classList:{contains:n=>n==='site-shell'}},getBoundingClientRect:()=>({width:150,height:150,left:0,right:150,top:below?5000:100,bottom:below?5150:250})});
  Object.assign(document,{documentElement:root,readyState:'loading',hidden:false,activeElement:null,getElementById:id=>({'page-loading':panel,'page-loading-status':status,'main-content':main}[id]),querySelectorAll:s=>s==='link[rel="stylesheet"]'?[sheet]:s==='script[src]'?[script]:s==='.site-shell img'?[image]:[]});
  const set=(fn,delay)=>{const key=++id;timers.set(key,{fn,at:now+delay});return key;};
- const context=vm.createContext({window,document,performance:{now:()=>now},setTimeout:set,clearTimeout:key=>timers.delete(key),requestAnimationFrame:fn=>set(fn,16),cancelAnimationFrame:key=>timers.delete(key),innerHeight:900,innerWidth:1200,getComputedStyle:()=>({display:'block',opacity:'1'}),matchMedia:()=>({matches:true}),localStorage:{getItem(){if(storageFails)throw Error('storage denied');return storage;}}});
+ const context=vm.createContext({window,document,performance:{now:()=>now,getEntriesByType:()=>navigationType?[{type:navigationType}]:[],navigation:{type:legacyType}},setTimeout:set,clearTimeout:key=>timers.delete(key),requestAnimationFrame:fn=>set(fn,16),cancelAnimationFrame:key=>timers.delete(key),innerHeight:900,innerWidth:1200,getComputedStyle:()=>({display:'block',opacity:'1'}),matchMedia:()=>({matches:true}),localStorage:{getItem(){if(storageFails)throw Error('storage denied');return storage;}}});
  vm.runInContext(`(${pageLoadingBootstrap.toString()})();`,context);
  const state=window.__fdePageLoading;
  const tick=ms=>{const end=now+ms;while(true){const next=[...timers].filter(([,v])=>v.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;now=next[1].at;timers.delete(next[0]);next[1].fn();}now=end;};
@@ -70,16 +70,22 @@ test('only the exact owned bootstrap passes static metadata script protection',(
  const changed=home.replace('release(\'timeout\'),4000','release(\'timeout\'),999999');assert.notEqual(home,changed);assert.throws(()=>stripLoadingHead(changed),/Unexpected script/);
  assert.throws(()=>approvedHeadPrefix(home.replace('<title>','<script>unexpected()</script><title>'),{jsonLd:true}),/Only the approved JSON-LD/);
 });
-test('all current page shells own exactly one loader and original source character',()=>{
- assert.equal(loadingPages.length,27);for(const file of loadingPages){const html=readFileSync(new URL('../'+file,import.meta.url),'utf8');assert.equal((html.match(/id="page-loading"/g)||[]).length,1,file);assert(html.includes('assets/instagram-bakedkale-profile-20261110.jpg'));assert.equal((html.match(/data-page-loading-bootstrap/g)||[]).length,1,file);assert(!html.includes('<button type="button" data-page-loading-skip'),file);assert(html.includes('<span data-page-loading-count></span>'),file);assert(html.includes('const remaining=2000-'),file);}
-});
-
-test('FDE page changes are limited to the removed localized loading button and cache keys',()=>{
- const root=new URL('../',import.meta.url),baseline='fca6cc8511fa8a2297f326132be6ce2ff53e6bfb';
- const normalize=html=>html.replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
+test('only entry documents contain the FDE loader; other page shells are unchanged',()=>{
+ assert.deepEqual(loadingEntryPages,['index.html','ja/index.html','zh/index.html']);assert.equal(loadingPages.length,27);
+ const strip=html=>stripLoadingHead(html,{strict:false}).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'').replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
+ const root=new URL('../',import.meta.url),baseline='2c222b5ec20f2623286f93ab5afe23eabdbbf222';
  for(const file of loadingPages){
-  const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});
-  const want=old.replace(/<button type="button" data-page-loading-skip>(?:Show page now|ページを表示|立即显示页面)<\/button>/,'');
-  assert.notEqual(want,old,file);assert.equal(normalize(readFileSync(new URL(file,root),'utf8')),normalize(want),file);
+  const html=readFileSync(new URL(file,root),'utf8'),eligible=loadingEntryPages.includes(file);
+  assert.equal((html.match(/id="page-loading"/g)||[]).length,Number(eligible),file);
+  assert.equal((html.match(/data-page-loading-bootstrap/g)||[]).length,Number(eligible),file);
+  assert.equal(html.includes('<span data-page-loading-count></span>'),eligible,file);
+  assert.equal(html.includes('const remaining=2000-'),eligible,file);
+  assert(!html.includes('<button type="button" data-page-loading-skip'),file);
+  assert.equal(strip(html),strip(execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'})),file);
+ }
+});
+test('reload and history traversals never start the entry animation',()=>{
+ for(const args of [{navigationType:'reload'},{navigationType:'back_forward'},{navigationType:null,legacyType:1},{navigationType:null,legacyType:2}]){
+  const h=harness(args);assert.equal(h.state,undefined);assert(!h.root.classList.contains('fde-loading'));h.tick(5000);assert(!h.root.classList.contains('fde-loading'));
  }
 });

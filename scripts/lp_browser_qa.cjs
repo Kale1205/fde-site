@@ -4,10 +4,27 @@ const fs=require('node:fs');const path=require('node:path');
 const engine=process.env.BROWSER||'chromium';const out=process.env.QA_OUTPUT||'/tmp/lp-browser-qa';fs.mkdirSync(out,{recursive:true});
 const browser=await (engine==='webkit'?webkit:chromium).launch();const ctx=await browser.newContext();const page=await ctx.newPage();const errors=[],posts=[],broken=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(!['GET','HEAD'].includes(r.method()))posts.push(r.url())});page.on('response',r=>{if(r.status()>=400)broken.push({url:r.url(),status:r.status()})});const results=[];const base=process.env.BASE_URL||'http://127.0.0.1:4197/';
 await page.setViewportSize({width:1331,height:894});await page.goto(base+'ja/lp/');await page.waitForTimeout(2200);
-await page.reload();await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResult==='complete');
+await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResult==='complete');
 const loader=await page.evaluate(()=>({elapsed:window.__fdePageLoading.finished-window.__fdePageLoading.shownAt,skip:!!document.querySelector('[data-page-loading-skip]'),countVisible:document.querySelector('[data-page-loading-count]').getClientRects().length}));
 if(loader.elapsed<950||loader.elapsed>=1950||loader.skip||loader.countVisible)throw Error('LP one-second loader '+JSON.stringify(loader));
+await page.reload();if(await page.evaluate(()=>!!window.__fdePageLoading||document.documentElement.classList.contains('fde-loading')))throw Error('LP reload replayed the entry loader');
+for(const route of ['ja/lp/examples.html','ja/lp/service.html','ja/lp/diagnosis.html','ja/lp/cases/01.html','ja/news.html','ja/goals.html','ja/license.html']){
+ await page.goto(base+route);if(await page.locator('#page-loading').count())throw Error('Loader on non-entry: '+route);
+}
+await page.goto(base+'ja/news.html');await page.locator('a[data-lp-destination]:visible').first().click();
+await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResult==='complete');
+const navState=await page.evaluate(()=>window.__fdePageLoading.started);
+if(typeof navState!=='number')throw Error('LP menu entry did not run the loader');
+await page.goBack();if(await page.locator('#page-loading').count())throw Error('Loader after return to News');
+await page.goForward();if(await page.evaluate(()=>document.documentElement.classList.contains('fde-loading')))throw Error('LP history replayed the entry loader');
 if(new URL(await page.locator('.fde-link').getAttribute('href'),page.url()).pathname!==new URL(base+'ja/index.html').pathname)throw Error('FDE destination missing');
+await page.locator('.fde-link').click();
+await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResult==='complete');
+const fdeElapsed=await page.evaluate(()=>window.__fdePageLoading.finished-window.__fdePageLoading.shownAt);
+if(fdeElapsed<1950||fdeElapsed>=2950)throw Error('FDE two-second entry duration '+fdeElapsed);
+await page.reload();if(await page.evaluate(()=>!!window.__fdePageLoading))throw Error('FDE reload replayed the entry loader');
+await page.goto(base+'ja/lp/');
+await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResult==='complete');
 const wordmark=async target=>target.locator('.archive-wordmark').evaluateAll(xs=>{const f=document.querySelector('#field').getBoundingClientRect();const a=xs.map(x=>({t:x.textContent,hit:getComputedStyle(x).pointerEvents,r:x.getBoundingClientRect()})).filter(({r})=>r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight);const x=a.find(({r})=>Math.abs(r.left+r.width/2-f.width/2)<2&&Math.abs(r.top+r.height/2-f.height/2)<2);return x?{count:a.length,text:x.t,hit:x.hit}:null;});
 const wm=await wordmark(page);if(!wm||wm.count!==1||wm.text!=='bakedkale library'||wm.hit!=='none')throw Error('Desktop Archive wordmark '+JSON.stringify(wm));
 const plane=page.locator('#plane'),initial=await plane.evaluate(x=>x.style.transform);

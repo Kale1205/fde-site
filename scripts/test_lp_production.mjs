@@ -10,7 +10,9 @@ import {renderLpPage} from './build_lp_pages.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const hash=data=>createHash('sha256').update(data).digest('hex');
 const normalize=html=>html.replace(/(\.(?:css|js)\?v=)\d{8}-\d{6}/g,'$1BUILD');
-const normalizeFde=html=>normalize(html).replace('<button type="button" data-page-loading-skip>ページを表示</button>','');
+const normalizeFde=html=>normalize(html)
+ .replace(/<!-- FDE page loading -->\n[\s\S]*?<!-- End FDE page loading -->\n/g,'')
+ .replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'');
 const previous=file=>execFileSync('git',['show',`f92f7506bf67a8bd1cb3e209e67252dc54941117:${file}`],{cwd:root,encoding:'utf8'});
 test('opening date and future clocks cannot enable an unconnected LP submission',()=>{
  assert.equal(LP_ACCEPTANCE_START,'2026-12-01T00:00:00+09:00');assert(Object.isFrozen(LP_FEATURES));assert.deepEqual(LP_FEATURES,{quoteSubmission:false,statistics:false,payments:false,formalEstimate:false});
@@ -25,7 +27,7 @@ test('Japanese menus replace only the known pending LP destination and retain FD
 test('approved LP pages have real canonical routes, current loader and unambiguous public status',()=>{
  for(const name of ['index','examples','service','diagnosis']){
   const html=read('ja/lp/'+name+'.html');assert.equal(renderLpPage(name),html);assert(!/<base\b|lp-preview\/|非公開確認版|本番への反映は、別途/.test(html));assert.equal((html.match(/data-lp-reception/g)||[]).length,1);assert(html.includes('受付開始予定：2026年12月1日'));assert(html.includes('正規見積の受付・送信は準備中'));
-  assert(html.includes('assets/bakedkale-character.png'));assert(html.includes('../../page-loading.js?v='));assert(html.includes('const remaining=1000-'));assert(html.includes('4000'));assert(!/>ページを表示<\/button>/.test(html));assert(!html.includes('<button type="button" data-page-loading-skip'));assert(html.includes('<span data-page-loading-count hidden>'));const canonical=html.match(/<link rel="canonical" href="([^"]+)"/);assert(canonical);assert.equal(new URL(canonical[1]).href,'https://kale1205.github.io/fde-site/ja/lp/'+(name==='index'?'':name+'.html'));assert(!/<form\b|action=|href="mailto:|contact-direct\.js/.test(html));
+  const entry=name==='index';assert(html.includes('assets/bakedkale-character.png'));assert.equal(html.includes('../../page-loading.js?v='),entry);assert.equal(html.includes('const remaining=1000-'),entry);assert.equal(html.includes('4000'),entry);assert(!html.includes('<button type="button" data-page-loading-skip'));assert.equal(html.includes('<span data-page-loading-count hidden>'),entry);const canonical=html.match(/<link rel="canonical" href="([^"]+)"/);assert(canonical);assert.equal(new URL(canonical[1]).href,'https://kale1205.github.io/fde-site/ja/lp/'+(name==='index'?'':name+'.html'));assert(!/<form\b|action=|href="mailto:|contact-direct\.js/.test(html));
  }
 });
 test('diagnostic controls describe a preview, never a completed quote or collected consent',()=>{
@@ -42,7 +44,7 @@ test('approved showcase is a repeating material archive with ten separately navi
  assert(js.includes("tile.setAttribute('aria-hidden','true')"));
  assert(!js.includes('mini-number'));assert.equal((html.match(/id="archive-title">bakedkale library/g)||[]).length,1);assert(js.includes("mark.className='archive-wordmark'"));assert(css.includes('.archive-wordmark'));assert(html.includes('>Archive</a>'));assert(html.includes('>Stories</a>'));assert.equal((html.match(/class="story-collage"/g)||[]).length,10);assert.equal((html.match(/class="collage-print /g)||[]).length,70);assert(html.includes('class="fde-link" href="./../index.html"'));assert(read('ja/index.html').includes('const remaining=2000-'));assert(!read('ja/index.html').includes('>ページを表示</button>'));
  assert(css.includes('prefers-reduced-motion:reduce'));assert(css.includes('touch-action:none'));
- for(let i=1;i<=10;i++){const n=String(i).padStart(2,'0'),path='cases/'+n,detail=read('ja/lp/'+path+'.html');assert(html.includes(path+'.html'));assert.equal(renderLpPage(path),detail);assert(detail.includes('完成したLPや受注実績ではありません'));assert(detail.includes('../diagnosis.html'));assert(!/mailto:|contact-direct\.js/.test(detail));}
+ for(let i=1;i<=10;i++){const n=String(i).padStart(2,'0'),path='cases/'+n,detail=read('ja/lp/'+path+'.html');assert(html.includes(path+'.html'));assert.equal(renderLpPage(path),detail);assert(!detail.includes('data-page-loading-bootstrap'));assert(detail.includes('完成したLPや受注実績ではありません'));assert(detail.includes('../diagnosis.html'));assert(!/mailto:|contact-direct\.js/.test(detail));}
 });
 test('LP source uses an isolated approved cutout without replacing existing images or services',()=>{
  const png=readFileSync(new URL('../ja/lp/assets/bakedkale-character.png',import.meta.url));assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');assert.equal(hash(png),'fb2c331387feb995604b940e7361ee5d72c61704f8bda323aa875afeff7ab497');
