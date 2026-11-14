@@ -175,5 +175,5 @@
 .cms-lp-editor input:not([type=checkbox]),.cms-lp-editor select,.cms-lp-editor textarea{width:100%;min-width:0}
 .cms-lp-editor input[type=file]{font-size:16px}
 .cms-lp-editor .actions{flex-wrap:wrap}
-.cms-lp-editor video{display:block;width:100%;max-height:40dvh;object-fit:contain}
+.cms-lp-editor video{display:block;width:100%;aspect-ratio:16/9;max-height:40dvh;object-fit:contain;background:#101712}
 .cms-lp-editor [hidden]{display:none!important}

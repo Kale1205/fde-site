@@ -55,7 +55,9 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
   await status('ファイルを選択しました');
   await video.setInputFiles({name:'synthetic.mp4',mimeType:'video/mp4',buffer:mp4});
   await status('ファイルを選択しました');
-  await preview.click();await d().locator('video').waitFor({timeout:15000});
+  await preview.click();
+  try{await d().locator('video').waitFor({timeout:15000});}
+  catch(error){await d().screenshot({path:out+'/'+engine+'-lp-cms-error.png'});throw Error('LP CMS first video preview: '+await d().getByRole('status').textContent()+'; player='+await d().locator('video').count(),{cause:error});}
  }else{
   const photo=d().getByLabel('写真（JPEG・PNG・WebP、4MB以下）');
   await photo.setInputFiles({name:'synthetic.jpg',mimeType:'image/jpeg',buffer:jpeg});

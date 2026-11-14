@@ -91,8 +91,10 @@ export function buildLpEditor(api,getToken){
  for(const [kind,input]of Object.entries(files))input.addEventListener('change',run(async()=>{
   const file=input.files[0];if(!file||!draft)return;
   say('ファイルを確認しています。');
-  try{await inspectLpAsset(file,kind);}catch(e){input.value='';throw e;}
-  draft.files[kind]=file;
+  let inspected;try{inspected=await inspectLpAsset(file,kind);}catch(e){input.value='';throw e;}
+  // Copy the checked bytes out of the temporary picker handle before the next
+  // media selection or a browser draft reload.
+  draft.files[kind]=new Blob([inspected.bytes],{type:file.type});
   if(kind==='photo')removal.photo.checked=false;
   if(kind==='video')removal.video.checked=false;
   dirty=true;invalidate();say('ファイルを選択しました。下書き保存かプレビューに進めます。');
