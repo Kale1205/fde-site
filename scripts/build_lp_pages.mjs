@@ -22,7 +22,7 @@ function renderShowcase(name,version){
  const i=showcaseCases.findIndex(c=>name==='cases/'+c.num),isCase=i>=0;
  // The global cache-version workflow only rewrites top-level LP routes.
  // Case pages are generated with a cache key derived from their actual assets.
- if(isCase)version=createHash('sha256').update(['ja/lp/showcase.css'].map(read).join('\0')).digest('hex').slice(0,12);
+ if(isCase)version=createHash('sha256').update(['ja/lp/showcase.css','ja/lp/case-media.js'].map(read).join('\0')).digest('hex').slice(0,12);
  const prefix=isCase?'../../../':'../../', local=isCase?'../':'./';
  const c=isCase?showcaseCases[i]:null;
  const meta=isCase?{title:c.title+'の制作例 | Baked Kale',description:'Baked Kaleによる架空のLP制作例です。受注実績ではありません。',robots:'noindex,follow'}:metadata[name];
@@ -37,7 +37,7 @@ function renderShowcase(name,version){
 <link rel="icon" type="image/svg+xml" href="${prefix}assets/baked-kale-mark.svg">
 ${name==='index'?lpLoadingHead(prefix,version):name==='examples'?`<script>try{if(localStorage.getItem('fde:still-icons')==='1')document.documentElement.dataset.pageLoadingMotion='still';}catch{}</script>`:''}
 <link rel="stylesheet" href="${local}showcase.css?v=${version}">
-${isCase?'':`<link rel="stylesheet" href="${local}parallel.css?v=${version}"><script defer src="${local}parallel.js?v=${version}"></script>`}
+${isCase?`<script type="module" src="${local}case-media.js?v=${version}"></script>`:`<link rel="stylesheet" href="${local}parallel.css?v=${version}"><script defer src="${local}parallel.js?v=${version}"></script>`}
 </head><body class="${isCase?'page-case':'parallel-page'}">
 ${name==='index'?lpLoadingBody(local):''}
 <div class="site-shell">${content}</div>

@@ -1,3 +1,4 @@
+import {buildLpEditor} from './cms-lp-editor.js';
 import {DraftStore,NewsPublisher,CmsError,errorText,newDraft,persistedDraft,fingerprint,inspectImage,base64,LANGS} from './cms-news-workflow.js?v=20261114-185231';
 import {BatchStore,BatchPublisher,newBatch,batchFingerprint,removeQueuedDraft} from './cms-news-batch-workflow.js?v=20261114-185231';
 
@@ -345,6 +346,7 @@ async function init(){
  const mediaActions=$('uploadBtn').parentElement;button('mediaPreviewBtn','確認',()=>renderPreview('media'),mediaActions);const mediaReview=make('div','','cms-review-actions');mediaReview.id='mediaReviewActions';mediaReview.hidden=true;const mediaLabel=make('label','','check-row'),mediaCheck=make('input');mediaCheck.type='checkbox';mediaCheck.id='mediaReviewed';mediaCheck.addEventListener('change',safe(()=>review('media')));mediaLabel.append(mediaCheck,document.createTextNode('変更画像・対象を確認しました'));mediaReview.append(mediaLabel);button('mediaRequest','公開依頼（PR）',()=>request('media'),mediaReview);$('uploaderCard').append(mediaReview);
  const batchReady=buildBatchUI();
  window.FDE_CMS_LOCKED=()=>busy||navigating||imagePending.size>0;
+ window.FDE_CMS_OPEN_LP=buildLpEditor(publisher,()=>connectionState==='connected'?token:'');
  window.FDE_CMS_NAVIGATE=navigate;setConnectionState('idle');fill('create',drafts.create);announceRoute({section:null,screen:'menu'});await refreshDraftList();await batchReady;status('下書き・公開待ちは端末内。公開依頼は別操作。');
  window.addEventListener('beforeunload',e=>{if(busy||timer||unsaved||batchUnsaved||imagePending.size){e.preventDefault();e.returnValue='';}});
 }

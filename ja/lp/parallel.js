@@ -1,7 +1,10 @@
 'use strict';
-(() => {
+(async () => {
 const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
 const field=q('#field'),plane=q('#plane'),archive=q('#archive'),stories=q('#works'),template=q('#material-data'),dialog=q('#inspect'),theme=q('.theme');
+const media=await import('./media-runtime.js').catch(()=>null);
+const manifest=await media?.loadMedia();
+media?.galleryMedia(manifest,template,stories,archive);
 const items=qa('article',template.content), tileNodes=new Map(), points=new Map();
 const [wordmarkName,wordmarkEdition]=q('#archive-title').textContent.trim().split(' ');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -103,7 +106,10 @@ q('.field-tools').addEventListener('click',e=>{
 });
 function showItem(i){
  openIndex=(i+items.length)%items.length;const a=items[openIndex];
- q('.inspect-image').replaceChildren(a.firstElementChild.cloneNode(true));
+ const box=q('.inspect-image');
+ const still=a.firstElementChild.cloneNode(true);
+ if(a.dataset.alt){still.removeAttribute('aria-hidden');still.setAttribute('role','img');still.setAttribute('aria-label',a.dataset.alt);}
+ if(a.dataset.video&&media){box.replaceChildren(media.mediaVideo(a.dataset.video,a.dataset.poster,a.dataset.alt));}else box.replaceChildren(still);
  q('.inspect-id').textContent='素材';q('#inspect-title').textContent=a.dataset.title;q('.inspect-link').href=a.dataset.url;
 }
 function inspect(i,trigger){
@@ -118,7 +124,7 @@ q('.close-inspect').addEventListener('click',()=>dialog.close());
 q('.inspect-prev').addEventListener('click',()=>showItem(openIndex-1));q('.inspect-next').addEventListener('click',()=>showItem(openIndex+1));
 dialog.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();showItem(openIndex+(e.key==='ArrowLeft'?-1:1));}});
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
-dialog.addEventListener('close',()=>{if(lastInspect?.isConnected&&!lastInspect.classList.contains('material-print'))lastInspect.focus();else field.focus({preventScroll:true});});
+dialog.addEventListener('close',()=>{q('.inspect-image video')?.pause();if(lastInspect?.isConnected&&!lastInspect.classList.contains('material-print'))lastInspect.focus();else field.focus({preventScroll:true});});
 function endGather(){
  if(!gather)return;
  const task=gather;gather=null;
@@ -144,7 +150,7 @@ function currentPhotos(work){
  return viewPhotos(work);
 }
 function viewPhotos(work){
- return work?photoRecords(qa('.story-collage',stories).flatMap((card,i)=>qa('.collage-print',card).map((p,j)=>[i,q('.photo',p),null,i+':'+j]))):
+ return work?photoRecords(qa('.story-collage',stories).flatMap(card=>{const i=media?.originalStoryIndex(card)??Number(card.closest('li').className.match(/print-(\d+)/)?.[1]);return qa('.collage-print',card).map((p,j)=>[i,q('.photo',p),null,i+':'+j]);})):
   photoRecords(qa('.material-print',plane).map((el,n)=>[Number(el.dataset.material),q('.photo',el),null,'slot-'+n]));
 }
 function startGather(from,to,work){
