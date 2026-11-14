@@ -168,3 +168,12 @@
  .quiet-page.admin-renewal.cms-menu-layout .cms-editor-footer>.cms-small-note{font-size:10px}
  .quiet-page.admin-renewal.cms-menu-layout .cms-news-preview{width:calc(100% - 20px);padding:18px;max-height:92dvh}
 }
+
+.cms-lp-editor{width:min(680px,calc(100% - 24px));max-width:100%;max-height:92dvh;overflow:auto}
+.cms-lp-editor label.field{min-width:0}
+.cms-lp-editor label.field:has(input[type=checkbox]){display:flex;flex-direction:row-reverse;justify-content:flex-end;align-items:center}
+.cms-lp-editor input:not([type=checkbox]),.cms-lp-editor select,.cms-lp-editor textarea{width:100%;min-width:0}
+.cms-lp-editor input[type=file]{font-size:16px}
+.cms-lp-editor .actions{flex-wrap:wrap}
+.cms-lp-editor video{display:block;width:100%;aspect-ratio:16/9;max-height:40dvh;object-fit:contain;background:#101712}
+.cms-lp-editor [hidden]{display:none!important}
