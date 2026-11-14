@@ -7,7 +7,7 @@ import {pageLoadingBootstrap,loadingPages,loadingEntryPages,stripLoadingHead} fr
 import {approvedHeadPrefix} from './approved_head_prefix.mjs';
 const runtime=readFileSync(new URL('../page-loading.js',import.meta.url),'utf8');
 const flush=async()=>{for(let i=0;i<10;i++)await Promise.resolve();};
-function harness({cached=true,below=false,storage='0',storageFails=false,mainTabindex=null,navigationType='navigate',legacyType=0}={}){
+function harness({cached=true,below=false,storage='0',storageFails=false,mainTabindex=null,navigationType='navigate',legacyType=0,reduced=false}={}){
  let now=0,id=0;const timers=new Map();
  class Target{
   constructor(){this.listeners=new Map();this.attributes=new Map();}
@@ -26,7 +26,7 @@ function harness({cached=true,below=false,storage='0',storageFails=false,mainTab
  const image=new Target();Object.assign(image,{tagName:'IMG',src:'https://example.test/hero.webp',currentSrc:'https://example.test/hero.webp',complete:cached,naturalWidth:cached?150:0,loading:'lazy',classList:{contains:()=>false},parentElement:{classList:{contains:n=>n==='site-shell'}},getBoundingClientRect:()=>({width:150,height:150,left:0,right:150,top:below?5000:100,bottom:below?5150:250})});
  Object.assign(document,{documentElement:root,readyState:'loading',hidden:false,activeElement:null,getElementById:id=>({'page-loading':panel,'page-loading-status':status,'main-content':main}[id]),querySelectorAll:s=>s==='link[rel="stylesheet"]'?[sheet]:s==='script[src]'?[script]:s==='.site-shell img'?[image]:[]});
  const set=(fn,delay)=>{const key=++id;timers.set(key,{fn,at:now+delay});return key;};
- const context=vm.createContext({window,document,performance:{now:()=>now,getEntriesByType:()=>navigationType?[{type:navigationType}]:[],navigation:{type:legacyType}},setTimeout:set,clearTimeout:key=>timers.delete(key),requestAnimationFrame:fn=>set(fn,16),cancelAnimationFrame:key=>timers.delete(key),innerHeight:900,innerWidth:1200,getComputedStyle:()=>({display:'block',opacity:'1'}),matchMedia:()=>({matches:true}),localStorage:{getItem(){if(storageFails)throw Error('storage denied');return storage;}}});
+ const context=vm.createContext({window,document,performance:{now:()=>now,getEntriesByType:()=>navigationType?[{type:navigationType}]:[],navigation:{type:legacyType}},setTimeout:set,clearTimeout:key=>timers.delete(key),requestAnimationFrame:fn=>set(fn,16),cancelAnimationFrame:key=>timers.delete(key),innerHeight:900,innerWidth:1200,getComputedStyle:()=>({display:'block',opacity:'1'}),matchMedia:query=>({matches:query.includes('reduced-motion')?reduced:true}),localStorage:{getItem(){if(storageFails)throw Error('storage denied');return storage;}}});
  vm.runInContext(`(${pageLoadingBootstrap.toString()})();`,context);
  const state=window.__fdePageLoading;
  const tick=ms=>{const end=now+ms;while(true){const next=[...timers].filter(([,v])=>v.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;now=next[1].at;timers.delete(next[0]);next[1].fn();}now=end;};
@@ -88,4 +88,10 @@ test('reload and history traversals never start the entry animation',()=>{
  for(const args of [{navigationType:'reload'},{navigationType:'back_forward'},{navigationType:null,legacyType:1},{navigationType:null,legacyType:2}]){
   const h=harness(args);assert.equal(h.state,undefined);assert(!h.root.classList.contains('fde-loading'));h.tick(5000);assert(!h.root.classList.contains('fde-loading'));
  }
+});
+
+test('healthy motion fades the overlay without blocking content; reduced motion and faults stay immediate',async()=>{
+ const good=harness();await good.start();good.tick(2000);assert(good.root.classList.contains('fde-loading-reveal'));assert(!good.root.classList.contains('fde-loading'));good.tick(200);assert(!good.root.classList.contains('fde-loading-reveal'));
+ const reduced=harness({reduced:true});await reduced.start();reduced.tick(2000);assert(!reduced.root.classList.contains('fde-loading-reveal'));
+ const fault=harness({cached:false});await fault.start();fault.tick(4000);assert.equal(fault.state.result,'timeout');assert(!fault.root.classList.contains('fde-loading-reveal'));
 });

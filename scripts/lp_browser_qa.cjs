@@ -34,9 +34,13 @@ if(geometry.cols.length<5||geometry.count<18||Math.abs(geometry.cols[2]-geometry
 await page.mouse.move(420,500);await page.mouse.down();await page.mouse.move(680,600,{steps:8});await page.mouse.up();
 if(await plane.evaluate(x=>x.style.transform)===initial||await page.locator('#inspect').isVisible())throw Error('drag not distinct from click');
 if(await wordmark(page))throw Error('Wordmark should travel with the archive plane');
+const tiles=await page.locator('#plane .tile').elementHandles(),tileCount=tiles.length;
+for(let i=0;i<5;i++){const previous=await plane.evaluate(x=>x.style.transform);await page.mouse.move(421,500);await page.mouse.wheel(i%2?1660:-1710,730);await page.waitForFunction(old=>document.getElementById('plane').style.transform!==old,previous);}
+if(await page.locator('#plane .tile').count()!==tileCount||!(await Promise.all(tiles.map(el=>el.evaluate(x=>x.isConnected)))).every(Boolean))throw Error('Wheel motion replaced the stable tile pool');
 const panningAnchor=(slot=null)=>page.locator('.material-print').evaluateAll((xs,slot)=>{const entries=xs.filter(x=>slot===null||x.dataset.slot===slot).map(x=>({slot:x.dataset.slot,r:x.getBoundingClientRect()})).filter(({r})=>r.right>10&&r.bottom>50&&r.left<innerWidth-10&&r.top<innerHeight-50);const score=({r})=>Math.hypot(r.x+r.width/2-innerWidth/2,r.y+r.height/2-innerHeight/2);const {r,slot:key}=entries.sort((a,b)=>score(a)-score(b))[0];return {slot:key,offset:[r.x+r.width/2-innerWidth/2,r.y+r.height/2-innerHeight/2]};},slot);
 await page.locator('[data-do=reset]').click();const beforeZoom=await panningAnchor();if(!(await wordmark(page)))throw Error('Reset did not re-center the wordmark');
 await page.locator('[data-do=plus]').click();if(await page.locator('#zoom-value').textContent()!=='117%')throw Error('zoom unavailable');
+await page.waitForFunction(()=>document.getElementById('plane').style.transform.includes('scale(1.17)'));
 const afterZoom=await panningAnchor(beforeZoom.slot);if(afterZoom.offset.some((v,i)=>Math.abs(v-beforeZoom.offset[i]*1.17)>4))throw Error('Zoom focal point moved '+JSON.stringify({beforeZoom,afterZoom}));
 await page.locator('[data-do=reset]').click();if(await plane.evaluate(x=>x.style.transform)!==initial)throw Error('reset mismatch');
 const hit=await page.locator('.material-print').evaluateAll(xs=>{for(const x of xs){const r=x.getBoundingClientRect(),a=r.x+r.width*.5,b=r.y+r.height*.5;if(a>100&&b>90&&x.contains(document.elementFromPoint(a,b)))return [a,b]}});
