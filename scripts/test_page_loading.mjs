@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import {pageLoadingBootstrap,loadingPages,stripLoadingHead} from './page_loading_template.mjs';
 import {approvedHeadPrefix} from './approved_head_prefix.mjs';
@@ -71,4 +72,14 @@ test('only the exact owned bootstrap passes static metadata script protection',(
 });
 test('all current page shells own exactly one loader and original source character',()=>{
  assert.equal(loadingPages.length,27);for(const file of loadingPages){const html=readFileSync(new URL('../'+file,import.meta.url),'utf8');assert.equal((html.match(/id="page-loading"/g)||[]).length,1,file);assert(html.includes('assets/instagram-bakedkale-profile-20261110.jpg'));assert.equal((html.match(/data-page-loading-bootstrap/g)||[]).length,1,file);assert(!html.includes('<button type="button" data-page-loading-skip'),file);assert(html.includes('<span data-page-loading-count></span>'),file);assert(html.includes('const remaining=2000-'),file);}
+});
+
+test('FDE page changes are limited to the removed localized loading button and cache keys',()=>{
+ const root=new URL('../',import.meta.url),baseline='fca6cc8511fa8a2297f326132be6ce2ff53e6bfb';
+ const normalize=html=>html.replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
+ for(const file of loadingPages){
+  const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});
+  const want=old.replace(/<button type="button" data-page-loading-skip>(?:Show page now|ページを表示|立即显示页面)<\/button>/,'');
+  assert.notEqual(want,old,file);assert.equal(normalize(readFileSync(new URL(file,root),'utf8')),normalize(want),file);
+ }
 });
