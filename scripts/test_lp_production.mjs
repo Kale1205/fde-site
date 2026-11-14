@@ -10,6 +10,7 @@ import {renderLpPage} from './build_lp_pages.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const hash=data=>createHash('sha256').update(data).digest('hex');
 const normalize=html=>html.replace(/(\.(?:css|js)\?v=)\d{8}-\d{6}/g,'$1BUILD');
+const normalizeFde=html=>normalize(html).replace('<button type="button" data-page-loading-skip>ページを表示</button>','');
 const previous=file=>execFileSync('git',['show',`f92f7506bf67a8bd1cb3e209e67252dc54941117:${file}`],{cwd:root,encoding:'utf8'});
 test('opening date and future clocks cannot enable an unconnected LP submission',()=>{
  assert.equal(LP_ACCEPTANCE_START,'2026-12-01T00:00:00+09:00');assert(Object.isFrozen(LP_FEATURES));assert.deepEqual(LP_FEATURES,{quoteSubmission:false,statistics:false,payments:false,formalEstimate:false});
@@ -17,7 +18,7 @@ test('opening date and future clocks cannot enable an unconnected LP submission'
 });
 test('Japanese menus replace only the known pending LP destination and retain FDE content',()=>{
  for(const name of ['index','quiet-form','license','goals','news','demo','contact','customer','order']){
-  const file='ja/'+name+'.html',html=read(file);assert.equal(html.split(liveLpDestination).length-1,3,file);assert(!html.includes(pendingLpDestination));assert.equal(normalize(html.replaceAll(liveLpDestination,pendingLpDestination)),normalize(previous(file)),file);
+  const file='ja/'+name+'.html',html=read(file);assert.equal(html.split(liveLpDestination).length-1,3,file);assert(!html.includes(pendingLpDestination));assert.equal(normalizeFde(html.replaceAll(liveLpDestination,pendingLpDestination)),normalizeFde(previous(file)),file);
  }
  const changed=liveLpDestination.replace('href="lp/"','href="unknown/"');assert.equal(withLpDestination('ja/index.html',changed),changed);for(const file of ['index.html','zh/index.html','ja/unrelated.html'])assert.equal(withLpDestination(file,pendingLpDestination),pendingLpDestination);
 });
@@ -39,7 +40,7 @@ test('approved showcase is a repeating material archive with ten separately navi
  const js=read('ja/lp/parallel.js'),css=read('ja/lp/parallel.css'),html=read('ja/lp/index.html');
  for(const token of ['prefers-reduced-motion','pointermove','if(!points.size)clickBlock=0','currentPhotos','viewPhotos','pushState','startGather','endGather','setPointerCapture','cancelAnimationFrame','wrap(x+originX,W*z)','showModal()','hashchange',"b.tabIndex=-1"])assert(js.includes(token),token);
  assert(js.includes("tile.setAttribute('aria-hidden','true')"));
- assert(!js.includes('mini-number'));assert(html.includes('>Archive</a>'));assert(html.includes('>Stories</a>'));assert.equal((html.match(/class="story-collage"/g)||[]).length,10);assert.equal((html.match(/class="collage-print /g)||[]).length,70);assert(html.includes('class="fde-link" href="./../index.html"'));assert(read('ja/index.html').includes('const remaining=2000-'));assert(read('ja/index.html').includes('>ページを表示</button>'));
+ assert(!js.includes('mini-number'));assert(html.includes('>Archive</a>'));assert(html.includes('>Stories</a>'));assert.equal((html.match(/class="story-collage"/g)||[]).length,10);assert.equal((html.match(/class="collage-print /g)||[]).length,70);assert(html.includes('class="fde-link" href="./../index.html"'));assert(read('ja/index.html').includes('const remaining=2000-'));assert(!read('ja/index.html').includes('>ページを表示</button>'));
  assert(css.includes('prefers-reduced-motion:reduce'));assert(css.includes('touch-action:none'));
  for(let i=1;i<=10;i++){const n=String(i).padStart(2,'0'),path='cases/'+n,detail=read('ja/lp/'+path+'.html');assert(html.includes(path+'.html'));assert.equal(renderLpPage(path),detail);assert(detail.includes('完成したLPや受注実績ではありません'));assert(detail.includes('../diagnosis.html'));assert(!/mailto:|contact-direct\.js/.test(detail));}
 });
