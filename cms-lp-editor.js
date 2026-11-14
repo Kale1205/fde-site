@@ -6,8 +6,25 @@ const labels=['自家焙煎カフェ','少人数ピラティス','住宅リノ�
 const m=(tag,t='')=>{const n=document.createElement(tag);n.textContent=t;return n;};
 const btn=t=>{const n=m('button',t);n.type='button';n.className='admin-button secondary';return n;};
 const errors={LP_MEDIA:'ファイルの形式・容量・再生可否を確認してください。',LP_DIMENSIONS:'画像・動画のサイズ、または動画の長さが制限外です。',LP_MANIFEST:'掲載情報に不備があります。動画を指定する場合は表紙画像と説明が必要です。',LP_NO_CHANGE:'公開内容と同じです。変更箇所を入力してください。',LP_STORAGE:'端末に保存できませんでした。容量やブラウザー設定を確認してください。'};
-function localDraft(value){
- return {id:value.id,title:value.title,description:value.description,alt:value.alt,order:value.order,baseSha:value.baseSha,removePhoto:Boolean(value.removePhoto),removeVideo:Boolean(value.removeVideo),files:Object.fromEntries(['photo','poster','video'].filter(k=>value.files[k] instanceof Blob).map(k=>[k,value.files[k]]))};
+const mediaKeys=['photo','poster','video'];
+async function localDraft(value){
+ const files={};
+ // WebKit can abort IndexedDB transactions when cloning media Blob objects.
+ // ArrayBuffer stores the same validated bytes without a picker/blob handle.
+ for(const key of mediaKeys)if(value.files[key] instanceof Blob){
+  const file=value.files[key];files[key]={bytes:await file.arrayBuffer(),type:file.type};
+ }
+ return {id:value.id,title:value.title,description:value.description,alt:value.alt,order:value.order,baseSha:value.baseSha,removePhoto:Boolean(value.removePhoto),removeVideo:Boolean(value.removeVideo),files};
+}
+function readDraft(value){
+ if(!value)return value;
+ const files={};
+ for(const key of mediaKeys){
+  const file=value.files?.[key];
+  if(file?.bytes instanceof ArrayBuffer&&typeof file.type==='string')files[key]=new Blob([file.bytes],{type:file.type});
+  else if(file instanceof Blob)files[key]=file;
+ }
+ return {...value,files};
 }
 let db;
 function draftDb(){
@@ -15,10 +32,10 @@ function draftDb(){
  return db;
 }
 async function storage(mode,id){
- const db=await draftDb();
+ const record=mode==='put'?await localDraft(id):null,db=await draftDb();
  return new Promise((resolve,reject)=>{
-  const tx=db.transaction('drafts',mode==='put'?'readwrite':'readonly'),store=tx.objectStore('drafts'),r=mode==='put'?store.put(localDraft(id)):store.get(id);
-  tx.oncomplete=()=>resolve(r.result);tx.onerror=tx.onabort=()=>reject(Error('LP_STORAGE'));
+  const tx=db.transaction('drafts',mode==='put'?'readwrite':'readonly'),store=tx.objectStore('drafts'),r=mode==='put'?store.put(record):store.get(id);
+  tx.oncomplete=()=>resolve(mode==='get'?readDraft(r.result):r.result);tx.onerror=tx.onabort=()=>reject(Error('LP_STORAGE'));
  });
 }
 export function buildLpEditor(api,getToken){
