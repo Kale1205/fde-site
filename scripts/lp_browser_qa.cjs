@@ -33,6 +33,8 @@ await page.locator('.gather-layer').waitFor({state:'detached'});
 if(await plane.evaluate(x=>x.style.transform)!==initial)throw Error('Archive position not retained');
 await goStories.click();await page.locator('.gather-layer').waitFor({state:'attached'});await page.locator('.gather-layer').waitFor({state:'detached'});
 if(await page.locator('.stories .prints a').count()!==10||await page.locator('.collage-print').count()!==70)throw Error('Stories collage count');
+const names=await page.locator('.collage-cover b').allTextContents();
+if(new Set(names).size!==10||await page.locator('.collage-palette').count()!==10)throw Error('Stories does not have independent cover and palette treatments');
 await page.emulateMedia({reducedMotion:'reduce'});await goArchive.click();await goStories.click();
 if(await page.locator('.gather-layer').count())throw Error('reduced motion gather unavailable');await page.emulateMedia({reducedMotion:'no-preference'});
 await page.locator('.stories .prints a').first().click();await page.waitForTimeout(2200);
