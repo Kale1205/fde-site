@@ -88,3 +88,10 @@
 .collage-cover{grid-column:1;grid-row:1;display:grid;align-content:center;gap:5%;padding:7%;overflow:hidden}
 .collage-cover b{font:600 clamp(4px,.53vw,8px)/1.15 system-ui,sans-serif;overflow-wrap:anywhere}
 .collage-cover strong{font:700 clamp(5px,.85vw,12px)/1.2 serif;letter-spacing:-.05em}
+
+@font-face{font-family:ArchiveInter;src:url('../../assets/fonts/inter-latin-variable.woff2') format('woff2');font-weight:100 900;font-display:swap}
+.archive-wordmark{position:absolute;top:50%;left:50%;width:17%;transform:translate(-50%,-50%);pointer-events:none;text-align:center;color:var(--ink);white-space:nowrap;line-height:.9}
+.archive-wordmark span,.archive-wordmark em{display:block}
+.archive-wordmark span{font:780 clamp(19px,2.34vw,32px)/1 ArchiveInter,system-ui,sans-serif;letter-spacing:-.075em}
+.archive-wordmark em{font:italic 500 clamp(18px,2.15vw,28px)/.95 Georgia,'Times New Roman',serif;letter-spacing:-.065em;margin-top:.02em}
+@media(max-width:690px){.archive-wordmark span{font-size:clamp(15px,5.35vw,25px)}.archive-wordmark em{font-size:clamp(14px,4.95vw,23px)}}
