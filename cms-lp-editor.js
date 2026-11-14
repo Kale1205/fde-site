@@ -90,6 +90,7 @@ export function buildLpEditor(api,getToken){
  select.addEventListener('change',run(async()=>{const id=select.value;try{await preserve();await load(id);}catch(e){select.value=draft?.id||LP_IDS[0];throw e;}}));
  for(const [kind,input]of Object.entries(files))input.addEventListener('change',run(async()=>{
   const file=input.files[0];if(!file||!draft)return;
+  say('ファイルを確認しています。');
   try{await inspectLpAsset(file,kind);}catch(e){input.value='';throw e;}
   draft.files[kind]=file;
   if(kind==='photo')removal.photo.checked=false;

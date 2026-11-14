@@ -38,7 +38,7 @@
 .gather-print{position:absolute;overflow:hidden;will-change:transform,opacity}
 .gather-print .photo{width:100%;height:100%;aspect-ratio:auto}
 .stories.is-arriving .prints,#archive.is-arriving #plane{animation:stories-settle .87s linear both}
-@keyframes stories-settle{0%,69%{opacity:0}100%{opacity:1}}
+@keyframes stories-settle{0%,53%{opacity:0}77%,100%{opacity:1}}
 @media(prefers-reduced-motion:reduce){.gather-layer{display:none}.stories.is-arriving .prints,#archive.is-arriving #plane{animation:none}}
 
 /* Repeating photo lattice and independent, overlapping Stories collages. */
