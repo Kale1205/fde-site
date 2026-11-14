@@ -30,3 +30,13 @@
 @keyframes inspect-detail{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(max-width:690px){.inspect-sheet{grid-template-columns:1fr;gap:22px;padding:44px 18px 22px}.inspect-image .photo{aspect-ratio:1.25;max-height:55dvh}.inspect-caption{gap:13px}}
 @media(prefers-reduced-motion:reduce){.inspect-caption{animation:none}}
+
+/* Keep the adjacent FDE destination within the compact header on phones. */
+.left-tools>a:not(.identity){font-size:11px}
+@media(max-width:390px){.left-tools{gap:7px}.left-tools>a:not(.identity){font-size:10px}.identity img{width:24px;height:24px}.identity b{font-size:11px}.parallel-head{padding-inline:8px}}
+.gather-layer{position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none}
+.gather-print{position:absolute;overflow:hidden;will-change:transform,opacity}
+.gather-print .photo{width:100%;height:100%;aspect-ratio:auto}
+.stories.is-gathering .prints{animation:stories-settle .7s cubic-bezier(.2,.7,.25,1) both}
+@keyframes stories-settle{0%,42%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.gather-layer{display:none}.stories.is-gathering .prints{animation:none}}
