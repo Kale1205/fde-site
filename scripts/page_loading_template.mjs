@@ -3,6 +3,7 @@ import {readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 
 export const loadingPages=['','ja/','zh/'].flatMap(prefix=>['index','license','demo','goals','news','contact','order','customer','quiet-form'].map(name=>prefix+name+'.html'));
+export const loadingEntryPages=Object.freeze(['index.html','ja/index.html','zh/index.html']);
 export const loadingCopy={
  en:{label:'Preparing the page',preparing:'Preparing your page',done:'The page is ready.',partial:'Showing the page without waiting for every resource.',image:'Baked Kale character'},
  ja:{label:'ページの読み込み',preparing:'ページを準備しています',done:'ページを表示しました。',partial:'一部の読み込みを待たず、ページを表示しました。',image:'Baked Kaleのキャラクター'},
@@ -13,6 +14,9 @@ export const loadingCopy={
 // Progress is resource-driven; errors, user skip and the deadline always fail open.
 export function pageLoadingBootstrap(){
  const root=document.documentElement;
+ try{if(localStorage.getItem('fde:still-icons')==='1')root.dataset.pageLoadingMotion='still';}catch{}
+ const type=performance.getEntriesByType?.('navigation')?.[0]?.type;
+ if(type==='reload'||type==='back_forward'||(!type&&[1,2].includes(performance.navigation?.type)))return;
  const state={started:performance.now(),released:false,shown:false,shownAt:null,readyAt:null,completed:0,total:0,resources:new Map(),tasks:[]};
  window.__fdePageLoading=state;
  const resource=event=>{
@@ -57,7 +61,6 @@ export function pageLoadingBootstrap(){
  document.addEventListener('click',skip);document.addEventListener('keydown',key);
  window.addEventListener('pagehide',()=>release('navigation'),{once:true});
  window.addEventListener('pageshow',event=>{if(event.persisted)release('history');});
- try{if(localStorage.getItem('fde:still-icons')==='1')root.dataset.pageLoadingMotion='still';}catch{}
  root.classList.add('fde-loading','fde-loading-visible');
  function observeDisplay(){
   if(state.released)return;
@@ -72,9 +75,11 @@ export function pageLoadingBootstrap(){
 const critical='#page-loading{display:none;position:fixed;inset:0;z-index:10000;background:#033f1b;color:#faf8f4;place-items:center;padding:20px;font:16px system-ui,sans-serif}html.fde-loading .site-shell,html.fde-loading .skip-link{visibility:hidden}html.fde-loading.fde-loading-visible #page-loading{display:grid}.page-loading-panel{display:grid;justify-items:center;gap:16px;max-width:100%;text-align:center}.page-loading-art{position:relative;width:160px;max-width:42vw}.page-loading-art>img{display:block;width:100%;height:auto}.page-loading-art>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#page-loading progress{width:240px;max-width:76vw}#page-loading button{min-height:44px;padding:10px 18px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit}#page-loading button:focus-visible{outline:3px solid #faf8f4;outline-offset:4px}.page-loading-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}';
 export function loadingHead(prefix,version){return `<!-- FDE page loading -->\n<style data-page-loading-critical>${critical}</style>\n<script data-page-loading-bootstrap>(${pageLoadingBootstrap.toString()})();</script>\n<link rel="stylesheet" href="${prefix}page-loading.css?v=${version}">\n<script defer src="${prefix}page-loading.js?v=${version}" data-page-loading-runtime></script>\n<!-- End FDE page loading -->\n`;}
 
+const previousLoaderHash='f024ead4cfd5cb5af61a0b84aecc65ad6303dc027255ae7cf3a821de9fd85a7f';
+const normalizedLoaderHash=block=>createHash('sha256').update(block.replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD')).digest('hex');
 export function stripLoadingHead(source,{strict=true}={}){
  return source.replace(/<!-- FDE page loading -->\n[\s\S]*?<!-- End FDE page loading -->\n/g,block=>{
-  if(strict){const m=block.match(/href="((?:\.\.\/)?)(?:page-loading\.css)\?v=(\d{8}-\d{6}|BUILD)"/);if(!m||block!==loadingHead(m[1],m[2]))throw Error('Unexpected script in loading metadata');}
+  if(strict){const m=block.match(/href="((?:\.\.\/)?)(?:page-loading\.css)\?v=(\d{8}-\d{6}|BUILD)"/);if(!m||(block!==loadingHead(m[1],m[2])&&normalizedLoaderHash(block)!==previousLoaderHash))throw Error('Unexpected script in loading metadata');}
   return '';
  });
 }
@@ -86,6 +91,7 @@ export function withPageLoading(file,source){
  if(!loadingPages.includes(file)||!/^<!doctype html>/i.test(source))return source;
  const version=source.includes('page-loading.css?v=BUILD')?'BUILD':readFileSync(new URL('../build-version.txt',import.meta.url),'utf8').trim(),prefix=file.includes('/')?'../':'';
  let html=stripLoadingHead(source,{strict:false}).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'');
+ if(!loadingEntryPages.includes(file))return html;
  const firstStyle=html.indexOf('<link rel="stylesheet"'),chrome=html.indexOf('<!-- Shared site chrome -->');
  const boundary=chrome>=0?Math.min(firstStyle,chrome):firstStyle;if(boundary<0)throw Error(`Missing stylesheet boundary: ${file}`);
  html=html.slice(0,boundary)+loadingHead(prefix,version)+html.slice(boundary);
@@ -93,10 +99,11 @@ export function withPageLoading(file,source){
 }
 const priorLoadingHeads=new Set(["73928a6b6c108f7f334bd476f70642656bb3b17812e6dec10173187b54358606", "0292c1c5369cd292600a7b1636a10919ffeedffc1a67f996bad823ff337d7f92"]);
 export function applyReviewedPageLoading(file,source){
+ if(!loadingEntryPages.includes(file))return withPageLoading(file,source);
  const block=source.match(/<!-- FDE page loading -->\n[\s\S]*?<!-- End FDE page loading -->\n/)?.[0];
  if(!block)return withPageLoading(file,source);
  const normalized=block.replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
- if(priorLoadingHeads.has(createHash('sha256').update(normalized).digest('hex')))return withPageLoading(file,source);
+ if(priorLoadingHeads.has(normalizedLoaderHash(normalized))||normalizedLoaderHash(normalized)===previousLoaderHash)return withPageLoading(file,source);
  return source;
 }
 

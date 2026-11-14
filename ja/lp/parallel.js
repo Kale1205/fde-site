@@ -3,8 +3,9 @@
 const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
 const field=q('#field'),plane=q('#plane'),archive=q('#archive'),stories=q('#works'),template=q('#material-data'),dialog=q('#inspect'),theme=q('.theme');
 const items=qa('article',template.content), tileNodes=new Map(), points=new Map();
+const [wordmarkName,wordmarkEdition]=q('#archive-title').textContent.trim().split(' ');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-// One stable, repeating 5 × 5 contact sheet. The center cell is deliberately left open.
+// One stable, repeating 5 × 5 contact sheet. The center cell is reserved for the Archive wordmark.
 const slots=[2,8,3,0,5,9,4,6,7,1,0,5,-1,3,8,6,1,9,4,2,7,8,0,5,9];
 const frame=[[.79,1.57],[.68,.81],[.85,1.34],[.73,1.04],[.81,1.50],[.76,1.17],[.85,1.62],[.74,1.05],[.78,1.30],[.74,1.38]];
 let currentView=null,gather=null;
@@ -13,7 +14,13 @@ const wrap=(n,d)=>((n%d)+d)%d,clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
 function makeTile(col,row){
  const tile=document.createElement('div');tile.className='tile';tile.setAttribute('aria-hidden','true');
  slots.forEach((i,slot)=>{
-  if(i<0)return;
+  if(i<0){
+   const mark=document.createElement('span');
+   const name=document.createElement('span'),edition=document.createElement('em');
+   name.textContent=wordmarkName;edition.textContent=wordmarkEdition;
+   mark.className='archive-wordmark';mark.append(name,' ',edition);tile.append(mark);
+   return;
+  }
   const item=items[i],[w,ratio]=frame[i],b=document.createElement('button');
   const px=(slot%5+.5)*20,py=(Math.floor(slot/5)+.5)*20;
   b.className='material-print';b.type='button';b.tabIndex=-1;b.dataset.material=i;b.dataset.slot=slot;b.setAttribute('aria-label',item.dataset.title+'の素材');
