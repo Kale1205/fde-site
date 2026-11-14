@@ -17,7 +17,8 @@ const metadata={
 const lpLoadingHead=(prefix,version)=>loadingHead(prefix,version).replace('const remaining=2000-', 'const remaining=1000-');
 const lpLoadingBody=local=>loadingBody('ja/index.html')
  .replace('../assets/instagram-bakedkale-profile-20261110.jpg',local+'assets/bakedkale-character.png')
- .replace('data-page-loading-skip>ページを表示</button>','data-page-loading-skip aria-label="読み込み演出をスキップ"><span aria-hidden="true">×</span></button>');
+ .replace('<span data-page-loading-count></span>','<span data-page-loading-count hidden></span>')
+ .replace('<button type="button" data-page-loading-skip>ページを表示</button>','');
 function renderShowcase(name,version){
  const i=showcaseCases.findIndex(c=>name==='cases/'+c.num),isCase=i>=0;
  // The global cache-version workflow only rewrites top-level LP routes.
