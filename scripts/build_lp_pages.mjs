@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {loadingHead,loadingBody} from './page_loading_template.mjs';
@@ -14,6 +15,9 @@ const metadata={
 };
 function renderShowcase(name,version){
  const i=showcaseCases.findIndex(c=>name==='cases/'+c.num),isCase=i>=0;
+ // The global cache-version workflow only rewrites top-level LP routes.
+ // Case pages are generated with a cache key derived from their actual assets.
+ if(isCase)version=createHash('sha256').update(['page-loading.css','page-loading.js','ja/lp/showcase.css'].map(read).join('\0')).digest('hex').slice(0,12);
  const prefix=isCase?'../../../':'../../', local=isCase?'../':'./';
  const c=isCase?showcaseCases[i]:null;
  const meta=isCase?{title:c.title+'の制作例 | Baked Kale',description:'Baked Kaleによる架空のLP制作例です。受注実績ではありません。',robots:'noindex,follow'}:metadata[name];
