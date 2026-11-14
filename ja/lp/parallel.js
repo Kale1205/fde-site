@@ -50,7 +50,7 @@ function inertia(t){
  if(Math.hypot(vx,vy)>.23)anim=requestAnimationFrame(inertia);else{anim=0;vx=vy=0;}
 }
 function zoom(next,cx=field.clientWidth/2,cy=field.clientHeight/2){
- const n=clamp(next,.66,1.8);x=cx-(cx-x)*(n/z);y=cy-(cy-y)*(n/z);z=n;draw();
+ const n=clamp(next,.66,1.8);x=cx-(cx-x-originX)*(n/z)-originX;y=cy-(cy-y-originY)*(n/z)-originY;z=n;draw();
 }
 function reset(){stop();x=y=0;z=1;draw();}
 const midpoint=(p)=>({x:(p[0].x+p[1].x)/2,y:(p[0].y+p[1].y)/2,d:Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y)});
