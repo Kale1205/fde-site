@@ -49,6 +49,8 @@ function reset(){stop();x=y=0;z=1;draw();}
 const midpoint=(p)=>({x:(p[0].x+p[1].x)/2,y:(p[0].y+p[1].y)/2,d:Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y)});
 field.addEventListener('pointerdown',e=>{
  if(e.button!==0)return;
+ // Suppress only the click emitted by the completed drag, not a fresh press.
+ if(!points.size)clickBlock=0;
  stop();points.set(e.pointerId,{x:e.clientX,y:e.clientY});
  if(points.size===1)gesture={x:e.clientX,y:e.clientY,t:performance.now(),moved:false};
  if(points.size===2){gesture={...midpoint([...points.values()]),moved:true,pinch:true};field.setPointerCapture(e.pointerId);}
