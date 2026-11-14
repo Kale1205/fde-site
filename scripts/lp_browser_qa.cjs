@@ -44,8 +44,10 @@ if(!hit)throw Error('no clickable material');await page.mouse.click(...hit);if(!
 const title=await page.locator('#inspect-title').textContent();await page.locator('.inspect-next').click();if(await page.locator('#inspect-title').textContent()===title)throw Error('next material unchanged');
 await page.keyboard.press('Escape');if(await page.locator('#inspect').isVisible())throw Error('escape failed');
 await page.locator('.theme').click();if(await page.locator('body').getAttribute('data-theme')!=='dark')throw Error('theme unavailable');
+const beforeHash=await page.evaluate(()=>window.__fdePageLoading.started);
 const goStories=page.locator('.view-switch a[href="#works"]'),goArchive=page.locator('.view-switch a[href="#archive"]');
 await goStories.click();await page.locator('.gather-print').first().waitFor();
+if(await page.evaluate(()=>window.__fdePageLoading.started)!==beforeHash)throw Error('Archive hash switch restarted the entry loader');
 if(await page.locator('.gather-print').count()<3)throw Error('Stories gather needs multiple images');
 await page.screenshot({path:path.join(out,engine+'-stories-transition.png'),animations:'allow'});
 await goArchive.click();await page.locator('#archive.is-arriving').waitFor({state:'attached'});await page.locator('.gather-print').first().waitFor();
