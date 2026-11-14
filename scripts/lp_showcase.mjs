@@ -12,7 +12,9 @@ const action=['お店をみる','体験レッスン','住まいの相談','教�
 const palettes=[['#f0e4d3','#482e23','#9a513e'],['#e8dfef','#42334c','#765b8f'],['#e5e6da','#2c3d30','#426551'],['#f3ddd8','#652e42','#a34c66'],['#29211f','#f0d3aa','#cb945f'],['#edf2f6','#233751','#2b619c'],['#282925','#f6e8da','#ea7b3c'],['#e4cead','#3c362d','#3d6a7b'],['#f9efb7','#183858','#2d639e'],['#eeebe5','#222220','#4d4b48']];
 function mock(s,i){return `<span class="sample sample-${i}" aria-hidden="true" style="--paper:${palettes[i][0]};--ink:${palettes[i][1]};--accent:${palettes[i][2]}"><span class="sample-nav"><b>${e(names[i])}</b><span>MENU <b>☰</b></span></span><span class="sample-picture">${photo(i)}</span><span class="sample-copy"><span>${e(s.en)}</span><strong>${e(s.line).replaceAll('\n','<br>')}</strong><span class="sample-cta">${action[i]} <b>↗</b></span></span><span class="sample-end"><span>01 — ABOUT</span><span>${e(s.title)}</span></span></span>`;}
 function collage(i){
- return `<span class="story-collage" aria-hidden="true">${[0,1,2,3,4,5,6].map((_,j)=>`<span class="collage-print cp-${j}" data-layer="${j}">${photo(i)}</span>`).join('')}</span>`;
+ const s=cases[i],palette=palettes[i];
+ const labels=['DESIGN DETAIL','VISUAL STUDY','FIELD NOTES','MATERIAL CROP','COLOUR STUDY','ART DIRECTION',names[i]];
+ return `<span class="story-collage" aria-hidden="true" style="--collage-paper:${palette[0]};--collage-ink:${palette[1]};--collage-accent:${palette[2]}">${labels.map((label,j)=>`<span class="collage-print cp-${j}" data-layer="${j}">${photo(i)}${j===6?`<span class="collage-cover"><b>${e(label)}</b><strong>${e(s.line).replaceAll('\n','<br>')}</strong></span>`:j===4?`<span class="collage-palette"><i></i><i></i><i></i><small>${label}</small></span>`:j===1||j===3?`<small class="collage-mark">${label}</small>`:''}</span>`).join('')}</span>`;
 }
 export function showcaseBody(base='./'){
 const p=base||'./';
@@ -28,7 +30,7 @@ return `<a class="skip skip-link" href="#works">作品へスキップ</a>
 <div class="field-tools" aria-label="拡大・表示位置"><button type="button" data-do="minus" aria-label="縮小">−</button><output id="zoom-value">100%</output><button type="button" data-do="plus" aria-label="拡大">+</button><button class="reset" type="button" data-do="reset" aria-label="表示をリセット">↺</button></div>
 <div class="material-access"><p>素材を選択</p>${cases.map((s,i)=>`<button type="button" data-material="${i}">${e(s.title)}</button>`).join('')}</div>
 </section>
-<section id="works" class="stories" aria-labelledby="stories-title"><div class="stories-note"><h1 id="stories-title">制作例 <sup>10</sup></h1><span>自主制作・架空の案件</span></div><ol class="prints">${prints}</ol></section>
+<section id="works" class="stories" aria-labelledby="stories-title"><div class="stories-note"><h1 id="stories-title" class="sr-only">制作例 10件</h1><span>自主制作・架空の案件</span></div><ol class="prints">${prints}</ol></section>
 </main>
 <template id="material-data">${cases.map((s,i)=>`<article data-title="${e(s.title)}" data-url="${p}cases/${s.num}.html" data-n="${s.num}">${photo(i)}</article>`).join('')}</template>
 <dialog id="inspect" aria-labelledby="inspect-title"><div class="inspect-sheet"><button class="close-inspect" type="button" aria-label="閉じる">×</button><div class="inspect-image"></div><div class="inspect-caption"><span class="inspect-id"></span><h2 id="inspect-title"></h2><a class="inspect-link" href="#works">制作例を見る ↗</a><div class="inspect-switch"><button type="button" class="inspect-prev" aria-label="前の素材">←</button><button type="button" class="inspect-next" aria-label="次の素材">→</button></div></div></div></dialog>

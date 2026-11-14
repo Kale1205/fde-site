@@ -67,3 +67,24 @@
 .gather-print .gather-crop{position:absolute;inset:0}
 @media(max-width:690px){.stories .prints li:nth-child(n){margin:0}.stories .prints{row-gap:31px}}
 @media(prefers-reduced-motion:reduce){.stories.is-arriving .print-caption,.stories.is-arriving .stories-note{animation:none}}
+
+/* Collage elements are deliberately different editorial applications of one brief. */
+.stories-note{justify-content:flex-end}
+.cp-0 .photo{filter:saturate(.82) contrast(1.05)}
+.cp-1{background:var(--collage-paper);padding:3.5% 3% 3%}
+.cp-1 .photo{height:79%;filter:saturate(.67)}
+.cp-2 .photo{filter:grayscale(.9) contrast(1.12)}
+.cp-3{background:var(--collage-ink);padding:3% 3% 2%}
+.cp-3 .photo{height:75%;filter:sepia(.22) saturate(1.23)}
+.cp-5 .photo{filter:saturate(1.2) brightness(.83)}
+.collage-mark{display:block;font:600 clamp(3px,.44vw,6px)/1.1 system-ui,sans-serif;white-space:nowrap;margin-top:2px;color:var(--collage-ink);letter-spacing:.08em}
+.cp-3 .collage-mark{color:var(--collage-paper)}
+.cp-4{background:var(--collage-paper);padding:4% 3% 3%}
+.cp-4 .photo{height:48%;filter:saturate(.75)}
+.collage-palette{display:flex;align-items:center;gap:2px;padding-top:3px;color:var(--collage-ink);font-size:clamp(3px,.4vw,5px);white-space:nowrap}
+.collage-palette i{width:12%;aspect-ratio:1;background:var(--collage-accent);display:block}.collage-palette i:nth-child(2){background:var(--collage-ink)}.collage-palette i:nth-child(3){background:var(--collage-paper);border:1px solid var(--collage-ink)}
+.cp-6{background:var(--collage-paper);color:var(--collage-ink);display:grid;grid-template-columns:1fr 1.12fr;align-items:stretch;padding:0}
+.cp-6 .photo{grid-column:2;grid-row:1}
+.collage-cover{grid-column:1;grid-row:1;display:grid;align-content:center;gap:5%;padding:7%;overflow:hidden}
+.collage-cover b{font:600 clamp(4px,.53vw,8px)/1.15 system-ui,sans-serif;overflow-wrap:anywhere}
+.collage-cover strong{font:700 clamp(5px,.85vw,12px)/1.2 serif;letter-spacing:-.05em}

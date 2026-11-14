@@ -137,7 +137,7 @@ function currentPhotos(work){
  return viewPhotos(work);
 }
 function viewPhotos(work){
- return work?photoRecords(qa('.story-collage',stories).flatMap((card,i)=>qa('.collage-print',card).map((p,j)=>[i,q('.photo',p),p,i+':'+j]))):
+ return work?photoRecords(qa('.story-collage',stories).flatMap((card,i)=>qa('.collage-print',card).map((p,j)=>[i,q('.photo',p),null,i+':'+j]))):
   photoRecords(qa('.material-print',plane).map((el,n)=>[Number(el.dataset.material),q('.photo',el),null,'slot-'+n]));
 }
 function startGather(from,to,work){
