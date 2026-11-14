@@ -37,7 +37,7 @@ test('the 12 approved question IDs stay in order and the ten layouts stay fictio
 });
 test('approved showcase is a repeating material archive with ten separately navigable fictional Stories',()=>{
  const js=read('ja/lp/parallel.js'),css=read('ja/lp/parallel.css'),html=read('ja/lp/index.html');
- for(const token of ['prefers-reduced-motion','pointermove','setPointerCapture','cancelAnimationFrame','wrap(x,W*z)','showModal()','hashchange',"b.tabIndex=-1"])assert(js.includes(token),token);
+ for(const token of ['prefers-reduced-motion','pointermove','if(!points.size)clickBlock=0','setPointerCapture','cancelAnimationFrame','wrap(x,W*z)','showModal()','hashchange',"b.tabIndex=-1"])assert(js.includes(token),token);
  assert(js.includes("tile.setAttribute('aria-hidden','true')"));
  assert(!js.includes('mini-number'));assert(html.includes('>Archive</a>'));assert(html.includes('>Stories</a>'));
  assert(css.includes('prefers-reduced-motion:reduce'));assert(css.includes('touch-action:none'));
