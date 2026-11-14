@@ -1,6 +1,6 @@
 import {buildLpEditor} from './cms-lp-editor.js';
-import {DraftStore,NewsPublisher,CmsError,errorText,newDraft,persistedDraft,fingerprint,inspectImage,base64,LANGS} from './cms-news-workflow.js?v=20261114-192942';
-import {BatchStore,BatchPublisher,newBatch,batchFingerprint,removeQueuedDraft} from './cms-news-batch-workflow.js?v=20261114-192942';
+import {DraftStore,NewsPublisher,CmsError,errorText,newDraft,persistedDraft,fingerprint,inspectImage,base64,LANGS} from './cms-news-workflow.js?v=20261114-202946';
+import {BatchStore,BatchPublisher,newBatch,batchFingerprint,removeQueuedDraft} from './cms-news-batch-workflow.js?v=20261114-202946';
 
 // News drafts never leave this browser until an explicit publication request.
 const $=id=>document.getElementById(id),make=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=text;node.className=className;return node;};
