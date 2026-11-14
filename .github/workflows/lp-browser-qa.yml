@@ -42,3 +42,15 @@ jobs:
         with:
           name: lp-qa-${{ matrix.browser }}
           path: qa-results/
+      - name: Save compact motion review
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lp-motion-${{ matrix.browser }}
+          path: |
+            qa-results/*-stories-transition*.png
+            qa-results/*-archive-transition.png
+            qa-results/*-detail.png
+            qa-results/*-390-index.png
+            qa-results/*-390-case02.png
+            qa-results/${{ matrix.browser }}.json

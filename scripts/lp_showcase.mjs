@@ -26,22 +26,21 @@ return `<a class="skip skip-link" href="#works">作品へスキップ</a>
 <button class="theme" type="button" aria-label="ダーク表示" aria-pressed="false"><span aria-hidden="true">◐</span></button>
 </header>
 <main id="main-content">
-<section id="archive" aria-labelledby="archive-title"><h1 class="sr-only" id="archive-title">bakedkale library</h1><div id="field" tabindex="0" role="region" aria-label="繰り返し表示する素材。ドラッグまたは矢印キーで移動" aria-describedby="archive-help"><div id="plane"></div></div><p class="sr-only" id="archive-help">矢印キーで移動、プラス・マイナスで拡大・縮小、ホームキーでリセット。素材の一覧を下に用意しています。</p><div class="archive-notes"><span>自主制作 · 素材アーカイブ</span><span class="sr-only" data-lp-reception>${LP_RECEPTION_NOTICE}</span><span class="gesture" aria-hidden="true">ドラッグで移動</span></div>
+<section id="archive" aria-labelledby="archive-title"><h1 class="sr-only" id="archive-title">bakedkale library</h1><div id="field" tabindex="0" role="region" aria-label="繰り返し表示する素材。ドラッグまたは矢印キーで移動" aria-describedby="archive-help"><div id="plane"></div></div><p class="sr-only" id="archive-help">矢印キーで移動、プラス・マイナスで60〜100%に拡大・縮小、ホームキーでリセット。素材の一覧を下に用意しています。</p><span class="sr-only" data-lp-reception>${LP_RECEPTION_NOTICE}</span>
 <div class="field-tools" aria-label="拡大・表示位置"><button type="button" data-do="minus" aria-label="縮小">−</button><output id="zoom-value">100%</output><button type="button" data-do="plus" aria-label="拡大">+</button><button class="reset" type="button" data-do="reset" aria-label="表示をリセット">↺</button></div>
 <div class="material-access"><p>素材を選択</p>${cases.map((s,i)=>`<button type="button" data-material="${i}">${e(s.title)}</button>`).join('')}</div>
 </section>
-<section id="works" class="stories" aria-labelledby="stories-title"><div class="stories-note"><h1 id="stories-title" class="sr-only">制作例 10件</h1><span>自主制作・架空の案件</span></div><ol class="prints">${prints}</ol></section>
+<section id="works" class="stories" aria-labelledby="stories-title"><h1 id="stories-title" class="sr-only">制作例</h1><ol class="prints">${prints}</ol></section>
 </main>
 <template id="material-data">${cases.map((s,i)=>`<article data-title="${e(s.title)}" data-url="${p}cases/${s.num}.html" data-n="${s.num}">${photo(i)}</article>`).join('')}</template>
-<dialog id="inspect" aria-labelledby="inspect-title"><div class="inspect-sheet"><button class="close-inspect" type="button" aria-label="閉じる">×</button><div class="inspect-image"></div><div class="inspect-caption"><span class="inspect-id"></span><h2 id="inspect-title"></h2><a class="inspect-link" href="#works">制作例を見る ↗</a><div class="inspect-switch"><button type="button" class="inspect-prev" aria-label="前の素材">←</button><button type="button" class="inspect-next" aria-label="次の素材">→</button></div></div></div></dialog>
+<dialog id="inspect" aria-labelledby="inspect-title"><div class="inspect-sheet"><button class="close-inspect" type="button" aria-label="閉じる">×</button><div class="inspect-image"></div><div class="inspect-caption"><h2 id="inspect-title"></h2><a class="inspect-link" href="#works">制作例を見る ↗</a></div></div></dialog>
 <noscript><style>#archive,.view-switch,.theme{display:none}.stories[hidden]{display:block}</style></noscript>
 `;
 }
 export const showcaseCases=cases;
 export function showcaseCaseBody(i){const s=cases[i];
-const next=cases[(i+1)%cases.length];
-return `<main id="main-content" class="case-main"><div class="case-meta"><a class="textlink" href="../index.html#works">← 制作例一覧</a><span>${s.num} / 10 · 架空の制作例</span></div>
+return `<main id="main-content" class="case-main"><div class="case-meta"><a class="textlink" href="../index.html#works">← 制作例一覧</a></div>
 <section class="case-hero" style="--mat:${tones[i]}"><div><p class="eyebrow">${e(s.type)} / DESIGN CONCEPT</p><h1>${e(s.line).replaceAll('\n','<br>')}</h1><p>${e(s.en)}</p></div><div class="case-picture">${mock(s,i)}</div></section>
-<section class="case-copy"><div><p class="eyebrow">ABOUT THIS CONCEPT</p><h2>${e(s.title)}</h2><p>${e(s.purpose)}</p></div><div><dl><dt>雰囲気</dt><dd>${e(s.mood)}</dd><dt>ページ構成の例</dt><dd>${e(s.composition)}</dd></dl><p>${e(s.note)}</p><p class="muted">写真は架空の制作例用に生成した素材です。完成したLPや受注実績ではありません。</p></div></section>
-<div class="case-next"><a href="../service.html">サービスと料金 ↗</a><a href="${next.num}.html">次の制作例：${e(next.title)} ↗</a></div></main>`;
+<section class="case-copy"><div><p class="eyebrow">ABOUT THIS CONCEPT</p><h2>${e(s.title)}</h2><p>${e(s.purpose)}</p></div><div><dl><dt>雰囲気</dt><dd>${e(s.mood)}</dd><dt>ページ構成の例</dt><dd>${e(s.composition)}</dd></dl><p>${e(s.note)}</p></div></section>
+<div class="case-links"><a href="../service.html">サービスと料金 ↗</a></div></main>`;
 }

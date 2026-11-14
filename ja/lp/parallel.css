@@ -5,12 +5,11 @@
 .parallel-head>*{pointer-events:auto}.left-tools{display:flex;align-items:center;gap:15px;justify-self:start}.parallel-head a{text-decoration:none;white-space:nowrap}.left-tools>a:last-child{font-size:11px}.identity{display:flex;align-items:center;gap:4px}.identity img{object-fit:contain}
 .view-switch{display:flex;align-items:center;gap:15px;justify-self:center}.view-switch a{opacity:.54;padding:7px 0;border-bottom:1px solid transparent}.view-switch a[aria-current]{opacity:1;border-color:currentColor}.theme{justify-self:end;background:transparent;border:0;font-size:20px!important;cursor:pointer;padding:3px 7px}
 #archive{height:100dvh;position:relative;overflow:hidden;isolation:isolate}
-#field{position:absolute;inset:0;overflow:hidden;touch-action:none;user-select:none;cursor:grab;outline-offset:-3px}
+#field{position:absolute;inset:0;overflow:hidden;touch-action:none;overscroll-behavior:none;contain:layout paint;user-select:none;cursor:grab;outline-offset:-3px}
 #field.is-drag{cursor:grabbing}
-#plane{position:absolute;left:0;top:0;will-change:transform;transform-origin:0 0;pointer-events:none}.tile{position:absolute;pointer-events:none}.material-print{position:absolute;pointer-events:auto;display:block;padding:0;text-align:left;border:0;background:transparent;color:var(--ink);cursor:inherit;transition:filter .18s ease}
-.material-print:hover{filter:brightness(1.08)}.material-print .photo{aspect-ratio:var(--ratio);box-shadow:0 1px 5px #141f1624}.material-print .photo:before{width:var(--crop,100%)}.material-print .mini-number{display:block;font:10px/1 ui-monospace,monospace;color:var(--soft);margin-top:6px}
-.archive-notes,.field-tools{position:absolute;z-index:2;bottom:max(16px,env(safe-area-inset-bottom));font:11px/1.1 system-ui,sans-serif;background:var(--glass);color:var(--soft);border-radius:4px}
-.archive-notes{left:22px;padding:7px 9px;pointer-events:none;display:grid;gap:6px}.gesture{opacity:.7}
+#plane{position:absolute;left:0;top:0;will-change:transform;transform-origin:0 0;pointer-events:none}.tile{position:absolute;pointer-events:none}.material-print{position:absolute;pointer-events:auto;display:block;padding:0;text-align:left;border:0;background:transparent;color:var(--ink);cursor:inherit}
+.material-print .photo{aspect-ratio:var(--ratio);box-shadow:0 1px 5px #141f1624}.material-print .photo:before{width:var(--detail,100%)}
+.field-tools{position:absolute;z-index:2;bottom:max(16px,env(safe-area-inset-bottom));font:11px/1.1 system-ui,sans-serif;background:var(--glass);color:var(--soft);border-radius:4px}
 .field-tools{right:22px;display:flex;align-items:center;gap:3px;padding:3px;color:var(--ink)}.field-tools button,.field-tools output{min-width:28px;text-align:center}.field-tools button{height:31px;border:0;background:none;cursor:pointer;font-size:15px}.field-tools .reset{margin-left:5px;border-left:1px solid var(--line);width:33px}.field-tools output{font:10px ui-monospace,monospace}
 .material-access{position:absolute;z-index:3;left:16px;bottom:80px;background:var(--canvas);padding:8px}.material-access:not(:focus-within){width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0}.material-access button{display:inline-block;background:transparent;border:1px solid var(--line);padding:6px}
 .stories{padding:clamp(75px,9vw,130px) clamp(16px,7.2vw,115px) 80px;max-width:1680px;margin:auto}.stories-note{display:flex;justify-content:space-between;font:11px system-ui,sans-serif;margin-bottom:clamp(22px,4vw,60px);color:var(--soft)}.stories-note h1{margin:0;font:600 13px system-ui,sans-serif}.stories-note sup{font:9px ui-monospace,monospace;margin-left:5px}.parallel-page .print-caption{color:var(--ink)}
@@ -35,11 +34,10 @@
 .left-tools>a:not(.identity){font-size:11px}
 @media(max-width:390px){.left-tools{gap:7px}.left-tools>a:not(.identity){font-size:10px}.identity img{width:24px;height:24px}.identity b{font-size:11px}.parallel-head{padding-inline:8px}}
 .gather-layer{position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none}
-.gather-print{position:absolute;overflow:hidden;will-change:transform,opacity}
-.gather-print .photo{width:100%;height:100%;aspect-ratio:auto}
-.stories.is-arriving .prints,#archive.is-arriving #plane{animation:stories-settle .87s linear both}
-@keyframes stories-settle{0%,53%{opacity:0}77%,100%{opacity:1}}
-@media(prefers-reduced-motion:reduce){.gather-layer{display:none}.stories.is-arriving .prints,#archive.is-arriving #plane{animation:none}}
+.gather-print{position:absolute;will-change:transform;pointer-events:none}
+.gather-print .photo{aspect-ratio:auto}
+.stories.is-arriving .prints,#archive.is-arriving #plane{visibility:hidden}
+@media(prefers-reduced-motion:reduce){.gather-layer{display:none}}
 
 /* Repeating photo lattice and independent, overlapping Stories collages. */
 .material-print{transform:translate(-50%,-50%)}
@@ -60,13 +58,11 @@
 .stories li:nth-child(3n+2) .cp-0{left:3%;top:26%}.stories li:nth-child(3n+2) .cp-6{left:30%;top:17%;transform:rotate(3deg)}
 .stories li:nth-child(3n) .cp-3{left:5%;top:47%}.stories li:nth-child(3n) .cp-6{left:21%;top:32%;transform:rotate(-4deg)}
 .stories .print-caption{display:block;text-align:center;padding-top:10px}
-.stories.is-arriving .prints,#archive.is-arriving #plane{animation-duration:.95s}
-.stories.is-arriving .print-caption,.stories.is-arriving .stories-note{animation:collage-label .96s linear both}
-@keyframes collage-label{0%,79%{opacity:0}100%{opacity:1}}
-.gather-print .photo::before{width:var(--detail,var(--crop,100%));left:var(--crop-x,50%);top:var(--crop-y,50%)}
-.gather-print .gather-crop{position:absolute;inset:0}
+.stories.is-settled .print-caption{animation:collage-label .18s ease-out both}
+@keyframes collage-label{from{opacity:0}to{opacity:1}}
+.gather-print .photo::before{width:var(--detail,100%);left:var(--crop-x,50%);top:var(--crop-y,50%)}
 @media(max-width:690px){.stories .prints li:nth-child(n){margin:0}.stories .prints{row-gap:31px}}
-@media(prefers-reduced-motion:reduce){.stories.is-arriving .print-caption,.stories.is-arriving .stories-note{animation:none}}
+@media(prefers-reduced-motion:reduce){.stories.is-settled .print-caption{animation:none}}
 
 /* Collage elements are deliberately different editorial applications of one brief. */
 .stories-note{justify-content:flex-end}
