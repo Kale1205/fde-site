@@ -4,16 +4,20 @@ const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelect
 const field=q('#field'),plane=q('#plane'),archive=q('#archive'),stories=q('#works'),template=q('#material-data'),dialog=q('#inspect'),theme=q('.theme');
 const items=qa('article',template.content), tileNodes=new Map(), points=new Map();
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-const coords=[[.04,.11,.21,1.57],[.32,.21,.14,.94],[.57,.09,.22,1.6],[.88,.19,.15,1.1],[.13,.51,.18,1.5],[.42,.44,.17,1.25],[.69,.49,.20,1.63],[.92,.63,.14,1.1],[.31,.73,.17,1.43],[.56,.78,.21,1.6]];
+// One stable, repeating 5 × 5 contact sheet. The center cell is deliberately left open.
+const slots=[2,8,3,0,5,9,4,6,7,1,0,5,-1,3,8,6,1,9,4,2,7,8,0,5,9];
+const frame=[[.79,1.57],[.68,.81],[.85,1.34],[.73,1.04],[.81,1.50],[.76,1.17],[.85,1.62],[.74,1.05],[.78,1.30],[.74,1.38]];
 let currentView=null,gather=null;
-let x=0,y=0,z=1,W=1,H=1,vx=0,vy=0,anim=0,last=0,gesture=null,clickBlock=0,lastInspect=null,openIndex=0;
+let x=0,y=0,originX=0,originY=0,z=1,W=1,H=1,vx=0,vy=0,anim=0,last=0,gesture=null,clickBlock=0,lastInspect=null,openIndex=0;
 const wrap=(n,d)=>((n%d)+d)%d,clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
 function makeTile(col,row){
  const tile=document.createElement('div');tile.className='tile';tile.setAttribute('aria-hidden','true');
- items.forEach((item,i)=>{
-  const [px,py,w,ratio]=coords[i],b=document.createElement('button');
-  b.className='material-print';b.type='button';b.tabIndex=-1;b.dataset.material=i;b.setAttribute('aria-label',item.dataset.title+'の素材');
-  b.style.cssText='left:'+px*100+'%;top:'+py*100+'%;width:'+w*100+'%;--ratio:'+ratio+';--crop:'+(ratio<1?118:100)+'%';
+ slots.forEach((i,slot)=>{
+  if(i<0)return;
+  const item=items[i],[w,ratio]=frame[i],b=document.createElement('button');
+  const px=(slot%5+.5)*20,py=(Math.floor(slot/5)+.5)*20;
+  b.className='material-print';b.type='button';b.tabIndex=-1;b.dataset.material=i;b.dataset.slot=slot;b.setAttribute('aria-label',item.dataset.title+'の素材');
+  b.style.cssText='left:'+px+'%;top:'+py+'%;width:'+w*20+'%;--ratio:'+ratio+';--crop:'+(ratio<1?118:100)+'%';
   b.append(item.firstElementChild.cloneNode(true));tile.append(b);
  });
  tile.style.cssText='width:'+W+'px;height:'+H+'px;left:'+col*W+'px;top:'+row*H+'px';plane.append(tile);return tile;
@@ -21,7 +25,7 @@ function makeTile(col,row){
 function draw(){
  if(archive.hidden)return;
  // Keep offsets normalized; equivalence of repeated tiles means wrapping is visually continuous.
- const sx=wrap(x,W*z)-W*z,sy=wrap(y,H*z)-H*z;
+ const sx=wrap(x+originX,W*z)-W*z,sy=wrap(y+originY,H*z)-H*z;
  plane.style.transform='translate3d('+sx+'px,'+sy+'px,0) scale('+z+')';
  const cols=Math.ceil((field.clientWidth-sx)/(W*z)),rows=Math.ceil((field.clientHeight-sy)/(H*z));
  const live=new Set();
@@ -33,7 +37,9 @@ function draw(){
 }
 function size(){
  if(archive.hidden)return;
- const mobile=field.clientWidth<650, w=Math.max(mobile?620:940,field.clientWidth*.9),h=Math.max(mobile?675:620,field.clientHeight*.92);
+ const mobile=field.clientWidth<690,pitch=mobile?clamp(field.clientWidth*.43,142,220):clamp(field.clientWidth/5.12,210,300);
+ const pitchY=mobile?pitch*1.13:pitch*.977,w=5*pitch,h=5*pitchY;
+ originX=(field.clientWidth-w)/2;originY=field.clientHeight/2-2.5*pitchY;
  if(W!==w||H!==h){W=w;H=h;plane.replaceChildren();tileNodes.clear();}
  draw();
 }
@@ -111,55 +117,101 @@ function endGather(){
  const task=gather;gather=null;
  clearTimeout(task.timer);
  task.animations.forEach(animation=>animation.cancel());
- task.layer.remove();stories.classList.remove('is-gathering');
+ task.layer.remove();
+ task.destination.classList.remove('is-arriving');
 }
-function collectVisiblePrints(){
- const records=new Map(),cx=innerWidth/2,cy=innerHeight/2;
- for(const print of qa('.material-print',plane)){
-  const photo=q('.photo',print),r=photo.getBoundingClientRect();
-  if(r.width<8||r.right<8||r.left>innerWidth-8||r.bottom<50||r.top>innerHeight-30)continue;
-  const i=Number(print.dataset.material),distance=Math.hypot(r.x+r.width/2-cx,r.y+r.height/2-cy);
-  if(!records.has(i)||records.get(i).distance>distance)records.set(i,{i,r,distance,photo});
+function photoRecords(entries){
+ const records=[],seen=new Set();
+ for(const [i,photo,element,key] of entries){
+  const r=(element||photo).getBoundingClientRect();
+  if(r.width<8||r.height<8||r.right<8||r.left>innerWidth-8||r.bottom<45||r.top>innerHeight-22||seen.has(key))continue;
+  seen.add(key);records.push({i,r,photo});
  }
- return [...records.values()];
+ return records;
 }
-function startGather(records){
- if(!records.length||!Element.prototype.animate)return;
+function currentPhotos(work){
+ if(gather){
+  const moving=photoRecords(qa('.gather-print',gather.layer).map((el,n)=>[Number(el.dataset.material),q('.photo',el),el,'motion-'+n]));
+  if(moving.length)return moving;
+ }
+ return viewPhotos(work);
+}
+function viewPhotos(work){
+ return work?photoRecords(qa('.story-collage',stories).flatMap((card,i)=>qa('.collage-print',card).map((p,j)=>[i,q('.photo',p),p,i+':'+j]))):
+  photoRecords(qa('.material-print',plane).map((el,n)=>[Number(el.dataset.material),q('.photo',el),null,'slot-'+n]));
+}
+function startGather(from,to,work){
+ if(!from.length||!to.length||!Element.prototype.animate)return;
+ const destination=work?stories:archive;
  const layer=document.createElement('div');layer.className='gather-layer';layer.setAttribute('aria-hidden','true');
- document.body.append(layer);stories.classList.add('is-gathering');
- const task={layer,animations:[],timer:0};gather=task;
- const cards=qa('.prints .sample',stories),lanes=innerWidth<690?2:3;
- const layout=stories.querySelector('.prints').getBoundingClientRect();
- for(const {i,r,photo} of records){
-  const dest=cards[i].getBoundingClientRect(),arrives=dest.top<innerHeight-50;
-  const dx=(arrives?dest.left+dest.width/2:layout.left+(i%lanes+.5)*layout.width/lanes)-r.left-r.width/2;
-  const dy=(arrives?dest.top+dest.height*.4:innerHeight*(.71+(Math.floor(i/lanes)%2)*.13))-r.top-r.height/2;
-  const scale=arrives?clamp(dest.width/r.width,.45,1.12):.25;
-  const print=document.createElement('div');print.className='gather-print';
-  Object.assign(print.style,{left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px'});
-  print.append(photo.cloneNode(true));layer.append(print);
+ document.body.append(layer);destination.classList.add('is-arriving');
+ const task={layer,animations:[],timer:0,destination};gather=task;
+ const center=r=>[r.x+r.width/2,r.y+r.height/2];
+ const dist=(a,b)=>{const [ax,ay]=center(a),[bx,by]=center(b);return Math.hypot(ax-bx,ay-by);};
+ const near=(list,i,rect)=>list.filter(x=>x.i===i).sort((a,b)=>dist(a.r,rect)-dist(b.r,rect))[0];
+ const offscreen=(r,i)=>{
+  const [x,y]=center(r),left=x<innerWidth/2,top=y<innerHeight/2;
+  if(i%3===0)return {x:left?-r.width:innerWidth,y:r.y,width:r.width,height:r.height};
+  return {x:r.x,y:top?-r.height:innerHeight,width:r.width,height:r.height};
+ };
+ // Use one replica for each destination layer. Start from the closest matching
+ // print for that project, splitting a print into supporting crops when needed.
+ const used=new Set();
+ const pairs=to.map(dest=>{
+  const src=near(from,dest.i,dest.r);if(src)used.add(src);
+  return {i:dest.i,src,dest};
+ });
+ for(const src of from)if(!used.has(src))pairs.push({i:src.i,src,dest:null});
+ for(const [n,{i,src,dest}] of pairs.entries()){
+  const photo=(src||dest).photo,base=src?.r??offscreen(dest.r,i),final=dest?.r??offscreen(src.r,i);
+  const [ox,oy]=center(base),[fx,fy]=center(final);
+  const scaleX=final.width/base.width,scaleY=final.height/base.height;
+  const pose=t=>`translate(${(fx-ox)*t}px,${(fy-oy)*t}px) scale(${1+(scaleX-1)*t},${1+(scaleY-1)*t})`;
+  const print=document.createElement('div');print.className='gather-print';print.dataset.material=i;
+  Object.assign(print.style,{left:base.x+'px',top:base.y+'px',width:base.width+'px',height:base.height+'px'});
+  const clone=original=>{
+   const copy=original.cloneNode(true),style=getComputedStyle(original);
+   for(const prop of ['--detail','--crop-x','--crop-y','--crop']){
+    const value=style.getPropertyValue(prop);if(value)copy.style.setProperty(prop,value);
+   }
+   return copy;
+  };
+  const first=clone(photo);print.append(first);
+  if(src&&dest){
+   const arrival=clone(dest.photo);arrival.classList.add('gather-crop');print.append(arrival);
+   task.animations.push(arrival.animate([{opacity:0},{opacity:0,offset:.49},{opacity:1,offset:.84},{opacity:1}],{duration:870,delay:(n%6)*15,fill:'both'}));
+  }
+  layer.append(print);
   task.animations.push(print.animate([
-   {transform:'translate(0,0) scale(1)',opacity:1},
-   {transform:`translate(${dx*.86}px,${dy*.86}px) scale(${(1+scale)/2})`,opacity:.92,offset:.72},
-   {transform:`translate(${dx}px,${dy}px) scale(${scale})`,opacity:0},
-  ],{duration:590,delay:(i%5)*25,easing:'cubic-bezier(.25,.78,.22,1)',fill:'both'}));
+   {transform:pose(0),opacity:src?1:0},
+   {transform:pose(.54),opacity:1,offset:.34},
+   {transform:pose(1),opacity:dest?1:0,offset:.84},
+   {transform:pose(1),opacity:0},
+  ],{duration:870,delay:(n%6)*15,easing:'cubic-bezier(.22,.70,.28,1)',fill:'both'}));
  }
- task.timer=setTimeout(()=>{if(gather===task)endGather();},720);
+ task.timer=setTimeout(()=>{if(gather===task)endGather();},970);
 }
 function route(){
  const work=location.hash==='#works';
  if(currentView===work)return;
+ const motion=currentView!==null&&!reduced.matches&&document.documentElement.dataset.pageLoadingMotion!=='still';
+ const from=motion?currentPhotos(currentView):[];
  endGather();
- const prints=work&&currentView===false&&!reduced.matches&&document.documentElement.dataset.pageLoadingMotion!=='still'?collectVisiblePrints():[];
  currentView=work;archive.hidden=work;stories.hidden=!work;
  qa('.view-switch a').forEach(a=>{if(a.hash===(work?'#works':'#archive'))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
  window.scrollTo(0,0);
- if(work){stop();startGather(prints);}else size();
+ if(work)stop();else size();
+ if(motion)startGather(from,viewPhotos(work),work);
 }
+qa('.view-switch a').forEach(link=>link.addEventListener('click',e=>{
+ if(e.button||e.ctrlKey||e.metaKey||e.altKey||e.shiftKey)return;
+ e.preventDefault();
+ if(location.hash!==link.hash){history.pushState(null,'',link.hash);route();}
+}));
 reduced.addEventListener('change',e=>{if(e.matches){stop();endGather();}});
 addEventListener('pagehide',endGather);
 function setTheme(dark){document.body.dataset.theme=dark?'dark':'light';theme.setAttribute('aria-pressed',String(dark));theme.setAttribute('aria-label',dark?'ライト表示':'ダーク表示');}
 try{setTheme(sessionStorage.getItem('bk-archive-theme')==='dark');}catch{setTheme(false);}
 theme.addEventListener('click',()=>{const dark=document.body.dataset.theme!=='dark';setTheme(dark);try{sessionStorage.setItem('bk-archive-theme',dark?'dark':'light');}catch{}});
-addEventListener('hashchange',route);addEventListener('resize',()=>{endGather();size();});route();
+addEventListener('hashchange',route);addEventListener('popstate',route);addEventListener('resize',()=>{endGather();size();});route();
 })();

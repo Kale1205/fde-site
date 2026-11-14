@@ -37,6 +37,33 @@
 .gather-layer{position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none}
 .gather-print{position:absolute;overflow:hidden;will-change:transform,opacity}
 .gather-print .photo{width:100%;height:100%;aspect-ratio:auto}
-.stories.is-gathering .prints{animation:stories-settle .7s cubic-bezier(.2,.7,.25,1) both}
-@keyframes stories-settle{0%,42%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){.gather-layer{display:none}.stories.is-gathering .prints{animation:none}}
+.stories.is-arriving .prints,#archive.is-arriving #plane{animation:stories-settle .87s linear both}
+@keyframes stories-settle{0%,69%{opacity:0}100%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.gather-layer{display:none}.stories.is-arriving .prints,#archive.is-arriving #plane{animation:none}}
+
+/* Repeating photo lattice and independent, overlapping Stories collages. */
+.material-print{transform:translate(-50%,-50%)}
+.stories{padding-top:clamp(85px,9vw,130px)}
+.stories .prints{column-gap:clamp(20px,4vw,60px);row-gap:clamp(32px,7vw,100px)}
+.stories .prints li:nth-child(n){margin:0}
+.story-collage{display:block;position:relative;aspect-ratio:1.47;isolation:isolate}
+.collage-print{position:absolute;display:block;overflow:hidden;box-shadow:0 2px 6px #1e261c33;background:var(--canvas)}
+.collage-print .photo{width:100%;height:100%;aspect-ratio:auto}
+.collage-print .photo::before{width:var(--detail,100%);left:var(--crop-x,50%);top:var(--crop-y,50%)}
+.cp-0{left:7%;top:13%;width:47%;height:45%;--detail:133%;--crop-x:62%;transform:rotate(-4deg)}
+.cp-1{left:39%;top:6%;width:40%;height:34%;--detail:154%;--crop-y:33%;transform:rotate(3deg)}
+.cp-2{left:53%;top:37%;width:40%;height:46%;--detail:128%;--crop-x:34%;transform:rotate(4deg)}
+.cp-3{left:12%;top:57%;width:29%;height:33%;--detail:175%;--crop-y:68%;transform:rotate(-3deg)}
+.cp-4{left:38%;top:56%;width:35%;height:36%;--detail:135%;--crop-x:69%;transform:rotate(4deg)}
+.cp-5{left:64%;top:12%;width:26%;height:33%;--detail:182%;--crop-y:37%;transform:rotate(-5deg)}
+.cp-6{left:26%;top:27%;width:46%;height:47%;--detail:110%;z-index:1;transform:rotate(-1deg)}
+.stories li:nth-child(3n+2) .cp-0{left:3%;top:26%}.stories li:nth-child(3n+2) .cp-6{left:30%;top:17%;transform:rotate(3deg)}
+.stories li:nth-child(3n) .cp-3{left:5%;top:47%}.stories li:nth-child(3n) .cp-6{left:21%;top:32%;transform:rotate(-4deg)}
+.stories .print-caption{display:block;text-align:center;padding-top:10px}
+.stories.is-arriving .prints,#archive.is-arriving #plane{animation-duration:.95s}
+.stories.is-arriving .print-caption,.stories.is-arriving .stories-note{animation:collage-label .96s linear both}
+@keyframes collage-label{0%,79%{opacity:0}100%{opacity:1}}
+.gather-print .photo::before{width:var(--detail,var(--crop,100%));left:var(--crop-x,50%);top:var(--crop-y,50%)}
+.gather-print .gather-crop{position:absolute;inset:0}
+@media(max-width:690px){.stories .prints li:nth-child(n){margin:0}.stories .prints{row-gap:31px}}
+@media(prefers-reduced-motion:reduce){.stories.is-arriving .print-caption,.stories.is-arriving .stories-note{animation:none}}

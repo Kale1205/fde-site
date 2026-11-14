@@ -11,9 +11,12 @@ const names=['KISSA / 余白','SLOW FORM','棲み継ぐ','atelier saison','NOMAD
 const action=['お店をみる','体験レッスン','住まいの相談','教室のご案内','コレクション','開業のご相談','試作のご相談','体験を予約','体験授業','撮影のご相談'];
 const palettes=[['#f0e4d3','#482e23','#9a513e'],['#e8dfef','#42334c','#765b8f'],['#e5e6da','#2c3d30','#426551'],['#f3ddd8','#652e42','#a34c66'],['#29211f','#f0d3aa','#cb945f'],['#edf2f6','#233751','#2b619c'],['#282925','#f6e8da','#ea7b3c'],['#e4cead','#3c362d','#3d6a7b'],['#f9efb7','#183858','#2d639e'],['#eeebe5','#222220','#4d4b48']];
 function mock(s,i){return `<span class="sample sample-${i}" aria-hidden="true" style="--paper:${palettes[i][0]};--ink:${palettes[i][1]};--accent:${palettes[i][2]}"><span class="sample-nav"><b>${e(names[i])}</b><span>MENU <b>☰</b></span></span><span class="sample-picture">${photo(i)}</span><span class="sample-copy"><span>${e(s.en)}</span><strong>${e(s.line).replaceAll('\n','<br>')}</strong><span class="sample-cta">${action[i]} <b>↗</b></span></span><span class="sample-end"><span>01 — ABOUT</span><span>${e(s.title)}</span></span></span>`;}
+function collage(i){
+ return `<span class="story-collage" aria-hidden="true">${[0,1,2,3,4,5,6].map((_,j)=>`<span class="collage-print cp-${j}" data-layer="${j}">${photo(i)}</span>`).join('')}</span>`;
+}
 export function showcaseBody(base='./'){
 const p=base||'./';
-const prints=cases.map((s,i)=>`<li class="print-${i}"><a href="${p}cases/${s.num}.html" aria-label="${s.num} ${e(s.title)}の制作例">${mock(s,i)}<span class="print-caption"><span>${s.num} /</span><b>${e(s.title)}</b><span aria-hidden="true">↗</span></span></a></li>`).join('');
+const prints=cases.map((s,i)=>`<li class="print-${i}"><a href="${p}cases/${s.num}.html" aria-label="${s.num} ${e(s.title)}の制作例">${collage(i)}<span class="print-caption"><b>${e(s.title)}</b></span></a></li>`).join('');
 return `<a class="skip skip-link" href="#works">作品へスキップ</a>
 <header class="parallel-head">
 <div class="left-tools"><a class="identity" href="${p}index.html"><img src="${p}assets/bakedkale-character.png" width="28" height="28" alt=""><b>Baked Kale</b></a><a href="${p}service.html#schedule">制作の流れ <span aria-hidden="true">↗</span></a><a class="fde-link" href="${p}../index.html">FDE製品 <span aria-hidden="true">↗</span></a></div>
