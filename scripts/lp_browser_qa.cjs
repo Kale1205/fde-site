@@ -75,7 +75,7 @@ if(await page.locator('.gather-print').count()<3)throw Error('Stories gather nee
 await page.screenshot({path:path.join(out,engine+'-stories-transition.png'),animations:'allow'});
 await page.waitForTimeout(100);await page.screenshot({path:path.join(out,engine+'-stories-transition-middle.png'),animations:'allow'});
 await page.waitForTimeout(100);await page.screenshot({path:path.join(out,engine+'-stories-transition-end.png'),animations:'allow'});
-const flight=await flightPromise;if(flight.length<3||flight.some(f=>!f.count||!f.opaque))throw Error('Photo opacity dipped during the Stories flight '+JSON.stringify(flight));
+const flight=await flightPromise;if(!flight.length)throw Error('No moving photo frames were observed');if(flight.some(f=>f.count<3||!f.opaque))throw Error('Photo opacity dipped during the Stories flight '+JSON.stringify(flight));
 await goArchive.click();await page.locator('#archive.is-arriving').waitFor({state:'attached'});await page.locator('.gather-print').first().waitFor();
 if(await page.locator('.gather-print').count()<3)throw Error('reverse Archive needs multiple images');
 await page.screenshot({path:path.join(out,engine+'-archive-transition.png'),animations:'allow'});

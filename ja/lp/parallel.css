@@ -1,6 +1,3 @@
-@property --detail{syntax:'<percentage>';inherits:true;initial-value:100%}
-@property --crop-x{syntax:'<percentage>';inherits:true;initial-value:50%}
-@property --crop-y{syntax:'<percentage>';inherits:true;initial-value:50%}
 .parallel-page{--canvas:#e8ede2;--ink:#233027;--soft:#526250;--line:#243a2726;--glass:#e8ede2e8;background:var(--canvas);color:var(--ink);min-height:100dvh}
 .parallel-page[data-theme="dark"]{--canvas:#171d19;--ink:#e3eae0;--soft:#b7c5b5;--line:#e9f8ea33;--glass:#171d19e8;color-scheme:dark}
 .parallel-page [hidden]{display:none!important}.parallel-page a{color:inherit}.parallel-page button{color:inherit;font:inherit}.parallel-page :focus-visible{outline:2px solid currentColor;outline-offset:4px}
@@ -11,7 +8,7 @@
 #field{position:absolute;inset:0;overflow:hidden;touch-action:none;overscroll-behavior:none;contain:layout paint;user-select:none;cursor:grab;outline-offset:-3px}
 #field.is-drag{cursor:grabbing}
 #plane{position:absolute;left:0;top:0;will-change:transform;transform-origin:0 0;pointer-events:none}.tile{position:absolute;pointer-events:none}.material-print{position:absolute;pointer-events:auto;display:block;padding:0;text-align:left;border:0;background:transparent;color:var(--ink);cursor:inherit}
-.material-print .photo{aspect-ratio:var(--ratio);box-shadow:0 1px 5px #141f1624}.material-print .photo:before{width:var(--detail)}
+.material-print .photo{aspect-ratio:var(--ratio);box-shadow:0 1px 5px #141f1624}.material-print .photo:before{width:var(--detail,100%)}
 .field-tools{position:absolute;z-index:2;bottom:max(16px,env(safe-area-inset-bottom));font:11px/1.1 system-ui,sans-serif;background:var(--glass);color:var(--soft);border-radius:4px}
 .field-tools{right:22px;display:flex;align-items:center;gap:3px;padding:3px;color:var(--ink)}.field-tools button,.field-tools output{min-width:28px;text-align:center}.field-tools button{height:31px;border:0;background:none;cursor:pointer;font-size:15px}.field-tools .reset{margin-left:5px;border-left:1px solid var(--line);width:33px}.field-tools output{font:10px ui-monospace,monospace}
 .material-access{position:absolute;z-index:3;left:16px;bottom:80px;background:var(--canvas);padding:8px}.material-access:not(:focus-within){width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0}.material-access button{display:inline-block;background:transparent;border:1px solid var(--line);padding:6px}
@@ -63,7 +60,7 @@
 .stories .print-caption{display:block;text-align:center;padding-top:10px}
 .stories.is-settled .print-caption{animation:collage-label .18s ease-out both}
 @keyframes collage-label{from{opacity:0}to{opacity:1}}
-.gather-print .photo::before{width:var(--detail);left:var(--crop-x);top:var(--crop-y)}
+.gather-print .photo::before{width:var(--detail,100%);left:var(--crop-x,50%);top:var(--crop-y,50%)}
 @media(max-width:690px){.stories .prints li:nth-child(n){margin:0}.stories .prints{row-gap:31px}}
 @media(prefers-reduced-motion:reduce){.stories.is-settled .print-caption{animation:none}}
 

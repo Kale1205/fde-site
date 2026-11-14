@@ -176,10 +176,10 @@ function photoRecords(entries){
   const parentScale=element.closest('#plane')?z:1;
   const width=element.offsetWidth*Math.hypot(matrix.a,matrix.b)*parentScale,height=element.offsetHeight*Math.hypot(matrix.c,matrix.d)*parentScale;
   const r={x:bounds.x+bounds.width/2-width/2,y:bounds.y+bounds.height/2-height/2,width,height,angle:Math.atan2(matrix.b,matrix.a)*180/Math.PI};
-  const crop=Object.fromEntries(['--detail','--crop-x','--crop-y'].map(prop=>[prop,style.getPropertyValue(prop).trim()||'50%']));
   const palette=Object.fromEntries(['--collage-paper','--collage-ink','--collage-accent'].map(prop=>[prop,style.getPropertyValue(prop)]));
-  const paint={backgroundColor:style.backgroundColor,boxShadow:style.boxShadow,...crop};
-  const image={left:photo.offsetLeft/visual.offsetWidth*100+'%',top:photo.offsetTop/visual.offsetHeight*100+'%',width:photo.offsetWidth/visual.offsetWidth*100+'%',height:photo.offsetHeight/visual.offsetHeight*100+'%',filter:imageStyle.filter,boxShadow:imageStyle.boxShadow};
+  const paint={backgroundColor:style.backgroundColor,boxShadow:style.boxShadow};
+  const imageMatrix=new DOMMatrixReadOnly(imageStyle.transform==='none'?undefined:imageStyle.transform);
+  const image={left:(photo.offsetLeft+imageMatrix.e)/visual.offsetWidth*100+'%',top:(photo.offsetTop+imageMatrix.f)/visual.offsetHeight*100+'%',width:photo.offsetWidth*Math.abs(imageMatrix.a)/visual.offsetWidth*100+'%',height:photo.offsetHeight*Math.abs(imageMatrix.d)/visual.offsetHeight*100+'%',filter:imageStyle.filter,boxShadow:imageStyle.boxShadow};
   seen.add(key);records.push({i,r,visual,paint,image,palette});
  }
  return records;
@@ -225,7 +225,8 @@ function startGather(from,to,work){
   Object.assign(print.style,{left:final.x+'px',top:final.y+'px',width:final.width+'px',height:final.height+'px'});
   const copy=record.visual.cloneNode(true);
   Object.assign(copy.style,{position:'relative',left:'0',top:'0',width:'100%',height:'100%',margin:'0',transform:'none',transition:'none'});
-  const photo=q('.photo',copy);Object.assign(photo.style,{position:'absolute',margin:'0',aspectRatio:'auto'});
+  const photo=q('.photo',copy),firstImage=src?.image??record.image,lastImage=dest?.image??record.image;
+  Object.assign(photo.style,{...lastImage,position:'absolute',margin:'0',aspectRatio:'auto',gridColumn:'auto',gridRow:'auto',transformOrigin:'0 0'});
   for(const [prop,value] of Object.entries(record.palette))copy.style.setProperty(prop,value);
   print.append(copy);fragment.append(print);
   plans.push([print,[
@@ -233,7 +234,12 @@ function startGather(from,to,work){
    {transform:`translate3d(0,0,0) rotate(${final.angle}deg) scale(1)`},
   ]]);
   plans.push([copy,[src?.paint??record.paint,dest?.paint??record.paint]]);
-  plans.push([photo,[src?.image??record.image,dest?.image??record.image]]);
+  // Inner photographs use a transform too: no per-frame width/height layout.
+  const dx=(parseFloat(firstImage.left)-parseFloat(lastImage.left))*final.width/100,dy=(parseFloat(firstImage.top)-parseFloat(lastImage.top))*final.height/100;
+  plans.push([photo,[
+   {transform:`translate3d(${dx}px,${dy}px,0) scale(${parseFloat(firstImage.width)/parseFloat(lastImage.width)},${parseFloat(firstImage.height)/parseFloat(lastImage.height)})`,filter:firstImage.filter,boxShadow:firstImage.boxShadow},
+   {transform:'translate3d(0,0,0) scale(1)',filter:lastImage.filter,boxShadow:lastImage.boxShadow},
+  ]]);
   for(const label of qa('.collage-mark,.collage-cover,.collage-palette',copy)){
    plans.push([label,work?[{opacity:0},{opacity:0,offset:.65},{opacity:1}]:[{opacity:1},{opacity:0,offset:.35},{opacity:0}]]);
   }
