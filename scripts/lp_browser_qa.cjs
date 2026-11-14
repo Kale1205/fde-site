@@ -97,8 +97,10 @@ if(!phoneHit)throw Error('no tappable mobile material');await phone.touchscreen.
 await phone.locator('.close-inspect').tap();
 const phonePlane=phone.locator('#plane');
 await phone.mouse.move(180,390);await phone.mouse.down();await phone.mouse.move(220,420,{steps:4});
+await phone.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 const beforeHeight=await phonePlane.evaluate(x=>x.style.transform);
 await phone.setViewportSize({width:390,height:760});
+await phone.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 if(!await phone.locator('#field').evaluate(x=>x.classList.contains('is-drag')))throw Error('Height-only resize cancelled an active drag');
 if(await phonePlane.evaluate(x=>x.style.transform)!==beforeHeight)throw Error('Height-only resize jumped the plane');
 await phone.mouse.move(260,460,{steps:4});
