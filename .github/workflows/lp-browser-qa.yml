@@ -52,4 +52,5 @@ jobs:
             qa-results/*-archive-transition.png
             qa-results/*-detail.png
             qa-results/*-390-index.png
+            qa-results/*-390-case02.png
             qa-results/${{ matrix.browser }}.json
