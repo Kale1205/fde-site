@@ -13,7 +13,7 @@ p,h1,h2,ol{margin:0}
 .brand img{width:35px;height:35px}
 .sitehead nav{display:flex;gap:clamp(13px,3vw,45px);align-items:center;font-size:13px;font-weight:700}
 .sitehead nav a{display:inline-flex;align-items:center;gap:6px;min-height:44px;white-space:nowrap}
-.sitehead nav a:hover,.textlink:hover,.case-next a:hover{text-decoration:underline;text-underline-offset:.32em}
+.sitehead nav a:hover,.textlink:hover,.case-links a:hover{text-decoration:underline;text-underline-offset:.32em}
 .estimate-link{border-bottom:1px solid var(--ink)}
 .editorial-hero{max-width:1600px;margin:auto;padding:clamp(32px,6vw,99px) var(--pad) clamp(40px,7vw,110px)}
 .hero-kicker,.eyebrow,.archive-caption,.case-meta,.sitefoot{font-size:11px;letter-spacing:.1em;font-weight:600}
@@ -66,7 +66,7 @@ p,h1,h2,ol{margin:0}
 .case-copy dt{font-weight:700}
 .case-copy dd{margin:0 0 10px}
 .muted{color:var(--muted);font-size:13px;margin-top:10px}
-.case-next{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;border-top:1px solid var(--line);padding-top:20px;font-weight:700}
+.case-links{border-top:1px solid var(--line);padding-top:20px;font-weight:700}
 @media(max-width:700px){
 html{scroll-padding-top:118px}
 .sitehead{display:block;padding:7px var(--pad) 0}
@@ -96,7 +96,7 @@ html{scroll-padding-top:118px}
 .case-hero,.case-copy{grid-template-columns:1fr}
 .case-hero h1{font-size:clamp(31px,8vw,53px)}
 .case-meta{font-size:10px}
-.case-next{font-size:13px}
+.case-links{font-size:13px}
 }
 /* Paper fragments sit directly on the canvas; crops vary without altering the source image. */
 .archive{--archive:#e3e9de}

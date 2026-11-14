@@ -8,6 +8,7 @@ media?.galleryMedia(manifest,template,stories,archive);
 const items=qa('article',template.content), tileNodes=new Map(), points=new Map();
 const [wordmarkName,wordmarkEdition]=q('#archive-title').textContent.trim().split(' ');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+const MIN_ZOOM=.6,MAX_ZOOM=1;
 // One stable, repeating 5 × 5 contact sheet. The center cell is reserved for the Archive wordmark.
 const slots=[2,8,3,0,5,9,4,6,7,1,0,5,-1,3,8,6,1,9,4,2,7,8,0,5,9];
 const frame=[[.79,1.57],[.68,.81],[.85,1.34],[.73,1.04],[.81,1.50],[.76,1.17],[.85,1.62],[.74,1.05],[.78,1.30],[.74,1.38]];
@@ -28,7 +29,7 @@ function makeTile(col,row){
   const item=items[i],[w,ratio]=frame[i],b=document.createElement('button');
   const px=(slot%5+.5)*20,py=(Math.floor(slot/5)+.5)*20;
   b.className='material-print';b.type='button';b.tabIndex=-1;b.dataset.material=i;b.dataset.slot=slot;b.setAttribute('aria-label',item.dataset.title+'の素材');
-  b.style.cssText='left:'+px+'%;top:'+py+'%;width:'+w*20+'%;--ratio:'+ratio+';--crop:'+(ratio<1?118:100)+'%';
+  b.style.cssText='left:'+px+'%;top:'+py+'%;width:'+w*20+'%;--ratio:'+ratio+';--detail:'+(ratio<1?118:100)+'%';
   b.append(item.firstElementChild.cloneNode(true));tile.append(b);
  });
  tile.style.cssText='width:'+W+'px;height:'+H+'px;left:'+col*W+'px;top:'+row*H+'px';plane.append(tile);return tile;
@@ -58,15 +59,18 @@ function requestDraw(){
 function updateZoom(){
  const value=Math.round(z*100)+'%';
  if(zoomValue.value!==value)zoomValue.value=value;
- zoomMinus.disabled=z<=.66;zoomPlus.disabled=z>=1.8;
+ zoomMinus.disabled=z<=MIN_ZOOM;zoomPlus.disabled=z>=MAX_ZOOM;
  sizePool();
 }
-function size(){
+function size(center=false){
  if(archive.hidden)return;
+ const widthChanged=viewWidth!==field.clientWidth;
  viewWidth=field.clientWidth;viewHeight=field.clientHeight;
  const mobile=viewWidth<690,pitch=mobile?clamp(viewWidth*.43,142,220):clamp(viewWidth/5.12,210,300);
  const pitchY=mobile?pitch*1.13:pitch*.977,w=5*pitch,h=5*pitchY;
- originX=(viewWidth-w)/2;originY=viewHeight/2-2.5*pitchY;
+ // Safari's toolbar changes the height during a gesture. Keep the plane's
+ // origin and the active pointer intact until the width changes or reset.
+ if(widthChanged||center){originX=(viewWidth-w)/2;originY=viewHeight/2-2.5*pitchY;}
  if(W!==w||H!==h){W=w;H=h;plane.replaceChildren();tileNodes.clear();poolColumns=poolRows=0;}
  sizePool();draw();
 }
@@ -83,11 +87,11 @@ function inertia(t){
  if(Math.hypot(vx,vy)>.23)anim=requestAnimationFrame(inertia);else{anim=0;vx=vy=0;}
 }
 function zoom(next,cx=viewWidth/2,cy=viewHeight/2){
- const n=clamp(next,.66,1.8);if(n===z)return;
+ const n=clamp(next,MIN_ZOOM,MAX_ZOOM);if(n===z)return;
  x=cx-(cx-x-originX)*(n/z)-originX;y=cy-(cy-y-originY)*(n/z)-originY;
  z=n;updateZoom();requestDraw();
 }
-function reset(){clearGesture();x=y=0;z=1;updateZoom();draw();}
+function reset(){clearGesture();x=y=0;z=1;size(true);updateZoom();draw();}
 const midpoint=(p)=>({x:(p[0].x+p[1].x)/2,y:(p[0].y+p[1].y)/2,d:Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y)});
 field.addEventListener('pointerdown',e=>{
  if(e.button!==0)return;
@@ -105,7 +109,9 @@ field.addEventListener('pointermove',e=>{
  const dx=e.clientX-gesture.x,dy=e.clientY-gesture.y;
  if(!gesture.moved&&Math.hypot(dx,dy)<7)return;
  if(!field.hasPointerCapture(e.pointerId))field.setPointerCapture(e.pointerId);
- const t=performance.now(),dt=Math.max(10,t-gesture.t);vx=clamp(dx/dt*16,-70,70);vy=clamp(dy/dt*16,-70,70);x+=dx;y+=dy;gesture={x:e.clientX,y:e.clientY,t,moved:true};field.classList.add('is-drag');requestDraw();
+ const t=performance.now(),dt=Math.max(1,t-gesture.t),blend=1-Math.exp(-dt/32);
+ vx+=(clamp(dx/dt*16.67,-70,70)-vx)*blend;vy+=(clamp(dy/dt*16.67,-70,70)-vy)*blend;
+ x+=dx;y+=dy;gesture={x:e.clientX,y:e.clientY,t,moved:true};field.classList.add('is-drag');requestDraw();
 });
 function release(e){
  if(!points.has(e.pointerId))return;
@@ -137,7 +143,7 @@ function showItem(i){
  const still=a.firstElementChild.cloneNode(true);
  if(a.dataset.alt){still.removeAttribute('aria-hidden');still.setAttribute('role','img');still.setAttribute('aria-label',a.dataset.alt);}
  if(a.dataset.video&&media){box.replaceChildren(media.mediaVideo(a.dataset.video,a.dataset.poster,a.dataset.alt));}else box.replaceChildren(still);
- q('.inspect-id').textContent='素材';q('#inspect-title').textContent=a.dataset.title;q('.inspect-link').href=a.dataset.url;
+ q('#inspect-title').textContent=a.dataset.title;q('.inspect-link').href=a.dataset.url;
 }
 function inspect(i,trigger){
  stop();lastInspect=trigger;showItem(i);dialog.showModal();q('.close-inspect').focus();
@@ -148,93 +154,94 @@ archive.addEventListener('click',e=>{
  inspect(Number(b.dataset.material),b);
 });
 q('.close-inspect').addEventListener('click',()=>dialog.close());
-q('.inspect-prev').addEventListener('click',()=>showItem(openIndex-1));q('.inspect-next').addEventListener('click',()=>showItem(openIndex+1));
-dialog.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();showItem(openIndex+(e.key==='ArrowLeft'?-1:1));}});
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
 dialog.addEventListener('close',()=>{q('.inspect-image video')?.pause();if(lastInspect?.isConnected&&!lastInspect.classList.contains('material-print'))lastInspect.focus();else field.focus({preventScroll:true});});
-function endGather(){
+function endGather(settled=false){
  if(!gather)return;
  const task=gather;gather=null;
  clearTimeout(task.timer);
  task.animations.forEach(animation=>animation.cancel());
  task.layer.remove();
  task.destination.classList.remove('is-arriving');
+ if(settled)task.destination.classList.add('is-settled');
 }
 function photoRecords(entries){
  const records=[],seen=new Set();
- for(const [i,photo,element,key] of entries){
-  const r=(element||photo).getBoundingClientRect();
-  if(r.width<8||r.height<8||r.right<8||r.left>innerWidth-8||r.bottom<45||r.top>innerHeight-22||seen.has(key))continue;
-  seen.add(key);records.push({i,r,photo});
+ for(const [i,element,key] of entries){
+  const bounds=element.getBoundingClientRect();
+  if(bounds.width<8||bounds.height<8||bounds.right<8||bounds.left>innerWidth-8||bounds.bottom<45||bounds.top>innerHeight-22||seen.has(key))continue;
+  const visual=element.classList.contains('gather-print')?element.firstElementChild:element;
+  const photo=q('.photo',visual),style=getComputedStyle(visual),imageStyle=getComputedStyle(photo);
+  const transform=getComputedStyle(element).transform,matrix=new DOMMatrixReadOnly(transform==='none'?undefined:transform);
+  const parentScale=element.closest('#plane')?z:1;
+  const width=element.offsetWidth*Math.hypot(matrix.a,matrix.b)*parentScale,height=element.offsetHeight*Math.hypot(matrix.c,matrix.d)*parentScale;
+  const r={x:bounds.x+bounds.width/2-width/2,y:bounds.y+bounds.height/2-height/2,width,height,angle:Math.atan2(matrix.b,matrix.a)*180/Math.PI};
+  const crop=Object.fromEntries(['--detail','--crop-x','--crop-y'].map(prop=>[prop,style.getPropertyValue(prop).trim()||'50%']));
+  const palette=Object.fromEntries(['--collage-paper','--collage-ink','--collage-accent'].map(prop=>[prop,style.getPropertyValue(prop)]));
+  const paint={backgroundColor:style.backgroundColor,boxShadow:style.boxShadow,...crop};
+  const image={left:photo.offsetLeft/visual.offsetWidth*100+'%',top:photo.offsetTop/visual.offsetHeight*100+'%',width:photo.offsetWidth/visual.offsetWidth*100+'%',height:photo.offsetHeight/visual.offsetHeight*100+'%',filter:imageStyle.filter,boxShadow:imageStyle.boxShadow};
+  seen.add(key);records.push({i,r,visual,paint,image,palette});
  }
  return records;
 }
 function currentPhotos(work){
  if(gather){
-  const moving=photoRecords(qa('.gather-print',gather.layer).map((el,n)=>[Number(el.dataset.material),q('.photo',el),el,'motion-'+n]));
+  const moving=photoRecords(qa('.gather-print',gather.layer).map((el,n)=>[Number(el.dataset.material),el,'motion-'+n]));
   if(moving.length)return moving;
  }
  return viewPhotos(work);
 }
 function viewPhotos(work){
- return work?photoRecords(qa('.story-collage',stories).flatMap(card=>{const i=media?.originalStoryIndex(card)??Number(card.closest('li').className.match(/print-(\d+)/)?.[1]);return qa('.collage-print',card).map((p,j)=>[i,q('.photo',p),null,i+':'+j]);})):
-  photoRecords(qa('.material-print',plane).map((el,n)=>[Number(el.dataset.material),q('.photo',el),null,'slot-'+n]));
+ return work?photoRecords(qa('.story-collage',stories).flatMap(card=>{const i=media?.originalStoryIndex(card)??Number(card.closest('li').className.match(/print-(\d+)/)?.[1]);return qa('.collage-print',card).map((p,j)=>[i,p,i+':'+j]);})):
+  photoRecords(qa('.material-print',plane).map((el,n)=>[Number(el.dataset.material),el,'slot-'+n]));
 }
 function startGather(from,to,work){
  if(!from.length||!to.length||!Element.prototype.animate)return;
  const destination=work?stories:archive;
  const layer=document.createElement('div');layer.className='gather-layer';layer.setAttribute('aria-hidden','true');
- document.body.append(layer);destination.classList.add('is-arriving');
+ document.body.append(layer);destination.classList.remove('is-settled');destination.classList.add('is-arriving');
  const task={layer,animations:[],timer:0,destination};gather=task;
- const plan=[],styleCache=new Map();
+ const duration=480,options={duration,easing:'cubic-bezier(.22,.8,.24,1)',fill:'both'},plans=[],fragment=document.createDocumentFragment();
  const center=r=>[r.x+r.width/2,r.y+r.height/2];
  const dist=(a,b)=>{const [ax,ay]=center(a),[bx,by]=center(b);return Math.hypot(ax-bx,ay-by);};
- const near=(list,i,rect)=>list.filter(x=>x.i===i).sort((a,b)=>dist(a.r,rect)-dist(b.r,rect))[0];
  const offscreen=(r,i)=>{
-  const [x,y]=center(r),left=x<innerWidth/2,top=y<innerHeight/2;
-  if(i%3===0)return {x:left?-r.width:innerWidth,y:r.y,width:r.width,height:r.height};
-  return {x:r.x,y:top?-r.height:innerHeight,width:r.width,height:r.height};
+  const [cx,cy]=center(r);
+  return {...r,...(i%2?{x:cx<innerWidth/2?-r.width:innerWidth}:{y:cy<innerHeight/2?-r.height:innerHeight})};
  };
- // Use one replica for each destination layer. Start from the closest matching
- // print for that project, splitting a print into supporting crops when needed.
+ // Keep the photographs opaque throughout the flight. Move and resize the
+ // complete prints, including their crops and frames, without crossfading a
+ // second copy of the entire view beneath them.
  const used=new Set();
  const pairs=to.map(dest=>{
-  const src=near(from,dest.i,dest.r);if(src)used.add(src);
+  const matches=from.filter(src=>src.i===dest.i).sort((a,b)=>dist(a.r,dest.r)-dist(b.r,dest.r));
+  const src=matches.find(src=>!used.has(src))||matches[0];if(src)used.add(src);
   return {i:dest.i,src,dest};
  });
  for(const src of from)if(!used.has(src))pairs.push({i:src.i,src,dest:null});
- for(const [n,{i,src,dest}] of pairs.entries()){
-  const photo=(src||dest).photo,base=src?.r??offscreen(dest.r,i),final=dest?.r??offscreen(src.r,i);
-  const [ox,oy]=center(base),[fx,fy]=center(final);
-  const scaleX=final.width/base.width,scaleY=final.height/base.height;
-  const pose=t=>`translate(${(fx-ox)*t}px,${(fy-oy)*t}px) scale(${1+(scaleX-1)*t},${1+(scaleY-1)*t})`;
+ for(const {i,src,dest} of pairs){
+  const base=src?.r??offscreen(dest.r,i),final=dest?.r??offscreen(src.r,i);
+  const [ox,oy]=center(base),[fx,fy]=center(final),record=work?(dest||src):(src||dest);
   const print=document.createElement('div');print.className='gather-print';print.dataset.material=i;
-  Object.assign(print.style,{left:base.x+'px',top:base.y+'px',width:base.width+'px',height:base.height+'px'});
-  const clone=original=>{
-   const copy=original.cloneNode(true);
-   let style=styleCache.get(original);
-   if(!style){const c=getComputedStyle(original);style=Object.fromEntries(['--detail','--crop-x','--crop-y','--crop','filter'].map(prop=>[prop,c.getPropertyValue(prop)]));styleCache.set(original,style);}
-   if(style.filter&&style.filter!=='none')copy.style.filter=style.filter;
-   for(const prop of ['--detail','--crop-x','--crop-y','--crop']){
-    const value=style[prop];if(value)copy.style.setProperty(prop,value);
-   }
-   return copy;
-  };
-  const first=clone(photo);print.append(first);
-  if(src&&dest){
-   const arrival=clone(dest.photo);arrival.classList.add('gather-crop');print.append(arrival);
-   plan.push([arrival,[{opacity:0},{opacity:0,offset:.49},{opacity:1,offset:.84},{opacity:1}],{duration:870,delay:(n%6)*15,fill:'both'}]);
+  Object.assign(print.style,{left:final.x+'px',top:final.y+'px',width:final.width+'px',height:final.height+'px'});
+  const copy=record.visual.cloneNode(true);
+  Object.assign(copy.style,{position:'relative',left:'0',top:'0',width:'100%',height:'100%',margin:'0',transform:'none',transition:'none'});
+  const photo=q('.photo',copy);Object.assign(photo.style,{position:'absolute',margin:'0',aspectRatio:'auto'});
+  for(const [prop,value] of Object.entries(record.palette))copy.style.setProperty(prop,value);
+  print.append(copy);fragment.append(print);
+  plans.push([print,[
+   {transform:`translate3d(${ox-fx}px,${oy-fy}px,0) rotate(${base.angle}deg) scale(${base.width/final.width},${base.height/final.height})`},
+   {transform:`translate3d(0,0,0) rotate(${final.angle}deg) scale(1)`},
+  ]]);
+  plans.push([copy,[src?.paint??record.paint,dest?.paint??record.paint]]);
+  plans.push([photo,[src?.image??record.image,dest?.image??record.image]]);
+  for(const label of qa('.collage-mark,.collage-cover,.collage-palette',copy)){
+   plans.push([label,work?[{opacity:0},{opacity:0,offset:.65},{opacity:1}]:[{opacity:1},{opacity:0,offset:.35},{opacity:0}]]);
   }
-  layer.append(print);
-  plan.push([print,[
-   {transform:pose(0),opacity:src?1:0},
-   {transform:pose(.54),opacity:1,offset:.34},
-   {transform:pose(1),opacity:dest?1:0,offset:.88},
-   {transform:pose(1),opacity:0},
-  ],{duration:870,delay:(n%6)*15,easing:'cubic-bezier(.22,.70,.28,1)',fill:'both'}]);
  }
- for(const [el,frames,options] of plan)task.animations.push(el.animate(frames,options));
- task.timer=setTimeout(()=>{if(gather===task)endGather();},970);
+ layer.append(fragment);
+ for(const [element,frames] of plans)task.animations.push(element.animate(frames,options));
+ Promise.all(task.animations.map(animation=>animation.finished.catch(()=>{}))).then(()=>{if(gather===task)endGather(true);});
+ task.timer=setTimeout(()=>{if(gather===task)endGather(true);},duration+150);
 }
 function route(){
  const work=location.hash==='#works';
@@ -259,11 +266,18 @@ addEventListener('blur',clearGesture);
 function setTheme(dark){document.body.dataset.theme=dark?'dark':'light';theme.setAttribute('aria-pressed',String(dark));theme.setAttribute('aria-label',dark?'ライト表示':'ダーク表示');}
 try{setTheme(sessionStorage.getItem('bk-archive-theme')==='dark');}catch{setTheme(false);}
 theme.addEventListener('click',()=>{const dark=document.body.dataset.theme!=='dark';setTheme(dark);try{sessionStorage.setItem('bk-archive-theme',dark?'dark':'light');}catch{}});
-addEventListener('hashchange',route);addEventListener('popstate',route);let windowWidth=innerWidth,windowHeight=innerHeight;
-addEventListener('resize',()=>{
- const changed=innerWidth!==windowWidth||innerHeight!==windowHeight;
- windowWidth=innerWidth;windowHeight=innerHeight;
- if(changed){clearGesture();endGather();}
- if(!gather||changed)size();
-});route();
+addEventListener('hashchange',route);addEventListener('popstate',route);
+let layoutFrame=0;
+function resize(){
+ if(layoutFrame)return;
+ layoutFrame=requestAnimationFrame(()=>{
+  layoutFrame=0;if(archive.hidden)return;
+  const widthChanged=field.clientWidth!==viewWidth;
+  if(widthChanged){clearGesture();endGather();}
+  size();
+ });
+}
+addEventListener('resize',resize);
+new ResizeObserver(resize).observe(field);
+route();updateZoom();
 })();

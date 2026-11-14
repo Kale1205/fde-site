@@ -61,9 +61,4 @@ export async function applyCaseMedia(){
   const section=document.createElement('section');section.className='case-media';const heading=document.createElement('h2');heading.textContent='制作例の動画';
   section.append(heading,mediaVideo(entry.video,entry.poster,entry.alt));document.querySelector('.case-hero').after(section);
  }
- if(data.order){
-  const next=data.order[(data.order.indexOf(id)+1)%data.order.length];
-  const link=document.querySelector('.case-next a:last-child');link.href=next+'.html';
-  link.textContent='次の制作例を見る ↗';
- }
 }

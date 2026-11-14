@@ -41,21 +41,41 @@ for(let i=0;i<5;i++){const previous=await plane.evaluate(x=>x.style.transform);a
 if(await page.locator('#plane .tile').count()!==tileCount||!(await Promise.all(tiles.map(el=>el.evaluate(x=>x.isConnected)))).every(Boolean))throw Error('Wheel motion replaced the stable tile pool');
 const panningAnchor=(slot=null)=>page.locator('.material-print').evaluateAll((xs,slot)=>{const entries=xs.filter(x=>slot===null||x.dataset.slot===slot).map(x=>({slot:x.dataset.slot,r:x.getBoundingClientRect()})).filter(({r})=>r.right>10&&r.bottom>50&&r.left<innerWidth-10&&r.top<innerHeight-50);const score=({r})=>Math.hypot(r.x+r.width/2-innerWidth/2,r.y+r.height/2-innerHeight/2);const {r,slot:key}=entries.sort((a,b)=>score(a)-score(b))[0];return {slot:key,offset:[r.x+r.width/2-innerWidth/2,r.y+r.height/2-innerHeight/2]};},slot);
 await page.locator('[data-do=reset]').click();await page.waitForFunction(old=>document.getElementById('plane').style.transform===old,initial);const beforeZoom=await panningAnchor();if(!(await wordmark(page)))throw Error('Reset did not re-center the wordmark');
-await page.locator('[data-do=plus]').click();if(await page.locator('#zoom-value').textContent()!=='117%')throw Error('zoom unavailable');
-await page.waitForFunction(()=>document.getElementById('plane').style.transform.includes('scale(1.17)'));
-const afterZoom=await panningAnchor(beforeZoom.slot);if(afterZoom.offset.some((v,i)=>Math.abs(v-beforeZoom.offset[i]*1.17)>4))throw Error('Zoom focal point moved '+JSON.stringify({beforeZoom,afterZoom}));
+if(!await page.locator('[data-do=plus]').isDisabled())throw Error('Zoom exceeds 100%');
+await page.locator('[data-do=minus]').click();if(await page.locator('#zoom-value').textContent()!=='85%')throw Error('zoom unavailable');
+await page.waitForFunction(()=>document.getElementById('plane').style.transform.includes('scale(0.8547'));
+const afterZoom=await panningAnchor(beforeZoom.slot);if(afterZoom.offset.some((v,i)=>Math.abs(v-beforeZoom.offset[i]/1.17)>4))throw Error('Zoom focal point moved '+JSON.stringify({beforeZoom,afterZoom}));
+// Focus the field rather than the native zoom button for keyboard controls.
+await page.locator('#field').focus();for(let i=0;i<8;i++)await page.keyboard.press('-');
+if(await page.locator('#zoom-value').textContent()!=='60%'||!await page.locator('[data-do=minus]').isDisabled())throw Error('Zoom below 60%');
+for(let i=0;i<8;i++)await page.keyboard.press('Equal');
+if(await page.locator('#zoom-value').textContent()!=='100%'||!await page.locator('[data-do=plus]').isDisabled())throw Error('Zoom above 100%');
 await page.locator('[data-do=reset]').click();await page.waitForFunction(old=>document.getElementById('plane').style.transform===old,initial);
 const hit=await page.locator('.material-print').evaluateAll(xs=>{for(const x of xs){const r=x.getBoundingClientRect(),a=r.x+r.width*.5,b=r.y+r.height*.5;if(a>100&&b>90&&x.contains(document.elementFromPoint(a,b)))return [a,b]}});
 if(!hit)throw Error('no clickable material');await page.mouse.click(...hit);if(!await page.locator('#inspect').isVisible())throw Error('material unavailable');
-const title=await page.locator('#inspect-title').textContent();await page.locator('.inspect-next').click();if(await page.locator('#inspect-title').textContent()===title)throw Error('next material unchanged');
+if(await page.locator('.inspect-next,.inspect-prev').count())throw Error('Unrequested next material controls');
 await page.keyboard.press('Escape');if(await page.locator('#inspect').isVisible())throw Error('escape failed');
 await page.locator('.theme').click();if(await page.locator('body').getAttribute('data-theme')!=='dark')throw Error('theme unavailable');
+await page.locator('.theme').click();
 const beforeHash=await page.evaluate(()=>window.__fdePageLoading.started);
 const goStories=page.locator('.view-switch a[href="#works"]'),goArchive=page.locator('.view-switch a[href="#archive"]');
+const opaqueFlight=async target=>target.evaluate(async()=>{
+ const frames=[];const started=performance.now();
+ while(document.querySelector('.gather-layer')&&performance.now()-started<800){
+  const prints=[...document.querySelectorAll('.gather-print')];
+  frames.push({count:prints.length,opaque:prints.every(p=>getComputedStyle(p).opacity==='1'&&getComputedStyle(p.querySelector('.photo')).opacity==='1')});
+  await new Promise(requestAnimationFrame);
+ }
+ return frames;
+});
 await goStories.click();await page.locator('.gather-print').first().waitFor();
+const flightPromise=opaqueFlight(page);
 if(await page.evaluate(()=>window.__fdePageLoading.started)!==beforeHash)throw Error('Archive hash switch restarted the entry loader');
 if(await page.locator('.gather-print').count()<3)throw Error('Stories gather needs multiple images');
 await page.screenshot({path:path.join(out,engine+'-stories-transition.png'),animations:'allow'});
+await page.waitForTimeout(100);await page.screenshot({path:path.join(out,engine+'-stories-transition-middle.png'),animations:'allow'});
+await page.waitForTimeout(100);await page.screenshot({path:path.join(out,engine+'-stories-transition-end.png'),animations:'allow'});
+const flight=await flightPromise;if(flight.length<3||flight.some(f=>!f.count||!f.opaque))throw Error('Photo opacity dipped during the Stories flight '+JSON.stringify(flight));
 await goArchive.click();await page.locator('#archive.is-arriving').waitFor({state:'attached'});await page.locator('.gather-print').first().waitFor();
 if(await page.locator('.gather-print').count()<3)throw Error('reverse Archive needs multiple images');
 await page.screenshot({path:path.join(out,engine+'-archive-transition.png'),animations:'allow'});
@@ -68,16 +88,25 @@ if(new Set(names).size!==10||await page.locator('.collage-palette').count()!==10
 await page.emulateMedia({reducedMotion:'reduce'});await goArchive.click();await goStories.click();
 if(await page.locator('.gather-layer').count())throw Error('reduced motion gather unavailable');await page.emulateMedia({reducedMotion:'no-preference'});
 await page.locator('.stories .prints a').first().click();await page.waitForTimeout(2200);
-if(!(await page.locator('.case-copy').textContent()).includes('完成したLPや受注実績ではありません'))throw Error('fiction disclaimer');
-await page.screenshot({path:path.join(out,engine+'-detail.png')});await page.locator('.case-next a').last().click();await page.waitForTimeout(2200);if(!(await page.locator('.case-meta').textContent()).includes('02 / 10'))throw Error('next study');await page.locator('.case-meta a').click();await page.waitForTimeout(2200);if(!await page.locator('.stories').isVisible())throw Error('return stories');
+if(await page.locator('.case-meta span,.case-next,.case-copy .muted').count())throw Error('Removed case labels or next links returned');
+await page.screenshot({path:path.join(out,engine+'-detail.png')});await page.locator('.case-meta a').click();await page.waitForTimeout(2200);if(!await page.locator('.stories').isVisible())throw Error('return stories');
 const touch=await browser.newContext({hasTouch:true,viewport:{width:390,height:844}});const phone=await touch.newPage();
 await phone.goto(base+'ja/lp/');await phone.waitForTimeout(2200);const m=await wordmark(phone);if(!m||m.count!==1||m.text!=='bakedkale library')throw Error('Phone Archive wordmark '+JSON.stringify(m));
 const phoneHit=await phone.locator('.material-print').evaluateAll(xs=>{for(const x of xs){const r=x.getBoundingClientRect(),a=r.x+r.width*.5,b=r.y+r.height*.5;if(a>10&&a<380&&b>100&&b<740&&x.contains(document.elementFromPoint(a,b)))return [a,b]}});
 if(!phoneHit)throw Error('no tappable mobile material');await phone.touchscreen.tap(...phoneHit);if(!await phone.locator('#inspect').isVisible())throw Error('material tap unavailable');
 await phone.locator('.close-inspect').tap();
+const phonePlane=phone.locator('#plane');
+await phone.mouse.move(180,390);await phone.mouse.down();await phone.mouse.move(220,420,{steps:4});
+const beforeHeight=await phonePlane.evaluate(x=>x.style.transform);
+await phone.setViewportSize({width:390,height:760});
+if(!await phone.locator('#field').evaluate(x=>x.classList.contains('is-drag')))throw Error('Height-only resize cancelled an active drag');
+if(await phonePlane.evaluate(x=>x.style.transform)!==beforeHeight)throw Error('Height-only resize jumped the plane');
+await phone.mouse.move(260,460,{steps:4});
+await phone.waitForFunction(old=>document.getElementById('plane').style.transform!==old,beforeHeight);await phone.mouse.up();
+await phone.locator('[data-do=reset]').tap();
 for(const [selector,dest] of [['.view-switch a[href="#works"]','#works'],['.view-switch a[href="#archive"]','#archive']]){await phone.locator(selector).tap();await phone.locator(dest+'.is-arriving').waitFor({state:'attached'});if(await phone.locator('.gather-print').count()<2)throw Error('mobile transition needs multiple images');await phone.locator('.gather-layer').waitFor({state:'detached'});}
 await touch.close();
 await page.setViewportSize({width:390,height:900});await page.goto(base+'ja/lp/diagnosis.html');await page.waitForTimeout(2200);await page.locator('#next').click();if(!await page.locator('#error').textContent())throw Error('empty validation');for(let i=0;i<12;i++){await page.locator('input[type=radio]').first().check();await page.locator('#next').click()}await page.locator('#request').click();if(!await page.locator('#lp-submit').isDisabled())throw Error('submit enabled');await page.locator('#return').click();await page.locator('#skip').click();if(await page.locator('#statconsent').isChecked())throw Error('consent default');await page.locator('#statconsent').check();await page.locator('#yes').click();if(!(await page.locator('#statstatus').textContent()).includes('送信や保存をしていません'))throw Error('stats false promise');await page.locator('#no').click();await page.locator('#return').click();await page.locator('#edit').click();if(await page.locator('#quiz').getAttribute('data-question-id')!=='01')throw Error('edit fail');
 for(const width of [320,390,768,1440,1920]){await page.setViewportSize({width,height:900});for(const p of ['ja/lp/','ja/lp/examples.html','ja/lp/service.html','ja/lp/diagnosis.html',...['','ja/','zh/'].flatMap(l=>['index','goals','news','license','contact'].map(n=>l+n+'.html'))]){await page.goto(base+p);await page.waitForTimeout(2200);const info=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth+2,title:document.title,broken:[...document.images].filter(i=>i.getClientRects().length&&getComputedStyle(i).visibility!=='hidden'&&i.complete&&!i.naturalWidth).map(i=>i.src)}));if(info.overflow||info.broken.length){await page.screenshot({path:path.join(out,engine+'-failure.png')});throw Error(JSON.stringify({width,path:p,...info}));}results.push({width,path:p,pass:true});if(p.startsWith('ja/lp/')&&[320,390,1440].includes(width))await page.screenshot({path:path.join(out,engine+'-'+width+'-'+(p.split('/').pop()||'index')+'.png')});}}
-await page.emulateMedia({reducedMotion:'reduce'});await page.goto(base+'ja/lp/');await page.waitForTimeout(2200);if(posts.length||errors.length||broken.length)throw Error(JSON.stringify({posts,errors,broken}));fs.writeFileSync(path.join(out,engine+'.json'),JSON.stringify({engine,results,diagnosis:true,posts,errors,broken},null,2));await browser.close();console.log(engine,results.length,'views + diagnosis passed');
+await page.emulateMedia({reducedMotion:'reduce'});await page.goto(base+'ja/lp/');await page.waitForTimeout(2200);if(posts.length||errors.length||broken.length)throw Error(JSON.stringify({posts,errors,broken}));fs.writeFileSync(path.join(out,engine+'.json'),JSON.stringify({engine,results,diagnosis:true,opaqueFlight:flight,posts,errors,broken},null,2));await browser.close();console.log(engine,results.length,'views + diagnosis passed');
 })().catch(e=>{console.error(e);process.exit(1)});
