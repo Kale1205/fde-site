@@ -1,2 +1,2 @@
 import {applyCaseMedia} from './media-runtime.js';
-applyCaseMedia().catch(()=>{});
+applyCaseMedia().then(()=>window.BakedKaleDisplay?.refresh()).catch(()=>{});

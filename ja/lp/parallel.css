@@ -1,5 +1,5 @@
 .parallel-page{--canvas:#e8ede2;--ink:#233027;--soft:#526250;--line:#243a2726;--glass:#e8ede2e8;background:var(--canvas);color:var(--ink);min-height:100dvh}
-.parallel-page[data-theme="dark"]{--canvas:#171d19;--ink:#e3eae0;--soft:#b7c5b5;--line:#e9f8ea33;--glass:#171d19e8;color-scheme:dark}
+.parallel-page[data-theme="dark"],html[data-lp-theme="dark"] .parallel-page{--canvas:#171d19;--ink:#e3eae0;--soft:#b7c5b5;--line:#e9f8ea33;--glass:#171d19e8;color-scheme:dark}
 .parallel-page [hidden]{display:none!important}.parallel-page a{color:inherit}.parallel-page button{color:inherit;font:inherit}.parallel-page :focus-visible{outline:2px solid currentColor;outline-offset:4px}
 .parallel-head{position:fixed;top:0;left:0;right:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:max(13px,env(safe-area-inset-top)) 23px 12px;z-index:4;pointer-events:none;background:linear-gradient(var(--glass),transparent);font:500 12px/1.25 system-ui,sans-serif}
 .parallel-head>*{pointer-events:auto}.left-tools{display:flex;align-items:center;gap:15px;justify-self:start}.parallel-head a{text-decoration:none;white-space:nowrap}.left-tools>a:last-child{font-size:11px}.identity{display:flex;align-items:center;gap:4px}.identity img{object-fit:contain}
@@ -33,11 +33,12 @@
 /* Keep the adjacent FDE destination within the compact header on phones. */
 .left-tools>a:not(.identity){font-size:11px}
 @media(max-width:390px){.left-tools{gap:7px}.left-tools>a:not(.identity){font-size:10px}.identity img{width:24px;height:24px}.identity b{font-size:11px}.parallel-head{padding-inline:8px}}
-.gather-layer{position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none}
-.gather-print{position:absolute;will-change:transform;pointer-events:none}
-.gather-print .photo{aspect-ratio:auto}
-.stories.is-arriving .prints,#archive.is-arriving #plane{visibility:hidden}
-@media(prefers-reduced-motion:reduce){.gather-layer{display:none}}
+.parallel-page .gather-layer{position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none;contain:layout paint}
+.parallel-page .gather-layer *{pointer-events:none!important}
+.parallel-page .gather-print{position:absolute;will-change:transform;pointer-events:none}
+.parallel-page .gather-print .photo{aspect-ratio:auto}
+.parallel-page .stories .collage-print.is-in-flight,.parallel-page #archive .material-print.is-in-flight{visibility:hidden}
+@media(prefers-reduced-motion:reduce){.parallel-page .gather-layer{display:none}}
 
 /* Repeating photo lattice and independent, overlapping Stories collages. */
 .material-print{transform:translate(-50%,-50%)}
@@ -57,12 +58,11 @@
 .cp-6{left:26%;top:27%;width:46%;height:47%;--detail:110%;z-index:1;transform:rotate(-1deg)}
 .stories li:nth-child(3n+2) .cp-0{left:3%;top:26%}.stories li:nth-child(3n+2) .cp-6{left:30%;top:17%;transform:rotate(3deg)}
 .stories li:nth-child(3n) .cp-3{left:5%;top:47%}.stories li:nth-child(3n) .cp-6{left:21%;top:32%;transform:rotate(-4deg)}
-.stories .print-caption{display:block;text-align:center;padding-top:10px}
-.stories.is-settled .print-caption{animation:collage-label .18s ease-out both}
-@keyframes collage-label{from{opacity:0}to{opacity:1}}
+.stories .print-caption{display:block;text-align:center;padding-top:10px;transition:opacity .18s ease-out}
+.parallel-page .stories li.is-assembling .print-caption{opacity:0}
 .gather-print .photo::before{width:var(--detail,100%);left:var(--crop-x,50%);top:var(--crop-y,50%)}
 @media(max-width:690px){.stories .prints li:nth-child(n){margin:0}.stories .prints{row-gap:31px}}
-@media(prefers-reduced-motion:reduce){.stories.is-settled .print-caption{animation:none}}
+@media(prefers-reduced-motion:reduce){.parallel-page .stories .print-caption{transition:none}}
 
 /* Collage elements are deliberately different editorial applications of one brief. */
 .stories-note{justify-content:flex-end}
