@@ -79,7 +79,7 @@ try{
  await page.locator('.view-switch a[href="#works"]').click();
  await page.waitForFunction(()=>!document.querySelector('.gather-layer'));
  await page.locator('.stories .prints a').first().click();
- await page.locator('[data-lp-theme]').click();
+ await page.locator('button[data-lp-theme]').click();
  assert.equal(await page.locator('html').getAttribute('data-lp-theme'),'dark');
  await page.goBack();await page.waitForSelector('.view-switch');
  assert.equal(await page.locator('html').getAttribute('data-lp-theme'),'dark');
