@@ -61,7 +61,7 @@ jobs:
 
       - name: Approved Japanese LP and closed reception gate
         run: |
-          node --test scripts/test_lp_production.mjs scripts/test_lp_transition_motion.mjs
+          node --test scripts/test_lp_production.mjs scripts/test_lp_transition_motion.mjs scripts/test_lp_archive_pointer_lifecycle.mjs
           node scripts/build_lp_pages.mjs --check
           for file in ja/lp/*.js; do node --check "$file"; done
 

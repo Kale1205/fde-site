@@ -124,7 +124,11 @@ function release(e){
  gesture=null;
 }
 ['pointerup','pointercancel'].forEach(ev=>window.addEventListener(ev,release,{passive:true}));
-field.addEventListener('lostpointercapture',release);
+field.addEventListener('lostpointercapture',e=>{
+ // A touch transfers implicit capture from the print to the field on drag.
+ // The print's capture-loss event bubbles here while that drag is still active.
+ if(e.target===field)release(e);
+});
 field.addEventListener('wheel',e=>{
  e.preventDefault();endGather(true);stop();
  if(e.ctrlKey||e.metaKey)zoom(z*Math.exp(-e.deltaY*.006),e.clientX,e.clientY);
