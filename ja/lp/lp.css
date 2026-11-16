@@ -314,3 +314,22 @@ html[data-lp-motion=still] .lp-page .site-header .brand img,html[data-lp-motion=
 /* Keep the disclosure readable without overlapping mobile story artwork. */
 .lp-page .lp-content .archive-caption{font-size:10px;line-height:1.7}
 @media(max-width:700px){.lp-page .lp-content .archive-caption{font-size:9px;line-height:1.7}}
+
+/* Two production offerings reuse the LP page's existing palette and grid. */
+.lp-page .production-services { scroll-margin-top:24px; }
+.lp-page .production-services .scope-detail {
+  border-top:1px solid var(--line);
+  padding-top:30px;
+}
+.lp-page .production-services h2 { font-size:clamp(22px,3.2vw,32px); margin-bottom:12px; }
+.lp-page .production-services a { text-underline-offset:.25em; }
+.lp-page #lp-production { scroll-margin-top:24px; }
+.lp-page #lp-production h2 {
+  font-family:Georgia,'Noto Serif JP',serif;
+  font-size:clamp(40px,4.7vw,64px);
+  font-weight:500;
+  line-height:1.22;
+  letter-spacing:-.045em;
+  margin:24px 0;
+}
+@media(max-width:700px){.lp-page #lp-production h2{font-size:clamp(34px,8vw,44px)}}
