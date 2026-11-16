@@ -137,8 +137,6 @@ html{scroll-padding-top:118px}
 
 /* CMS media: only individual case assets override the default photo sheet. */
 .photo.case-custom-photo,.photo.case-custom-photo::before{background-image:var(--case-photo);background-size:cover;background-position:center}
-.case-media{margin:clamp(24px,6vw,72px) auto;width:min(100% - 32px,760px)}
-.case-video{display:block;width:100%;max-height:66dvh;object-fit:contain;background:#101712}
 .case-media-alt{font-size:.85rem;margin:10px 0 0}
 
 /* LP-only display controls. Source artwork keeps its own palette. */
@@ -162,3 +160,11 @@ html[data-lp-motion-paused] :is(.page-case,.parallel-page #inspect) :is([data-lp
 @media(max-width:850px){.page-case .sitehead{grid-template-columns:minmax(0,1fr) auto;gap:0 12px;padding-top:7px;padding-bottom:0}.page-case .sitehead nav{grid-column:1/-1;grid-row:2;justify-self:start;gap:clamp(10px,3vw,23px);font-size:12px}.page-case .sitehead nav a{min-height:41px}.page-case .lp-display-tools{grid-column:2;grid-row:1}.page-case .brand{font-size:clamp(19px,4vw,25px)}}
 @media(max-width:690px){.parallel-page #inspect .inspect-sheet{padding-top:max(72px,calc(env(safe-area-inset-top) + 61px))}}
 @media(prefers-reduced-motion:reduce){.page-case .case-main *,.page-case .case-main *::before,.page-case .case-main *::after{animation-play-state:paused!important}}
+
+.case-story-blocks{margin:clamp(24px,6vw,72px) auto;width:min(100% - 32px,760px);display:grid;gap:clamp(18px,4vw,46px)}
+.case-story-blocks figure{margin:0}
+.case-story-blocks figure img{display:block;width:auto;max-width:100%;max-height:75dvh;margin-inline:auto;object-fit:contain}
+.case-story-blocks figcaption{margin-top:.75rem;font-size:.9rem}
+.case-story-text p{white-space:pre-wrap}
+
+.case-custom-headline{white-space:pre-line}

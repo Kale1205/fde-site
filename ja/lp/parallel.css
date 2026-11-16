@@ -96,3 +96,13 @@
 .archive-wordmark span{font:780 clamp(19px,2.34vw,32px)/1 ArchiveInter,system-ui,sans-serif;letter-spacing:-.075em}
 .archive-wordmark em{font:italic 500 clamp(18px,2.15vw,28px)/.95 Georgia,'Times New Roman',serif;letter-spacing:-.065em;margin-top:.02em}
 @media(max-width:690px){.archive-wordmark span{font-size:clamp(15px,5.35vw,25px)}.archive-wordmark em{font-size:clamp(14px,4.95vw,23px)}}
+
+/* Archive clips sit inside the paper matte; the button keeps all gestures. */
+.archive-loop{position:absolute;inset:4px 4px 12px;width:calc(100% - 8px);height:calc(100% - 16px);object-fit:cover;pointer-events:none;opacity:0}
+.archive-loop.is-playing{opacity:1}
+@media(max-width:690px){.archive-loop{inset:3px 3px 10px;width:calc(100% - 6px);height:calc(100% - 13px)}}
+.stories .story-collage .story-layer-custom{left:var(--story-x);top:var(--story-y);width:var(--story-width);transform:rotate(var(--story-rotate))}
+.stories .story-collage .story-layer-custom[hidden]{display:none}
+.inspect-image{position:relative}
+.inspect-image .archive-loop{inset:0;width:100%;height:100%;max-height:none;object-fit:contain}
+.material-access:focus-within{right:16px;max-height:calc(100% - 160px);overflow:auto}

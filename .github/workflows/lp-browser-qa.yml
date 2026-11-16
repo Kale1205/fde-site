@@ -3,6 +3,12 @@ on:
   pull_request:
     paths:
       - 'ja/lp/**'
+      - 'cms-lp-*.js'
+      - 'cms-admin.css'
+      - 'scripts/lp_cms_browser_qa.cjs'
+      - 'scripts/lp_gallery_layout_browser_qa.cjs'
+      - 'scripts/test_lp_cms_layout.mjs'
+      - 'scripts/test_lp_gallery_playback.mjs'
       - 'scripts/lp_browser_qa.cjs'
       - 'scripts/lp_detail_controls_browser_qa.mjs'
       - 'scripts/lp_transition_motion_browser_qa.mjs'

@@ -27,7 +27,7 @@ function fixture({legacyCaptureListener=false}={}){
  const photo={closest:paper.closest},archiveEvents=new Map();
  const plane={style:{},replaceChildren(){}},archive={hidden:false,addEventListener:(name,fn)=>register(archiveEvents,name,fn)};
  const reduced={matches:false,addEventListener:(name,fn)=>register(windowEvents,'reduced:'+name,fn)};
- const c={field,plane,archive,reduced,points:new Map(),tileNodes:new Map(),
+ const c={field,plane,archive,reduced,playback:null,inspectionPlayback:null,visibilityPaused:false,points:new Map(),tileNodes:new Map(),
   x:0,y:0,originX:0,originY:0,z:1,W:1,H:1,vx:0,vy:0,anim:0,last:0,gesture:null,clickBlock:0,framePending:0,layoutFrame:0,
   viewWidth:0,viewHeight:0,poolColumns:0,poolRows:0,MIN_ZOOM:.6,MAX_ZOOM:1,innerWidth:400,innerHeight:800,gather:null,
   wrap:(n,d)=>((n%d)+d)%d,clamp:(n,a,b)=>Math.min(b,Math.max(a,n)),sizePool(){},updateZoom(){},endGather(){},route(){},

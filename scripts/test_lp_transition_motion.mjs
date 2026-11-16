@@ -34,7 +34,7 @@ function fixture(){
  const qa=(selector,node)=>all(node).filter(child=>selector==='.photo'?child.classes.has('photo'):selector==='.is-in-flight'?child.classes.has('is-in-flight'):selector.includes('.collage-mark')?child.classes.has('collage-mark'):false);
  const archive=new Node(),stories=new Node();archive.hidden=false;
  const context={Element:Node,document:{body:new Node(),hidden:false,createElement:()=>new Node(),createDocumentFragment:()=>Object.assign(new Node(),{fragment:true}),addEventListener:(name,fn)=>events['document:'+name]=fn},window:{scrollX:0,scrollY:0},innerWidth:1200,innerHeight:800,
-  q:(selector,node)=>qa(selector,node)[0]||null,qa,clamp:(n,a,b)=>Math.min(b,Math.max(a,n)),archive,stories,gather:null,
+  q:(selector,node)=>qa(selector,node)[0]||null,qa,clamp:(n,a,b)=>Math.min(b,Math.max(a,n)),archive,stories,gather:null,playback:null,inspectionPlayback:null,visibilityPaused:false,
   setTimeout:(fn,ms)=>{timers.set(++serial,{fn,ms});return serial;},clearTimeout:id=>timers.delete(id),
   requestAnimationFrame:fn=>{frames.set(++serial,fn);return serial;},cancelAnimationFrame:id=>frames.delete(id),
   clearGesture(){gestures++;},reduced:{matches:false,addEventListener:(name,fn)=>events['reduced:'+name]=fn},addEventListener:(name,fn)=>events[name]=fn,
