@@ -71,3 +71,16 @@ test('LP is the only offering and includes flyer and Web/SNS advertising product
   const html=read(file);assert(/href="(?:\.\.?\/)?service\.html"[^>]*>制作の流れ/.test(html),file);assert(!/service\.html#(?:schedule|flow)/.test(html),file);
  }
 });
+
+test('the diagnostic result distinguishes base price from additional fees and final total',()=>{
+ const js=read('ja/lp/diagnosis.js');
+ const render=runInNewContext(js.slice(js.indexOf('function estimateMarkup('),js.indexOf('function result('))+'\nestimateMarkup');
+ for(const check of [[],['要確認']]){
+  const html=render({check});
+  assert(html.includes('<th>基本制作</th><td>50,000円（税別）〜／55,000円（税込）〜</td>'));
+  assert(html.includes('<th>追加・要確認</th><td>'+(check.length?'内容確認後に算定':'現時点の選択なし')+'</td>'));
+  assert(html.includes('<th>外部サービス費</th><td>未確定・別途確認</td>'));
+  assert(html.includes('<th>支払総額</th><td>正規見積で確定</td>'));
+  assert(html.includes('開始価格で、支払総額ではありません'));
+ }
+});
