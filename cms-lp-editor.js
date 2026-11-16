@@ -39,7 +39,8 @@ export function buildLpEditor(api,readToken,{previewOnly=false}={}){
  const tabArchive=btn('Archives'),tabStories=btn('Stories');for(const tab of [tabArchive,tabStories]){tab.setAttribute('role','tab');tabs.append(tab);}
  const panel=m('div');panel.className='lp-editor-panel';const controls=[tabArchive,tabStories];
  const archive=m('section'),stories=m('section');archive.id='lpArchivePanel';stories.id='lpStoriesPanel';archive.setAttribute('role','tabpanel');stories.setAttribute('role','tabpanel');tabArchive.setAttribute('aria-controls',archive.id);tabStories.setAttribute('aria-controls',stories.id);
- function field(parent,label,input){const wrap=m('label');wrap.className='field';wrap.append(m('span',label),input);parent.append(wrap);controls.push(input);return input;}
+ let fieldIndex=0;
+ function field(parent,label,input){const wrap=m('label'),caption=m('span',label);caption.id='lp-editor-field-'+(++fieldIndex);input.setAttribute('aria-labelledby',caption.id);wrap.className='field';wrap.append(caption,input);parent.append(wrap);controls.push(input);return input;}
  const map=m('div');map.className='lp-editor-map';map.setAttribute('role','group');map.setAttribute('aria-label','Archivesの配置マップ。位置を選んで編集');
  const mapButtons=new Map();
  for(let n=0;n<25;n++){const slot=String(n).padStart(2,'0');if(n===12){const mark=m('span','bakedkale\nlibrary');mark.className='lp-map-wordmark';map.append(mark);continue;}const b=btn('');b.className='lp-map-slot';b.dataset.slot=slot;b.setAttribute('aria-label',slotLabel(slot));const image=m('span'),number=m('span',String(n+1).padStart(2,'0'));image.className='lp-map-image';number.className='lp-map-number';b.append(image,number);map.append(b);mapButtons.set(slot,b);controls.push(b);}
