@@ -1,8 +1,10 @@
+import * as media from './media-runtime.js';
+import {LP_ARCHIVE_CASES} from './media-schema.js';
+import {archiveFrames as frame} from './archive-layout.js';
 'use strict';
 (async () => {
 const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
 const field=q('#field'),plane=q('#plane'),archive=q('#archive'),stories=q('#works'),template=q('#material-data'),dialog=q('#inspect');
-const media=await import('./media-runtime.js').catch(()=>null);
 const manifest=await media?.loadMedia();
 media?.galleryMedia(manifest,template,stories,archive);
 const items=qa('article',template.content), tileNodes=new Map(), points=new Map();
@@ -10,7 +12,6 @@ const [wordmarkName,wordmarkEdition]=q('#archive-title').textContent.trim().spli
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const MIN_ZOOM=.6,MAX_ZOOM=1;
 // One stable, repeating 5 × 5 contact sheet. The center is the Archive wordmark.
-const [{LP_ARCHIVE_CASES},{archiveFrames:frame}]=await Promise.all([import('./media-schema.js'),import('./archive-layout.js')]);
 const positions=Array.from({length:25},(_,i)=>String(i).padStart(2,'0'));
 const slots=positions.map(slot=>Number(manifest?.archive?.[slot]?.caseId||LP_ARCHIVE_CASES[slot]||0)-1);
 const material=positions.map((slot,i)=>slots[i]<0?null:media?.archiveMaterial(manifest,items,slot));

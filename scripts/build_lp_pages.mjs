@@ -38,7 +38,7 @@ function renderShowcase(name,version){
 <script src="${local}lp-display.js?v=${version}"></script>
 ${name==='index'?lpLoadingHead(prefix,version):name==='examples'?`<script>try{if(localStorage.getItem('fde:still-icons')==='1')document.documentElement.dataset.pageLoadingMotion='still';}catch{}</script>`:''}
 <link rel="stylesheet" href="${local}showcase.css?v=${version}">
-${isCase?`<script type="module" src="${local}case-media.js?v=${version}"></script>`:`<link rel="stylesheet" href="${local}parallel.css?v=${version}"><script defer src="${local}parallel.js?v=${version}"></script>`}
+${isCase?`<script type="module" src="${local}case-media.js?v=${version}"></script>`:`<link rel="stylesheet" href="${local}parallel.css?v=${version}"><script type="module" src="${local}parallel.js?v=${version}"></script>`}
 </head><body class="${isCase?'page-case':'parallel-page'}">
 ${name==='index'?lpLoadingBody(local):''}
 <div class="site-shell">${content}</div>

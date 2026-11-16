@@ -1,5 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {archivePlayback,applyCaseMedia} from '../ja/lp/media-runtime.js';
 
 test('Archive playback serves only one visible duplicate, preserves it across movement, and releases offscreen/pause media',()=>{
@@ -59,4 +60,12 @@ test('authored detail copy replaces only supplied fields and stays literal text'
  }finally{
   for(const [key,value] of Object.entries(saved))if(value===undefined)delete globalThis[key];else globalThis[key]=value;
  }
+});
+
+
+test('gallery dependency loading belongs to the document module graph, not an uncaught navigation-time import',()=>{
+ const source=readFileSync(new URL('../ja/lp/parallel.js',import.meta.url),'utf8');
+ for(const path of ['media-runtime.js','media-schema.js','archive-layout.js'])assert.match(source,new RegExp("^import .+ from '\\./"+path.replace('.', '\\.')+"';",'m'));
+ assert.equal(source.includes('import('),false,'rapid navigation must not cancel an uncaught delayed dynamic dependency');
+ for(const path of ['index.html','examples.html'])assert.match(readFileSync(new URL('../ja/lp/'+path,import.meta.url),'utf8'),/<script type="module" src="[^"<>]*parallel\.js\?v=[^"<>]+"><\/script>/);
 });

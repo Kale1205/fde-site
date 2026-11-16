@@ -13,6 +13,8 @@ await page.reload();if(await page.evaluate(()=>!!window.__fdePageLoading||docume
 for(const route of ['ja/lp/examples.html','ja/lp/service.html','ja/lp/diagnosis.html','ja/lp/cases/01.html','ja/news.html','ja/goals.html','ja/license.html']){
  await page.goto(base+route);if(await page.locator('#page-loading').count())throw Error('Loader on non-entry: '+route);
 }
+if(errors.length)throw Error('Rapid route module startup errors: '+JSON.stringify(errors));
+console.log(engine,'gallery module graph survived rapid route warmup');
 await page.goto(base+'ja/news.html');await page.locator('a[data-lp-destination]:visible').first().click();
 await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResult==='complete');
 const navState=await page.evaluate(()=>window.__fdePageLoading.started);
