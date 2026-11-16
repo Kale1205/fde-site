@@ -3,7 +3,7 @@ import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {loadingHead,loadingBody} from './page_loading_template.mjs';
 import {withSharedImage} from './social_share_metadata.mjs';
-import {showcaseBody,showcaseCaseBody,showcaseCases} from './lp_showcase.mjs';
+import {showcaseBody,showcaseCaseBody,showcaseCases,showcaseDisplayTools} from './lp_showcase.mjs';
 import {LP_RECEPTION_NOTICE} from '../ja/lp/lp-policy.js';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const pages=JSON.parse(read('content/lp-pages.json'));
@@ -22,19 +22,20 @@ function renderShowcase(name,version){
  const i=showcaseCases.findIndex(c=>name==='cases/'+c.num),isCase=i>=0;
  // The global cache-version workflow only rewrites top-level LP routes.
  // Case pages are generated with a cache key derived from their actual assets.
- if(isCase)version=createHash('sha256').update(['ja/lp/showcase.css','ja/lp/case-media.js'].map(read).join('\0')).digest('hex').slice(0,12);
+ if(isCase)version=createHash('sha256').update(['ja/lp/showcase.css','ja/lp/case-media.js','ja/lp/lp-display.js'].map(read).join('\0')).digest('hex').slice(0,12);
  const prefix=isCase?'../../../':'../../', local=isCase?'../':'./';
  const c=isCase?showcaseCases[i]:null;
  const meta=isCase?{title:c.title+'の制作例 | Baked Kale',description:'Baked Kaleによる架空のLP制作例です。受注実績ではありません。',robots:'noindex,follow'}:metadata[name];
  const canonical='https://kale1205.github.io/fde-site/ja/lp/'+(name==='index'?'':name+'.html');
  const brand=`<img src="${local}assets/bakedkale-character.png" width="38" height="38" alt=""><span>Baked Kale</span>`;
- const content=isCase?`<a class="skip skip-link" href="#main-content">本文へスキップ</a><header class="sitehead"><a class="brand" href="../index.html">${brand}</a><nav aria-label="LPメニュー"><a href="../index.html#works">制作例</a><a href="../service.html#schedule">制作の流れ</a><a class="estimate-link" href="../diagnosis.html" target="_blank" rel="noopener">12問簡易見積 ↗</a></nav></header>${showcaseCaseBody(i)}`:showcaseBody();
+ const content=isCase?`<a class="skip skip-link" href="#main-content">本文へスキップ</a><header class="sitehead"><a class="brand" href="../index.html">${brand}</a><nav aria-label="LPメニュー"><a href="../index.html#works">制作例</a><a href="../service.html#schedule">制作の流れ</a><a class="estimate-link" href="../diagnosis.html" target="_blank" rel="noopener">12問簡易見積 ↗</a></nav>${showcaseDisplayTools()}</header>${showcaseCaseBody(i)}`:showcaseBody();
  return withSharedImage(`<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="${meta.robots}"><meta name="theme-color" content="#e8ede2">
 <title>${meta.title}</title><meta name="description" content="${meta.description}">
 <link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:title" content="${meta.title}"><meta property="og:description" content="${meta.description}"><meta property="og:url" content="${canonical}">
 <link rel="icon" type="image/svg+xml" href="${prefix}assets/baked-kale-mark.svg">
+<script src="${local}lp-display.js?v=${version}"></script>
 ${name==='index'?lpLoadingHead(prefix,version):name==='examples'?`<script>try{if(localStorage.getItem('fde:still-icons')==='1')document.documentElement.dataset.pageLoadingMotion='still';}catch{}</script>`:''}
 <link rel="stylesheet" href="${local}showcase.css?v=${version}">
 ${isCase?`<script type="module" src="${local}case-media.js?v=${version}"></script>`:`<link rel="stylesheet" href="${local}parallel.css?v=${version}"><script defer src="${local}parallel.js?v=${version}"></script>`}

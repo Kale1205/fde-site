@@ -4,6 +4,11 @@ on:
     paths:
       - 'ja/lp/**'
       - 'scripts/lp_browser_qa.cjs'
+      - 'scripts/lp_detail_controls_browser_qa.mjs'
+      - 'scripts/lp_transition_motion_browser_qa.mjs'
+      - 'scripts/test_lp_transition_motion.mjs'
+      - 'scripts/build_lp_pages.mjs'
+      - 'scripts/lp_showcase.mjs'
       - '.github/workflows/lp-browser-qa.yml'
   workflow_dispatch:
 permissions:
@@ -37,6 +42,10 @@ jobs:
           trap 'kill "$SERVER_PID" || true' EXIT
           for i in $(seq 1 20); do curl -fsS http://127.0.0.1:4197/ja/lp/ > /dev/null && break || sleep 1; done
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/lp-qa-tools/node_modules/playwright" node scripts/lp_browser_qa.cjs
+          if [ '${{ matrix.browser }}' = 'chromium' ]; then
+            PLAYWRIGHT_MODULE="$RUNNER_TEMP/lp-qa-tools/node_modules/playwright" node scripts/lp_detail_controls_browser_qa.mjs
+            PLAYWRIGHT_MODULE="$RUNNER_TEMP/lp-qa-tools/node_modules/playwright" node scripts/lp_transition_motion_browser_qa.mjs
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:

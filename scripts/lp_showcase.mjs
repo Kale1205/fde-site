@@ -6,6 +6,7 @@ const studies=runInNewContext(read('ja/lp/studies.js')+'\nstudies');
 const cases=studies.map((s,i)=>({...s,num:String(i+1).padStart(2,'0')}));
 const tones=['#d5c1a4','#d5cadf','#d2c2a8','#e7c7c8','#c69870','#c6d3cf','#dc9f65','#d2b79c','#e5cc6f','#d3d0c6'];
 const e=x=>String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+export function showcaseDisplayTools(){return `<div class="lp-display-tools" role="group" aria-label="表示と動き"><button class="lp-display-button" type="button" data-lp-theme aria-label="夜の表示に切り替え" aria-pressed="false"><span data-lp-theme-icon aria-hidden="true">☾</span></button><button class="lp-display-button" type="button" data-lp-motion aria-label="動きを一時停止" aria-pressed="false"><span data-lp-motion-icon aria-hidden="true">Ⅱ</span></button></div>`;}
 function photo(i,extra=''){return `<span class="photo ${extra}" aria-hidden="true" style="--px:${(i%4)*100/3}%;--py:${Math.floor(i/4)*50}%"></span>`}
 const names=['KISSA / 余白','SLOW FORM','棲み継ぐ','atelier saison','NOMAD LEATHER','はじめの会計','KATA METALWORKS','土と旅','あおぞら個別','STILL / STUDIO'];
 const action=['お店をみる','体験レッスン','住まいの相談','教室のご案内','コレクション','開業のご相談','試作のご相談','体験を予約','体験授業','撮影のご相談'];
@@ -23,7 +24,7 @@ return `<a class="skip skip-link" href="#works">作品へスキップ</a>
 <header class="parallel-head">
 <div class="left-tools"><a class="identity" href="${p}index.html"><img src="${p}assets/bakedkale-character.png" width="28" height="28" alt=""><b>Baked Kale</b></a><a href="${p}service.html#schedule">制作の流れ <span aria-hidden="true">↗</span></a><a class="fde-link" href="${p}../index.html">FDE製品 <span aria-hidden="true">↗</span></a></div>
 <nav class="view-switch" aria-label="表示切替"><a href="#archive" aria-current="page">Archive</a><a href="#works">Stories</a></nav>
-<button class="theme" type="button" aria-label="ダーク表示" aria-pressed="false"><span aria-hidden="true">◐</span></button>
+<button class="theme" type="button" data-lp-theme aria-label="夜の表示に切り替え" aria-pressed="false"><span data-lp-theme-icon aria-hidden="true">☾</span></button>
 </header>
 <main id="main-content">
 <section id="archive" aria-labelledby="archive-title"><h1 class="sr-only" id="archive-title">bakedkale library</h1><div id="field" tabindex="0" role="region" aria-label="繰り返し表示する素材。ドラッグまたは矢印キーで移動" aria-describedby="archive-help"><div id="plane"></div></div><p class="sr-only" id="archive-help">矢印キーで移動、プラス・マイナスで60〜100%に拡大・縮小、ホームキーでリセット。素材の一覧を下に用意しています。</p><span class="sr-only" data-lp-reception>${LP_RECEPTION_NOTICE}</span>
@@ -33,13 +34,13 @@ return `<a class="skip skip-link" href="#works">作品へスキップ</a>
 <section id="works" class="stories" aria-labelledby="stories-title"><h1 id="stories-title" class="sr-only">制作例</h1><ol class="prints">${prints}</ol></section>
 </main>
 <template id="material-data">${cases.map((s,i)=>`<article data-title="${e(s.title)}" data-url="${p}cases/${s.num}.html" data-n="${s.num}">${photo(i)}</article>`).join('')}</template>
-<dialog id="inspect" aria-labelledby="inspect-title"><div class="inspect-sheet"><button class="close-inspect" type="button" aria-label="閉じる">×</button><div class="inspect-image"></div><div class="inspect-caption"><h2 id="inspect-title"></h2><a class="inspect-link" href="#works">制作例を見る ↗</a></div></div></dialog>
+<dialog id="inspect" aria-labelledby="inspect-title"><div class="inspect-sheet"><div class="lp-inspect-tools">${showcaseDisplayTools()}<button class="close-inspect" type="button" aria-label="閉じる">×</button></div><div class="inspect-image" data-lp-motion-scope></div><div class="inspect-caption"><h2 id="inspect-title"></h2><a class="inspect-link" href="#works">制作例を見る ↗</a></div></div></dialog>
 <noscript><style>#archive,.view-switch,.theme{display:none}.stories[hidden]{display:block}</style></noscript>
 `;
 }
 export const showcaseCases=cases;
 export function showcaseCaseBody(i){const s=cases[i];
-return `<main id="main-content" class="case-main"><div class="case-meta"><a class="textlink" href="../index.html#works">← 制作例一覧</a></div>
+return `<main id="main-content" class="case-main" data-lp-motion-scope><div class="case-meta"><a class="textlink" href="../index.html#works">← 制作例一覧</a></div>
 <section class="case-hero" style="--mat:${tones[i]}"><div><p class="eyebrow">${e(s.type)} / DESIGN CONCEPT</p><h1>${e(s.line).replaceAll('\n','<br>')}</h1><p>${e(s.en)}</p></div><div class="case-picture">${mock(s,i)}</div></section>
 <section class="case-copy"><div><p class="eyebrow">ABOUT THIS CONCEPT</p><h2>${e(s.title)}</h2><p>${e(s.purpose)}</p></div><div><dl><dt>雰囲気</dt><dd>${e(s.mood)}</dd><dt>ページ構成の例</dt><dd>${e(s.composition)}</dd></dl><p>${e(s.note)}</p></div></section>
 <div class="case-links"><a href="../service.html">サービスと料金 ↗</a></div></main>`;
