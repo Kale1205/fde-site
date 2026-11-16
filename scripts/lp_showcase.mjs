@@ -22,7 +22,7 @@ const p=base||'./';
 const prints=cases.map((s,i)=>`<li class="print-${i}"><a href="${p}cases/${s.num}.html" aria-label="${s.num} ${e(s.title)}の制作例">${collage(i)}<span class="print-caption"><b>${e(s.title)}</b></span></a></li>`).join('');
 return `<a class="skip skip-link" href="#works">作品へスキップ</a>
 <header class="parallel-head">
-<div class="left-tools"><a class="identity" href="${p}index.html"><img src="${p}assets/bakedkale-character.png" width="28" height="28" alt=""><b>Baked Kale</b></a><a href="${p}service.html#schedule">制作の流れ <span aria-hidden="true">↗</span></a><a class="fde-link" href="${p}../index.html">FDE製品 <span aria-hidden="true">↗</span></a></div>
+<div class="left-tools"><a class="identity" href="${p}index.html"><img src="${p}assets/bakedkale-character.png" width="28" height="28" alt=""><b>Baked Kale</b></a><a href="${p}service.html">制作の流れ <span aria-hidden="true">↗</span></a><a class="fde-link" href="${p}../index.html">FDE製品 <span aria-hidden="true">↗</span></a></div>
 <nav class="view-switch" aria-label="表示切替"><a href="#archive" aria-current="page">Archive</a><a href="#works">Stories</a></nav>
 <button class="theme" type="button" data-lp-theme aria-label="夜の表示に切り替え" aria-pressed="false"><span data-lp-theme-icon aria-hidden="true">☾</span></button>
 </header>

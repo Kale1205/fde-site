@@ -52,3 +52,35 @@ test('LP source uses an isolated approved cutout without replacing existing imag
  const png=readFileSync(new URL('../ja/lp/assets/bakedkale-character.png',import.meta.url));assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');assert.equal(hash(png),'fb2c331387feb995604b940e7361ee5d72c61704f8bda323aa875afeff7ab497');
  for(const file of ['assets/bakedkale-character.svg','assets/instagram-bakedkale-profile-20261110.jpg','gallery-ui.js','gallery-ui.css','quiet-pages.css','page-loading.js','page-loading.css','site-chrome.js','site-chrome.css','price-policy.js','content/site-content.json','content/instagram-feed.json','contact-direct.js','contact-config.js','motion-preferences.js'])assert.equal(normalize(read(file)),normalize(previous(file)),file);
 });
+
+test('LP is the only offering and includes flyer and Web/SNS advertising production',()=>{
+ const service=read('ja/lp/service.html'),overview=service.match(/<section class="section production-services"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+ assert(overview);
+ assert.deepEqual([...overview.matchAll(/<h1[^>]*>([^<]+)<\/h1>/g)].map(m=>m[1]),['LP制作']);
+ assert(overview.includes('チラシ、Web・SNS広告用の画像・動画の制作も含みます'));
+ assert(overview.includes('問い合わせ・予約・購入'));
+ assert(!/ポスター|広告・販促クリエイティブ制作|13,200|27,500/.test(service));
+ assert(!/50,000|参考見積|diagnosis\.html/.test(overview));
+ assert(overview.includes('href="#lp-production"'));
+ assert.equal((service.match(/class="price"/g)||[]).length,1);
+ assert(/class="price"><span>LP制作<\/span><strong>50,000<\/strong><span>円（税別）〜<\/span>/.test(service));
+ assert(service.includes('55,000円（税込）〜'));
+ assert.equal((service.match(/href="diagnosis\.html" target="_blank" rel="noopener">LP制作の参考見積をはじめる（12問）/g)||[]).length,2);
+ assert(service.includes('id="schedule"'));
+ for(const file of ['ja/lp/index.html','ja/lp/examples.html','ja/lp/diagnosis.html','ja/lp/service.html',...Array.from({length:10},(_,i)=>'ja/lp/cases/'+String(i+1).padStart(2,'0')+'.html')]){
+  const html=read(file);assert(/href="(?:\.\.?\/)?service\.html"[^>]*>制作の流れ/.test(html),file);assert(!/service\.html#(?:schedule|flow)/.test(html),file);
+ }
+});
+
+test('the diagnostic result distinguishes base price from additional fees and final total',()=>{
+ const js=read('ja/lp/diagnosis.js');
+ const render=runInNewContext(js.slice(js.indexOf('function estimateMarkup('),js.indexOf('function result('))+'\nestimateMarkup');
+ for(const check of [[],['要確認']]){
+  const html=render({check});
+  assert(html.includes('<th>基本制作</th><td>50,000円（税別）〜／55,000円（税込）〜</td>'));
+  assert(html.includes('<th>追加・要確認</th><td>'+(check.length?'内容確認後に算定':'現時点の選択なし')+'</td>'));
+  assert(html.includes('<th>外部サービス費</th><td>未確定・別途確認</td>'));
+  assert(html.includes('<th>支払総額</th><td>正規見積で確定</td>'));
+  assert(html.includes('開始価格で、支払総額ではありません'));
+ }
+});
