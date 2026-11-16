@@ -220,16 +220,10 @@ function startGather(from,to,work){
   const [cx,cy]=center(r);
   return {...r,...(i%2?{x:cx<innerWidth/2?-r.width*1.6:innerWidth+r.width*.6}:{y:cy<innerHeight/2?-r.height*1.6:innerHeight+r.height*.6})};
  };
- // Profiles fit rendered reference measurements, rather than source declarations.
- // Desktop forward approximates the raw samples with delayed fast convergence,
- // a hold at the temporary pose, then seating on a shared 1320 ms clock.
- const profiles={
-  desktopStories:{min:660,range:20,baseDelay:518,delay:120,seatAt:1320,settle:220,flightEase:'cubic-bezier(.22,1,.36,1)',settleEase:'cubic-bezier(.22,1,.36,1)'},
-  desktopArchive:{min:730,range:60,delay:120,settle:0,flightEase:'cubic-bezier(.76,0,.24,1)'},
-  mobileStories:{min:520,range:50,delay:100,settle:0,flightEase:'cubic-bezier(.22,1,.36,1)'},
-  mobileArchive:{min:490,range:30,delay:180,settle:0,flightEase:'cubic-bezier(.65,0,.35,1)'},
- };
- const profile=profiles[(innerWidth>690?'desktop':'mobile')+(work?'Stories':'Archive')];
+ // Both directions use the approved Archive-return tempo at each breakpoint.
+ const profile=innerWidth>690?
+  {min:730,range:60,delay:120,easing:'cubic-bezier(.76,0,.24,1)'}:
+  {min:490,range:30,delay:180,easing:'cubic-bezier(.65,0,.35,1)'};
  // Each piece interpolates its position, scale and angle with one progress.
  // Keep the path straight so interrupted flights can retain their exact pose.
  const noise=(seed,salt)=>{const n=Math.sin(seed*127.1+salt*311.7)*43758.5453;return n-Math.floor(n);};
@@ -243,17 +237,10 @@ function startGather(from,to,work){
  for(const [n,{i,src,dest}] of pairs.entries()){
   const base=src?.r??offscreen(dest.r,i),final=dest?.r??offscreen(src.r,i);
   const [ox,oy]=center(base),[fx,fy]=center(final),record=work?(dest||src):(src||dest);
-  const seed=(i+1)*73+n*17,duration=profile.min+Math.round(noise(seed,1)*profile.range),delay=(profile.baseDelay||0)+Math.round(noise(seed,2)*profile.delay);
-  const settle=profile.settle,options={duration:settle?profile.seatAt-delay+settle:duration,delay,easing:'linear',fill:'both'};
+  const seed=(i+1)*73+n*17,duration=profile.min+Math.round(noise(seed,1)*profile.range),delay=Math.round(noise(seed,2)*profile.delay);
+  const options={duration,delay,easing:'linear',fill:'both'};
   finishAfter=Math.max(finishAfter,options.duration+delay);
-  // Apply the measured correction to this collage's alternating paper order.
-  const sign=n%2?1:-1;
-  const spatialFrames=(first,last,temporary=last)=>settle?[
-   {...first,offset:0,easing:profile.flightEase},
-   {...temporary,offset:duration/options.duration,easing:'linear'},
-   {...temporary,offset:(profile.seatAt-delay)/options.duration,easing:profile.settleEase},
-   {...last,offset:1},
-  ]:[{...first,easing:profile.flightEase},last];
+  const spatialFrames=(first,last)=>[{...first,easing:profile.easing},last];
   if(dest){
    dest.element.classList.add('is-in-flight');task.targets.add(dest.element);
    const card=dest.element.closest('.prints li');
@@ -271,7 +258,6 @@ function startGather(from,to,work){
   plans.push([print,spatialFrames(
    {transform:`translate3d(${ox-fx}px,${oy-fy}px,0) rotate(${base.angle}deg) scale(${base.width/final.width},${base.height/final.height})`},
    {transform:`translate3d(0,0,0) rotate(${final.angle}deg) scale(1,1)`},
-   {transform:`translate3d(${sign*16}px,-14px,0) rotate(${final.angle+sign*2}deg) scale(1.025,1.025)`},
   ),options,()=>{
    if(gather!==task)return;
    print.dataset.landed='';print.style.visibility='hidden';

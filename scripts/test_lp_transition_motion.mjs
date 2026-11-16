@@ -59,81 +59,29 @@ function fixture(){
 
 const transformParts=transform=>[...transform.matchAll(/[-+]?(?:\d*\.)?\d+(?:e[-+]?\d+)?/gi)].map(match=>Number(match[0])).slice(1);
 
-test('desktop forward uses delayed fast convergence, holds, then seats on the fitted common clock',async()=>{
- const f=fixture();f.context.startGather(f.from,f.to,true);const prints=f.prints();
- assert.equal(prints.length,3);assert.equal(new Set(prints.map(animation=>animation.options.duration)).size,3);assert.equal(new Set(prints.map(animation=>animation.options.delay)).size,3);
- for(const animation of prints){
-  assert.equal(animation.keyframes.length,4);assert(animation.options.delay>=518&&animation.options.delay<=638);
-  assert.equal(animation.options.duration+animation.options.delay,1540);
-  const flight=animation.keyframes[1].offset*animation.options.duration;
-  assert(flight>=660&&flight<=680);assert(animation.options.delay+flight<=1318);
-  assert(animation.keyframes.every(frame=>!('opacity' in frame)),'paper remains opaque');
-  assert.equal(animation.options.easing,'linear','each segment owns its curve');
-  assert(animation.keyframes.every(frame=>!/(?:skew|perspective|rotate[XYZ])\(/.test(frame.transform)),'the measured path has no extra wobble');
-  const parts=animation.keyframes.map(frame=>transformParts(frame.transform));
-  assert(parts.flat().every(Number.isFinite));assert.equal(parts.at(-1)[0],0);assert.equal(parts.at(-1)[1],0);assert.equal(parts.at(-1).at(-1),1);assert.equal(parts.at(-1).at(-2),1);
-  const temporary=parts[1],last=parts.at(-1);
-  assert.equal(Math.abs(temporary[0]),16);assert.equal(temporary[1],-14);assert.equal(temporary.at(-1),1.025);assert.equal(temporary.at(-2),1.025);
-  assert.equal(temporary[3]-last[3],Math.sign(temporary[0])*2);
-  assert.equal(animation.keyframes[1].transform,animation.keyframes[2].transform,'temporary position stays still during the hold');
-  assert(Math.abs(animation.options.delay+animation.keyframes[2].offset*animation.options.duration-1320)<1e-9);
-  assert(Math.abs((1-animation.keyframes[2].offset)*animation.options.duration-220)<1e-9);
-  assert.equal(animation.keyframes[0].easing,'cubic-bezier(.22,1,.36,1)');assert.equal(animation.keyframes[1].easing,'linear');assert.equal(animation.keyframes[2].easing,'cubic-bezier(.22,1,.36,1)');
+for(const width of [400,690,691,1440])for(const work of [true,false])test(`${width}px ${work?'forward':'reverse'} uses the same direct Archive-return profile`,async()=>{
+ const f=fixture();f.context.innerWidth=width;f.context.startGather(work?f.from:f.to,work?f.to:f.from,work);
+ const desktop=width>690,min=desktop?730:490,max=desktop?790:520,delay=desktop?120:180,easing=desktop?'cubic-bezier(.76,0,.24,1)':'cubic-bezier(.65,0,.35,1)';
+ for(const animation of f.prints()){
+  assert.equal(animation.keyframes.length,2,'each paper moves directly to its final position');
+  assert(animation.options.duration>=min&&animation.options.duration<=max);assert(animation.options.delay>=0&&animation.options.delay<=delay);
+  assert.equal(animation.options.easing,'linear');assert.equal(animation.keyframes[0].easing,easing);
+  assert(animation.keyframes.every(frame=>!('opacity' in frame)&&!('offset' in frame)),'there is no wait, temporary pose or correction stage');
+  const last=transformParts(animation.keyframes[1].transform);assert(last.every(Number.isFinite));
+  assert.equal(last[0],0);assert.equal(last[1],0);assert.equal(last[4],1);assert.equal(last[5],1);
   const inner=f.animations.find(candidate=>candidate.node===animation.node.firstElementChild.firstElementChild);
-  assert(inner);assert.equal(inner.options,animation.options,'inner and outer image geometry share timing and easing');
-  assert.deepEqual(inner.keyframes.map(frame=>[frame.offset,frame.easing]),animation.keyframes.map(frame=>[frame.offset,frame.easing]));
-  assert.equal(inner.keyframes[1].transform,inner.keyframes[3].transform,'photo crop holds its destination through the correction');
+  assert(inner);assert.equal(inner.options,animation.options);assert.equal(inner.keyframes[0].easing,easing);assert.equal(inner.keyframes.length,2);
  }
- assert(f.context.gather.layer.inert);assert(f.to.every(record=>record.element.classes.has('is-in-flight')));
- assert.equal(f.timers.size,1);f.context.endGather();await f.flush();
+ assert(f.context.gather.layer.inert);f.context.endGather();await f.flush();
 });
 
-test('reverse papers use one straight interpolation without added endpoint rotation or correction',async()=>{
- const f=fixture();f.context.startGather(f.to,f.from,false);
- for(const animation of f.prints()){
-  assert.equal(animation.keyframes.length,2);assert(animation.options.duration>=730&&animation.options.duration<=790);assert(animation.options.delay>=0&&animation.options.delay<=120);
-  assert.equal(animation.keyframes[0].easing,'cubic-bezier(.76,0,.24,1)');assert(animation.keyframes.every(frame=>!('opacity' in frame)));
-  const last=transformParts(animation.keyframes[1].transform);assert.equal(last[0],0);assert.equal(last[1],0);assert.equal(last[4],1);assert.equal(last[5],1);
-  const top=parseFloat(animation.node.style.top),left=parseFloat(animation.node.style.left);
-  if(top>=0&&top<f.context.innerHeight&&left>=0&&left<f.context.innerWidth)assert.equal(last[3],0);
-  else assert(f.to.some(record=>record.i===animation.node.dataset.material&&record.r.angle===last[3]),'outgoing paper retains its captured angle');
- }
- f.context.endGather();await f.flush();
-});
-
-test('desktop convergence curve reproduces the supplied raw reference samples at their fitted starts',async()=>{
- const f=fixture();f.context.startGather(f.from,f.to,true);
- const [x1,y1,x2,y2]=f.prints()[0].keyframes[0].easing.match(/[.\d]+/g).map(Number);
- const cubic=(a,b,t)=>3*(1-t)**2*t*a+3*(1-t)*t*t*b+t**3;
- const progress=fraction=>{let lo=0,hi=1;for(let i=0;i<50;i++){const middle=(lo+hi)/2;if(cubic(x1,x2,middle)<fraction)lo=middle;else hi=middle;}return cubic(y1,y2,(lo+hi)/2);};
- for(const [start,duration,points] of [
-  [517.50,664.15,[[546,.1844],[590,.4255],[648,.683],[720,.8401],[825,.933],[879,.956],[1013,.990],[1280,1]]],
-  [582.67,680.04,[[648,.383],[720,.691],[825,.873],[1280,.999]]],
- ]){
-  const rmse=Math.sqrt(points.reduce((sum,[time,expected])=>sum+(progress(Math.min(1,Math.max(0,(time-start)/duration)))-expected)**2,0)/points.length);
-  assert(rmse<.012,String(rmse));
- }
- f.context.endGather();await f.flush();
-});
-
-test('mobile forward papers converge directly without the desktop temporary position',async()=>{
- const f=fixture();f.context.innerWidth=400;f.context.startGather(f.from,f.to,true);
- assert(f.prints().every(animation=>animation.keyframes.length===2));
- for(const animation of f.prints()){
-  assert(animation.options.duration>=520&&animation.options.duration<=570);assert(animation.options.delay>=0&&animation.options.delay<=100);
-  assert.equal(animation.keyframes[0].easing,'cubic-bezier(.22,1,.36,1)');
-  const last=transformParts(animation.keyframes[1].transform);assert.equal(last[0],0);assert.equal(last[1],0);assert.equal(last[4],1);assert.equal(last[5],1);
- }
- f.context.endGather();await f.flush();
-});
-
-test('mobile reverse papers use the separately fitted shorter profile and start spread',async()=>{
- const f=fixture();f.context.innerWidth=400;f.context.startGather(f.to,f.from,false);
- for(const animation of f.prints()){
-  assert.equal(animation.keyframes.length,2);assert(animation.options.duration>=490&&animation.options.duration<=520);assert(animation.options.delay>=0&&animation.options.delay<=180);
-  assert.equal(animation.keyframes[0].easing,'cubic-bezier(.65,0,.35,1)');
- }
- f.context.endGather();await f.flush();
+for(const width of [400,1440])test(`${width}px direction alone does not change any paper's duration, delay or easing`,async()=>{
+ const forward=fixture(),reverse=fixture();forward.context.innerWidth=reverse.context.innerWidth=width;
+ forward.context.startGather(forward.from,forward.to,true);reverse.context.startGather(reverse.from,reverse.to,false);
+ const timing=f=>f.prints().map(animation=>[animation.options.duration,animation.options.delay,animation.keyframes[0].easing]);
+ assert.deepEqual(timing(forward),timing(reverse));
+ assert(new Set(timing(forward).map(value=>value[0])).size>1);assert(new Set(timing(forward).map(value=>value[1])).size>1);
+ forward.context.endGather();reverse.context.endGather();await forward.flush();await reverse.flush();
 });
 
 test('one landed paper reveals its own target while other papers keep moving',async()=>{
