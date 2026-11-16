@@ -38,8 +38,8 @@ module.exports=async function verifyGallery(browser,base,out,engine='chromium'){
    const paths=await page.locator('.material-print[data-slot="'+slot+'"] .photo').evaluateAll(nodes=>nodes.map(n=>n.style.getPropertyValue('--case-photo')));
    assert(paths.length>1,'repeated sheet clones must exist');assert(paths.every(path=>path.includes(expected)),slot+' must preserve its own media identity across repeated sheets');
   }
-  await page.locator('.material-access button[data-slot="03"]').focus();
-  await page.keyboard.press('Enter');await page.locator('#inspect[open]').waitFor();
+  await page.waitForFunction(()=>!document.documentElement.classList.contains('fde-loading'));
+  await page.locator('.material-access button[data-slot="03"]').press('Enter');await page.locator('#inspect[open]').waitFor();
   assert.equal(await page.locator('#inspect video[controls],#inspect .case-media').count(),0);
   assert.match(await page.locator('#inspect .photo').evaluate(node=>node.style.getPropertyValue('--case-photo')),/archive\/03/);
   await page.locator('.close-inspect').click();
