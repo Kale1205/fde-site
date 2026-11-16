@@ -9,6 +9,10 @@
 #field.is-drag{cursor:grabbing}
 #plane{position:absolute;left:0;top:0;will-change:transform;transform-origin:0 0;pointer-events:none}.tile{position:absolute;pointer-events:none}.material-print{position:absolute;pointer-events:auto;display:block;padding:0;text-align:left;border:0;background:transparent;color:var(--ink);cursor:inherit}
 .material-print .photo{aspect-ratio:var(--ratio);box-shadow:0 1px 5px #141f1624}.material-print .photo:before{width:var(--detail,100%)}
+/* Archive paper is a real box, so its white edges travel with the photograph. */
+.parallel-page .material-print{padding:4px 4px 12px;background:#fff;border-radius:0;appearance:none;box-shadow:0 1px 5px #141f1624}
+.parallel-page .material-print .photo{box-shadow:none}
+@media(max-width:690px){.parallel-page .material-print{padding:3px 3px 10px}}
 .field-tools{position:absolute;z-index:2;bottom:max(16px,env(safe-area-inset-bottom));font:11px/1.1 system-ui,sans-serif;background:var(--glass);color:var(--soft);border-radius:4px}
 .field-tools{right:22px;display:flex;align-items:center;gap:3px;padding:3px;color:var(--ink)}.field-tools button,.field-tools output{min-width:28px;text-align:center}.field-tools button{height:31px;border:0;background:none;cursor:pointer;font-size:15px}.field-tools .reset{margin-left:5px;border-left:1px solid var(--line);width:33px}.field-tools output{font:10px ui-monospace,monospace}
 .material-access{position:absolute;z-index:3;left:16px;bottom:80px;background:var(--canvas);padding:8px}.material-access:not(:focus-within){width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0}.material-access button{display:inline-block;background:transparent;border:1px solid var(--line);padding:6px}
