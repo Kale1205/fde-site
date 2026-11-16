@@ -11,7 +11,7 @@ const browser=await chromium.launch(process.env.CHROMIUM_EXECUTABLE?{executableP
 // Independent fitted-reference baseline. These are rendered-DOM curve fits;
 // desktop forward is an estimate, rather than a recovered source declaration.
 const baseline=(width,work)=>width>690?(work?
- {duration:[1520,1700],delay:120,curves:[[.76,0,.24,1],[.22,1,.36,1]],settle:220,observed:[1500,1850],estimated:true}:
+ {duration:[902,1022],minDelay:518,delay:638,curves:[[.22,1,.36,1],[0,0,1,1],[.22,1,.36,1]],seatAt:1320,settle:220,observed:[1500,1850],estimated:true}:
  {duration:[730,790],delay:120,curves:[[.76,0,.24,1]],observed:[1200,1200]}):(work?
  {duration:[520,570],delay:100,curves:[[.22,1,.36,1]],observed:[950,1100]}:
  {duration:[490,520],delay:180,curves:[[.65,0,.35,1]],observed:[780,780]});
@@ -20,6 +20,10 @@ function eased([x1,y1,x2,y2],fraction){
  for(let i=0;i<50;i++){const middle=(lo+hi)/2;if(cubic(x1,x2,middle)<fraction)lo=middle;else hi=middle;}
  return cubic(y1,y2,(lo+hi)/2);
 }
+const rawForward=[
+ {id:'reference-paper-0',points:[[546,.1844],[590,.4255],[648,.683],[720,.8401],[825,.933],[879,.956],[1013,.990],[1280,1]]},
+ {id:'reference-paper-1',points:[[648,.383],[720,.691],[825,.873],[1280,.999]]},
+];
 try{
  for(const viewport of [{width:1440,height:900},{width:400,height:655}]){
   const context=await browser.newContext({viewport,reducedMotion:'no-preference'}),page=await context.newPage();
@@ -29,7 +33,7 @@ try{
   for(const work of [true,false]){
    const selector='.view-switch a[href="'+(work?'#works':'#archive')+'"]';
    await page.locator(selector).click();await page.locator('.gather-layer').waitFor();
-   const geometry=await page.evaluate(work=>{
+   const geometry=await page.evaluate(({work,rawReference})=>{
     const layer=document.querySelector('.gather-layer'),all=layer.getAnimations({subtree:true});all.forEach(animation=>animation.pause());
     const read=transform=>{const m=new DOMMatrixReadOnly(transform);return {x:m.e,y:m.f,sx:Math.hypot(m.a,m.b),sy:Math.hypot(m.c,m.d),angle:Math.atan2(m.b,m.a)*180/Math.PI};};
     const props=['x','y','sx','sy','angle'],pieces=[];let maxPerpendicular=0,maxProgressMismatch=0,minProgress=1,maxProgress=0;
@@ -54,22 +58,31 @@ try{
       }
       segments.push({duration:timing.duration*(frames[i+1].computedOffset-frames[i].computedOffset),easing:frames[i].easing,from:a,to:b,samples});
      }
-     pieces.push({material:node.dataset.material,duration:timing.duration,delay:timing.delay,segments,photoSameTimeline:timing.duration===photoTiming.duration&&timing.delay===photoTiming.delay&&frames.every((frame,i)=>frame.computedOffset===photoFrames[i].computedOffset&&frame.easing===photoFrames[i].easing)});
+     const rawChecks=rawReference.map(reference=>{
+      const start=read(frames[0].transform),temporary=read(frames[1].transform),prop=props.filter(prop=>Math.abs(temporary[prop]-start[prop])>1e-4).sort((a,b)=>Math.abs(temporary[b]-start[b])-Math.abs(temporary[a]-start[a]))[0];
+      const samples=reference.points.map(([ms,expected])=>{animation.currentTime=ms;const actual=read(getComputedStyle(node).transform),progress=(actual[prop]-start[prop])/(temporary[prop]-start[prop]);return {ms,expected,progress,error:progress-expected};});
+      return {id:reference.id,samples,rmse:Math.sqrt(samples.reduce((sum,sample)=>sum+sample.error**2,0)/samples.length)};
+     });
+     pieces.push({material:node.dataset.material,duration:timing.duration,delay:timing.delay,segments,rawChecks,photoSameTimeline:timing.duration===photoTiming.duration&&timing.delay===photoTiming.delay&&frames.every((frame,i)=>frame.computedOffset===photoFrames[i].computedOffset&&frame.easing===photoFrames[i].easing)});
     }
     // Restore every piece to the start and let real completion callbacks run.
     all.forEach(animation=>{animation.currentTime=0;animation.play();});
     return {work,layerInert:layer.inert,pieces,maxPerpendicular,maxProgressMismatch,minProgress,maxProgress};
-   },work);
+   },{work,rawReference:work&&viewport.width>690?rawForward:[]});
    assert(geometry.layerInert);assert(geometry.maxPerpendicular<.02,JSON.stringify({viewport,work,perpendicular:geometry.maxPerpendicular}));
    assert(geometry.maxProgressMismatch<.002,JSON.stringify({viewport,work,mismatch:geometry.maxProgressMismatch}));
    assert(geometry.minProgress>=-.002&&geometry.maxProgress<=1.002,'a segment must converge without overshooting its endpoint');
-   const expectedSegments=work&&viewport.width>690?2:1;
+   const expectedSegments=work&&viewport.width>690?3:1;
    const expected=baseline(viewport.width,work);
    assert(geometry.pieces.every(piece=>piece.photoSameTimeline&&piece.segments.length===expectedSegments&&piece.segments.every(segment=>segment.samples.every(sample=>sample.opacity==='1'))));
-   if(expectedSegments===2)assert(geometry.pieces.every(piece=>Math.abs(piece.segments[1].duration-expected.settle)<1e-6));
-   assert(geometry.pieces.every(piece=>piece.duration>=expected.duration[0]&&piece.duration<=expected.duration[1]&&piece.delay>=0&&piece.delay<=expected.delay));
+   if(expectedSegments===3)assert(geometry.pieces.every(piece=>Math.abs(piece.segments[2].duration-expected.settle)<1e-6&&Math.abs(piece.delay+piece.segments[0].duration+piece.segments[1].duration-expected.seatAt)<1e-6));
+   assert(geometry.pieces.every(piece=>piece.duration>=expected.duration[0]&&piece.duration<=expected.duration[1]&&piece.delay>=(expected.minDelay||0)&&piece.delay<=expected.delay));
    geometry.maxFittedCurveError=Math.max(...geometry.pieces.flatMap(piece=>piece.segments.flatMap((segment,i)=>segment.samples.flatMap(sample=>sample.progress.concat(sample.innerProgress).map(progress=>Math.abs(progress-eased(expected.curves[i],sample.fraction)))))));
    assert(geometry.maxFittedCurveError<.002,JSON.stringify({viewport,work,curveError:geometry.maxFittedCurveError}));
+   if(expectedSegments===3){
+    geometry.rawReferenceMatches=rawForward.map((reference,i)=>{const piece=geometry.pieces.reduce((best,piece)=>piece.rawChecks[i].rmse<best.rawChecks[i].rmse?piece:best);return {id:reference.id,delay:piece.delay,flight:piece.segments[0].duration,...piece.rawChecks[i]};});
+    assert(geometry.rawReferenceMatches.every(match=>match.rmse<.035),JSON.stringify(geometry.rawReferenceMatches));
+   }
    await page.locator('.gather-layer').waitFor({state:'detached'});
    assert.equal(await page.locator('.is-in-flight,.is-assembling').count(),0);
    results.push({viewport,geometry,expected});console.log('PASS',viewport.width,work?'forward':'reverse',JSON.stringify({pieces:geometry.pieces.length,maxPerpendicular:geometry.maxPerpendicular,maxProgressMismatch:geometry.maxProgressMismatch,maxFittedCurveError:geometry.maxFittedCurveError}));

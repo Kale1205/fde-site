@@ -220,11 +220,11 @@ function startGather(from,to,work){
   const [cx,cy]=center(r);
   return {...r,...(i%2?{x:cx<innerWidth/2?-r.width*1.6:innerWidth+r.width*.6}:{y:cy<innerHeight/2?-r.height*1.6:innerHeight+r.height*.6})};
  };
- // Per-paper profiles fitted from rendered reference measurements. Desktop
- // forward flight is an estimate within the observed 1.5–1.85 s whole motion;
- // its short correction and the other profiles follow the measured phases.
+ // Profiles fit rendered reference measurements, rather than source declarations.
+ // Desktop forward approximates the raw samples with delayed fast convergence,
+ // a hold at the temporary pose, then seating on a shared 1320 ms clock.
  const profiles={
-  desktopStories:{min:1300,range:180,delay:120,settle:220,flightEase:'cubic-bezier(.76,0,.24,1)',settleEase:'cubic-bezier(.22,1,.36,1)'},
+  desktopStories:{min:660,range:20,baseDelay:518,delay:120,seatAt:1320,settle:220,flightEase:'cubic-bezier(.22,1,.36,1)',settleEase:'cubic-bezier(.22,1,.36,1)'},
   desktopArchive:{min:730,range:60,delay:120,settle:0,flightEase:'cubic-bezier(.76,0,.24,1)'},
   mobileStories:{min:520,range:50,delay:100,settle:0,flightEase:'cubic-bezier(.22,1,.36,1)'},
   mobileArchive:{min:490,range:30,delay:180,settle:0,flightEase:'cubic-bezier(.65,0,.35,1)'},
@@ -243,14 +243,15 @@ function startGather(from,to,work){
  for(const [n,{i,src,dest}] of pairs.entries()){
   const base=src?.r??offscreen(dest.r,i),final=dest?.r??offscreen(src.r,i);
   const [ox,oy]=center(base),[fx,fy]=center(final),record=work?(dest||src):(src||dest);
-  const seed=(i+1)*73+n*17,duration=profile.min+Math.round(noise(seed,1)*profile.range),delay=Math.round(noise(seed,2)*profile.delay);
-  const settle=profile.settle,options={duration:duration+settle,delay,easing:'linear',fill:'both'};
+  const seed=(i+1)*73+n*17,duration=profile.min+Math.round(noise(seed,1)*profile.range),delay=(profile.baseDelay||0)+Math.round(noise(seed,2)*profile.delay);
+  const settle=profile.settle,options={duration:settle?profile.seatAt-delay+settle:duration,delay,easing:'linear',fill:'both'};
   finishAfter=Math.max(finishAfter,options.duration+delay);
   // Apply the measured correction to this collage's alternating paper order.
   const sign=n%2?1:-1;
   const spatialFrames=(first,last,temporary=last)=>settle?[
    {...first,offset:0,easing:profile.flightEase},
-   {...temporary,offset:duration/options.duration,easing:profile.settleEase},
+   {...temporary,offset:duration/options.duration,easing:'linear'},
+   {...temporary,offset:(profile.seatAt-delay)/options.duration,easing:profile.settleEase},
    {...last,offset:1},
   ]:[{...first,easing:profile.flightEase},last];
   if(dest){
