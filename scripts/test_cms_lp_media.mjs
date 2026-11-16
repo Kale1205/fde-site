@@ -67,8 +67,8 @@ test('publisher enforces reviewed fingerprint, main conflict and draft PR-only t
  assert.match(writes[3][1].ref,/^refs\/heads\/cms\/lp\//);
  assert.equal(writes[4][1].draft,true);
 });
-test('video-only entry uses the poster and reorders the visible Stories without changing case identifiers',async()=>{
- const {galleryMedia,originalStoryIndex,mediaVideo}=await import('../ja/lp/media-runtime.js');
+test('legacy video-only entry uses the poster and reorders Stories without promoting old clips',async()=>{
+ const {galleryMedia,originalStoryIndex,archiveVideo}=await import('../ja/lp/media-runtime.js');
  const image=()=>({classList:{add(v){this.value=v;}},style:{setProperty(k,v){this[k]=v;}}});
  const cases=LP_IDS.map(id=>({dataset:{n:id,title:'old'},photo:image(),querySelector(){return this.photo;}}));
  const rows=LP_IDS.map((id,index)=>{
@@ -85,15 +85,18 @@ test('video-only entry uses the poster and reorders the visible Stories without 
  assert.equal(list.children[1].link.href,'cases/01.html');
  assert.equal(rows[0].label.textContent,'new');
  assert.match(rows[0].photo.style['--case-photo'],/\/01\/a+\.jpg/);
- assert.equal(cases[0].dataset.video,video);
+ assert.equal(cases[0].dataset.video,undefined);
  const prev=globalThis.document;
  try{
-  globalThis.document={createElement:()=>({paused:true,setAttribute(k,v){this[k]=v;}})};
-  const player=mediaVideo(video,photo,'poster');
+  globalThis.document={createElement:()=>({paused:true,setAttribute(k,v){(this.attributes??={})[k]=v;},addEventListener(){}})};
+  const player=archiveVideo(video,photo);
   assert.equal(player.preload,'none');
   assert.equal(player.paused,true);
   assert.equal(player.autoplay,undefined);
-  assert.equal(player.controls,true);
+  assert.equal(player.controls,undefined);
+  assert.equal(player.loop,true);
+  assert.equal(player.muted,true);
+  assert.equal(player.playsInline,true);
   assert.match(player.poster,/\.jpg$/);
  }finally{globalThis.document=prev;}
 });

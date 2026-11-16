@@ -1,5 +1,5 @@
 import {CmsError,base64,sha256} from './cms-news-workflow.js';
-import {LP_MANIFEST,LP_IDS,LIMITS,validateMediaManifest} from './ja/lp/media-schema.js';
+import {LP_MANIFEST,LP_IDS,LP_ARCHIVE_SLOTS,LP_ARCHIVE_CASES,LIMITS,LP_STORY_DETAIL_LIMITS,archiveEntry,validateMediaManifest} from './ja/lp/media-schema.js';
 
 export const LP_MAX_IMAGE=4*1024*1024, LP_MAX_VIDEO=12*1024*1024;
 const isSha=value=>/^[a-f0-9]{40}$/.test(value||'');
@@ -45,25 +45,75 @@ function probeAsset(blob,kind){
 export async function prepareLpDraft(draft,base,{inspect=inspectLpAsset}={}){
  validateMediaManifest(base);
  const next=structuredClone(base),assets=[];
- if(!LP_IDS.includes(draft.id))throw Error('LP_MANIFEST');
- const entry={...next.cases[draft.id]};
+ const scope=draft.scope||'legacy',archive=scope==='archive',stories=scope==='stories';
+ if(!LP_IDS.includes(draft.id)||!['legacy','stories','archive'].includes(scope)||archive&&!LP_ARCHIVE_SLOTS.includes(draft.slot))throw Error('LP_MANIFEST');
+ const catalog=archive?'archive':'cases',id=archive?draft.slot:draft.id;
+ const current=next[catalog]?.[id];
+ const defaults=archive?archiveEntry(base,id):null;
+ const inherit=archive&&!current&&draft.id===defaults.caseId;
+ const entry={...(inherit?defaults:current)};
+ if(archive){
+  const reassign=entry.caseId&&entry.caseId!==draft.id;
+  entry.caseId=draft.id;
+  if(reassign){
+   if(entry.photo?.startsWith('assets/cases/'))delete entry.photo;
+   // The slot's MP4 is independent of its linked case. If its poster was
+   // referenced from the previous case, keep the manifest valid by requiring
+   // a new matching poster (or removal) during the explicit edit.
+   if(entry.poster?.startsWith('assets/cases/'))delete entry.poster;
+  }
+ }
  for(const field of Object.keys(LIMITS)){
+  if(archive&&field==='description')continue;
+  // A scoped edit can update only the fields provided by that editor.
+  if(scope!=='legacy'&&!Object.hasOwn(draft,field))continue;
   const value=String(draft[field]||'').trim();
   if(value.length>LIMITS[field])throw Error('LP_MANIFEST');
   if(value)entry[field]=value;else delete entry[field];
  }
  if(draft.removePhoto)delete entry.photo;
- if(draft.removeVideo){delete entry.video;delete entry.poster;}
- for(const kind of ['photo','poster','video'])if(draft.files?.[kind]){
+ if(!stories&&draft.removeVideo){delete entry.video;delete entry.poster;}
+ const assetKinds=stories?['photo']:['photo','poster','video'];
+ for(const kind of assetKinds)if(draft.files?.[kind]){
   const result=await inspect(draft.files[kind],kind);
-  const path='assets/cases/'+draft.id+'/'+result.hash+'.'+result.ext;
+  const path='assets/'+catalog+'/'+id+'/'+result.hash+'.'+result.ext;
   entry[kind]=path;
   if(!assets.some(a=>a.path===path))assets.push({path,bytes:result.bytes});
  }
  if(!entry.video)delete entry.poster;
- if(Object.keys(entry).length)next.cases[draft.id]=entry;else delete next.cases[draft.id];
- const order=Array.isArray(draft.order)?draft.order:LP_IDS;
- if(same(order,LP_IDS))delete next.order;else next.order=[...order];
+ if(stories&&Object.hasOwn(draft,'story')){
+  const story=draft.story===null?null:structuredClone(draft.story);
+  if(Array.isArray(story?.blocks))for(const block of story.blocks){
+   if(!block||typeof block!=='object')continue;
+   for(const key of ['heading','text','alt','caption'])if(typeof block[key]==='string'){
+    block[key]=block[key].trim();
+    if(key!=='text'&&!block[key])delete block[key];
+   }
+  }
+  if(story?.detail&&typeof story.detail==='object'&&!Array.isArray(story.detail)){
+   for(const [key,value]of Object.entries(story.detail))if(Object.hasOwn(LP_STORY_DETAIL_LIMITS,key)&&typeof value==='string'){
+    if(value.trim())story.detail[key]=value.trim();else delete story.detail[key];
+   }
+   if(Object.keys(story.detail).length===0)delete story.detail;
+  }
+  if(story===null||story&&typeof story==='object'&&!Array.isArray(story)&&Object.keys(story).length===0)delete entry.story;
+  else entry.story=story;
+ }
+ if(archive){
+  // A newly saved empty position with its default assignment must not
+  // silently discard an inherited still unless removal was chosen.
+  const isDefault=entry.caseId===LP_ARCHIVE_CASES[id]&&Object.keys(entry).length===1;
+  const unchangedFallback=inherit&&same(entry,defaults);
+  if(current||draft.removePhoto||!unchangedFallback&&!isDefault){
+   next.archive??={};next.archive[id]=entry;
+  }
+ }else{
+  if(Object.keys(entry).length)next.cases[id]=entry;else delete next.cases[id];
+  if(scope==='legacy'||Array.isArray(draft.order)){
+   const order=Array.isArray(draft.order)?draft.order:LP_IDS;
+   if(same(order,LP_IDS))delete next.order;else next.order=[...order];
+  }
+ }
  validateMediaManifest(next);
  if(same(next,base))throw Error('LP_NO_CHANGE');
  const contents=JSON.stringify(next,null,2)+'\n';
@@ -115,7 +165,7 @@ export class LpPublisher{
   if(!isSha(original.tree?.sha))throw Error('LP_MANIFEST');
   const updated=await post('/git/trees',{base_tree:original.tree.sha,tree});
   if(!isSha(updated.sha))throw Error('LP_MANIFEST');
-  const commit=await post('/git/commits',{message:'CMS: LP制作例の更新依頼 ('+draft.id+')',tree:updated.sha,parents:[latest.sha],author:identity,committer:identity});
+  const commit=await post('/git/commits',{message:'CMS: LP制作例の更新依頼 ('+(draft.scope==='archive'?'Archive '+draft.slot:draft.id)+')',tree:updated.sha,parents:[latest.sha],author:identity,committer:identity});
   if(!isSha(commit.sha))throw Error('LP_MANIFEST');
   await post('/git/refs',{ref:'refs/heads/'+branch,sha:commit.sha});
   try{

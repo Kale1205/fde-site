@@ -9,103 +9,76 @@ const sha='a'.repeat(40),gitBlob=createHash('sha1').update('blob '+blank.length+
 module.exports=async function verifyLpCms(browser,base,out,engine){
  const ctx=await browser.newContext({viewport:{width:390,height:844},hasTouch:true}),page=await ctx.newPage();
  try{
- const api=[],writes=[],pageErrors=[];
- page.on('pageerror',error=>pageErrors.push(error.message));
- const cors={'access-control-allow-origin':'*','access-control-allow-headers':'accept,authorization,content-type,x-github-api-version','access-control-allow-methods':'GET,POST,OPTIONS'};
- const reply=(r,json,status=200)=>r.fulfill({status,json,headers:cors});
- await page.route('https://api.github.com/**',async r=>{
-  const req=r.request(),p=new URL(req.url()).pathname.replace('/repos/Kale1205/fde-site','');
-  api.push([req.method(),p]);
-  if(req.method()==='OPTIONS')return r.fulfill({status:204,headers:cors});
-  if(req.method()==='POST'){
-   const data=req.postDataJSON();writes.push([p,data]);
-   return reply(r,p==='/pulls'?{number:1234}:{sha});
-  }
-  if(p==='/user')return reply(r,{login:'fixture',id:123});
-  if(p==='/git/ref/heads/main')return reply(r,{object:{sha}});
-  if(p==='/contents/ja/lp/media-manifest.json')return reply(r,{sha:gitBlob,type:'file',encoding:'base64',content:blank.toString('base64')});
-  if(p==='/contents/content/site-content.json')return reply(r,{sha,type:'file',encoding:'base64',content:fs.readFileSync('content/site-content.json').toString('base64')});
-  if(p==='/pulls')return reply(r,[]);
-  if(p.startsWith('/git/commits/'))return reply(r,{tree:{sha}});
-  return reply(r,{message:'Not Found'},404);
- });
- const open=()=>page.getByRole('button',{name:'LP制作例',exact:true}).click();
- const d=()=>page.locator('#cmsLpEditor');
- const status=text=>d().getByRole('status').filter({hasText:text}).waitFor({timeout:15000});
- const title=d().getByLabel('名前（空欄なら既定の名前）');
- const preview=d().getByRole('button',{name:'変更をプレビュー'});
- await page.goto(base+'cms-admin.html');await open();await status('公開中の情報を読み込みました');
- assert.equal(api.length,0,'opening disconnected editor must not access GitHub');
- await title.fill('合成素材を使った検証用LP');
- await d().getByLabel('紹介文（空欄なら既定の説明）').fill('紹介文のテスト');
- await d().getByLabel('写真・動画の説明（読み上げ用）').fill('単色のテスト素材');
- await d().getByLabel('Storiesの掲載順').selectOption('02');
- const poster=d().getByLabel('動画の表紙画像（動画がある場合は必須）');
- const video=d().getByLabel('動画（MP4、30秒・12MB以下、推奨H.264）');
- // Browser canPlayType can claim H.264 on CI hosts without a functioning decoder.
- const hasH264=await page.evaluate(encoded=>new Promise(resolve=>{
-  const v=document.createElement('video');
-  const uri=URL.createObjectURL(new Blob([Uint8Array.from(atob(encoded),c=>c.charCodeAt(0))],{type:'video/mp4'}));
-  const finish=ok=>{clearTimeout(timer);v.onloadeddata=v.onerror=null;v.removeAttribute('src');v.load();URL.revokeObjectURL(uri);resolve(ok);};
-  const timer=setTimeout(()=>finish(false),6000);
-  v.preload='auto';v.muted=true;v.onloadeddata=()=>finish(v.videoWidth===160);v.onerror=()=>finish(false);v.src=uri;
- }),mp4.toString('base64'));
- if(hasH264){
-  await poster.setInputFiles({name:'synthetic.jpg',mimeType:'image/jpeg',buffer:jpeg});
-  await status('ファイルを選択しました');
-  await video.setInputFiles({name:'synthetic.mp4',mimeType:'video/mp4',buffer:mp4});
-  await status('ファイルを選択しました');
-  await preview.click();
-  try{await d().locator('video').waitFor({timeout:15000});}
-  catch(error){await d().screenshot({path:out+'/'+engine+'-lp-cms-error.png'});throw Error('LP CMS first video preview: '+await d().getByRole('status').textContent()+'; player='+await d().locator('video').count(),{cause:error});}
- }else{
-  const photo=d().getByLabel('写真（JPEG・PNG・WebP、4MB以下）');
-  await photo.setInputFiles({name:'synthetic.jpg',mimeType:'image/jpeg',buffer:jpeg});
-  await status('ファイルを選択しました');
- }
- await d().getByRole('button',{name:'下書き保存'}).click();await status('端末内に下書き保存しました');
- await d().getByRole('button',{name:'メニューへ戻る'}).click();
- await page.reload();await open();await status('端末内の下書きを開きました');
- assert.equal(await title.inputValue(),'合成素材を使った検証用LP');
- await preview.click();await status('GitHub接続が必要');
- const player=d().locator('video');
- if(hasH264){
-  await player.waitFor({timeout:15000});
-  assert.equal(await player.evaluate(v=>v.paused&&!v.autoplay&&v.playsInline&&!!v.poster),true);
- }
- assert.equal(await d().getByRole('button',{name:'公開依頼（PR）'}).isDisabled(),true);
- assert.equal(api.length,0);
- assert.equal(await d().evaluate(node=>node.scrollWidth<=node.clientWidth+2),true);
- await d().screenshot({path:out+'/'+engine+'-lp-cms-mobile.png'});
- await d().getByRole('button',{name:'メニューへ戻る'}).click();
- await page.getByText('接続設定',{exact:true}).click();await page.locator('#token').fill('fixture-token-not-real');await page.locator('#connectBtn').click();
- await page.waitForFunction(()=>document.querySelector('#adminTabs').dataset.connectionState==='connected');
- await open();await status('端末内の下書きを開きました');await preview.click();await status('公開依頼を作成できます');
- await d().getByRole('checkbox',{name:'変更内容と公開できる素材であることを確認しました'}).check();
- await d().getByRole('button',{name:'公開依頼（PR）'}).click();
- await d().getByRole('link',{name:'PR #1234 を確認'}).waitFor({timeout:15000});
- assert.equal(writes.filter(([p])=>p==='/git/blobs').length,hasH264?3:2);
- assert.equal(writes.at(-1)[1].draft,true);
- assert.match(writes.find(([p])=>p==='/git/refs')[1].ref,/^refs\/heads\/cms\/lp\//);
- assert.deepEqual(pageErrors,[]);
- if(hasH264){
-  const dir='assets/cases/01/', posterPath=dir+'b'.repeat(64)+'.jpg',videoPath=dir+'c'.repeat(64)+'.mp4';
-  const manifest={version:1,cases:{'01':{title:'合成動画ケース',description:'テスト紹介',alt:'単色の動画',poster:posterPath,video:videoPath}},order:['02','01','03','04','05','06','07','08','09','10']};
-  await page.route('**/ja/lp/media-manifest.json',r=>r.fulfill({json:manifest}));
-  await page.route('**/'+posterPath,r=>r.fulfill({contentType:'image/jpeg',body:jpeg}));
-  await page.route('**/'+videoPath,r=>r.fulfill({contentType:'video/mp4',body:mp4}));
-  await page.goto(base+'ja/lp/#works');
-  await page.locator('.prints li').nth(1).getByRole('link',{name:/合成動画ケース/}).waitFor({timeout:10000});
-  assert.equal(await page.locator('.prints li').nth(1).locator('a').getAttribute('href'),'./cases/01.html');
-  assert.match(await page.locator('.prints li').nth(1).locator('.photo').first().evaluate(n=>n.style.getPropertyValue('--case-photo')),/\.jpg/);
-  assert.equal(await page.locator('video').count(),0);
-  await page.locator('.prints li').nth(1).locator('a').click();
-  const videoNode=page.locator('video.case-video');
-  await videoNode.waitFor();
-  assert.equal(await page.locator('.case-copy h2').textContent(),'合成動画ケース');
-  assert.match(await page.locator('.case-copy').textContent(),/テスト紹介/);
-  assert.equal(await videoNode.evaluate(v=>v.paused&&v.controls&&v.preload==='none'),true);
- }
- console.log(engine,'LP CMS draft, review, fake publication and media flow checked',hasH264?'(MP4 + poster)':'(browser cannot decode H.264; photo exercised)');
+  const api=[],writes=[],pageErrors=[];
+  page.on('pageerror',e=>pageErrors.push(e.message));
+  const cors={'access-control-allow-origin':'*','access-control-allow-headers':'accept,authorization,content-type,x-github-api-version','access-control-allow-methods':'GET,POST,OPTIONS'};
+  const reply=(r,json,status=200)=>r.fulfill({status,json,headers:cors});
+  await page.route('https://api.github.com/**',async r=>{
+   const req=r.request(),p=new URL(req.url()).pathname.replace('/repos/Kale1205/fde-site','');api.push([req.method(),p]);
+   if(req.method()==='OPTIONS')return r.fulfill({status:204,headers:cors});
+   if(req.method()==='POST'){writes.push([p,req.postDataJSON()]);return reply(r,p==='/pulls'?{number:1234}:{sha});}
+   if(p==='/user')return reply(r,{login:'fixture',id:123});
+   if(p==='/git/ref/heads/main')return reply(r,{object:{sha}});
+   if(p==='/contents/ja/lp/media-manifest.json')return reply(r,{sha:gitBlob,type:'file',encoding:'base64',content:blank.toString('base64')});
+   if(p==='/contents/content/site-content.json')return reply(r,{sha,type:'file',encoding:'base64',content:fs.readFileSync('content/site-content.json').toString('base64')});
+   if(p==='/pulls')return reply(r,[]);
+   if(p.startsWith('/git/commits/'))return reply(r,{tree:{sha}});
+   return reply(r,{message:'Not Found'},404);
+  });
+  const open=()=>page.getByRole('button',{name:'LP制作例',exact:true}).click(),d=()=>page.locator('#cmsLpEditor');
+  const status=text=>d().getByRole('status').filter({hasText:text}).waitFor({timeout:15000});
+  const preview=()=>d().getByRole('button',{name:'変更をプレビュー'}).click();
+  await page.goto(base+'cms-admin.html');await open();await status('公開中の情報を読み込みました');
+  assert.equal(api.length,0,'disconnected editor must not access GitHub');
+  assert.equal(await d().getByRole('tab',{name:'Archives',exact:true}).getAttribute('aria-selected'),'true');
+  assert.equal(await d().locator('.lp-map-slot').count(),24);
+  await d().getByLabel('Archivesの素材名（空欄なら案件名）').fill('位置ごとの素材テスト');
+  await d().getByLabel('Archivesの画像・動画の説明（読み上げ用）').fill('合成テスト画像');
+  await d().getByLabel('Archivesの写真（JPEG・PNG・WebP、4MB以下）',{exact:true}).setInputFiles({name:'test.jpg',mimeType:'image/jpeg',buffer:jpeg});await status('ファイルを選択しました');
+  await d().getByRole('button',{name:'下書き保存',exact:true}).click();await status('端末内に下書き保存しました');
+  await d().getByRole('button',{name:'メニューへ戻る',exact:true}).click();await page.reload();await open();await status('端末内の下書きを開きました');
+  assert.equal(await d().getByLabel('Archivesの素材名（空欄なら案件名）').inputValue(),'位置ごとの素材テスト');
+  await preview();await status('GitHub接続が必要');
+  assert.equal(await d().getByRole('button',{name:'公開依頼（PR）'}).isDisabled(),true);
+  const key=d().locator('.lp-map-slot[data-slot="00"]');await key.focus();await page.keyboard.press('ArrowRight');
+  assert.equal(await d().locator('.lp-map-slot[data-slot="01"]').evaluate(el=>el===document.activeElement),true);
+  await page.keyboard.press('Enter');await status('公開中の情報を読み込みました');
+  assert.equal(await d().getByLabel('編集する位置（一覧から選択）').inputValue(),'01');
+  assert.equal(await d().getByLabel('Archivesの素材名（空欄なら案件名）').inputValue(),'');
+  await d().getByRole('tab',{name:'Stories',exact:true}).click();await status('公開中の情報を読み込みました');
+  await d().getByLabel('名前（空欄なら既定の名前）',{exact:true}).fill('Stories構成テスト');
+  await d().getByLabel('紹介文（空欄なら既定の説明）',{exact:true}).fill('クリックした案件の紹介文');
+  await d().getByLabel('Storiesの掲載順',{exact:true}).selectOption('02');
+  await d().getByText('案件詳細の文章を編集（空欄は既定の文章）',{exact:true}).click();
+  await d().getByLabel('詳細の大見出し',{exact:true}).fill('自由に編集する見出し');
+  await d().getByLabel('詳細のページ構成の例',{exact:true}).fill('写真と文章の新しい構成');
+  await d().getByLabel('編集する画像レイヤー',{exact:true}).selectOption('2');
+  await d().getByLabel('このレイヤーに表示する素材',{exact:true}).selectOption('archive:00');
+  await d().getByLabel('横位置（%）',{exact:true}).fill('23');
+  await d().getByLabel('このレイヤーを表示する',{exact:true}).uncheck();
+  await d().getByRole('button',{name:'文章を追加',exact:true}).click();
+  await d().getByLabel('見出し',{exact:true}).fill('追加見出し');await d().getByLabel('本文',{exact:true}).fill('案件の追加文章');
+  await d().getByRole('button',{name:'画像を追加',exact:true}).click();await d().getByLabel('表示する画像',{exact:true}).selectOption('archive:00');
+  await d().getByLabel('画像の下の文章',{exact:true}).fill('追加した画像の説明');
+  await preview();await status('GitHub接続が必要');
+  assert.match(await d().locator('#lpEditorResult').innerText(),/案件の追加文章/);
+  assert.equal(await d().evaluate(el=>el.scrollWidth<=el.clientWidth+2),true);
+  await d().screenshot({path:out+'/'+engine+'-lp-cms-mobile.png'});
+  await d().getByRole('button',{name:'メニューへ戻る',exact:true}).click();
+  assert.equal(api.length,0,'local edit/review must never write or read GitHub');
+  await page.getByText('接続設定',{exact:true}).click();await page.locator('#token').fill('fixture-token-not-real');await page.locator('#connectBtn').click();
+  await page.waitForFunction(()=>document.querySelector('#adminTabs').dataset.connectionState==='connected');
+  await open();await status('端末内の下書きを開きました');await preview();await status('公開依頼を作成できます');
+  await d().getByRole('checkbox',{name:'変更内容と公開できる素材であることを確認しました'}).check();await d().getByRole('button',{name:'公開依頼（PR）'}).click();
+  await d().getByRole('link',{name:'PR #1234 を確認'}).waitFor({timeout:15000});
+  const manifestBlob=writes.find(([p])=>p==='/git/blobs');
+  const next=JSON.parse(Buffer.from(manifestBlob[1].content,'base64').toString());
+  assert.equal(next.cases['01'].story.detail.headline,'自由に編集する見出し');assert.equal(next.cases['01'].story.detail.composition,'写真と文章の新しい構成');
+  assert.equal(next.cases['01'].title,'Stories構成テスト');assert.equal(next.order[1],'01');
+  assert.equal(next.cases['01'].story.layers[2].x,23);assert.equal(next.cases['01'].story.layers[2].visible,false);
+  assert.deepEqual(next.cases['01'].story.blocks,[{type:'text',heading:'追加見出し',text:'案件の追加文章'},{type:'image',source:'archive:00',caption:'追加した画像の説明'}]);
+  assert.equal(next.archive,undefined,'a different locally saved Archive draft is not silently published');
+  assert.equal(writes.at(-1)[1].draft,true);assert.deepEqual(pageErrors,[]);
+  console.log(engine,'LP CMS map, separate drafts, Stories layout/blocks, review and intercepted publication verified');
  }finally{await ctx.close();}
 };

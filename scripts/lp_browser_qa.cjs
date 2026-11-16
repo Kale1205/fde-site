@@ -4,6 +4,7 @@ const fs=require('node:fs');const path=require('node:path');
 const engine=process.env.BROWSER||'chromium';const out=process.env.QA_OUTPUT||'/tmp/lp-browser-qa';fs.mkdirSync(out,{recursive:true});
 const browser=await (engine==='webkit'?webkit:chromium).launch();const ctx=await browser.newContext();const page=await ctx.newPage();const errors=[],posts=[],broken=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(!['GET','HEAD'].includes(r.method()))posts.push(r.url())});page.on('response',r=>{if(r.status()>=400)broken.push({url:r.url(),status:r.status()})});const results=[];const base=process.env.BASE_URL||'http://127.0.0.1:4197/';
 await require('./lp_cms_browser_qa.cjs')(browser,base,out,engine);
+await require('./lp_gallery_layout_browser_qa.cjs')(browser,base,out,engine);
 await page.setViewportSize({width:1331,height:894});await page.goto(base+'ja/lp/');await page.waitForTimeout(2200);
 await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResult==='complete');
 const loader=await page.evaluate(()=>({elapsed:window.__fdePageLoading.finished-window.__fdePageLoading.shownAt,skip:!!document.querySelector('[data-page-loading-skip]'),countVisible:document.querySelector('[data-page-loading-count]').getClientRects().length}));
@@ -12,6 +13,8 @@ await page.reload();if(await page.evaluate(()=>!!window.__fdePageLoading||docume
 for(const route of ['ja/lp/examples.html','ja/lp/service.html','ja/lp/diagnosis.html','ja/lp/cases/01.html','ja/news.html','ja/goals.html','ja/license.html']){
  await page.goto(base+route);if(await page.locator('#page-loading').count())throw Error('Loader on non-entry: '+route);
 }
+if(errors.length)throw Error('Rapid route module startup errors: '+JSON.stringify(errors));
+console.log(engine,'gallery module graph survived rapid route warmup');
 await page.goto(base+'ja/news.html');await page.locator('a[data-lp-destination]:visible').first().click();
 await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResult==='complete');
 const navState=await page.evaluate(()=>window.__fdePageLoading.started);
