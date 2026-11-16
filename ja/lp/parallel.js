@@ -196,7 +196,7 @@ function photoRecords(entries,includeOffscreen=false){
 }
 function currentPhotos(work){
  if(gather){
-  // Include prints outside the viewport while they flutter. A reversal can
+  // Include prints outside the viewport while they travel. A reversal can
   // bring them back, and landed originals must take over from hidden clones.
   const moving=photoRecords(qa('.gather-print:not([data-landed])',gather.layer).map((el,n)=>[Number(el.dataset.material),el,'motion-'+n]),true);
   return moving.concat(viewPhotos(work).filter(record=>!record.element.classList.contains('is-in-flight')));
@@ -218,10 +218,20 @@ function startGather(from,to,work){
  const dist=(a,b)=>{const [ax,ay]=center(a),[bx,by]=center(b);return Math.hypot(ax-bx,ay-by);};
  const offscreen=(r,i)=>{
   const [cx,cy]=center(r);
-  return {...r,angle:r.angle+(i%2?24:-24),...(i%2?{x:cx<innerWidth/2?-r.width*1.6:innerWidth+r.width*.6}:{y:cy<innerHeight/2?-r.height*1.6:innerHeight+r.height*.6})};
+  return {...r,...(i%2?{x:cx<innerWidth/2?-r.width*1.6:innerWidth+r.width*.6}:{y:cy<innerHeight/2?-r.height*1.6:innerHeight+r.height*.6})};
  };
- // Stable pseudo-random timing and 2D paper paths keep both directions varied
- // while allowing an interrupted flight to be sampled without a visual jump.
+ // Per-paper profiles fitted from rendered reference measurements. Desktop
+ // forward flight is an estimate within the observed 1.5–1.85 s whole motion;
+ // its short correction and the other profiles follow the measured phases.
+ const profiles={
+  desktopStories:{min:1300,range:180,delay:120,settle:220,flightEase:'cubic-bezier(.76,0,.24,1)',settleEase:'cubic-bezier(.22,1,.36,1)'},
+  desktopArchive:{min:730,range:60,delay:120,settle:0,flightEase:'cubic-bezier(.76,0,.24,1)'},
+  mobileStories:{min:520,range:50,delay:100,settle:0,flightEase:'cubic-bezier(.22,1,.36,1)'},
+  mobileArchive:{min:490,range:30,delay:180,settle:0,flightEase:'cubic-bezier(.65,0,.35,1)'},
+ };
+ const profile=profiles[(innerWidth>690?'desktop':'mobile')+(work?'Stories':'Archive')];
+ // Each piece interpolates its position, scale and angle with one progress.
+ // Keep the path straight so interrupted flights can retain their exact pose.
  const noise=(seed,salt)=>{const n=Math.sin(seed*127.1+salt*311.7)*43758.5453;return n-Math.floor(n);};
  const used=new Set();
  const pairs=to.map(dest=>{
@@ -233,8 +243,16 @@ function startGather(from,to,work){
  for(const [n,{i,src,dest}] of pairs.entries()){
   const base=src?.r??offscreen(dest.r,i),final=dest?.r??offscreen(src.r,i);
   const [ox,oy]=center(base),[fx,fy]=center(final),record=work?(dest||src):(src||dest);
-  const seed=(i+1)*73+n*17,duration=760+Math.round(noise(seed,1)*400),delay=Math.round(noise(seed,2)*155);
-  const options={duration,delay,easing:'linear',fill:'both'};finishAfter=Math.max(finishAfter,duration+delay);
+  const seed=(i+1)*73+n*17,duration=profile.min+Math.round(noise(seed,1)*profile.range),delay=Math.round(noise(seed,2)*profile.delay);
+  const settle=profile.settle,options={duration:duration+settle,delay,easing:'linear',fill:'both'};
+  finishAfter=Math.max(finishAfter,options.duration+delay);
+  // Apply the measured correction to this collage's alternating paper order.
+  const sign=n%2?1:-1;
+  const spatialFrames=(first,last,temporary=last)=>settle?[
+   {...first,offset:0,easing:profile.flightEase},
+   {...temporary,offset:duration/options.duration,easing:profile.settleEase},
+   {...last,offset:1},
+  ]:[{...first,easing:profile.flightEase},last];
   if(dest){
    dest.element.classList.add('is-in-flight');task.targets.add(dest.element);
    const card=dest.element.closest('.prints li');
@@ -249,18 +267,11 @@ function startGather(from,to,work){
   Object.assign(photo.style,{...lastImage,position:'absolute',margin:'0',aspectRatio:'auto',gridColumn:'auto',gridRow:'auto',transformOrigin:'0 0'});
   for(const [prop,value] of Object.entries(record.palette))copy.style.setProperty(prop,value);
   print.append(copy);fragment.append(print);
-  const dx=ox-fx,dy=oy-fy,length=Math.max(1,Math.hypot(dx,dy)),side=noise(seed,3)>.5?1:-1;
-  const spread=clamp(length*.19,42,150)*(noise(seed,4)*.55+.7)*side;
-  const arcX=-dy/length*spread+(noise(seed,5)-.5)*54,arcY=dx/length*spread-35-noise(seed,6)*65;
-  const spin=side*(11+noise(seed,7)*23),sx=base.width/final.width,sy=base.height/final.height;
-  const pose=(progress,flutter,angle,squeeze=0)=>`translate3d(${dx*(1-progress)+arcX*flutter}px,${dy*(1-progress)+arcY*flutter}px,0) rotate(${base.angle+(final.angle-base.angle)*progress+angle}deg) scale(${(sx+(1-sx)*progress)*(1+squeeze)},${(sy+(1-sy)*progress)*(1-squeeze)})`;
-  plans.push([print,[
-   {offset:0,transform:pose(0,0,0),easing:'cubic-bezier(.35,0,.7,1)'},
-   {offset:.23,transform:pose(.15,1,spin,.035),easing:'cubic-bezier(.3,.15,.35,1)'},
-   {offset:.57,transform:pose(.63,.64,-spin*.38,-.025),easing:'cubic-bezier(.25,.55,.3,1)'},
-   {offset:.83,transform:pose(.96,-.12,spin*.12,.008),easing:'cubic-bezier(.2,.65,.25,1)'},
-   {offset:1,transform:pose(1,0,0)},
-  ],options,()=>{
+  plans.push([print,spatialFrames(
+   {transform:`translate3d(${ox-fx}px,${oy-fy}px,0) rotate(${base.angle}deg) scale(${base.width/final.width},${base.height/final.height})`},
+   {transform:`translate3d(0,0,0) rotate(${final.angle}deg) scale(1,1)`},
+   {transform:`translate3d(${sign*16}px,-14px,0) rotate(${final.angle+sign*2}deg) scale(1.025,1.025)`},
+  ),options,()=>{
    if(gather!==task)return;
    print.dataset.landed='';print.style.visibility='hidden';
    if(dest){
@@ -269,13 +280,13 @@ function startGather(from,to,work){
     if(card&&!q('.is-in-flight',card))card.classList.remove('is-assembling');
    }
   }]);
-  plans.push([copy,[src?.paint??record.paint,dest?.paint??record.paint],options]);
+  plans.push([copy,spatialFrames(src?.paint??record.paint,dest?.paint??record.paint),options]);
   // Inner photographs use a transform too: no per-frame width/height layout.
   const imageX=(parseFloat(firstImage.left)-parseFloat(lastImage.left))*final.width/100,imageY=(parseFloat(firstImage.top)-parseFloat(lastImage.top))*final.height/100;
-  plans.push([photo,[
+  plans.push([photo,spatialFrames(
    {transform:`translate3d(${imageX}px,${imageY}px,0) scale(${parseFloat(firstImage.width)/parseFloat(lastImage.width)},${parseFloat(firstImage.height)/parseFloat(lastImage.height)})`,filter:firstImage.filter,boxShadow:firstImage.boxShadow},
-   {transform:'translate3d(0,0,0) scale(1)',filter:lastImage.filter,boxShadow:lastImage.boxShadow},
-  ],{...options,easing:'cubic-bezier(.3,.2,.25,1)'}]);
+   {transform:'translate3d(0,0,0) scale(1,1)',filter:lastImage.filter,boxShadow:lastImage.boxShadow},
+  ),options]);
   for(const [j,label] of qa('.collage-mark,.collage-cover,.collage-palette',copy).entries()){
    const opacity=src?.labels[j]??(work?'0':'1');
    plans.push([label,work?[{opacity},{opacity,offset:.58},{opacity:1}]:[{opacity},{opacity:0,offset:.45},{opacity:0}],options]);

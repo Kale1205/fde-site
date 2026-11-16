@@ -5,6 +5,7 @@ on:
       - 'ja/lp/**'
       - 'scripts/lp_browser_qa.cjs'
       - 'scripts/lp_detail_controls_browser_qa.mjs'
+      - 'scripts/lp_transition_motion_browser_qa.mjs'
       - 'scripts/test_lp_transition_motion.mjs'
       - 'scripts/build_lp_pages.mjs'
       - 'scripts/lp_showcase.mjs'
@@ -43,6 +44,7 @@ jobs:
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/lp-qa-tools/node_modules/playwright" node scripts/lp_browser_qa.cjs
           if [ '${{ matrix.browser }}' = 'chromium' ]; then
             PLAYWRIGHT_MODULE="$RUNNER_TEMP/lp-qa-tools/node_modules/playwright" node scripts/lp_detail_controls_browser_qa.mjs
+            PLAYWRIGHT_MODULE="$RUNNER_TEMP/lp-qa-tools/node_modules/playwright" node scripts/lp_transition_motion_browser_qa.mjs
           fi
       - uses: actions/upload-artifact@v4
         if: always()

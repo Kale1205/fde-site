@@ -59,19 +59,61 @@ function fixture(){
 
 const transformParts=transform=>[...transform.matchAll(/[-+]?(?:\d*\.)?\d+(?:e[-+]?\d+)?/gi)].map(match=>Number(match[0])).slice(1);
 
-test('each paper has a distinct timing and curved flutter path with exact endpoints',async()=>{
+test('desktop forward papers use the estimated flight profile then a short measured correction',async()=>{
  const f=fixture();f.context.startGather(f.from,f.to,true);const prints=f.prints();
  assert.equal(prints.length,3);assert.equal(new Set(prints.map(animation=>animation.options.duration)).size,3);assert.equal(new Set(prints.map(animation=>animation.options.delay)).size,3);
  for(const animation of prints){
-  assert.equal(animation.keyframes.length,5);assert(animation.options.duration>=760&&animation.options.duration<=1160);assert(animation.options.delay>=0&&animation.options.delay<=155);
+  assert.equal(animation.keyframes.length,3);assert(animation.options.duration>=1520&&animation.options.duration<=1700);assert(animation.options.delay>=0&&animation.options.delay<=120);
   assert(animation.keyframes.every(frame=>!('opacity' in frame)),'paper remains opaque');
+  assert.equal(animation.options.easing,'linear','each segment owns its curve');
+  assert(animation.keyframes.every(frame=>!/(?:skew|perspective|rotate[XYZ])\(/.test(frame.transform)),'the measured path has no extra wobble');
   const parts=animation.keyframes.map(frame=>transformParts(frame.transform));
   assert(parts.flat().every(Number.isFinite));assert.equal(parts.at(-1)[0],0);assert.equal(parts.at(-1)[1],0);assert.equal(parts.at(-1).at(-1),1);assert.equal(parts.at(-1).at(-2),1);
-  const [startX,startY]=parts[0],[middleX,middleY]=parts[1];
-  assert(Math.abs(startX*middleY-startY*middleX)>1,'the paper detours from its direct line');
+  const temporary=parts[1],last=parts.at(-1);
+  assert.equal(Math.abs(temporary[0]),16);assert.equal(temporary[1],-14);assert.equal(temporary.at(-1),1.025);assert.equal(temporary.at(-2),1.025);
+  assert.equal(temporary[3]-last[3],Math.sign(temporary[0])*2);
+  assert(Math.abs((1-animation.keyframes[1].offset)*animation.options.duration-220)<1e-9);
+  assert.equal(animation.keyframes[0].easing,'cubic-bezier(.76,0,.24,1)');assert.equal(animation.keyframes[1].easing,'cubic-bezier(.22,1,.36,1)');
+  const inner=f.animations.find(candidate=>candidate.node===animation.node.firstElementChild.firstElementChild);
+  assert(inner);assert.equal(inner.options,animation.options,'inner and outer image geometry share timing and easing');
+  assert.deepEqual(inner.keyframes.map(frame=>[frame.offset,frame.easing]),animation.keyframes.map(frame=>[frame.offset,frame.easing]));
+  assert.equal(inner.keyframes[1].transform,inner.keyframes[2].transform,'photo crop holds its destination through the correction');
  }
  assert(f.context.gather.layer.inert);assert(f.to.every(record=>record.element.classes.has('is-in-flight')));
  assert.equal(f.timers.size,1);f.context.endGather();await f.flush();
+});
+
+test('reverse papers use one straight interpolation without added endpoint rotation or correction',async()=>{
+ const f=fixture();f.context.startGather(f.to,f.from,false);
+ for(const animation of f.prints()){
+  assert.equal(animation.keyframes.length,2);assert(animation.options.duration>=730&&animation.options.duration<=790);assert(animation.options.delay>=0&&animation.options.delay<=120);
+  assert.equal(animation.keyframes[0].easing,'cubic-bezier(.76,0,.24,1)');assert(animation.keyframes.every(frame=>!('opacity' in frame)));
+  const last=transformParts(animation.keyframes[1].transform);assert.equal(last[0],0);assert.equal(last[1],0);assert.equal(last[4],1);assert.equal(last[5],1);
+  const top=parseFloat(animation.node.style.top),left=parseFloat(animation.node.style.left);
+  if(top>=0&&top<f.context.innerHeight&&left>=0&&left<f.context.innerWidth)assert.equal(last[3],0);
+  else assert(f.to.some(record=>record.i===animation.node.dataset.material&&record.r.angle===last[3]),'outgoing paper retains its captured angle');
+ }
+ f.context.endGather();await f.flush();
+});
+
+test('mobile forward papers converge directly without the desktop temporary position',async()=>{
+ const f=fixture();f.context.innerWidth=400;f.context.startGather(f.from,f.to,true);
+ assert(f.prints().every(animation=>animation.keyframes.length===2));
+ for(const animation of f.prints()){
+  assert(animation.options.duration>=520&&animation.options.duration<=570);assert(animation.options.delay>=0&&animation.options.delay<=100);
+  assert.equal(animation.keyframes[0].easing,'cubic-bezier(.22,1,.36,1)');
+  const last=transformParts(animation.keyframes[1].transform);assert.equal(last[0],0);assert.equal(last[1],0);assert.equal(last[4],1);assert.equal(last[5],1);
+ }
+ f.context.endGather();await f.flush();
+});
+
+test('mobile reverse papers use the separately fitted shorter profile and start spread',async()=>{
+ const f=fixture();f.context.innerWidth=400;f.context.startGather(f.to,f.from,false);
+ for(const animation of f.prints()){
+  assert.equal(animation.keyframes.length,2);assert(animation.options.duration>=490&&animation.options.duration<=520);assert(animation.options.delay>=0&&animation.options.delay<=180);
+  assert.equal(animation.keyframes[0].easing,'cubic-bezier(.65,0,.35,1)');
+ }
+ f.context.endGather();await f.flush();
 });
 
 test('one landed paper reveals its own target while other papers keep moving',async()=>{
@@ -91,7 +133,7 @@ test('stale flight completions and fallback timers cannot finish a reversed flig
  f.context.endGather(true);await f.flush();assert.equal(f.context.gather,null);assert.equal(f.timers.size,0);assert(!f.context.archive.classes.has('is-arriving'));
 });
 
-test('extra source papers scatter away without accumulating across rapid reversals',async()=>{
+test('extra source papers leave the viewport without accumulating across rapid reversals',async()=>{
  const f=fixture();let max=0;
  for(let i=0;i<40;i++){
   const from=i%2?f.to:f.from,to=i%2?f.from:f.to;
