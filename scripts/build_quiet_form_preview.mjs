@@ -20,7 +20,7 @@ const copy = {
     comparison: '出発点は2つ', licenseIntro: 'はじめる、整える、使い続ける。', plusIntro: '見える、変えられる、育てていける。',
     terms: '条件を確認', features: '製品の比較',
     rows: [['買い切り', '買い切り'], ['ソースコードなし', 'ソースコード一式'], ['社内向け改変なし', '社内向け改変'], ['当社Updates<br>任意の月額契約', '当社Updates対象外<br>購入者が更新・管理']],
-    fees: ['最初の3か月は含む', '4〜6か月目 <strong>¥4,900/月</strong>', '7か月目以降 <strong>¥9,800/月</strong>'],
+    fees: ['購入後3か月は含む', '4か月目以降 <strong>¥4,900/月（税込）</strong>'],
     retained: 'Updatesは任意契約です。未契約でも購入時のバージョンを利用でき、有料契約へ自動移行しません。',
     demoTitle: '触ってわかる、IMS。', sample: '公開デモ・サンプルデータ',
     fullDemo: 'デモを広く使う',

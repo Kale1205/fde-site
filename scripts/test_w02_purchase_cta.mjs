@@ -1,3 +1,4 @@
+import {priorJapaneseUpdatesFaq,priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {approveFaqDocument} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
@@ -17,7 +18,7 @@ import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs'
 
 const root=new URL('../',import.meta.url);
 const baseline='d1302742d66acd427dbe7aea64bd5fe1dee861fa';
-const read=file=>readFileSync(new URL(file,root),'utf8');
+const read=file=>priorJapaneseUpdatesFaq(file,readFileSync(new URL(file,root),'utf8'));
 const before=file=>{const old=execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'});return file==='contact-config.js'?applyCmsMemoryKey(old):applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']]) {
   test(locale+': consultation CTA becomes one genuinely disabled purchase button, with no order destination',()=>{
@@ -34,7 +35,7 @@ for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']]) {
     const head=s=>s.match(/<head>[\s\S]*?<\/head>/)[0];
     assert.equal(normalize(head(html)),normalize(head(old)));
     assert.equal(html.match(/<p class="license-note"[\s\S]*?<\/p>/)[0],scoped.match(/<p class="license-note"[\s\S]*?<\/p>/)[0]);
-    assert.deepEqual(html.match(/(?:¥|\$)\s?\d[\d,.]*|\d[\d,]*円/g),old.match(/(?:¥|\$)\s?\d[\d,.]*|\d[\d,]*円/g));
+    assert.deepEqual(priorJapaneseUpdatesHtml(html).match(/(?:¥|\$)\s?\d[\d,.]*|\d[\d,]*円/g),old.match(/(?:¥|\$)\s?\d[\d,.]*|\d[\d,]*円/g));
     assert.equal((html.match(/data-license-plan=/g)||[]).length,2);
   });
 }

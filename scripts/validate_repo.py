@@ -341,7 +341,7 @@ quiet_home_markers = {
 for rel in sorted(QUIET_HOMEPAGES):
     visible = public_visible_text[rel]
     source = public_source_text[rel]
-    for marker in quiet_home_markers[rel] + (("¥49,800", "¥99,800", "¥4,900", "¥9,800") if rel.startswith("ja/") else ("$349", "$699", "$31", "$62")) + ("IMS", "License", "License Plus"):
+    for marker in quiet_home_markers[rel] + (("¥49,800", "¥99,800", "¥4,900") if rel.startswith("ja/") else ("$349", "$699", "$31", "$62")) + ("IMS", "License", "License Plus"):
         if marker not in visible:
             fail(f"{rel}: approved Quiet Form content missing: {marker}")
     for marker in ('id="product"', 'id="plans"', 'id="license-plus"', 'id="motion-demo"', 'id="imsDemoRoot"', 'class="quiet-comparison"', 'scope="col"', 'quiet-form.css', 'quiet-form.js', 'demo-v1.js', 'license.html#comparison', 'goals.html', 'news.html', 'contact.html'):
@@ -541,12 +541,12 @@ QUIET_ORDER_PAGES = {
 for rel in sorted(QUIET_ORDER_PAGES):
     source = public_source_text.get(rel, "")
     japanese = rel.startswith("ja/")
-    amounts = ("¥49,800", "¥99,800", "¥4,900", "¥9,800", "JPY") if japanese else ("$349", "$699", "$31", "$62", "USD")
+    amounts = ("¥49,800", "¥99,800", "¥4,900", "JPY") if japanese else ("$349", "$699", "$31", "$62", "USD")
     for marker in amounts + ("License Updates", "noindex,follow", 'class="order-process-rail"'):
         if marker not in source:
             fail(f"{rel}: approved W07 fact missing: {marker}")
     found = set(re.findall(r"¥([\d,]+)" if japanese else r"\$([\d,]+)", source))
-    expected = {"74,800", "149,800", "49,800", "99,800", "4,900", "9,800"} if japanese else {"521", "1,043", "349", "699", "31", "62"}
+    expected = {"74,800", "149,800", "49,800", "99,800", "4,900"} if japanese else {"521", "1,043", "349", "699", "31", "62"}
     if found != expected:
         fail(f"{rel}: W07 locale price book drift")
     if re.search(r"<form\b|stripe\.com", source):
@@ -569,7 +569,7 @@ public_plan_text = {
 }
 canonical_public_prices = {
     "en": ("$349", "$699", "$31", "$62"),
-    "ja": ("49,800円", "99,800円", "4,900円", "9,800円"),
+    "ja": ("49,800円", "99,800円", "4,900円"),
 }
 for locale, prices in canonical_public_prices.items():
     active_text = public_plan_text[locale]
@@ -593,7 +593,7 @@ homepage_plan_facts = {
         "<h3>IMS License Plus</h3>": ("$699", "Full source code included", "Customer-server/self-hosted operation planned", "documentation planned", "Purchaser manages updates and security", "No included Updates entitlement"),
     },
     "ja/index.html": {
-        "<h3>IMS License</h3>": ("49,800円", "4,900円", "9,800円", "購入後3か月はUpdatesを含む", "ソースコードとソースレベルの改変権は含まない", "有料契約へ自動移行しない"),
+        "<h3>IMS License</h3>": ("49,800円", "4,900円", "購入後3か月はUpdatesを含む", "ソースコードとソースレベルの改変権は含まない", "有料契約へ自動移行しない"),
         "<h3>IMS License Plus</h3>": ("99,800円", "ソースコード一式", "顧客管理サーバーでの自社運用を予定", "資料を提供予定", "更新・セキュリティは購入者が管理", "Updates特典は含まない"),
     },
 }
@@ -649,7 +649,7 @@ if re.search(r"\bUSD\b|U\.S\.\s*dollars?|US\s*dollars?|\$\s*\d", japanese_plan_s
 
 allowed_money_values = {
     "en": {"521", "1,043", "349", "699", "31", "62"},
-    "ja": {"74,800", "149,800", "49,800", "99,800", "4,900", "9,800"},
+    "ja": {"74,800", "149,800", "49,800", "99,800", "4,900"},
 }
 for rel in PUBLIC_PRICE_PAGES:
     locale = "ja" if rel.startswith("ja/") else "en"
@@ -836,7 +836,7 @@ intent_plan_facts = {
         "explicit opt-in", "Purchasing is not available",
     ),
     "ja/one-time-purchase-inventory-software.html": (
-        "49,800円", "99,800円", "4,900円", "9,800円",
+        "49,800円", "99,800円", "4,900円",
         "LicenseとLicense Plusという2つの買い切り商品",
         "自動で有料契約へ移行しません", "購入機能は利用できません",
     ),
@@ -1361,14 +1361,14 @@ for source, localized in localized_public_data.items():
 for source in ("content/faq-content.json",):
     for locale, base_prices in {
         "en": ("$349", "$699", "$31", "$62"),
-        "ja": ("49,800円", "99,800円", "4,900円", "9,800円"),
+        "ja": ("49,800円", "99,800円", "4,900円"),
     }.items():
         active_text = localized_public_data[source][locale]
         for price in base_prices:
             if price not in active_text:
                 fail(f"{source}: active {locale} content missing canonical plan price: {price}")
 
-for locale, continuation_prices in {"en": ("$31", "$62"), "ja": ("4,900円", "9,800円")}.items():
+for locale, continuation_prices in {"en": ("$31", "$62"), "ja": ("4,900円",)}.items():
     active_text = localized_public_data["content/faq-policy-additions.json"][locale]
     for continuation_price in continuation_prices:
         if continuation_price not in active_text:

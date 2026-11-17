@@ -1,3 +1,4 @@
+import {priorJapaneseUpdatesFaq,priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {approveFaqDocument,approveUsdCopy} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
@@ -21,13 +22,13 @@ import {applyApprovedContinuingUsePolicy,continuingUseCopy,continuingUseFaqAnswe
 
 const root = new URL('../', import.meta.url);
 const baseline = 'ccc17a1f85ef079d82d4a8e616df78b8b457fccb';
-const read = file => withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8'));
+const read = file => priorJapaneseUpdatesFaq(file,withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8')));
 const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return file==='contact-config.js'?applyCmsMemoryKey(old):applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
   ['index','license','order','contact','demo','goals','news','customer','quiet-form'].map(page => prefix + page + '.html')
 ).concat(['overview.html','products.html']); // CMS has its own draft/PR behavior suite.
 const normalize = source => normalizeAssetBuildKeys(source.trimEnd());
-const prices = source => source.match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
+const prices = source => priorJapaneseUpdatesHtml(source).match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
 const outsideFaq = source => source.replace(/<div id="cmsFaqList">[\s\S]*?<\/div><div id="faqEmpty"/, '<div id="faqEmpty"');
 
 for (const file of pages) {
@@ -47,13 +48,13 @@ for (const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
       const html = read(prefix + page + '.html');
       assert.ok(html.includes(optionalUpdatesCopy[locale].summary));
       assert.doesNotMatch(html, /Monthly subscription required|Monthly subscription to our Updates required|月額契約必須|月額契約が必須|须订阅(?:官方 Updates|月度服务)/);
-      for (const price of (locale==='ja'?['¥49,800','¥99,800','¥4,900','¥9,800']:['$349','$699','$31','$62'])) assert.ok(html.includes(price));
+      for (const price of (locale==='ja'?['¥49,800','¥99,800','¥4,900']:['$349','$699','$31','$62'])) assert.ok(html.includes(price));
     }
     assert.ok(read(prefix + 'index.html').includes(optionalUpdatesCopy[locale].label));
     assert.ok(read(prefix + 'order.html').includes(optionalUpdatesCopy[locale].purchaseFact));
     assert.ok(read(prefix + 'order.html').includes('class="order-notice"'));
     assert.doesNotMatch(read(prefix + 'order.html'), /<form|data-buy|order\.js|stripe\.com/);
-    const terms = read(prefix + 'license.html');
+    const terms = priorJapaneseUpdatesHtml(read(prefix + 'license.html'));
     assert.match(terms, /Updates契約期間中|FDE during Updates|Updates 订阅期内/);
     for(const text of Object.values(continuingUseCopy[locale]))assert.ok(terms.includes(text),'current approved continuing-use policy is visible in the terms');
   });
@@ -169,7 +170,7 @@ test('approved continuing-use copy defines the excluded first six months and six
 
 for(const [file,locale]of policyPages)test(`${file}: only approved Updates paragraphs change, with exact locale copy and unchanged prices`,()=>{
   const historical=continuingBefore(file),previous=applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,historical));
-  const current=read(file),expected=applyApprovedContinuingUsePolicy(file,previous);
+  const current=priorJapaneseUpdatesHtml(read(file)),expected=applyApprovedContinuingUsePolicy(file,previous);
   assert.equal(normalize(current),normalize(expected));
   assert.equal(applyApprovedContinuingUsePolicy(file,current),current,'current output is byte-idempotent');
   assert.equal(normalize(current.replace(policyRegion(file,current),'UPDATES_POLICY')),normalize(previous.replace(policyRegion(file,previous),'UPDATES_POLICY')),'all markup outside the Updates region stays exact except asset build keys');
