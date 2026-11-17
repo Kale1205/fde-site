@@ -1,4 +1,4 @@
-import {newsImagePath,partitionNews} from './news-books.js?v=20261117-203355';
+import {newsImagePath,partitionNews} from './news-books.js?v=20261117-210551';
 import {currentPriceNotice,isPriceHistory} from './price-policy.js';
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const NEWS_UI={

@@ -1,5 +1,5 @@
-import {CmsError,NewsPublisher,sha256,errorText} from './cms-news-workflow.js?v=20261117-203355';
-import {renderFaqPage} from './faq-renderer.js?v=20261117-203355';
+import {CmsError,NewsPublisher,sha256,errorText} from './cms-news-workflow.js?v=20261117-210551';
+import {renderFaqPage} from './faq-renderer.js?v=20261117-210551';
 
 export {CmsError};
 
