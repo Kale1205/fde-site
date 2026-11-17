@@ -33,6 +33,14 @@ function applySource(photo,source){
 }
 export function archiveMaterial(data,items,slot){
  const source=archiveEntry(data||{cases:{}},slot);
+ if(source.caseId===null){
+  const photo=document.createElement('span');photo.className='photo archive-only-photo';
+  const path=source.video?source.poster:source.photo;
+  if(path){
+   const image=document.createElement('img');image.alt='';image.decoding='async';image.draggable=false;image.src=url(path);photo.append(image);
+  }
+  return {photo,title:source.title||'Archivesの素材',details:null,alt:source.alt,video:source.video,poster:source.poster};
+ }
  const item=items[Number(source.caseId)-1];
  const photo=item.firstElementChild.cloneNode(true);
  applySource(photo,source.video?{...source,photo:source.poster}:source);

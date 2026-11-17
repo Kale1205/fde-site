@@ -1,6 +1,6 @@
 import * as media from './media-runtime.js';
 import {LP_ARCHIVE_CASES} from './media-schema.js';
-import {archiveFrames as frame} from './archive-layout.js';
+import {archiveFrames as frame,archiveOnlyFrame} from './archive-layout.js';
 'use strict';
 (async () => {
 const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -13,8 +13,8 @@ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const MIN_ZOOM=.6,MAX_ZOOM=1;
 // One stable, repeating 5 × 5 contact sheet. The center is the Archive wordmark.
 const positions=Array.from({length:25},(_,i)=>String(i).padStart(2,'0'));
-const slots=positions.map(slot=>Number(manifest?.archive?.[slot]?.caseId||LP_ARCHIVE_CASES[slot]||0)-1);
-const material=positions.map((slot,i)=>slots[i]<0?null:media?.archiveMaterial(manifest,items,slot));
+const slots=positions.map(slot=>slot==='12'?null:manifest?.archive?.[slot]?.caseId===null?-(Number(slot)+1):Number(manifest?.archive?.[slot]?.caseId||LP_ARCHIVE_CASES[slot])-1);
+const material=positions.map((slot,i)=>slots[i]===null?null:media?.archiveMaterial(manifest,items,slot));
 const motionControl=q('.archive-motion-control');
 if(motionControl&&material.some(item=>item?.video))motionControl.hidden=false;
 let currentView=null,gather=null,framePending=0,viewWidth=0,viewHeight=0,poolColumns=0,poolRows=0;
@@ -45,16 +45,16 @@ const wrap=(n,d)=>((n%d)+d)%d,clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
 function makeTile(col,row){
  const tile=document.createElement('div');tile.className='tile';tile.setAttribute('aria-hidden','true');
  slots.forEach((i,slot)=>{
-  if(i<0){
+  if(i===null){
    const mark=document.createElement('span');
    const name=document.createElement('span'),edition=document.createElement('em');
    name.textContent=wordmarkName;edition.textContent=wordmarkEdition;
    mark.className='archive-wordmark';mark.append(name,' ',edition);tile.append(mark);
    return;
   }
-  const item=items[i],[w,ratio]=frame[i],b=document.createElement('button');
+  const item=items[i],[w,ratio]=i<0?archiveOnlyFrame:frame[i],b=document.createElement('button');
   const px=(slot%5+.5)*20,py=(Math.floor(slot/5)+.5)*20;
-  b.className='material-print';b.type='button';b.tabIndex=-1;b.dataset.material=i;b.dataset.slot=slot;b.dataset.archiveSource='archive:'+positions[slot];b.setAttribute('aria-label',item.dataset.title+'の素材');
+  b.className='material-print';b.type='button';b.tabIndex=-1;b.dataset.material=i;b.dataset.slot=slot;b.dataset.archiveSource='archive:'+positions[slot];b.setAttribute('aria-label',(item?.dataset.title||'Archives')+'の素材');
   b.style.cssText='left:'+px+'%;top:'+py+'%;width:'+w*20+'%;--ratio:'+ratio+';--detail:'+(ratio<1?118:100)+'%';
   const config=material[slot];
   if(config)b.setAttribute('aria-label',config.title+'の素材');
@@ -172,7 +172,7 @@ q('.field-tools').addEventListener('click',e=>{
  const b=e.target.closest('button[data-do]');if(!b)return;endGather(true);stop();if(b.dataset.do==='reset')reset();else zoom(z*(b.dataset.do==='plus'?1.17:1/1.17));
 });
 function showItem(i,slot){
- openIndex=(i+items.length)%items.length;const a=items[openIndex],config=material[slot];
+ const unlinked=i<0;openIndex=unlinked?0:(i+items.length)%items.length;const a=items[openIndex],config=material[slot];
  const box=q('.inspect-image');
  inspectionPlayback?.unwatch(box);
  const still=(config?.photo||a.firstElementChild).cloneNode(true),alt=config?.alt||a.dataset.alt;
@@ -181,7 +181,8 @@ function showItem(i,slot){
  const control=q('[data-lp-motion]',dialog);
  if(control)control.hidden=!config?.video;
  if(config?.video)inspectionPlayback?.watch(box,config);
- q('#inspect-title').textContent=config?.title||a.dataset.title;q('.inspect-link').href=config?.details||a.dataset.url;
+ q('#inspect-title').textContent=config?.title||a.dataset.title;
+ const link=q('.inspect-link');link.hidden=unlinked;if(unlinked)link.removeAttribute('href');else link.href=config?.details||a.dataset.url;
 }
 function inspect(i,trigger){
  endGather(true);stop();lastInspect=trigger;showItem(i,Number(trigger.dataset.slot??-1));dialog.showModal();playback?.refresh();inspectionPlayback?.refresh();q('.close-inspect').focus();

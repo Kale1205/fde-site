@@ -1,3 +1,4 @@
+import {applyReviewedJapaneseUpdatesHtml,applyReviewedJapaneseUpdatesPriceBook} from './jpy_updates_test_helpers.mjs';
 import './test_cms_lp_media.mjs';
 import './test_lp_cms_layout.mjs';
 import test from 'node:test';
@@ -22,7 +23,7 @@ test('opening date and future clocks cannot enable an unconnected LP submission'
 });
 test('Japanese menus replace only the known pending LP destination and retain FDE content',()=>{
  for(const name of ['index','quiet-form','license','goals','news','demo','contact','customer','order']){
-  const file='ja/'+name+'.html',html=read(file);assert.equal(html.split(liveLpDestination).length-1,3,file);assert(!html.includes(pendingLpDestination));assert.equal(normalizeFde(html.replaceAll(liveLpDestination,pendingLpDestination)),normalizeFde(previous(file)),file);
+  const file='ja/'+name+'.html',html=read(file);assert.equal(html.split(liveLpDestination).length-1,3,file);assert(!html.includes(pendingLpDestination));assert.equal(normalizeFde(html.replaceAll(liveLpDestination,pendingLpDestination)),normalizeFde(applyReviewedJapaneseUpdatesHtml(file,previous(file))),file);
  }
  const changed=liveLpDestination.replace('href="lp/"','href="unknown/"');assert.equal(withLpDestination('ja/index.html',changed),changed);for(const file of ['index.html','zh/index.html','ja/unrelated.html'])assert.equal(withLpDestination(file,pendingLpDestination),pendingLpDestination);
 });
@@ -50,7 +51,7 @@ test('approved showcase is a repeating material archive with ten separately navi
 });
 test('LP source uses an isolated approved cutout without replacing existing images or services',()=>{
  const png=readFileSync(new URL('../ja/lp/assets/bakedkale-character.png',import.meta.url));assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');assert.equal(hash(png),'fb2c331387feb995604b940e7361ee5d72c61704f8bda323aa875afeff7ab497');
- for(const file of ['assets/bakedkale-character.svg','assets/instagram-bakedkale-profile-20261110.jpg','gallery-ui.js','gallery-ui.css','quiet-pages.css','page-loading.js','page-loading.css','site-chrome.js','site-chrome.css','price-policy.js','content/site-content.json','content/instagram-feed.json','contact-direct.js','contact-config.js','motion-preferences.js'])assert.equal(normalize(read(file)),normalize(previous(file)),file);
+ for(const file of ['assets/bakedkale-character.svg','assets/instagram-bakedkale-profile-20261110.jpg','gallery-ui.js','gallery-ui.css','quiet-pages.css','page-loading.js','page-loading.css','site-chrome.js','site-chrome.css','price-policy.js','content/site-content.json','content/instagram-feed.json','contact-direct.js','contact-config.js','motion-preferences.js'])assert.equal(normalize(read(file)),normalize(applyReviewedJapaneseUpdatesPriceBook(file,previous(file))),file);
 });
 
 test('LP is the only offering and includes flyer and Web/SNS advertising production',()=>{

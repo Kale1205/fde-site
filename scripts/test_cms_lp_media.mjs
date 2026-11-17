@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {LP_IDS,LP_MANIFEST,validateMediaManifest} from '../ja/lp/media-schema.js';
+import {LP_IDS,LP_MANIFEST,archiveEntry,isArchiveStorySource,validateMediaManifest} from '../ja/lp/media-schema.js';
 import {inspectLpAsset,LpPublisher,LP_MAX_IMAGE,prepareLpDraft} from '../cms-lp-workflow.js';
 const blank={version:1,cases:{}};
 const a='a'.repeat(40),b='b'.repeat(40),c='c'.repeat(40),hash='a'.repeat(64);
@@ -18,7 +18,7 @@ test('public manifest rejects third-party URLs, other case paths, HTML/SVG and i
  ])assert.throws(()=>validateMediaManifest({version:1,cases:{'01':entry}}),/LP_MANIFEST/);
  assert.throws(()=>validateMediaManifest({version:1,cases:{},order:LP_IDS.map(()=>LP_IDS[0])}),/LP_MANIFEST/);
  assert.doesNotThrow(()=>validateMediaManifest({version:1,cases:{'01':{video,poster:photo,alt:'動画'}}}));
- assert.deepEqual(JSON.parse(readFileSync(new URL('../'+LP_MANIFEST,import.meta.url))),blank);
+ const current=JSON.parse(readFileSync(new URL('../'+LP_MANIFEST,import.meta.url)));assert.deepEqual(validateMediaManifest(current),current);
 });
 test('asset inspector rejects incorrect signatures, oversized photo or unsupported browser dimensions',async()=>{
  const fake=new Blob(['<svg>'],{type:'image/jpeg'}),jpeg=new Blob([new Uint8Array([255,216,255])],{type:'image/jpeg'});
@@ -99,4 +99,24 @@ test('legacy video-only entry uses the poster and reorders Stories without promo
   assert.equal(player.playsInline,true);
   assert.match(player.poster,/\.jpg$/);
  }finally{globalThis.document=prev;}
+});
+
+test('an Archive-only clip does not change its repeated source or supply Stories media',async()=>{
+ const current=JSON.parse(readFileSync(new URL('../'+LP_MANIFEST,import.meta.url)));
+ const clip=current.archive['07'];
+ assert.equal(clip.caseId,null);
+ assert.equal(archiveEntry(current,'15').caseId,'07');
+ assert.deepEqual(archiveEntry(current,'15'),archiveEntry(blank,'07'));
+ assert.equal(isArchiveStorySource(current,'07'),false);
+ assert.equal(isArchiveStorySource(current,'15'),true);
+ const renamed=await prepareLpDraft({scope:'archive',slot:'07',id:null,title:'保存テスト',files:{}},current);
+ assert.deepEqual(renamed.next.archive['07'],{...clip,title:'保存テスト'});
+ assert.deepEqual(renamed.next.cases,current.cases);
+ const reassigned=await prepareLpDraft({scope:'archive',slot:'07',id:'07',files:{}},current);
+ assert.equal(isArchiveStorySource(reassigned.next,'07'),true);
+ for(const story of [
+  {cover:'archive:07'},
+  {layers:Array.from({length:7},()=>({source:'archive:07',visible:true,x:0,y:0,width:10,rotate:0}))},
+  {blocks:[{type:'image',source:'archive:07',alt:'test'}]}
+ ])assert.throws(()=>validateMediaManifest({...current,cases:{'01':{story}}}),/LP_MANIFEST/);
 });

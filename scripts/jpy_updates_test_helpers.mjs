@@ -9,6 +9,28 @@ const copy=[
 ];
 const prior=(text,pairs=copy)=>pairs.reduce((s,[after,before])=>s.replaceAll(after,before),text);
 export const priorJapaneseUpdatesHtml=source=>/<html lang="ja">/.test(source)?prior(source):source;
+// Forward-only transform for comparisons that protect every live body byte.
+// A mismatch in the live page is never normalized away.
+const retailPages=new Set(['ja/index.html','ja/quiet-form.html','ja/order.html','ja/license.html']);
+const currentNotice=['LicenseのUpdatesは購入後3か月分を含みます。4か月目以降、希望して継続する場合は一律月額4,900円（税込）です。','Updatesの価格・条件は変更ありません。'];
+export function applyReviewedJapaneseUpdatesHtml(file,source){
+  const forward=(text,[after,before])=>text.replaceAll(before,after);
+  if(retailPages.has(file))return [...copy,currentNotice].reduce(forward,source);
+  if(file==='ja/contact.html'){
+    const matches=[
+      ['Updates 4,900円 月額 価格 料金 サブスク料金 月額料金 いくら','Updates 4,900円 9,800円 月額 価格 料金 サブスク料金 月額料金 いくら'],
+      ['License Updates 購入後3か月分込み 4,900円 自動課金なし','License Updates 購入後3か月分込み 4,900円 9,800円 自動課金なし'],
+    ];
+    return [...copy.slice(0,2),...matches].reduce(forward,source);
+  }
+  if(file==='ja/news.html')return source.replace(/<p class="news-current-prices" data-current-price-notice>[^<]*<\/p>/g,notice=>forward(notice,currentNotice));
+  return source;
+}
+export function applyReviewedJapaneseUpdatesPriceBook(file,source){
+  return file==='price-policy.js'?source
+    .replace('updates:[4900,9800]', 'updates:[4900]')
+    .replace(currentNotice[1],currentNotice[0]):source;
+}
 const priced=new Set(['updates-price','license-updates-entitlement']);
 const answers=new Set([...priced,'updates-term','license-security-responsibility','cancel-updates-after-license','cancel-updates-only']);
 export function priorJapaneseUpdatesFaqItem(item){
