@@ -1,3 +1,4 @@
+import {withJapaneseImsSearchPresentation} from "./jp_search_presentation.mjs";
 import './test_cms_lp_media.mjs';
 import './test_lp_cms_layout.mjs';
 import test from 'node:test';
@@ -22,7 +23,7 @@ test('opening date and future clocks cannot enable an unconnected LP submission'
 });
 test('Japanese menus replace only the known pending LP destination and retain FDE content',()=>{
  for(const name of ['index','quiet-form','license','goals','news','demo','contact','customer','order']){
-  const file='ja/'+name+'.html',html=read(file);assert.equal(html.split(liveLpDestination).length-1,3,file);assert(!html.includes(pendingLpDestination));assert.equal(normalizeFde(html.replaceAll(liveLpDestination,pendingLpDestination)),normalizeFde(previous(file)),file);
+  const file='ja/'+name+'.html',html=read(file);assert.equal(html.split(liveLpDestination).length-1,3,file);assert(!html.includes(pendingLpDestination));assert.equal(normalizeFde(html.replaceAll(liveLpDestination,pendingLpDestination)),normalizeFde(withJapaneseImsSearchPresentation(file,previous(file))),file);
  }
  const changed=liveLpDestination.replace('href="lp/"','href="unknown/"');assert.equal(withLpDestination('ja/index.html',changed),changed);for(const file of ['index.html','zh/index.html','ja/unrelated.html'])assert.equal(withLpDestination(file,pendingLpDestination),pendingLpDestination);
 });

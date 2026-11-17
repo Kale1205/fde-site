@@ -1,3 +1,4 @@
+import {withJapaneseImsSearchPresentation} from "./jp_search_presentation.mjs";
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
 import {applyReviewedZhSearchMetadata} from './zh_search_metadata_test_helpers.mjs';
@@ -28,7 +29,7 @@ const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
 for (const file of pages) {
   test(`${file}: only approved product/operator naming and first-use expansion change`, () => {
     const html = read(file);
-    assert.equal(normalizeAssetBuildKeys(html.trimEnd()), normalizeAssetBuildKeys(applyApprovedContinuingUsePolicy(file,applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file))))))).trimEnd()));
+    assert.equal(normalizeAssetBuildKeys(html.trimEnd()), normalizeAssetBuildKeys(withJapaneseImsSearchPresentation(file,applyApprovedContinuingUsePolicy(file,applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file)))))))).trimEnd()));
     assert.doesNotMatch(html, /FDE IMS/);
     assert.equal(applyApprovedProductNaming(html), html);
   });

@@ -1,3 +1,4 @@
+import {withJapaneseImsSearchPresentation} from "./jp_search_presentation.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
@@ -81,7 +82,7 @@ test('only entry documents contain the FDE loader; other page shells are unchang
   assert.equal(html.includes('<span data-page-loading-count></span>'),eligible,file);
   assert.equal(html.includes('const remaining=2000-'),eligible,file);
   assert(!html.includes('<button type="button" data-page-loading-skip'),file);
-  assert.equal(strip(html),strip(execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'})),file);
+  assert.equal(strip(html),strip(withJapaneseImsSearchPresentation(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'}))),file);
  }
 });
 test('reload and history traversals never start the entry animation',()=>{

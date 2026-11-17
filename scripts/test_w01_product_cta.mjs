@@ -1,3 +1,4 @@
+import {withJapaneseImsSearchPresentation} from "./jp_search_presentation.mjs";
 import {normalizeHistoricalPresentation} from './approved_motion_test_helpers.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -48,7 +49,7 @@ for (const directory of ['', 'ja/', 'zh/']) {
       const html = await readFile(new URL(file, root), 'utf8');
       const before = applyApprovedInitialReleaseScope(file,applyReviewedZhSearchMetadata(file,execFileSync('git', ['show', `${base}:${file}`], {cwd:root,encoding:'utf8'})));
       const normalize = value => normalizeHistoricalPresentation(value).trimEnd();
-      assert.equal(normalize(html), normalize(before), file);
+      assert.equal(normalize(html), normalize(withJapaneseImsSearchPresentation(file,before)), file);
       assert.equal((html.match(/href="license.html#comparison"/g) || []).length, 2);
       assert.match(html, /<caption\b/);
       assert.match(html, /<th scope="col"/);

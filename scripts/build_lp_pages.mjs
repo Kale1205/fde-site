@@ -8,9 +8,9 @@ import {LP_RECEPTION_NOTICE} from '../ja/lp/lp-policy.js';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const pages=JSON.parse(read('content/lp-pages.json'));
 const metadata={
- index:{title:'制作サービス・デザイン例 | Baked Kale',description:'Baked KaleのLP制作。チラシとWeb・SNS広告用の画像・動画まで制作します。架空のデザイン例と、LP制作の12問の参考診断をご案内します。受付開始予定は2026年12月1日です。',robots:'index,follow'},
+ index:{title:'LP制作のデザイン例・素材アーカイブ | Baked Kale',description:'Baked KaleのLP制作。チラシとWeb・SNS広告用の画像・動画まで制作します。架空のデザイン例と、LP制作の12問の参考診断をご案内します。受付開始予定は2026年12月1日です。',robots:'index,follow'},
  examples:{title:'架空のデザイン例10件 | Baked Kale LP制作',description:'業種と見せ方を考える10件の架空LP・生成素材です。実際の受注実績ではありません。',robots:'noindex,follow'},
- service:{title:'制作サービス | Baked Kale',description:'Baked KaleのLP制作は、LPページと、そのビジュアルを活かしたチラシ・Web・SNS広告用の画像・動画の制作を含むサービスです。予定料金と制作の流れをご案内します。',robots:'index,follow'},
+ service:{title:'LP制作｜チラシ・Web／SNS広告素材込み、税込55,000円〜 | Baked Kale',description:'Baked KaleのLP制作は税込55,000円から。LPと同じ素材でチラシ、Web・SNS広告用の画像・動画も制作します。全国オンライン対応。制作範囲、納期の目安、現在の受付状況を確認できます。',robots:'index,follow'},
  diagnosis:{title:'12問のLP参考診断 | Baked Kale',description:'連絡先なしでLPの方向性と参考見積を確認するプレビューです。回答は外部へ送信・永続保存しません。',robots:'noindex,nofollow,noarchive'},
 };
 // LP-only presentation options; never alter the shared loader generated elsewhere.

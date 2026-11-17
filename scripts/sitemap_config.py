@@ -54,6 +54,21 @@ class SitemapPair:
         return alternates + (("x-default", self.en.url),)
 
 
+@dataclass(frozen=True)
+class SitemapSingle:
+    page: SitemapPage
+    changefreq: str
+    priority: str
+
+    @property
+    def pages(self):
+        return (self.page,)
+
+    @property
+    def alternates(self):
+        return ()
+
+
 def _pair(name, changefreq, priority, include_zh=False):
     if name == "index.html":
         en_url = f"{BASE_URL}/"
@@ -81,7 +96,14 @@ SITEMAP_PAIRS = (
     _pair("contact.html", "monthly", "0.7", include_zh=True),
     _pair("news.html", "weekly", "0.7", include_zh=True),
 )
-SITEMAP_PAGES = tuple(page for pair in SITEMAP_PAIRS for page in pair.pages)
+# Japanese-only LP entries have no translated public equivalents. Do not
+# advertise review tools or fictional case pages as search destinations.
+SITEMAP_STANDALONE = (
+    SitemapSingle(SitemapPage("ja/lp/index.html", f"{BASE_URL}/ja/lp/"), "weekly", "0.8"),
+    SitemapSingle(SitemapPage("ja/lp/service.html", f"{BASE_URL}/ja/lp/service.html"), "monthly", "0.9"),
+)
+SITEMAP_GROUPS = SITEMAP_PAIRS + SITEMAP_STANDALONE
+SITEMAP_PAGES = tuple(page for group in SITEMAP_GROUPS for page in group.pages)
 SITEMAP_HTML_PATHS = tuple(page.html_path for page in SITEMAP_PAGES)
 
 
@@ -264,7 +286,7 @@ def _latest_substantive_commit_date(root, start_ref, end_ref, html_path):
         "rev-list",
         "--reverse",
         "--topo-order",
-        f"{start_ref}..{end_ref}",
+        f"{start_ref}..{end_ref}" if start_ref else end_ref,
         "--",
         html_path,
     ).splitlines()
@@ -309,6 +331,21 @@ def expected_lastmods_for_base(root, base_ref, current_lastmods=None):
         base_lastmods = _ordered_lastmods(current_lastmods)
 
     expected = dict(base_lastmods)
+    missing = set(SITEMAP_HTML_PATHS) - expected.keys()
+    if missing:
+        base_xml = _run_git(root, "show", f"{base_tip}:{SITEMAP_NAME}", allow_failure=True)
+        try:
+            base_urls = {
+                loc.text for loc in ET.fromstring(base_xml or "").findall(
+                    f".//{{{SITEMAP_NAMESPACE}}}loc"
+                )
+            }
+        except ET.ParseError as exc:
+            raise SitemapStateError("could not validate newly admitted URLs against base sitemap") from exc
+        new_routes = {group.page.html_path for group in SITEMAP_STANDALONE if group.page.url not in base_urls}
+        if missing - new_routes:
+            raise SitemapStateError(f"base lastmod manifest is missing known routes: {sorted(missing - new_routes)}")
+
     materially_changed = set()
     for page in SITEMAP_PAGES:
         merge_base_content = normalize_html_for_lastmod(
@@ -332,6 +369,14 @@ def expected_lastmods_for_base(root, base_ref, current_lastmods=None):
                 root, merge_base, head, page.html_path
             )
             materially_changed.add(page.html_path)
+        elif page.html_path not in expected:
+            if head_content is None:
+                raise SitemapStateError(f"indexed HTML is missing: {page.html_path}")
+            # A page newly admitted to the sitemap may already exist unchanged.
+            # Recover its substantive history rather than stamping a crawl date.
+            expected[page.html_path] = _latest_substantive_commit_date(
+                root, None, head, page.html_path
+            )
 
     return _ordered_lastmods(expected), materially_changed
 
@@ -346,7 +391,7 @@ def render_sitemap(lastmods):
     ET.register_namespace("xhtml", XHTML_NAMESPACE)
 
     urlset = ET.Element(qualified(SITEMAP_NAMESPACE, "urlset"))
-    for pair in SITEMAP_PAIRS:
+    for pair in SITEMAP_GROUPS:
         for page in pair.pages:
             item = ET.SubElement(urlset, qualified(SITEMAP_NAMESPACE, "url"))
             ET.SubElement(item, qualified(SITEMAP_NAMESPACE, "loc")).text = page.url
@@ -406,7 +451,7 @@ def validate_sitemap_state(root, base_ref=None):
     for unexpected in sorted(set(entries) - expected_urls):
         errors.append(f"{SITEMAP_NAME}: unexpected URL: {unexpected}")
 
-    for pair in SITEMAP_PAIRS:
+    for pair in SITEMAP_GROUPS:
         required_alternates = set(pair.alternates)
         for page in pair.pages:
             item = entries.get(page.url)
