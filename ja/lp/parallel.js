@@ -1,6 +1,6 @@
 import * as media from './media-runtime.js';
 import {LP_ARCHIVE_CASES} from './media-schema.js';
-import {archiveFrameForSlot} from './archive-layout.js?v=slot07-frame-1';
+import {archiveFrameForSlot} from './archive-layout.js?v=approved-archive-four-1';
 'use strict';
 (async () => {
 const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -177,6 +177,7 @@ function showItem(i,slot){
  inspectionPlayback?.unwatch(box);
  const still=(config?.photo||a.firstElementChild).cloneNode(true),alt=config?.alt||a.dataset.alt;
  if(alt){still.removeAttribute('aria-hidden');still.setAttribute('role','img');still.setAttribute('aria-label',alt);}
+ if(unlinked&&config)still.style.aspectRatio=String(archiveFrameForSlot(slot,-1)[1]);
  box.replaceChildren(still);
  const control=q('[data-lp-motion]',dialog);
  if(control)control.hidden=!config?.video;
