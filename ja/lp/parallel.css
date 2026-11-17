@@ -103,7 +103,7 @@
 .archive-wordmark{position:absolute;top:50%;left:50%;width:17%;transform:translate(-50%,-50%);pointer-events:none;text-align:center;color:var(--ink);white-space:nowrap;line-height:.9}
 .archive-wordmark span,.archive-wordmark em{display:block}
 .archive-wordmark span{font:780 clamp(19px,2.34vw,32px)/1 ArchiveInter,system-ui,sans-serif;letter-spacing:-.075em}
-.archive-wordmark em{font:italic 500 clamp(18px,2.15vw,28px)/.95 Georgia,'Times New Roman',serif;letter-spacing:-.065em;margin-top:.02em}
+.archive-wordmark em{font:780 clamp(18px,2.15vw,28px)/.95 ArchiveInter,system-ui,sans-serif;letter-spacing:-.075em;margin-top:.02em}
 @media(max-width:690px){.archive-wordmark span{font-size:clamp(15px,5.35vw,25px)}.archive-wordmark em{font-size:clamp(14px,4.95vw,23px)}}
 
 /* Archive clips sit inside the paper matte; the button keeps all gestures. */
