@@ -2,12 +2,13 @@ import {priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {stripSiteChromeAssets} from './site_chrome.mjs';
 import {normalizeAssetBuildKeys} from './asset_build_test_helpers.mjs';
 import {applyRefinedHtml} from './site_refinement_test_helpers.mjs';
+import {normalizeSiteTabIcon} from './site_tab_icon.mjs';
 
 // Historical copy/SEO snapshots predate the approved decorative motion layer.
 // Ignore only its two asset tags; retain every content and operational byte.
 // Current composition checks and test_sculpture_motion cover asset loading.
 export function normalizeHistoricalPresentation(source) {
-  return normalizeAssetBuildKeys(stripSiteChromeAssets(applyRefinedHtml(priorJapaneseUpdatesHtml(source))))
+  return normalizeAssetBuildKeys(stripSiteChromeAssets(applyRefinedHtml(priorJapaneseUpdatesHtml(normalizeSiteTabIcon(source)))))
     .replace(/[ \t]*<link rel="stylesheet" href="(?:\.\.\/)?sculpture-motion\.css(?:\?v=BUILD)?">[ \t]*\n?/g, '')
     .replace(/[ \t]*<script type="module" src="(?:\.\.\/)?sculpture-motion\.js(?:\?v=BUILD)?"><\/script>[ \t]*\n?/g, '');
 }

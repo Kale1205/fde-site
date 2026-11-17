@@ -229,10 +229,18 @@ def resolve_base_ref(root, requested=None):
 
 
 def normalize_html_for_lastmod(content):
-    """Ignore only local CSS/JS ?v= cache-key values when comparing HTML."""
+    """Ignore asset cache keys and the reviewed browser-tab-only icon replacement."""
 
     if content is None:
         return None
+    # This exact, non-content metadata change does not change an indexed page's lastmod.
+    for prefix in ("", "../", "../../", "../../../"):
+        approved_tab_icons = "\n".join((
+            f'<link rel="icon" type="image/svg+xml" sizes="any" href="{prefix}assets/bakedkale-character.svg?v=tab-v1">',
+            *(f'<link rel="icon" type="image/png" sizes="{n}x{n}" href="{prefix}assets/bakedkale-tab-v1-{n}.png">' for n in (32, 16)),
+        ))
+        legacy_tab_icon = f'<link rel="icon" type="image/svg+xml" href="{prefix}assets/baked-kale-mark.svg">'
+        content = content.replace(approved_tab_icons, legacy_tab_icon)
     return ASSET_VERSION_PATTERN.sub(
         lambda match: f"{match.group('prefix')}<build-version>",
         content,

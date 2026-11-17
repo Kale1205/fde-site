@@ -10,10 +10,11 @@ import {runInNewContext} from 'node:vm';
 import {canAcceptLpRequests,LP_ACCEPTANCE_START,LP_FEATURES} from '../ja/lp/lp-policy.js';
 import {withLpDestination,pendingLpDestination,liveLpDestination} from './lp_navigation.mjs';
 import {renderLpPage} from './build_lp_pages.mjs';
+import {legacySiteTabIcon,normalizeSiteTabIcon,siteTabIcon} from './site_tab_icon.mjs';
 const root=new URL('../',import.meta.url),read=file=>readFileSync(new URL(file,root),'utf8');
 const hash=data=>createHash('sha256').update(data).digest('hex');
 const normalize=html=>html.replace(/(\.(?:css|js)\?v=)\d{8}-\d{6}/g,'$1BUILD');
-const normalizeFde=html=>normalize(html)
+const normalizeFde=html=>normalize(normalizeSiteTabIcon(html))
  .replace(/<!-- FDE page loading -->\n[\s\S]*?<!-- End FDE page loading -->\n/g,'')
  .replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'');
 const previous=file=>execFileSync('git',['show',`f92f7506bf67a8bd1cb3e209e67252dc54941117:${file}`],{cwd:root,encoding:'utf8'});
@@ -83,5 +84,27 @@ test('the diagnostic result distinguishes base price from additional fees and fi
   assert(html.includes('<th>外部サービス費</th><td>未確定・別途確認</td>'));
   assert(html.includes('<th>支払総額</th><td>正規見積で確定</td>'));
   assert(html.includes('開始価格で、支払総額ではありません'));
+ }
+});
+test('LP and IMS introduction publish only the approved character tab icons; other surfaces keep their icon',()=>{
+ for(const [prefix,paths] of [
+  ['', ['index.html']], ['../',['ja/index.html','zh/index.html']],
+  ['../../',['index','examples','service','diagnosis'].map(x=>'ja/lp/'+x+'.html')],
+  ['../../../',Array.from({length:10},(_,i)=>'ja/lp/cases/'+String(i+1).padStart(2,'0')+'.html')],
+ ])for(const name of paths){
+  const html=read(name),head=html.slice(0,html.indexOf('</head>'));
+  assert.deepEqual([...head.matchAll(/<link rel="icon"[^>]*>/g)].map(x=>x[0]),siteTabIcon(prefix).split('\n'),name);
+  assert.equal(normalizeSiteTabIcon(head).replace(legacySiteTabIcon(prefix),'').includes('bakedkale-tab-v1-'),false,name);
+ }
+ for(const [prefix,files] of [['',['cms-admin.html','license.html']],['../',['ja/license.html','zh/license.html','ja/quiet-form.html']]]){
+  for(const file of files){const html=read(file);assert(html.includes(legacySiteTabIcon(prefix)),file);assert(!html.includes('bakedkale-tab-v1-'),file);}
+ }
+ const unrelated='<link rel="icon" href="/other.png">';
+ assert.equal(normalizeSiteTabIcon(unrelated),unrelated);
+ for(const n of [16,32]){
+  const png=readFileSync(new URL('../assets/bakedkale-tab-v1-'+n+'.png',import.meta.url));
+  assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
+  assert.equal(png.readUInt32BE(16),n);assert.equal(png.readUInt32BE(20),n);
+  assert.equal(png[25],6,'PNG retains alpha');
  }
 });
