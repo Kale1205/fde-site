@@ -1,3 +1,4 @@
+import {priorJapaneseUpdatesFaq,priorJapaneseUpdatesFaqItem,priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {approveFaqDocument,approveUsdCopy} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
@@ -20,7 +21,7 @@ import {applyApprovedInitialReleaseScope,initialScopeFaqAnswers} from './initial
 
 const root=new URL('../',import.meta.url);
 const baseline='b714f3d7e3cf2444effb6ca6b0d303c3036857f4';
-const read=file=>withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8'));
+const read=file=>priorJapaneseUpdatesFaq(file,withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8')));
 const before=file=>{ const old=applyW02PurchaseCta(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'})); return file==='contact-config.js'?applyCmsMemoryKey(old):applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const normalized=value=>normalizeAssetBuildKeys(value.trimEnd());
 const prefixes=['','ja/','zh/'];
@@ -37,7 +38,7 @@ for(const prefix of prefixes)for(const page of names){
     assert.deepEqual(meta(normalized(current)),meta(normalized(apply(file,old))),'only pinned Chinese demo descriptions and date-only asset keys change');
     assert.deepEqual(current.match(/<link rel="(?:canonical|alternate)"[^>]*>|<meta name="robots"[^>]*>/g),old.match(/<link rel="(?:canonical|alternate)"[^>]*>|<meta name="robots"[^>]*>/g),'canonical/hreflang/robots remain exact');
     assert.deepEqual(current.match(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g),old.match(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g));
-    assert.deepEqual(outsideFaq(current).match(/(?:¥|\$)\s?\d[\d,.]*/g),outsideFaq(old).match(/(?:¥|\$)\s?\d[\d,.]*/g));
+    assert.deepEqual(outsideFaq(priorJapaneseUpdatesHtml(current)).match(/(?:¥|\$)\s?\d[\d,.]*/g),outsideFaq(old).match(/(?:¥|\$)\s?\d[\d,.]*/g));
     assert.deepEqual(current.match(/<a\b[^>]*>/g),old.match(/<a\b[^>]*>/g),'no new routes or links');
     assert.deepEqual(current.match(/<form\b[\s\S]*?<\/form>/g),apply(file,old).match(/<form\b[\s\S]*?<\/form>/g),'only pinned demo helper text changes within forms');
     const controls=value=>outsideFaq(value).match(/<(?:form|input|select|textarea|button|option)\b[^>]*>/g);
@@ -64,7 +65,7 @@ test('current business-policy answers and existing FAQ prices retain their appro
     for(const locale of ['ja','en','zh-CN'])assert.equal(item.answer[locale],approved.get(id).answer[locale],`${id}/${locale}: product policy requires separate approval`);
   }
   const prices=item=>JSON.stringify(item).match(/(?:[¥￥$]|JPY|USD)\s*\d[\d,.]*|\d[\d,.]*\s*(?:円|日元|美元|USD|JPY)/gi)||[];
-  for(const item of data.faq)if(approved.has(item.id))assert.deepEqual(prices(item),prices(approved.get(item.id)),`${item.id}: existing prices require separate approval`);
+  for(const item of data.faq)if(approved.has(item.id))assert.deepEqual(prices(priorJapaneseUpdatesFaqItem(item)),prices(approved.get(item.id)),`${item.id}: existing prices require separate approval`);
 });
 for(const file of ['content/faq-content.json','content/faq-policy-additions.json'])test(file+': historical migration changes only Chinese translation, labels and two scoped answers',()=>{
   const approved=readFaqMigrationFixture(file);

@@ -9,7 +9,7 @@
 | License | 49,800円・買い切り | $349候補・one-time | 購入後3か月のUpdates相当を含む |
 | License Plus | 99,800円・買い切り | $699候補・one-time | Full source、社内改変権、技術資料、Customer Server / Self-hosted運用を予定。Updates特典なし |
 
-License購入後3か月が終了しても、その時点のVersionは永続利用できます。Updates Add-onは4〜6か月目が月額4,900円（$31候補）、7か月目以降が月額9,800円（$62候補）で、明示的な申込みが必要です。有料契約へ自動移行しません。License Plusは別商品で、差額UpgradeとUpdates Add-onの対象外です。USDは未承認候補で、最終価格ではありません。
+License購入後3か月が終了しても、その時点のVersionは永続利用できます。日本円のUpdates Add-onは購入後4か月目以降、一律月額4,900円（税込）で、明示的な申込みが必要です。別建ての米ドル予定価格は4〜6か月目が月額$31、7か月目以降が月額$62で変更ありません。有料契約へ自動移行しません。License Plusは別商品で、差額UpgradeとUpdates Add-onの対象外です。USDは未承認候補で、最終価格ではありません。
 
 Stripe設定では、2商品のPrice ID、日英それぞれの固定通貨、サーバー側allowlist、EULA、Webhook、解約、fulfillment境界を一体で再検証する必要があります。Updates Add-onは購入日による対象期間と継続権利の実装・レビューが終わるまでCheckoutへ追加しません。上記候補価格をStripeへ登録せず、Sandbox検証が完了するまでCheckout、本番決済、納品、顧客ポータルは無効のままです。
 
