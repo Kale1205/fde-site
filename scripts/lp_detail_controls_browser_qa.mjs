@@ -45,9 +45,56 @@ async function legacyMediaIsStill(){
   pass('legacy CMS clip is never requested; the original poster and caption still appear',{clipRequests});
  }finally{await context.close();}
 }
+async function liveArchiveOnlyClip(){
+ const context=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true}),page=await context.newPage();
+ page.on('pageerror',error=>errors.push(error.message));
+ try{
+  const {archive}=JSON.parse(readFileSync(new URL('../ja/lp/media-manifest.json',import.meta.url)));
+  const clip=archive?.['07'];
+  // Generic no-video and legacy regressions still run if CMS later replaces
+  // or removes this particular approved asset.
+  const approved='c1094b00f55bab0bdd237a9247e64d91274a96d8f26143ab84a5d7ffc8e4e781';
+  if(clip?.video!=='assets/archive/07/'+approved+'.mp4'||clip.caseId!==null){
+   console.log('SKIP: the exact approved slot-07 Archive-only clip is no longer assigned');
+   return;
+  }
+  await page.goto(base+'ja/lp/#archive');
+  await page.waitForFunction(()=>document.querySelector('#plane .material-print')&&!document.documentElement.classList.contains('fde-loading'));
+  assert.equal(await page.locator('.field-tools [data-lp-motion]').isVisible(),true);
+  const button=page.locator('.material-access [data-slot="07"]');
+  assert.equal(await button.count(),1);
+  await button.focus();assert.equal(await button.evaluate(el=>document.activeElement===el),true);
+  await page.keyboard.press('Enter');
+  await page.locator('#inspect').waitFor({state:'visible'});
+  assert.equal(await page.locator('#inspect-title').textContent(),clip.title);
+  assert.equal(await page.locator('#inspect .inspect-link').isVisible(),false);
+  assert.equal(await page.locator('#inspect .inspect-link').getAttribute('href'),null);
+  assert.equal(await page.locator('#inspect [data-lp-motion]').isVisible(),true);
+  await page.waitForFunction(()=>document.querySelector('#inspect video')?.currentTime>.1);
+  const video=page.locator('#inspect video');
+  assert.deepEqual(await video.evaluate(v=>[v.videoWidth,v.videoHeight,v.muted,v.playsInline,v.loop,v.controls]),[720,1280,true,true,true,false]);
+  assert.ok((await video.getAttribute('src')).endsWith('/'+clip.video));
+  await page.locator('#inspect [data-lp-motion]').click();
+  await video.waitFor({state:'detached'});
+  assert.ok((await page.locator('#inspect .archive-only-photo img').getAttribute('src')).endsWith('/'+clip.poster));
+  await page.locator('.close-inspect').click();
+  await page.waitForFunction(()=>document.activeElement===document.querySelector('.material-access [data-slot="07"]'));
+  const legacy=page.locator('.material-access [data-material="6"]:not([data-slot])');
+  assert.equal(await legacy.count(),1);
+  await legacy.focus();assert.equal(await legacy.evaluate(el=>document.activeElement===el),true);
+  await page.keyboard.press('Enter');
+  await page.locator('#inspect .inspect-link').waitFor({state:'visible'});
+  assert.ok((await page.locator('#inspect .inspect-link').getAttribute('href')).endsWith('/07.html'));
+  assert.equal(await page.locator('#inspect [data-lp-motion]').isVisible(),false);
+  pass('published Archive-only clip plays inline without a Stories link; assigned details still link');
+ }finally{await context.close();}
+}
 try{
  const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage();
  page.on('pageerror',error=>errors.push(error.message));
+ // This context verifies the behavior with no Archive videos; another
+ // context below exercises the real production manifest and approved clip.
+ await page.route('**/ja/lp/media-manifest.json',route=>route.fulfill({json:{version:1,cases:{}}}));
  await page.goto(base+'ja/lp/cases/01.html');
  await page.locator('button[data-lp-theme]').focus();await page.keyboard.press('Enter');
  assert.equal(await page.locator('html').getAttribute('data-lp-theme'),'dark');
@@ -97,6 +144,7 @@ try{
  }
  pass('320–1440px controls have 44px targets without horizontal overflow');
  await legacyMediaIsStill();
+ await liveArchiveOnlyClip();
  assert.deepEqual(errors,[]);
  writeFileSync(join(out,'results.json'),JSON.stringify({results,errors},null,2));
  console.log(results.length+' LP detail checks passed');
