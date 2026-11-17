@@ -27,7 +27,7 @@ return `<a class="skip skip-link" href="#works">作品へスキップ</a>
 <button class="theme" type="button" data-lp-theme aria-label="夜の表示に切り替え" aria-pressed="false"><span data-lp-theme-icon aria-hidden="true">☾</span></button>
 </header>
 <main id="main-content">
-<section id="archive" aria-labelledby="archive-title"><h1 class="sr-only" id="archive-title">bakedkale library</h1><div id="field" tabindex="0" role="region" aria-label="繰り返し表示する素材。ドラッグまたは矢印キーで移動" aria-describedby="archive-help"><div id="plane"></div></div><p class="sr-only" id="archive-help">矢印キーで移動、プラス・マイナスで60〜100%に拡大・縮小、ホームキーでリセット。素材の一覧を下に用意しています。</p><span class="sr-only" data-lp-reception>${LP_RECEPTION_NOTICE}</span>
+<section id="archive" aria-labelledby="archive-title"><h1 class="sr-only" id="archive-title">Baked Kale</h1><div id="field" tabindex="0" role="region" aria-label="繰り返し表示する素材。ドラッグまたは矢印キーで移動" aria-describedby="archive-help"><div id="plane"></div></div><p class="sr-only" id="archive-help">矢印キーで移動、プラス・マイナスで60〜100%に拡大・縮小、ホームキーでリセット。素材の一覧を下に用意しています。</p><span class="sr-only" data-lp-reception>${LP_RECEPTION_NOTICE}</span>
 <div class="field-tools" aria-label="拡大・表示位置"><button type="button" data-do="minus" aria-label="縮小">−</button><output id="zoom-value">100%</output><button type="button" data-do="plus" aria-label="拡大">+</button><button class="reset" type="button" data-do="reset" aria-label="表示をリセット">↺</button><button class="archive-motion-control" type="button" hidden data-lp-motion aria-label="動きを一時停止" aria-pressed="false"><span data-lp-motion-icon aria-hidden="true">Ⅱ</span></button></div>
 <div class="material-access"><p>素材を選択</p>${cases.map((s,i)=>`<button type="button" data-material="${i}">${e(s.title)}</button>`).join('')}</div>
 </section>
