@@ -1,6 +1,6 @@
 import * as media from './media-runtime.js';
 import {LP_ARCHIVE_CASES} from './media-schema.js';
-import {archiveFrames as frame,archiveOnlyFrame} from './archive-layout.js';
+import {archiveFrameForSlot} from './archive-layout.js?v=slot07-frame-1';
 'use strict';
 (async () => {
 const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -52,7 +52,7 @@ function makeTile(col,row){
    mark.className='archive-wordmark';mark.append(name,' ',edition);tile.append(mark);
    return;
   }
-  const item=items[i],[w,ratio]=i<0?archiveOnlyFrame:frame[i],b=document.createElement('button');
+  const item=items[i],[w,ratio]=archiveFrameForSlot(slot,i),b=document.createElement('button');
   const px=(slot%5+.5)*20,py=(Math.floor(slot/5)+.5)*20;
   b.className='material-print';b.type='button';b.tabIndex=-1;b.dataset.material=i;b.dataset.slot=slot;b.dataset.archiveSource='archive:'+positions[slot];b.setAttribute('aria-label',(item?.dataset.title||'Archives')+'の素材');
   b.style.cssText='left:'+px+'%;top:'+py+'%;width:'+w*20+'%;--ratio:'+ratio+';--detail:'+(ratio<1?118:100)+'%';
