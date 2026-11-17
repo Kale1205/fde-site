@@ -30,7 +30,7 @@ await page.reload();if(await page.evaluate(()=>!!window.__fdePageLoading))throw 
 await page.goto(base+'ja/lp/');
 await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResult==='complete');
 const wordmark=async target=>target.locator('.archive-wordmark').evaluateAll(xs=>{const f=document.querySelector('#field').getBoundingClientRect();const a=xs.map(x=>({t:x.textContent,hit:getComputedStyle(x).pointerEvents,r:x.getBoundingClientRect()})).filter(({r})=>r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight);const x=a.find(({r})=>Math.abs(r.left+r.width/2-f.width/2)<2&&Math.abs(r.top+r.height/2-f.height/2)<2);return x?{count:a.length,text:x.t,hit:x.hit}:null;});
-const wm=await wordmark(page);if(!wm||wm.count!==1||wm.text!=='bakedkale library'||wm.hit!=='none')throw Error('Desktop Archive wordmark '+JSON.stringify(wm));
+const wm=await wordmark(page);if(!wm||wm.count!==1||wm.text!=='Baked Kale'||wm.hit!=='none')throw Error('Desktop Archive wordmark '+JSON.stringify(wm));
 const plane=page.locator('#plane'),initial=await plane.evaluate(x=>x.style.transform);
 const geometry=await page.locator('.material-print').evaluateAll(xs=>{
  const rs=xs.map(x=>x.getBoundingClientRect()).filter(r=>r.right>8&&r.bottom>10&&r.left<innerWidth-8&&r.top<innerHeight-10);
@@ -102,7 +102,7 @@ await page.locator('.stories .prints a').first().click();await page.waitForTimeo
 if(await page.locator('.case-meta span,.case-next,.case-copy .muted').count())throw Error('Removed case labels or next links returned');
 await page.screenshot({path:path.join(out,engine+'-detail.png')});await page.locator('.case-meta a').click();await page.waitForTimeout(2200);if(!await page.locator('.stories').isVisible())throw Error('return stories');
 const touch=await browser.newContext({hasTouch:true,viewport:{width:390,height:844}});const phone=await touch.newPage();
-await phone.goto(base+'ja/lp/');await phone.waitForTimeout(2200);const m=await wordmark(phone);if(!m||m.count!==1||m.text!=='bakedkale library')throw Error('Phone Archive wordmark '+JSON.stringify(m));
+await phone.goto(base+'ja/lp/');await phone.waitForTimeout(2200);const m=await wordmark(phone);if(!m||m.count!==1||m.text!=='Baked Kale')throw Error('Phone Archive wordmark '+JSON.stringify(m));
 const phoneHit=await phone.locator('.material-print').evaluateAll(xs=>{for(const x of xs){const r=x.getBoundingClientRect(),a=r.x+r.width*.5,b=r.y+r.height*.5;if(a>10&&a<380&&b>100&&b<740&&x.contains(document.elementFromPoint(a,b)))return [a,b]}});
 if(!phoneHit)throw Error('no tappable mobile material');await phone.touchscreen.tap(...phoneHit);if(!await phone.locator('#inspect').isVisible())throw Error('material tap unavailable');
 await phone.locator('.close-inspect').tap();

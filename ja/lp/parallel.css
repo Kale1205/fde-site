@@ -1,9 +1,17 @@
 .parallel-page{--canvas:#e8ede2;--ink:#233027;--soft:#526250;--line:#243a2726;--glass:#e8ede2e8;background:var(--canvas);color:var(--ink);min-height:100dvh}
 .parallel-page[data-theme="dark"],html[data-lp-theme="dark"] .parallel-page{--canvas:#171d19;--ink:#e3eae0;--soft:#b7c5b5;--line:#e9f8ea33;--glass:#171d19e8;color-scheme:dark}
 .parallel-page [hidden]{display:none!important}.parallel-page a{color:inherit}.parallel-page button{color:inherit;font:inherit}.parallel-page :focus-visible{outline:2px solid currentColor;outline-offset:4px}
-.parallel-head{position:fixed;top:0;left:0;right:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:max(13px,env(safe-area-inset-top)) 23px 12px;z-index:4;pointer-events:none;background:linear-gradient(var(--glass),transparent);font:500 12px/1.25 system-ui,sans-serif}
+.parallel-head{position:fixed;top:0;left:0;right:0;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;padding:max(29px,env(safe-area-inset-top)) 23px 12px;z-index:4;pointer-events:none;background:linear-gradient(var(--glass),transparent);font:500 12px/1.25 system-ui,sans-serif}
 .parallel-head>*{pointer-events:auto}.left-tools{display:flex;align-items:center;gap:15px;justify-self:start}.parallel-head a{text-decoration:none;white-space:nowrap}.left-tools>a:last-child{font-size:11px}.identity{display:flex;align-items:center;gap:4px}.identity img{object-fit:contain}
-.view-switch{display:flex;align-items:center;gap:15px;justify-self:center}.view-switch a{opacity:.54;padding:7px 0;border-bottom:1px solid transparent}.view-switch a[aria-current]{opacity:1;border-color:currentColor}.theme{justify-self:end;background:transparent;border:0;font-size:20px!important;cursor:pointer;padding:3px 7px}
+/* Keep the mode control visually centred independently of the side navigation. */
+.view-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;column-gap:2px;justify-self:center;position:relative;width:160px;height:36px;box-sizing:border-box;padding:3px;border-radius:8px;background:#e3e7df;color:#424c44;font:500 12px/1 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}
+.view-switch a{display:grid;place-items:center;position:relative;height:30px;border-radius:5px;text-decoration:none;isolation:isolate}
+.view-switch a::after{content:"";position:absolute;inset:-7px 0;z-index:-1}
+.view-switch a[aria-current]{color:#f5f7f1;background:#303f36}
+.view-switch a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.parallel-page[data-theme="dark"] .view-switch,html[data-lp-theme="dark"] .parallel-page .view-switch{background:#29332c;color:#d4ded1}
+.parallel-page[data-theme="dark"] .view-switch a[aria-current],html[data-lp-theme="dark"] .parallel-page .view-switch a[aria-current]{background:#dbe6d8;color:#26332a}
+.theme{justify-self:end;background:transparent;border:0;font-size:20px!important;cursor:pointer;padding:3px 7px}
 #archive{height:100dvh;position:relative;overflow:hidden;isolation:isolate}
 #field{position:absolute;inset:0;overflow:hidden;touch-action:none;overscroll-behavior:none;contain:layout paint;user-select:none;cursor:grab;outline-offset:-3px}
 #field.is-drag{cursor:grabbing}
@@ -22,7 +30,7 @@
 #inspect{padding:0;border:0;background:transparent;color:var(--ink);max-width:none;width:min(760px,90vw);max-height:90dvh;overflow:auto}
 #inspect::backdrop{background:#111810b3;backdrop-filter:blur(7px)}.inspect-sheet{position:relative;background:var(--canvas);padding:clamp(10px,2vw,22px);animation:inspect .28s cubic-bezier(.2,.8,.3,1) both}.inspect-sheet:focus{outline:none}@keyframes inspect{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
 .inspect-image .photo{aspect-ratio:1.5;max-height:60dvh}.close-inspect{position:absolute;top:13px;right:13px;z-index:1;border:0;background:var(--canvas);border-radius:50%;width:37px;height:37px;font-size:23px!important;cursor:pointer}.inspect-caption{display:flex;align-items:center;gap:12px;padding:11px 0 2px}.inspect-caption h2{font-size:clamp(13px,2.8vw,18px);margin:0}.inspect-id{font:11px ui-monospace,monospace}.inspect-link{font-size:12px;margin-left:auto;white-space:nowrap}
-@media(max-width:690px){.parallel-head{grid-template-columns:1fr auto;gap:3px;padding-left:10px;padding-right:10px}.left-tools{gap:10px}.view-switch{grid-row:2;grid-column:1/-1;gap:18px}.theme{grid-row:1;grid-column:2}.archive-notes{left:9px}.field-tools{right:9px}.stories .prints{grid-template-columns:repeat(2,minmax(0,1fr));gap:23px 17px}.stories .prints li:nth-child(n){margin:0}.stories .prints li:nth-child(even){margin-top:14%}}
+@media(max-width:690px){.parallel-head{grid-template-columns:1fr auto;row-gap:8px;padding:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 12px max(10px,env(safe-area-inset-left))}.left-tools{gap:10px}.view-switch{grid-row:2;grid-column:1/-1}.theme{grid-row:1;grid-column:2}.archive-notes{left:9px}.field-tools{right:9px}.stories .prints{grid-template-columns:repeat(2,minmax(0,1fr));gap:23px 17px}.stories .prints li:nth-child(n){margin:0}.stories .prints li:nth-child(even){margin-top:14%}}
 @media(prefers-reduced-motion:reduce){.stories.is-entering .prints li,.inspect-sheet{animation:none}.material-print{transition:none}}
 #archive::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--canvas),transparent 10%,transparent 89%,var(--canvas));opacity:.7;z-index:1}
 #inspect{margin:0;inset:0;width:100%;height:100%;max-height:none;background:var(--canvas)}
@@ -36,7 +44,7 @@
 
 /* Keep the adjacent FDE destination within the compact header on phones. */
 .left-tools>a:not(.identity){font-size:11px}
-@media(max-width:390px){.left-tools{gap:7px}.left-tools>a:not(.identity){font-size:10px}.identity img{width:24px;height:24px}.identity b{font-size:11px}.parallel-head{padding-inline:8px}}
+@media(max-width:390px){.left-tools{gap:7px}.left-tools>a:not(.identity){font-size:10px}.identity img{width:24px;height:24px}.identity b{font-size:11px}.parallel-head{padding-inline:max(8px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-right))}}
 .parallel-page .gather-layer{position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none;contain:layout paint}
 .parallel-page .gather-layer *{pointer-events:none!important}
 .parallel-page .gather-print{position:absolute;will-change:transform;pointer-events:none}
