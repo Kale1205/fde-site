@@ -33,6 +33,25 @@ export function applyReviewedJapaneseUpdatesPriceBook(file,source){
 }
 const priced=new Set(['updates-price','license-updates-entitlement']);
 const answers=new Set([...priced,'updates-term','license-security-responsibility','cancel-updates-after-license','cancel-updates-only']);
+// Project the reviewed JPY copy onto the historical expected FAQ document,
+// leaving the current document under an exact comparison.
+export function applyReviewedJapaneseUpdatesFaq(file,source){
+  if(!/^content\/faq-(?:content|policy-additions)\.json$/.test(file))return source;
+  const data=JSON.parse(source);
+  let changed=false;
+  for(const item of data.faq){
+    if(!answers.has(item.id)||typeof item.answer?.ja!=='string')continue;
+    const previous=item.answer.ja;
+    item.answer.ja=copy.slice(0,2).reduce((text,[after,before])=>text.replaceAll(before,after),previous);
+    if(previous!==item.answer.ja){
+      changed=true;
+      const keywords=item.keywords?.ja;
+      const rate=priced.has(item.id)&&Array.isArray(keywords)?keywords.indexOf('4,900円'):-1;
+      if(rate>=0&&keywords[rate+1]==='9,800円')keywords.splice(rate+1,1);
+    }
+  }
+  return changed?JSON.stringify(data,null,2)+'\n':source;
+}
 export function priorJapaneseUpdatesFaqItem(item){
   if(!answers.has(item.id)||typeof item.answer?.ja!=='string')return item;
   const result=structuredClone(item);const original=result.answer.ja;result.answer.ja=prior(original,copy.slice(0,2));
