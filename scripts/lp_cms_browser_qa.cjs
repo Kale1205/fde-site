@@ -27,6 +27,8 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
   });
   const open=()=>page.getByRole('button',{name:'LP制作例',exact:true}).click(),d=()=>page.locator('#cmsLpEditor');
   const status=text=>d().getByRole('status').filter({hasText:text}).waitFor({timeout:15000});
+  // A similar status can still describe the previous slot while IndexedDB loads.
+  const archiveReady=async(slot,text)=>{await d().locator('.lp-map-slot[data-slot="'+slot+'"][aria-pressed="true"]').waitFor({timeout:15000});await status(text);};
   const preview=()=>d().getByRole('button',{name:'変更をプレビュー'}).click();
   await page.goto(base+'cms-admin.html');await open();await status('公開中の情報を読み込みました');
   assert.equal(api.length,0,'disconnected editor must not access GitHub');
@@ -44,25 +46,25 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
    const assigned=d().getByLabel('この素材から開くStoriesの案件');
    const slot07=d().locator('.lp-map-slot[data-slot="07"]');
    assert.ok(parseFloat(await slot07.evaluate(el=>el.style.width))>0);
-   await slot07.click();await status('公開中の情報を読み込みました');
+   await slot07.click();await archiveReady('07','公開中の情報を読み込みました');
    assert.equal(await assigned.inputValue(),'');
    const name=d().getByLabel('Archivesの素材名（空欄なら案件名）');
    await name.fill('案件なしの動画テスト');
    await d().getByRole('button',{name:'下書き保存',exact:true}).click();await status('端末内に下書き保存しました');
    await d().getByRole('button',{name:'メニューへ戻る',exact:true}).click();await page.reload();await open();
-   await slot07.click();await status('端末内の下書きを開きました');
+   await slot07.click();await archiveReady('07','端末内の下書きを開きました');
    assert.equal(await assigned.inputValue(),'');assert.equal(await name.inputValue(),'案件なしの動画テスト');
    await preview();await status('GitHub接続が必要');
    assert.match(await d().locator('#lpEditorResult video').getAttribute('src'),/\/archive\/07\//);
    await d().getByRole('tab',{name:'Stories',exact:true}).click();await status('公開中の情報を読み込みました');
    assert.equal(await d().locator('option[value="archive:07"]').count(),0);
    await d().getByRole('tab',{name:'Archives',exact:true}).click();await status('端末内の下書きを開きました');
-   await d().locator('.lp-map-slot[data-slot="15"]').click();await status('公開中の情報を読み込みました');
+   await d().locator('.lp-map-slot[data-slot="15"]').click();await archiveReady('15','公開中の情報を読み込みました');
    assert.equal(await assigned.inputValue(),'07');
   }
   const key=d().locator('.lp-map-slot[data-slot="00"]');await key.focus();await page.keyboard.press('ArrowRight');
   assert.equal(await d().locator('.lp-map-slot[data-slot="01"]').evaluate(el=>el===document.activeElement),true);
-  await page.keyboard.press('Enter');await status('公開中の情報を読み込みました');
+  await page.keyboard.press('Enter');await archiveReady('01','公開中の情報を読み込みました');
   assert.equal(await d().getByLabel('編集する位置（一覧から選択）').inputValue(),'01');
   assert.equal(await d().getByLabel('Archivesの素材名（空欄なら案件名）').inputValue(),'');
   await d().getByRole('tab',{name:'Stories',exact:true}).click();await status('公開中の情報を読み込みました');
