@@ -1,6 +1,6 @@
 import {LpPublisher,prepareLpDraft,inspectLpAsset} from './cms-lp-workflow.js';
 import {LP_IDS,LIMITS,LP_ARCHIVE_SLOTS,LP_ARCHIVE_CASES,LP_STORY_TEXT_LIMITS,LP_STORY_DETAIL_LIMITS,LP_STORY_BLOCK_LIMIT,archiveEntry,isArchiveStorySource,validateMediaManifest} from './ja/lp/media-schema.js';
-import {archiveFrames,archiveOnlyFrame} from './ja/lp/archive-layout.js';
+import {archiveFrameForSlot} from './ja/lp/archive-layout.js?v=slot07-frame-1';
 import {errorText} from './cms-news-workflow.js';
 
 const labels=['自家焙煎カフェ','少人数ピラティス','住宅リノベーション','フラワーアトリエ','革小物ブランド','税理士事務所','金属加工工場','陶芸体験工房','個別指導塾','ビジネス写真スタジオ'];
@@ -110,7 +110,7 @@ export function buildLpEditor(api,readToken,{previewOnly=false}={}){
   return {caseId:entry.caseId,path:entry.photo||entry.poster?'ja/lp/'+(entry.photo||entry.poster):''};
  }
  function paintImage(node,source,id){const visual=visualSource(source),path=visual.path,i=Number(id||visual.caseId)-1;node.style.backgroundImage=path?'url("'+path+'")':i<0?'none':'url("ja/lp/assets/concept-materials.png")';node.style.backgroundSize=path?'cover':'400% 300%';node.style.backgroundPosition=path?'center':(i%4)*100/3+'% '+Math.floor(i/4)*50+'%';}
- function renderMap(){if(!base)return;for(const [s,b]of mapButtons){const entry=publishedArchive(s),id=scope==='archive'&&s===slot?caseSelect.value:entry.caseId,[width,ratio]=archiveFrames[Number(id)-1]||archiveOnlyFrame,n=Number(s);b.style.left=(n%5+.5)*20+'%';b.style.top=(Math.floor(n/5)+.5)*20+'%';b.style.width=width*20+'%';b.style.aspectRatio=String(ratio);paintImage(b.firstElementChild,'archive:'+s,id);b.setAttribute('aria-pressed',String(scope==='archive'&&s===slot));b.title=slotLabel(s)+' / '+(entry.title||labels[Number(id)-1]||'案件に紐づけない');}}
+ function renderMap(){if(!base)return;for(const [s,b]of mapButtons){const entry=publishedArchive(s),id=scope==='archive'&&s===slot?caseSelect.value:entry.caseId,[width,ratio]=archiveFrameForSlot(s,Number(id)-1),n=Number(s);b.style.left=(n%5+.5)*20+'%';b.style.top=(Math.floor(n/5)+.5)*20+'%';b.style.width=width*20+'%';b.style.aspectRatio=String(ratio);paintImage(b.firstElementChild,'archive:'+s,id);b.setAttribute('aria-pressed',String(scope==='archive'&&s===slot));b.title=slotLabel(s)+' / '+(entry.title||labels[Number(id)-1]||'案件に紐づけない');}}
  function renderStage(){if(!draft||scope!=='stories')return;layerDraft.forEach((layer,i)=>{const b=layerButtons[i];paintImage(b,layer.source);b.style.left=layer.x+'%';b.style.top=layer.y+'%';b.style.width=layer.width+'%';b.style.transform='rotate('+layer.rotate+'deg)';b.classList.toggle('is-disabled',!layer.visible);b.setAttribute('aria-pressed',String(i===activeLayer));});}
  function showLayer(i){activeLayer=Number(i);layerSelect.value=String(i);const layer=layerDraft[activeLayer];layerSource.value=layer.source;layerVisible.checked=layer.visible;for(const [key,input]of Object.entries(layerInputs))input.value=String(layer[key]);renderStage();}
  function ensureStory(){draft.story||={};return draft.story;}
