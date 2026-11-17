@@ -6,6 +6,7 @@ import {createHash} from 'node:crypto';
 import {shareImage, withSharedImage, applyReviewedShareImage} from './social_share_metadata.mjs';
 import {applyReviewedJapaneseUpdatesHtml} from './jpy_updates_test_helpers.mjs';
 import {applyReviewedPublicPresentation} from './public_presentation.mjs';
+import {normalizeSiteTabIcon} from './site_tab_icon.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = file => readFileSync(new URL(file, root), 'utf8');
@@ -32,7 +33,7 @@ test('all 35 HTML documents share one explicit, correctly typed official image',
 });
 
 test('titles, descriptions, canonical, schema, robots, redirects and every body byte stay protected', () => {
-  const strip = source => source
+  const strip = source => normalizeSiteTabIcon(source)
     .replace(/\n<!-- Shared official Instagram image -->\n[\s\S]*?<!-- End shared official Instagram image -->\n/g, '')
     .replace(/<meta\b[^>]*>/g, tag => /(?:property|name)="(?:og:image(?::(?:url|secure_url|type|width|height|alt))?|twitter:(?:image(?::alt)?|card))"/.test(tag) ? '' : tag)
     .replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g, '$1BUILD')

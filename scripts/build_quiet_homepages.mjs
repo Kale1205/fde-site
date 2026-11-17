@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { renderQuietPreview } from './build_quiet_form_preview.mjs';
 import { approvedHeadPrefix } from './approved_head_prefix.mjs';
+import { withSiteTabIcon } from './site_tab_icon.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const directories = { en: '', ja: 'ja/', zh: 'zh/' };
@@ -15,7 +16,7 @@ async function renderQuietHomepageContent(locale) {
   const source = await readFile(path.join(root, directories[locale], 'index.html'), 'utf8');
   const version = (await readFile(path.join(root, 'build-version.txt'), 'utf8')).trim();
   // Keep each existing title, description, canonical, hreflang and entity IDs.
-  let head = approvedHeadPrefix(source, {jsonLd: true});
+  let head = withSiteTabIcon(approvedHeadPrefix(source, {jsonLd: true}), prefix);
   head = head.replace(/(<script type="application\/ld\+json">)\s*([\s\S]*?)(<\/script>)/, (_, open, json, close) => {
     const data = JSON.parse(json);
     // The approved layout has no FAQ section. Never advertise invisible FAQs.

@@ -1,4 +1,4 @@
-import {withJapaneseImsSearchPresentation} from "./jp_search_presentation.mjs";
+import {withJapaneseImsSearchPresentation} from './jp_search_presentation.mjs';
 import {applyReviewedJapaneseUpdatesHtml} from './jpy_updates_test_helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -7,6 +7,7 @@ import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import {pageLoadingBootstrap,loadingPages,loadingEntryPages,stripLoadingHead} from './page_loading_template.mjs';
 import {approvedHeadPrefix} from './approved_head_prefix.mjs';
+import {normalizeSiteTabIcon} from './site_tab_icon.mjs';
 const runtime=readFileSync(new URL('../page-loading.js',import.meta.url),'utf8');
 const flush=async()=>{for(let i=0;i<10;i++)await Promise.resolve();};
 function harness({cached=true,below=false,storage='0',storageFails=false,mainTabindex=null,navigationType='navigate',legacyType=0,reduced=false}={}){
@@ -74,7 +75,7 @@ test('only the exact owned bootstrap passes static metadata script protection',(
 });
 test('only entry documents contain the FDE loader; other page shells are unchanged',()=>{
  assert.deepEqual(loadingEntryPages,['index.html','ja/index.html','zh/index.html']);assert.equal(loadingPages.length,27);
- const strip=html=>stripLoadingHead(html,{strict:false}).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'').replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
+ const strip=html=>stripLoadingHead(normalizeSiteTabIcon(html),{strict:false}).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'').replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
  const root=new URL('../',import.meta.url),baseline='2c222b5ec20f2623286f93ab5afe23eabdbbf222';
  for(const file of loadingPages){
   const html=readFileSync(new URL(file,root),'utf8'),eligible=loadingEntryPages.includes(file);

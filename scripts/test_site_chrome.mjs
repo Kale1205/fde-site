@@ -16,7 +16,7 @@ test('the header shares the existing footer preference and measures the true row
  const js=read('site-chrome.js');for(const token of ['motion-preferences.js','motionPreference.matches',"addEventListener('change'",'ResizeObserver','getBoundingClientRect().height'])assert(js.includes(token));assert(!js.includes('localStorage'));
 });
 test('owned metadata cannot hide unknown scripts or a changed character source',()=>{
- const html=read('ja/index.html');assert.throws(()=>stripSiteChromeAssets(html.replace('site-chrome.js?v=','unexpected.js?v=')),/Unexpected script/);assert.throws(()=>withSiteChrome('ja/index.html',html.replace('assets/bakedkale-character.svg','assets/unknown.svg')),/Unexpected brand/);
+ const html=read('ja/index.html');assert.throws(()=>stripSiteChromeAssets(html.replace('site-chrome.js?v=','unexpected.js?v=')),/Unexpected script/);assert.throws(()=>withSiteChrome('ja/index.html',html.replace('data-brand-character src="../assets/bakedkale-character.svg"','data-brand-character src="../assets/unknown.svg"')),/Unexpected brand/);
 });
 test('News cues and view navigation keep article controls without redundant read buttons',()=>{
  for(const p of ['', 'ja/','zh/']){const html=read(p+'news.html');assert(/id="news-updates-title">(?:Click ↓|点击 ↓)</.test(html));assert(!/class="(?:book-read|wire-read-more)"/.test(html));assert(/class="news-view-link" data-news-view-all/.test(html));assert(/class="news-view-link" data-news-back/.test(html));assert(html.includes('aria-haspopup="dialog"'));assert(html.includes('data-current-price-notice'));}

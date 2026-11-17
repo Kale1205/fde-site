@@ -8,6 +8,34 @@
       "alt": "夜の踏切。止まれの標識と、暗がりの線路が見える縦長の動画。",
       "video": "assets/archive/07/c1094b00f55bab0bdd237a9247e64d91274a96d8f26143ab84a5d7ffc8e4e781.mp4",
       "poster": "assets/archive/07/64d7cd72555849e3b97a3a845df85a6326ed50ee84fd0675acc74df4ecba78af.jpg"
+    },
+    "04": {
+      "caseId": null,
+      "title": "風をまとう門",
+      "alt": "寺の門と石段の前で、五色の吹き流しが風に揺れる。",
+      "photo": "assets/archive/04/6de25020d69e5e0cab9bd156fdb84ec006091ffb797a5e4a623ebc937eef6cba.jpg",
+      "poster": "assets/archive/04/6de25020d69e5e0cab9bd156fdb84ec006091ffb797a5e4a623ebc937eef6cba.jpg",
+      "video": "assets/archive/04/8e1757a213de43c8c0ce426ddb2b4b3ed355870bb6d1e2772a3d5cb9ff926995.mp4"
+    },
+    "13": {
+      "caseId": null,
+      "title": "手水鉢に落ちる光",
+      "alt": "光が差す石の手水鉢に、鳥の石像と木の柄杓が並ぶ。",
+      "photo": "assets/archive/13/9187e0f65b282277d90e9b45e0098ef50172e4c20a6fbe05e220272f9d40a0d7.jpg"
+    },
+    "18": {
+      "caseId": null,
+      "title": "軒下の灯籠",
+      "alt": "木造の軒下に並ぶ釣り灯籠と、欄干の向こうの緑の山並み。",
+      "photo": "assets/archive/18/1de3f465b01a7e8cdfa1a00fb3b8ddc68c2ec69f3616d45373e1b57e5f2868ed.jpg"
+    },
+    "21": {
+      "caseId": null,
+      "title": "石垣に差す光",
+      "alt": "石垣の前に立つ手水舎の札と、木漏れ日で変わる石の陰影。",
+      "photo": "assets/archive/21/f1176a9db7583272d26517264e23f03f450fc97434f3c43313c9b5d46a5b143a.jpg",
+      "poster": "assets/archive/21/f1176a9db7583272d26517264e23f03f450fc97434f3c43313c9b5d46a5b143a.jpg",
+      "video": "assets/archive/21/f6481fd8a8083fd54f5f4855d46caa6c54323aad2416b9132b098011ee7bc2eb.mp4"
     }
   }
 }

@@ -15,6 +15,7 @@ from sitemap_config import (
     SitemapStateError,
     expected_lastmods_for_base,
     load_lastmod_manifest,
+    normalize_html_for_lastmod,
     render_sitemap,
     serialize_lastmod_manifest,
     validate_sitemap_state,
@@ -85,6 +86,19 @@ class SitemapLastmodTests(unittest.TestCase):
 
     def tearDown(self):
         self.repo.close()
+
+    def test_reviewed_tab_icon_does_not_bump_lastmod_or_hide_other_head_changes(self):
+        legacy = '<link rel="icon" type="image/svg+xml" href="assets/baked-kale-mark.svg">'
+        current = "\n".join((
+            '<link rel="icon" type="image/svg+xml" sizes="any" href="assets/bakedkale-character.svg?v=tab-v1">',
+            '<link rel="icon" type="image/png" sizes="32x32" href="assets/bakedkale-tab-v1-32.png">',
+            '<link rel="icon" type="image/png" sizes="16x16" href="assets/bakedkale-tab-v1-16.png">',
+        ))
+        base = '<head>' + legacy + '<title>Before</title></head><main>Text</main>'
+        favicon_only = base.replace(legacy, current)
+        self.assertEqual(normalize_html_for_lastmod(favicon_only), base)
+        self.assertNotEqual(normalize_html_for_lastmod(favicon_only.replace('Before', 'After')), base)
+        self.assertNotEqual(normalize_html_for_lastmod(favicon_only.replace('-16.png', '-other.png')), base)
 
     def test_new_lp_paths_are_admitted_only_when_absent_in_previous_xml(self):
         routes = {"ja/lp/index.html", "ja/lp/service.html"}
