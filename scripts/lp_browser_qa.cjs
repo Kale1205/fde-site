@@ -32,8 +32,16 @@ await page.waitForFunction(()=>document.documentElement.dataset.pageLoadingResul
 const wordmark=async target=>target.locator('.archive-wordmark').evaluateAll(xs=>{const f=document.querySelector('#field').getBoundingClientRect();const a=xs.map(x=>({t:x.textContent,hit:getComputedStyle(x).pointerEvents,r:x.getBoundingClientRect()})).filter(({r})=>r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight);const x=a.find(({r})=>Math.abs(r.left+r.width/2-f.width/2)<2&&Math.abs(r.top+r.height/2-f.height/2)<2);return x?{count:a.length,text:x.t,hit:x.hit}:null;});
 const wm=await wordmark(page);if(!wm||wm.count!==1||wm.text!=='bakedkale library'||wm.hit!=='none')throw Error('Desktop Archive wordmark '+JSON.stringify(wm));
 const plane=page.locator('#plane'),initial=await plane.evaluate(x=>x.style.transform);
-const geometry=await page.locator('.material-print').evaluateAll(xs=>{const rs=xs.map(x=>x.getBoundingClientRect()).filter(r=>r.right>8&&r.bottom>10&&r.left<innerWidth-8&&r.top<innerHeight-10);const cols=[...new Set(rs.map(r=>Math.round(r.x+r.width/2)))].sort((a,b)=>a-b);return {cols,count:rs.length};});
-if(geometry.cols.length<5||geometry.count<18||Math.abs(geometry.cols[2]-geometry.cols[1]-1331/5.12)>3)throw Error('Archive lattice geometry '+JSON.stringify(geometry));
+const geometry=await page.locator('.material-print').evaluateAll(xs=>{
+ const rs=xs.map(x=>x.getBoundingClientRect()).filter(r=>r.right>8&&r.bottom>10&&r.left<innerWidth-8&&r.top<innerHeight-10);
+ // Individual print widths can change WebKit's fractional center rounding.
+ // Test every rendered center against its nearest true lattice column instead.
+ const center=innerWidth/2,pitch=Math.min(300,Math.max(210,innerWidth/5.12));
+ const measured=rs.map(r=>{const x=r.left+r.width/2,column=Math.round((x-center)/pitch);return {column,drift:Math.abs(x-center-column*pitch)};});
+ const cols=[...new Set(measured.map(x=>x.column))].sort((a,b)=>a-b);
+ return {cols,count:rs.length,maxCenterDrift:Math.max(0,...measured.map(x=>x.drift))};
+});
+if(geometry.cols.length<5||geometry.count<18||geometry.maxCenterDrift>.75||geometry.cols.some((col,i,cols)=>i>0&&col-cols[i-1]!==1))throw Error('Archive lattice geometry '+JSON.stringify(geometry));
 
 await page.mouse.move(420,500);await page.mouse.down();await page.mouse.move(680,600,{steps:8});await page.mouse.up();
 await page.waitForFunction(old=>document.getElementById('plane').style.transform!==old,initial);
