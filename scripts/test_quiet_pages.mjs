@@ -1,3 +1,4 @@
+import {priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -46,7 +47,7 @@ for (const name of pages) {
         : name.endsWith('contact.html') ? renderQuietContact(original(name))
         : name.endsWith('order.html') ? renderQuietOrder(original(name),readFileSync(path.join(root,name.replace('order.html','index.html')),'utf8')).replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m,'').replace('class="quiet-page ','class="')
         : name.endsWith('customer.html') ? renderQuietCustomer(name.startsWith('ja/')?'ja':name.startsWith('zh/')?'zh':'en',readFileSync(path.join(root,name.replace('customer.html','index.html')),'utf8')).replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m,'').replace('class="quiet-page ','class="') : original(name);
-    assert.equal(normalizeBuildKeys(stripped), normalizeBuildKeys(applyApprovedContinuingUsePolicy(name,expected)));
+    assert.equal(normalizeBuildKeys(name === "ja/license.html" ? priorJapaneseUpdatesHtml(stripped) : stripped), normalizeBuildKeys(applyApprovedContinuingUsePolicy(name,expected)));
     assert.equal((html.match(/quiet-pages\.css/g) || []).length, 1);
   });
 }

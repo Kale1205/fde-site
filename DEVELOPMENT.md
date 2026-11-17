@@ -53,7 +53,7 @@ The public site uses two planned FDE IMS products plus a License-only Updates ad
 
 | Product | Japanese price | English price | Term | Source code | Update entitlement |
 | --- | ---: | ---: | --- | --- | --- |
-| License | JPY 49,800 one-time | USD 349 candidate | Perpetual internal use | Not provided | Months 1–3 included; optional add-on is JPY 4,900 / USD 31 candidate for months 4–6 and JPY 9,800 / USD 62 candidate from month 7 |
+| License | JPY 49,800 one-time | USD 349 candidate | Perpetual internal use | Not provided | Months 1–3 included; optional JPY add-on is JPY 4,900/month (tax included) from month 4 onward; the separate USD plan remains USD 31/month for months 4–6 and USD 62/month from month 7 |
 | License Plus | JPY 99,800 one-time | USD 699 candidate | Perpetual internal use | Full source code for permitted internal modification | Updates add-on is not available; customer-managed operation |
 
 Updates is not a standalone product. It is an optional add-on available only to License customers, starts only after explicit opt-in, and never begins automatically. Ending the add-on never extinguishes the perpetual License or the right to keep using the latest version already received. License Plus is a separate purchase rather than a difference-price upgrade and is not eligible for the Updates add-on.

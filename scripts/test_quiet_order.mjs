@@ -35,7 +35,7 @@ for(const prefix of ['', 'ja/', 'zh/']){
     assert.match(page,/order-renewal/);assert.match(page,/order-hero-mark/);
     assert.equal((page.match(/class="order-product"/g)||[]).length,2);
     for(const file of ['ims-license-update.webp','ims-license-plus-customize.webp'])assert.ok(page.includes(file));
-    for(const price of (prefix==='ja/'?['¥49,800','¥99,800','¥4,900','¥9,800']:['$349','$699','$31','$62']))assert.ok(page.includes(price));
+    for(const price of (prefix==='ja/'?['¥49,800','¥99,800','¥4,900']:['$349','$699','$31','$62']))assert.ok(page.includes(price));
     for(const plan of home.match(/<div class="plan-top">[\s\S]*?<\/div>/g))assert.ok(page.includes(plan.match(/<p>([^<]+)<\/p>/)[1]));
     assert.match(page,/2027|2027年/);assert.match(page,/1月1日|January 1/);
     assert.match(page,/<ol class="order-process-rail">/);assert.equal((page.match(/class="order-step-icon"/g)||[]).length,3);

@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {shareImage, withSharedImage, applyReviewedShareImage} from './social_share_metadata.mjs';
+import {applyReviewedJapaneseUpdatesHtml} from './jpy_updates_test_helpers.mjs';
 import {applyReviewedPublicPresentation} from './public_presentation.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -36,7 +37,7 @@ test('titles, descriptions, canonical, schema, robots, redirects and every body 
     .replace(/<meta\b[^>]*>/g, tag => /(?:property|name)="(?:og:image(?::(?:url|secure_url|type|width|height|alt))?|twitter:(?:image(?::alt)?|card))"/.test(tag) ? '' : tag)
     .replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g, '$1BUILD')
     .replace(/>\s+</g, '><').trim();
-  for (const file of shareImage.paths) assert.equal(strip(read(file)), strip(applyReviewedPublicPresentation(file,baseline(file).toString())), file);
+  for (const file of shareImage.paths) assert.equal(strip(read(file)), strip(applyReviewedJapaneseUpdatesHtml(file,applyReviewedPublicPresentation(file,baseline(file).toString()))), file);
   const ownership = 'google7f844744756e4b18.html';
   assert.equal(read(ownership), baseline(ownership).toString());
 });

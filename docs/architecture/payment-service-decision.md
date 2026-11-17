@@ -74,6 +74,8 @@ The mappings below describe the disabled staging implementation. USD amounts are
 
 ### License-only Updates add-on
 
+> **2026-11-17 JPY update:** The historical tiers below no longer govern Japanese pricing. The first three months are included with the License; optional continuation from month four onward is a single JPY 4,900/month (tax included), only after explicit opt-in. The USD plan, version-entitlement timing, and blocked Checkout/production status were not changed.
+
 - Not a standalone product and not present in the Checkout allowlist
 - Months 1–3: included with License
 - Months 4–6: JPY 4,900 / USD 31 candidate per month after explicit opt-in

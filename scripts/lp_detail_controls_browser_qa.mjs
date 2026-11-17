@@ -77,8 +77,16 @@ async function liveArchiveOnlyClip(){
   await page.locator('#inspect [data-lp-motion]').click();
   await video.waitFor({state:'detached'});
   assert.ok((await page.locator('#inspect .archive-only-photo img').getAttribute('src')).endsWith('/'+clip.poster));
+  // Native close() may restore focus before the asynchronous close event.
+  // Wait for the app's close listener before moving focus to another item.
+  await page.locator('#inspect').evaluate(dialog=>dialog.addEventListener('close',()=>{
+   dialog.dataset.qaCloseHandled='true';
+  },{once:true}));
   await page.locator('.close-inspect').click();
-  await page.waitForFunction(()=>document.activeElement===document.querySelector('.material-access [data-slot="07"]'));
+  await page.waitForFunction(()=>{
+   const inspector=document.querySelector('#inspect');
+   return inspector.dataset.qaCloseHandled==='true'&&!inspector.open&&document.activeElement===document.querySelector('.material-access [data-slot="07"]');
+  });
   const legacy=page.locator('.material-access [data-material="6"]:not([data-slot])');
   assert.equal(await legacy.count(),1);
   await legacy.focus();assert.equal(await legacy.evaluate(el=>document.activeElement===el),true);

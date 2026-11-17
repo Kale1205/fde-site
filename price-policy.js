@@ -1,11 +1,11 @@
 // Owner-approved planned books. Actual launch and campaign dates remain unknown.
 const shared={durationMonths:6,actualLaunchDate:null,startDate:null,endDate:null};
-export const JPY_CAMPAIGN=Object.freeze({...shared,currency:'JPY',taxIncluded:true,license:{standard:74800,launch:49800},plus:{standard:149800,launch:99800},updates:[4900,9800]});
+export const JPY_CAMPAIGN=Object.freeze({...shared,currency:'JPY',taxIncluded:true,license:{standard:74800,launch:49800},plus:{standard:149800,launch:99800},updates:[4900]});
 export const USD_CAMPAIGN=Object.freeze({...shared,currency:'USD',taxIncluded:null,license:{standard:521,launch:349},plus:{standard:1043,launch:699},updates:[31,62]});
 export const priceBook=locale=>locale==='ja'?JPY_CAMPAIGN:USD_CAMPAIGN;
 export const money=(number,locale,{word=false}={})=>locale==='ja'&&word?number.toLocaleString('en-US')+'円':(locale==='ja'?'¥':'$')+number.toLocaleString('en-US');
 export const campaignCopy={
- ja:{launch:'発売記念',off:'約33% OFF',standard:'通常予定価格',tax:'税込',duration:'発売から6か月間・キャンペーン予定価格',terms:'日本向けの日本円・税込の予定価格です。キャンペーン予定価格は実際の発売から6か月間に適用します。通常予定価格はキャンペーン終了後の予定価格で、過去の販売価格ではありません。実際の発売日・開始日・終了日は未確定です。販売開始前のため、購入受付はまだ行っていません。Updatesの価格・条件は変更ありません。'},
+ ja:{launch:'発売記念',off:'約33% OFF',standard:'通常予定価格',tax:'税込',duration:'発売から6か月間・キャンペーン予定価格',terms:'日本向けの日本円・税込の予定価格です。キャンペーン予定価格は実際の発売から6か月間に適用します。通常予定価格はキャンペーン終了後の予定価格で、過去の販売価格ではありません。実際の発売日・開始日・終了日は未確定です。販売開始前のため、購入受付はまだ行っていません。LicenseのUpdatesは購入後3か月分を含みます。4か月目以降、希望して継続する場合は一律月額4,900円（税込）です。'},
  en:{launch:'Launch offer',off:'About 33% OFF',standard:'Planned standard price',tax:'tax status pending',duration:'Planned launch price · first 6 months after launch',terms:'Planned USD prices: License $521 → $349; License Plus $1,043 → $699. Launch prices apply for the first six months after the actual launch. Standard prices are planned post-campaign prices, not past selling prices. Actual launch and campaign dates and tax treatment are not confirmed. Purchasing is not available. Optional License Updates remains $31/month for months 4–6 after purchase and $62/month from month 7; the first three months are included.'},
  zh:{launch:'上市优惠',off:'约33% OFF',standard:'计划常规价格',tax:'税务处理未定',duration:'上市后前6个月・计划优惠价格',terms:'美元计划价格：License $521 → $349；License Plus $1,043 → $699。优惠价格适用于实际上市后的前6个月。常规价格是优惠结束后的计划价格，不代表过去的销售价格。实际上市日、优惠开始日、结束日和税务处理尚未确定，目前不能购买。License 的可选 Updates 仍为购买后第4–6个月每月 $31、第7个月起每月 $62，最初3个月包含在内。'},
 };

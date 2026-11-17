@@ -1,3 +1,4 @@
+import {priorJapaneseUpdatesFaq,priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {approveFaqDocument,approveUsdCopy} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
@@ -19,13 +20,13 @@ import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mj
 
 const root = new URL('../', import.meta.url);
 const baseline = 'd6ab9132810381668d72c9eff7664a87db0a9be1';
-const read = file => withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8'));
+const read = file => priorJapaneseUpdatesFaq(file,withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8')));
 const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return file==='contact-config.js'?applyCmsMemoryKey(old):applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const normalize = source => normalizeAssetBuildKeys(source.trimEnd());
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
   ['index','quiet-form','license','order','demo','goals','news','contact','customer'].map(page => prefix + page + '.html')
 ).concat(['overview.html','products.html']); // CMS has its own draft/PR behavior suite.
-const prices = source => source.match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
+const prices = source => priorJapaneseUpdatesHtml(source).match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
 const controls = source => [...source.matchAll(/<(?:a|button|input|select|textarea|form)\b[^>]*>/g)].map(m=>m[0]);
 const outsideFaq = source => source.replace(/<div id="cmsFaqList">[\s\S]*?<\/div><div id="faqEmpty"/, '<div id="faqEmpty"');
 

@@ -10,6 +10,7 @@ import {readFaqMigrationFixture} from './faq_content_test_helpers.mjs';
 import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mjs';
 import {applyApprovedInitialReleaseScope} from './initial_release_copy.mjs';
 import {applyApprovedMultilingualContent} from './multilingual_content_copy.mjs';
+import {applyReviewedJapaneseUpdatesFaq} from './jpy_updates_test_helpers.mjs';
 
 const root=new URL('../',import.meta.url);
 const read=file=>normalizeAssetBuildKeys(readFileSync(new URL(file,root),'utf8'));
@@ -48,7 +49,9 @@ test('CMS hydration cannot restore purchase-unavailable FAQ or suffixes',()=>{
     expected.answer=Object.fromEntries(Object.entries(expected.answer).map(([lang,text])=>[lang,removePurchaseStatusCopy(text)]));
     assert.deepEqual(item,expected,'All other FAQ questions, terms, prices and search keys are preserved');
   }
-  assert.equal(read('content/faq-policy-additions.json'),approveFaqDocument('content/faq-policy-additions.json',applyApprovedContinuingUsePolicy('content/faq-policy-additions.json',before('content/faq-policy-additions.json'))));
+  const policyFile='content/faq-policy-additions.json';
+  const expectedPolicy=approveFaqDocument(policyFile,applyApprovedContinuingUsePolicy(policyFile,before(policyFile)));
+  assert.equal(read(policyFile),applyReviewedJapaneseUpdatesFaq(policyFile,expectedPolicy));
   for(const prefix of ['', 'ja/', 'zh/']) {
     const portal=read(`${prefix}customer.html`);
     assert.ok(portal.includes('quiet-customer.js'));
