@@ -229,8 +229,14 @@ function photoRecords(entries,includeOffscreen=false){
   const paint={backgroundColor:style.backgroundColor,boxShadow:style.boxShadow};
   const imageMatrix=new DOMMatrixReadOnly(imageStyle.transform==='none'?undefined:imageStyle.transform);
   const image={left:(photo.offsetLeft+imageMatrix.e)/visual.offsetWidth*100+'%',top:(photo.offsetTop+imageMatrix.f)/visual.offsetHeight*100+'%',width:photo.offsetWidth*Math.abs(imageMatrix.a)/visual.offsetWidth*100+'%',height:photo.offsetHeight*Math.abs(imageMatrix.d)/visual.offsetHeight*100+'%',filter:imageStyle.filter,boxShadow:imageStyle.boxShadow};
-  const labels=qa('.collage-mark,.collage-cover,.collage-palette',visual).map(label=>getComputedStyle(label).opacity);
-  seen.add(key);records.push({i,r,visual,paint,image,palette,labels,element,asset:element.dataset.archiveSource});
+  const labelBoxes=qa('.collage-mark,.collage-cover,.collage-palette',visual).map(label=>{
+   const labelStyle=getComputedStyle(label);
+   return {opacity:labelStyle.opacity,left:label.offsetLeft/visual.offsetWidth*100+'%',
+    top:label.offsetTop/visual.offsetHeight*100+'%',width:label.offsetWidth/visual.offsetWidth*100+'%',
+    height:label.offsetHeight/visual.offsetHeight*100+'%',padding:labelStyle.padding};
+  });
+  const labels=labelBoxes.map(label=>label.opacity);
+  seen.add(key);records.push({i,r,visual,paint,image,palette,labels,labelBoxes,element,asset:element.dataset.archiveSource});
  }
  return records;
 }
@@ -251,9 +257,11 @@ function startGather(from,to,work){
  if(!from.length||!to.length||!Element.prototype.animate)return;
  const destination=work?stories:archive;
  const layer=document.createElement('div');layer.className='gather-layer';layer.setAttribute('aria-hidden','true');layer.inert=true;
- document.body.append(layer);destination.classList.remove('is-settled');destination.classList.add('is-arriving');
+ // Keep Archive paper flights beneath the same edge fade and zoom glass as
+ // their destination so those layers do not reappear abruptly at handoff.
+ (work?document.body:archive).append(layer);destination.classList.remove('is-settled');destination.classList.add('is-arriving');
  const task={layer,animations:[],targets:new Set(),cards:new Set(),timer:0,destination,width:innerWidth,height:innerHeight,scrollX:window.scrollX,scrollY:window.scrollY};gather=task;
- const plans=[],fragment=document.createDocumentFragment();let finishAfter=0;
+ const plans=[],storyArrivals=new Map(),fragment=document.createDocumentFragment();let finishAfter=0;
  const center=r=>[r.x+r.width/2,r.y+r.height/2];
  const dist=(a,b)=>{const [ax,ay]=center(a),[bx,by]=center(b);return Math.hypot(ax-bx,ay-by);};
  const offscreen=(r,i)=>{
@@ -285,7 +293,9 @@ function startGather(from,to,work){
   if(dest){
    dest.element.classList.add('is-in-flight');task.targets.add(dest.element);
    const card=dest.element.closest('.prints li');
-   if(card){card.classList.add('is-assembling');task.cards.add(card);}
+   if(card){card.classList.add('is-assembling');task.cards.add(card);
+    if(work)storyArrivals.set(card,Math.max(storyArrivals.get(card)||0,duration+delay));
+   }
   }
   const print=document.createElement('div');print.className='gather-print';print.dataset.material=i;
   if(dest?.asset||src?.asset)print.dataset.archiveSource=dest?.asset||src.asset;
@@ -305,6 +315,12 @@ function startGather(from,to,work){
    {transform:`translate3d(0,0,0) rotate(${final.angle}deg) scale(1,1)`},
   ),options,()=>{
    if(gather!==task)return;
+   if(work){
+    // Hold fully landed Story faces in the flight stack until the common
+    // handoff; exposing them individually puts following pieces above them.
+    print.dataset.arrived='';
+    return;
+   }
    print.dataset.landed='';print.style.visibility='hidden';
    if(dest){
     dest.element.classList.remove('is-in-flight');task.targets.delete(dest.element);
@@ -322,8 +338,18 @@ function startGather(from,to,work){
   ),options]);
   for(const [j,label] of qa('.collage-mark,.collage-cover,.collage-palette',copy).entries()){
    const opacity=src?.labels[j]??(work?'0':'1');
+   // The photograph was moved out of flow for animation. Freeze the
+   // original editorial label box rather than letting its siblings reflow.
+   const box=record.labelBoxes?.[j];
+   if(box){const {opacity:_,...position}=box;Object.assign(label.style,position,{position:'absolute',margin:0,boxSizing:'border-box'});}
    plans.push([label,work?[{opacity},{opacity,offset:.58},{opacity:1}]:[{opacity},{opacity:0,offset:.45},{opacity:0}],options]);
   }
+ }
+ // The caption should finish with its own final paper, not start a second
+ // opacity transition after the stack swaps.
+ for(const [card,arrival] of storyArrivals){
+  const caption=q('.print-caption',card);
+  if(caption)plans.push([caption,[{opacity:0},{opacity:1}],{duration:160,delay:Math.max(0,arrival-160),easing:'ease-out',fill:'both'}]);
  }
  layer.append(fragment);
  for(const [element,frames,options,land] of plans){

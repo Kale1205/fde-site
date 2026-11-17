@@ -73,7 +73,7 @@ try{
   for(const work of [true,false]){
    await page.evaluate(()=>{
     window.lpMotionTimes={};window.lpMotionObserver=new MutationObserver(records=>{for(const record of records){for(const node of record.addedNodes)if(node.classList?.contains('gather-layer'))lpMotionTimes.added=performance.now();for(const node of record.removedNodes)if(node.classList?.contains('gather-layer'))lpMotionTimes.removed=performance.now();}});
-    lpMotionObserver.observe(document.body,{childList:true});
+    lpMotionObserver.observe(document.body,{childList:true,subtree:true});
     const clicked=event=>{if(event.target.closest('.view-switch a')){lpMotionTimes.clicked=performance.now();document.removeEventListener('click',clicked,true);}};document.addEventListener('click',clicked,true);
    });
    await page.locator('.view-switch a[href="'+(work?'#works':'#archive')+'"]').click();await page.locator('.gather-layer').waitFor();
