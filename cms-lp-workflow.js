@@ -46,7 +46,7 @@ export async function prepareLpDraft(draft,base,{inspect=inspectLpAsset}={}){
  validateMediaManifest(base);
  const next=structuredClone(base),assets=[];
  const scope=draft.scope||'legacy',archive=scope==='archive',stories=scope==='stories';
- if(!LP_IDS.includes(draft.id)||!['legacy','stories','archive'].includes(scope)||archive&&!LP_ARCHIVE_SLOTS.includes(draft.slot))throw Error('LP_MANIFEST');
+ if((!LP_IDS.includes(draft.id)&&!(archive&&draft.id===null))||!['legacy','stories','archive'].includes(scope)||archive&&!LP_ARCHIVE_SLOTS.includes(draft.slot))throw Error('LP_MANIFEST');
  const catalog=archive?'archive':'cases',id=archive?draft.slot:draft.id;
  const current=next[catalog]?.[id];
  const defaults=archive?archiveEntry(base,id):null;

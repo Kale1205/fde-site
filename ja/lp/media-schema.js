@@ -7,6 +7,7 @@ export const LP_ARCHIVE_CASES=Object.freeze(Object.fromEntries(
  [2,8,3,0,5,9,4,6,7,1,0,5,-1,3,8,6,1,9,4,2,7,8,0,5,9]
  .flatMap((index,slot)=>index<0?[]:[[slotIds[slot],LP_IDS[index]]])
 ));
+export const isArchiveStorySource=(data,slot)=>LP_ARCHIVE_SLOTS.includes(slot)&&data?.archive?.[slot]?.caseId!==null;
 export const LP_STORY_SOURCES=Object.freeze(['case',...LP_ARCHIVE_SLOTS.map(slot=>'archive:'+slot)]);
 export const LIMITS={title:100,description:1200,alt:180};
 export const LP_STORY_LAYER_LIMITS=Object.freeze({x:[0,100],y:[0,100],width:[8,100],rotate:[-45,45]});
@@ -56,7 +57,7 @@ function checkEntry(id,entry,archive=false){
  const prefix='assets/'+(archive?'archive/':'cases/')+id+'/';
  for(const [key,value] of Object.entries(entry)){
   if(key==='story')checkStory(value);
-  else if(key==='caseId'){if(!LP_IDS.includes(value))fail();}
+  else if(key==='caseId'){if(value!==null&&!LP_IDS.includes(value))fail();}
   else if(Object.hasOwn(LIMITS,key)){if(!string(value,LIMITS[key]))fail();}
   else{
    const kind=key==='video'?/^[a-f0-9]{64}\.mp4$/:/^[a-f0-9]{64}\.(?:png|jpg|webp)$/;
@@ -66,7 +67,7 @@ function checkEntry(id,entry,archive=false){
    if(!matches(prefix)&&!(archive&&key!=='video'&&LP_IDS.includes(entry.caseId)&&matches('assets/cases/'+entry.caseId+'/')))fail();
   }
  }
- if(archive&&!LP_IDS.includes(entry.caseId))fail();
+ if(archive&&(!Object.hasOwn(entry,'caseId')||entry.caseId!==null&&!LP_IDS.includes(entry.caseId)))fail();
  if((entry.photo||entry.video)&&!entry.alt||Boolean(entry.video)!==Boolean(entry.poster))fail();
 }
 export function validateMediaManifest(data){
@@ -82,6 +83,10 @@ export function validateMediaManifest(data){
    if(!LP_ARCHIVE_SLOTS.includes(slot))fail();
    checkEntry(slot,entry,true);
   }
+ }
+ for(const {story} of Object.values(data.cases))if(story){
+  const references=[story.cover,...(story.layers||[]).map(layer=>layer.source),...(story.blocks||[]).map(block=>block.source)];
+  for(const reference of references)if(reference?.startsWith('archive:')&&!isArchiveStorySource(data,reference.slice(8)))fail();
  }
  return data;
 }

@@ -40,6 +40,26 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
   assert.equal(await d().getByLabel('Archivesの素材名（空欄なら案件名）').inputValue(),'位置ごとの素材テスト');
   await preview();await status('GitHub接続が必要');
   assert.equal(await d().getByRole('button',{name:'公開依頼（PR）'}).isDisabled(),true);
+  if(JSON.parse(blank).archive?.['07']?.caseId===null){
+   const assigned=d().getByLabel('この素材から開くStoriesの案件');
+   const slot07=d().locator('.lp-map-slot[data-slot="07"]');
+   assert.ok(parseFloat(await slot07.evaluate(el=>el.style.width))>0);
+   await slot07.click();await status('公開中の情報を読み込みました');
+   assert.equal(await assigned.inputValue(),'');
+   const name=d().getByLabel('Archivesの素材名（空欄なら案件名）');
+   await name.fill('案件なしの動画テスト');
+   await d().getByRole('button',{name:'下書き保存',exact:true}).click();await status('端末内に下書き保存しました');
+   await d().getByRole('button',{name:'メニューへ戻る',exact:true}).click();await page.reload();await open();
+   await slot07.click();await status('端末内の下書きを開きました');
+   assert.equal(await assigned.inputValue(),'');assert.equal(await name.inputValue(),'案件なしの動画テスト');
+   await preview();await status('GitHub接続が必要');
+   assert.match(await d().locator('#lpEditorResult video').getAttribute('src'),/\/archive\/07\//);
+   await d().getByRole('tab',{name:'Stories',exact:true}).click();await status('公開中の情報を読み込みました');
+   assert.equal(await d().locator('option[value="archive:07"]').count(),0);
+   await d().getByRole('tab',{name:'Archives',exact:true}).click();await status('端末内の下書きを開きました');
+   await d().locator('.lp-map-slot[data-slot="15"]').click();await status('公開中の情報を読み込みました');
+   assert.equal(await assigned.inputValue(),'07');
+  }
   const key=d().locator('.lp-map-slot[data-slot="00"]');await key.focus();await page.keyboard.press('ArrowRight');
   assert.equal(await d().locator('.lp-map-slot[data-slot="01"]').evaluate(el=>el===document.activeElement),true);
   await page.keyboard.press('Enter');await status('公開中の情報を読み込みました');
@@ -77,7 +97,7 @@ module.exports=async function verifyLpCms(browser,base,out,engine){
   assert.equal(next.cases['01'].title,'Stories構成テスト');assert.equal(next.order[1],'01');
   assert.equal(next.cases['01'].story.layers[2].x,23);assert.equal(next.cases['01'].story.layers[2].visible,false);
   assert.deepEqual(next.cases['01'].story.blocks,[{type:'text',heading:'追加見出し',text:'案件の追加文章'},{type:'image',source:'archive:00',caption:'追加した画像の説明'}]);
-  assert.equal(next.archive,undefined,'a different locally saved Archive draft is not silently published');
+  assert.deepEqual(next.archive,JSON.parse(blank).archive,'a different locally saved Archive draft is not silently published');
   assert.equal(writes.at(-1)[1].draft,true);assert.deepEqual(pageErrors,[]);
   console.log(engine,'LP CMS map, separate drafts, Stories layout/blocks, review and intercepted publication verified');
  }finally{await ctx.close();}

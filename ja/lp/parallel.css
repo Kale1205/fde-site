@@ -106,3 +106,11 @@
 .inspect-image{position:relative}
 .inspect-image .archive-loop{inset:0;width:100%;height:100%;max-height:none;object-fit:contain}
 .material-access:focus-within{right:16px;max-height:calc(100% - 160px);overflow:auto}
+
+/* Unassigned Archive media preserves its own proportions, not the case sprite. */
+.archive-only-photo{position:relative;overflow:hidden;background:#fff}
+.archive-only-photo::before{display:none}
+.archive-only-photo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.material-print:has(.archive-only-photo)>.archive-loop{object-fit:contain}
+.inspect-image .archive-only-photo{height:min(74dvh,70vw);aspect-ratio:9/16;width:auto;margin-inline:auto}
+.inspect-link[hidden]{display:none}

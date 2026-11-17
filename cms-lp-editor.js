@@ -1,6 +1,6 @@
 import {LpPublisher,prepareLpDraft,inspectLpAsset} from './cms-lp-workflow.js';
-import {LP_IDS,LIMITS,LP_ARCHIVE_SLOTS,LP_ARCHIVE_CASES,LP_STORY_TEXT_LIMITS,LP_STORY_DETAIL_LIMITS,LP_STORY_BLOCK_LIMIT,archiveEntry,validateMediaManifest} from './ja/lp/media-schema.js';
-import {archiveFrames} from './ja/lp/archive-layout.js';
+import {LP_IDS,LIMITS,LP_ARCHIVE_SLOTS,LP_ARCHIVE_CASES,LP_STORY_TEXT_LIMITS,LP_STORY_DETAIL_LIMITS,LP_STORY_BLOCK_LIMIT,archiveEntry,isArchiveStorySource,validateMediaManifest} from './ja/lp/media-schema.js';
+import {archiveFrames,archiveOnlyFrame} from './ja/lp/archive-layout.js';
 import {errorText} from './cms-news-workflow.js';
 
 const labels=['自家焙煎カフェ','少人数ピラティス','住宅リノベーション','フラワーアトリエ','革小物ブランド','税理士事務所','金属加工工場','陶芸体験工房','個別指導塾','ビジネス写真スタジオ'];
@@ -17,7 +17,7 @@ async function localDraft(value){
 function readDraft(value){
  if(!value)return value;const files={};
  for(const key of mediaKeys){const file=value.files?.[key];if(file?.bytes instanceof ArrayBuffer&&typeof file.type==='string')files[key]=new Blob([file.bytes],{type:file.type});else if(file instanceof Blob)files[key]=file;}
- return {...value,id:value.caseId||value.id,files};
+ return {...value,id:Object.hasOwn(value,'caseId')?value.caseId:value.id,files};
 }
 let db;
 function draftDb(){
@@ -46,7 +46,7 @@ export function buildLpEditor(api,readToken,{previewOnly=false}={}){
  for(let n=0;n<25;n++){const slot=String(n).padStart(2,'0');if(n===12){const mark=m('span','bakedkale\nlibrary');mark.className='lp-map-wordmark';map.append(mark);continue;}const b=btn('');b.className='lp-map-slot';b.dataset.slot=slot;b.setAttribute('aria-label',slotLabel(slot));const image=m('span'),number=m('span',String(n+1).padStart(2,'0'));image.className='lp-map-image';number.className='lp-map-number';b.append(image,number);map.append(b);mapButtons.set(slot,b);controls.push(b);}
  archive.append(m('h3','Archivesの素材マップ'),m('p','サイトと同じ5×5の配置です。中央のロゴ以外をクリック。繰り返し表示される同じ位置もまとめて変わります。矢印キーでも選択できます。'),map);
  const slotSelect=field(archive,'編集する位置（一覧から選択）',m('select'));for(const slot of LP_ARCHIVE_SLOTS)slotSelect.add(new Option(slotLabel(slot),slot));
- const caseSelect=field(archive,'この素材から開くStoriesの案件',m('select'));LP_IDS.forEach((id,i)=>caseSelect.add(new Option(id+' '+labels[i],id)));
+ const caseSelect=field(archive,'この素材から開くStoriesの案件',m('select'));caseSelect.add(new Option('案件に紐づけない',''));LP_IDS.forEach((id,i)=>caseSelect.add(new Option(id+' '+labels[i],id)));
  const archiveTitle=field(archive,'Archivesの素材名（空欄なら案件名）',m('input'));archiveTitle.maxLength=LIMITS.title;
  const archiveAlt=field(archive,'Archivesの画像・動画の説明（読み上げ用）',m('input'));archiveAlt.maxLength=LIMITS.alt;
  const kinds={photo:['Archivesの写真（JPEG・PNG・WebP、4MB以下）','image/jpeg,image/png,image/webp'],poster:['Archivesの動画の表紙画像（動画がある場合は必須）','image/jpeg,image/png,image/webp'],video:['Archivesの短いループ動画（MP4、30秒・12MB以下、推奨H.264）','video/mp4']};
@@ -59,7 +59,8 @@ export function buildLpEditor(api,readToken,{previewOnly=false}={}){
  const order=field(stories,'Storiesの掲載順',m('select'));LP_IDS.forEach((id,i)=>order.add(new Option(String(i+1)+'番目',id)));
  const photo=field(stories,'Storiesの表紙写真（JPEG・PNG・WebP、4MB以下）',m('input'));photo.type='file';photo.accept='image/jpeg,image/png,image/webp';
  const removeStoryPhoto=field(stories,'Storiesの差し替え写真を外して既定に戻す',m('input'));removeStoryPhoto.type='checkbox';
- function sources(input){input.add(new Option('この案件の表紙写真','case'));for(const slot of LP_ARCHIVE_SLOTS)input.add(new Option('Archives '+slotLabel(slot),'archive:'+slot));return input;}
+ let base;
+ function sources(input){input.replaceChildren(new Option('この案件の表紙写真','case'));for(const slot of LP_ARCHIVE_SLOTS.filter(slot=>isArchiveStorySource(base?.data,slot)))input.add(new Option('Archives '+slotLabel(slot),'archive:'+slot));return input;}
  const cover=sources(field(stories,'案件詳細のメイン画像に使う素材',m('select')));
  const detailText=m('details'),detailSummary=m('summary','案件詳細の文章を編集（空欄は既定の文章）');detailText.className='lp-detail-text-editor';detailText.append(detailSummary);stories.append(detailText);const detailInputs={};
  for(const [key,label]of [['headline','詳細の大見出し'],['subtitle','詳細のサブタイトル'],['eyebrow','詳細の業種・種別'],['mood','詳細の雰囲気'],['composition','詳細のページ構成の例'],['note','詳細の補足文章']]){const input=field(detailText,label,m(['headline','composition','note'].includes(key)?'textarea':'input'));input.maxLength=LP_STORY_DETAIL_LIMITS[key];detailInputs[key]=input;}
@@ -78,7 +79,7 @@ export function buildLpEditor(api,readToken,{previewOnly=false}={}){
  const actions=m('div');actions.className='actions';const save=btn('下書き保存'),preview=btn('変更をプレビュー'),close=btn('メニューへ戻る'),restart=btn('最新の公開内容からやり直す');restart.hidden=true;actions.append(save,preview,close,restart);
  const reviewBox=m('div');reviewBox.hidden=true;const result=m('div');result.id='lpEditorResult';const reviewed=m('input');reviewed.type='checkbox';const check=m('label');check.append(reviewed,document.createTextNode('変更内容と公開できる素材であることを確認しました'));const request=btn('公開依頼（PR）');request.disabled=true;request.hidden=previewOnly;check.hidden=previewOnly;reviewBox.append(result,check,request);
  dialog.append(title,help,status,tabs,panel,actions,reviewBox);document.body.append(dialog);
- let base=null,draft=null,prepared=null,running=false,dirty=false,urls=[],returnFocus=null,scope='archive',slot='00',caseId='01',activeLayer=6,layerDraft=defaults();
+ let draft=null,prepared=null,running=false,dirty=false,urls=[],returnFocus=null,scope='archive',slot='00',caseId='01',activeLayer=6,layerDraft=defaults();
  const say=t=>{status.textContent=t;};
  const busy=value=>{running=value;[...controls,save,preview,close,restart,reviewed,...blocks.querySelectorAll('input,select,textarea,button')].forEach(el=>el.disabled=value);request.disabled=value||!reviewed.checked||!prepared||!getToken()||!base?.manifestSha;};
  let blobUrls=new Map();
@@ -97,7 +98,7 @@ export function buildLpEditor(api,readToken,{previewOnly=false}={}){
   }
   const s=source.slice(8);let entry=publishedArchive(s);
   if(scope==='archive'&&s===slot&&draft){
-   const assigned=caseSelect.value;
+   const assigned=caseSelect.value||null;
    if(assigned!==entry.caseId&&!base.data.archive?.[s])entry={caseId:assigned};
    else entry={...entry,caseId:assigned};
    if(removeArchivePhoto.checked)delete entry.photo;
@@ -108,19 +109,20 @@ export function buildLpEditor(api,readToken,{previewOnly=false}={}){
   }
   return {caseId:entry.caseId,path:entry.photo||entry.poster?'ja/lp/'+(entry.photo||entry.poster):''};
  }
- function paintImage(node,source,id){const visual=visualSource(source),path=visual.path,i=Number(id||visual.caseId)-1;node.style.backgroundImage=path?'url("'+path+'")':'url("ja/lp/assets/concept-materials.png")';node.style.backgroundSize=path?'cover':'400% 300%';node.style.backgroundPosition=path?'center':(i%4)*100/3+'% '+Math.floor(i/4)*50+'%';}
- function renderMap(){if(!base)return;for(const [s,b]of mapButtons){const entry=publishedArchive(s),id=scope==='archive'&&s===slot?caseSelect.value:entry.caseId,[width,ratio]=archiveFrames[Number(id)-1],n=Number(s);b.style.left=(n%5+.5)*20+'%';b.style.top=(Math.floor(n/5)+.5)*20+'%';b.style.width=width*20+'%';b.style.aspectRatio=String(ratio);paintImage(b.firstElementChild,'archive:'+s,id);b.setAttribute('aria-pressed',String(scope==='archive'&&s===slot));b.title=slotLabel(s)+' / '+(entry.title||labels[Number(id)-1]);}}
+ function paintImage(node,source,id){const visual=visualSource(source),path=visual.path,i=Number(id||visual.caseId)-1;node.style.backgroundImage=path?'url("'+path+'")':i<0?'none':'url("ja/lp/assets/concept-materials.png")';node.style.backgroundSize=path?'cover':'400% 300%';node.style.backgroundPosition=path?'center':(i%4)*100/3+'% '+Math.floor(i/4)*50+'%';}
+ function renderMap(){if(!base)return;for(const [s,b]of mapButtons){const entry=publishedArchive(s),id=scope==='archive'&&s===slot?caseSelect.value:entry.caseId,[width,ratio]=archiveFrames[Number(id)-1]||archiveOnlyFrame,n=Number(s);b.style.left=(n%5+.5)*20+'%';b.style.top=(Math.floor(n/5)+.5)*20+'%';b.style.width=width*20+'%';b.style.aspectRatio=String(ratio);paintImage(b.firstElementChild,'archive:'+s,id);b.setAttribute('aria-pressed',String(scope==='archive'&&s===slot));b.title=slotLabel(s)+' / '+(entry.title||labels[Number(id)-1]||'案件に紐づけない');}}
  function renderStage(){if(!draft||scope!=='stories')return;layerDraft.forEach((layer,i)=>{const b=layerButtons[i];paintImage(b,layer.source);b.style.left=layer.x+'%';b.style.top=layer.y+'%';b.style.width=layer.width+'%';b.style.transform='rotate('+layer.rotate+'deg)';b.classList.toggle('is-disabled',!layer.visible);b.setAttribute('aria-pressed',String(i===activeLayer));});}
  function showLayer(i){activeLayer=Number(i);layerSelect.value=String(i);const layer=layerDraft[activeLayer];layerSource.value=layer.source;layerVisible.checked=layer.visible;for(const [key,input]of Object.entries(layerInputs))input.value=String(layer[key]);renderStage();}
  function ensureStory(){draft.story||={};return draft.story;}
- function capture(){if(!draft)return;if(scope==='archive'){draft.id=caseSelect.value;draft.title=archiveTitle.value;draft.alt=archiveAlt.value;draft.removePhoto=removeArchivePhoto.checked;draft.removeVideo=removeArchiveVideo.checked;}else{for(const [key,input]of Object.entries(inputs))draft[key]=input.value;draft.removePhoto=removeStoryPhoto.checked;const index=LP_IDS.indexOf(order.value);if(index>=0){draft.order=draft.order.filter(id=>id!==draft.id);draft.order.splice(index,0,draft.id);}}}
+ function capture(){if(!draft)return;if(scope==='archive'){draft.id=caseSelect.value||null;draft.title=archiveTitle.value;draft.alt=archiveAlt.value;draft.removePhoto=removeArchivePhoto.checked;draft.removeVideo=removeArchiveVideo.checked;}else{for(const [key,input]of Object.entries(inputs))draft[key]=input.value;draft.removePhoto=removeStoryPhoto.checked;const index=LP_IDS.indexOf(order.value);if(index>=0){draft.order=draft.order.filter(id=>id!==draft.id);draft.order.splice(index,0,draft.id);}}}
  async function preserve(){if(!draft||!dirty)return;capture();await storage('put',draft);dirty=false;}
  function renderBlocks(){blocks.replaceChildren();const values=draft?.story?.blocks||[];values.forEach((block,i)=>{const box=m('fieldset'),legend=m('legend',(i+1)+' · '+(block.type==='text'?'文章':'画像'));box.append(legend);function bound(key,label,node){field(box,label,node);node.value=block[key]||'';node.addEventListener('input',()=>{block[key]=node.value;changed();});return node;}if(block.type==='text'){bound('heading','見出し',m('input')).maxLength=LP_STORY_TEXT_LIMITS.heading;bound('text','本文',m('textarea')).maxLength=LP_STORY_TEXT_LIMITS.text;}else{bound('source','表示する画像',sources(m('select')));bound('alt','画像の説明（読み上げ用）',m('input')).maxLength=LIMITS.alt;bound('caption','画像の下の文章',m('textarea')).maxLength=LP_STORY_TEXT_LIMITS.caption;}const row=m('div');row.className='actions';const up=btn('上へ'),down=btn('下へ'),remove=btn('この項目を外す');up.disabled=i===0;down.disabled=i===values.length-1;up.addEventListener('click',()=>{if(running||i===0)return;[values[i-1],values[i]]=[values[i],values[i-1]];changed();renderBlocks();});down.addEventListener('click',()=>{if(running||i===values.length-1)return;[values[i+1],values[i]]=[values[i],values[i+1]];changed();renderBlocks();});remove.addEventListener('click',()=>{if(running)return;values.splice(i,1);changed();renderBlocks();});row.append(up,down,remove);box.append(row);blocks.append(box);});}
  async function load({reset=false}={}){
   clearUrls();const key=scope==='archive'?'archive:'+slot:caseId,saved=reset?null:await storage('get',key),published=scope==='archive'?publishedArchive(slot):base.data.cases[caseId]||{};
   draft=saved||{scope,slot:scope==='archive'?slot:undefined,id:scope==='archive'?published.caseId:caseId,baseSha:base.manifestSha,order:[...(base.data.order||LP_IDS)],files:{},title:published.title||'',description:published.description||'',alt:published.alt||'',...(scope==='stories'&&published.story?{story:structuredClone(published.story)}:{})};draft.scope=scope;
   archive.hidden=scope!=='archive';stories.hidden=scope!=='stories';tabArchive.setAttribute('aria-selected',String(scope==='archive'));tabStories.setAttribute('aria-selected',String(scope==='stories'));
-  slotSelect.value=slot;caseSelect.value=draft.id;archiveTitle.value=draft.title||'';archiveAlt.value=draft.alt||'';removeArchivePhoto.checked=Boolean(draft.removePhoto);removeArchiveVideo.checked=Boolean(draft.removeVideo);
+  slotSelect.value=slot;caseSelect.value=draft.id??'';archiveTitle.value=draft.title||'';archiveAlt.value=draft.alt||'';removeArchivePhoto.checked=Boolean(draft.removePhoto);removeArchiveVideo.checked=Boolean(draft.removeVideo);
+  sources(cover);sources(layerSource);
   select.value=caseId;for(const [key,input]of Object.entries(inputs))input.value=draft[key]||'';order.value=LP_IDS[Math.max(0,draft.order.indexOf(draft.id))];removeStoryPhoto.checked=Boolean(draft.removePhoto);cover.value=draft.story?.cover||'case';for(const [key,input]of Object.entries(detailInputs))input.value=draft.story?.detail?.[key]||'';layerDraft=structuredClone(draft.story?.layers||defaults());
   [photo,...Object.values(archiveFiles)].forEach(el=>el.value='');invalidate();dirty=false;restart.hidden=!saved||saved.baseSha===base.manifestSha;renderMap();showLayer(activeLayer);renderBlocks();
   say(saved&&saved.baseSha!==base.manifestSha?'この下書きの後に公開内容が更新されました。内容を控えて下書きを作り直してください。':saved?'端末内の下書きを開きました。':'公開中の情報を読み込みました。');
@@ -130,7 +132,7 @@ export function buildLpEditor(api,readToken,{previewOnly=false}={}){
  map.addEventListener('keydown',e=>{const b=e.target.closest('[data-slot]');if(!b)return;const delta={ArrowLeft:-1,ArrowRight:1,ArrowUp:-5,ArrowDown:5}[e.key];if(!delta)return;e.preventDefault();let n=Number(b.dataset.slot)+delta;if(n===12)n+=delta;const next=mapButtons.get(String(n).padStart(2,'0'));next?.focus();});
  slotSelect.addEventListener('change',run(()=>selectSlot(slotSelect.value)));select.addEventListener('change',run(async()=>{await preserve();caseId=select.value;await load();}));
  for(const input of [archiveTitle,archiveAlt,caseSelect,...Object.values(inputs),order,removeStoryPhoto,removeArchivePhoto,removeArchiveVideo])input.addEventListener('input',()=>{if(!draft)return;capture();changed();});
- caseSelect.addEventListener('change',()=>{if(draft){draft.id=caseSelect.value;changed();}});
+ caseSelect.addEventListener('change',()=>{if(draft){draft.id=caseSelect.value||null;changed();}});
  async function chooseFile(input,kind){const file=input.files[0];if(!file||!draft)return;say('ファイルを確認しています。');let inspected;try{inspected=await inspectLpAsset(file,kind);}catch(e){input.value='';throw e;}draft.files[kind]=new Blob([inspected.bytes],{type:file.type});if(scope==='archive'){if(kind==='photo')removeArchivePhoto.checked=false;if(kind==='video')removeArchiveVideo.checked=false;}else removeStoryPhoto.checked=false;capture();changed();say('ファイルを選択しました。下書き保存かプレビューに進めます。');}
  for(const [kind,input]of Object.entries(archiveFiles))input.addEventListener('change',run(()=>chooseFile(input,kind)));photo.addEventListener('change',run(()=>chooseFile(photo,'photo')));
  for(const [input,kind]of [[removeArchivePhoto,'photo'],[removeArchiveVideo,'video'],[removeStoryPhoto,'photo']])input.addEventListener('change',()=>{if(!input.checked||!draft)return;delete draft.files[kind];if(kind==='video')delete draft.files.poster;changed();});
