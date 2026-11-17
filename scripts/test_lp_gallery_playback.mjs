@@ -67,7 +67,7 @@ test('authored detail copy replaces only supplied fields and stays literal text'
 
 test('gallery dependency loading belongs to the document module graph, not an uncaught navigation-time import',()=>{
  const source=readFileSync(new URL('../ja/lp/parallel.js',import.meta.url),'utf8');
- for(const path of ['media-runtime.js','media-schema.js','archive-layout.js?v=slot07-frame-1'])assert.match(source,new RegExp("^import .+ from '\\./"+path.replace(/[.?]/g,'\\$&')+"';",'m'));
+ for(const path of ['media-runtime.js','media-schema.js','archive-layout.js?v=approved-archive-four-1'])assert.match(source,new RegExp("^import .+ from '\\./"+path.replace(/[.?]/g,'\\$&')+"';",'m'));
  assert.match(readFileSync(new URL('../cms-lp-editor.js',import.meta.url),'utf8'),/from '\.\/ja\/lp\/archive-layout\.js\?v=slot07-frame-1';/);
  assert.equal(source.includes('import('),false,'rapid navigation must not cancel an uncaught delayed dynamic dependency');
  for(const path of ['index.html','examples.html'])assert.match(readFileSync(new URL('../ja/lp/'+path,import.meta.url),'utf8'),/<script type="module" src="[^"<>]*parallel\.js\?v=[^"<>]+"><\/script>/);
@@ -93,5 +93,30 @@ test('the portrait train print clears the upper Archive paper at mobile and desk
  assert.ok(gap(393,.6,archiveOnlyFrame)<3,'old portrait nearly touched the previous row');
  for(const width of [320,375,393,430,512,689,690,768,1024,1280,1440,1600]){
   for(const zoom of [.6,.7,.8,.9,1])assert.ok(gap(width,zoom,train)>=5.5,`paper gap must be at least 5.5px at ${width}px, zoom ${zoom}`);
+ }
+});
+
+test('approved Archive items retain original ratios and leave room for adjacent photos',()=>{
+ const manifest=JSON.parse(readFileSync(new URL('../ja/lp/media-manifest.json',import.meta.url),'utf8'));
+ const added=['04','13','18','21'];
+ const cap=(x,min,max)=>Math.min(Math.max(x,min),max);
+ const slotFrame=id=>{
+  const key=String(id).padStart(2,'0'),entry=manifest.archive[key];
+  return archiveFrameForSlot(id,entry?.caseId===null?-1:Number(entry?.caseId||LP_ARCHIVE_CASES[key])-1);
+ };
+ for(const key of added){
+  const entry=manifest.archive[key],id=Number(key);
+  assert.equal(entry.caseId,null);
+  assert.ok(entry.photo.startsWith('assets/archive/'+key+'/'));
+  assert.ok(entry.title && entry.alt);
+  if(key==='04'||key==='21')assert.equal(entry.poster,entry.photo);
+  assert.equal(slotFrame(id)[1],key==='13'?3/4:9/16);
+  for(const width of [320,393,430,689,690,768,1280,1600]){
+   const mobile=width<690,pitch=mobile?cap(width*.43,142,220):cap(width/5.12,210,300),pitchY=pitch*(mobile?1.13:.977);
+   const height=([w,r])=>(pitch*w-(width<=690?6:8))/r+(width<=690?13:16);
+   for(const adjacent of [(id+5)%25,(id+20)%25].filter(slot=>slot!==12)){
+    assert.ok(pitchY>(height(slotFrame(id))+height(slotFrame(adjacent)))/2,'slot '+id+' overlaps '+adjacent+' at width '+width);
+   }
+  }
  }
 });
