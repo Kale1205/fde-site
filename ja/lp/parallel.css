@@ -46,6 +46,7 @@
 .left-tools>a:not(.identity){font-size:11px}
 @media(max-width:390px){.left-tools{gap:7px}.left-tools>a:not(.identity){font-size:10px}.identity img{width:24px;height:24px}.identity b{font-size:11px}.parallel-head{padding-inline:max(8px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-right))}}
 .parallel-page .gather-layer{position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none;contain:layout paint}
+.parallel-page #archive > .gather-layer{position:absolute;z-index:0}
 .parallel-page .gather-layer *{pointer-events:none!important}
 .parallel-page .gather-print{position:absolute;will-change:transform;pointer-events:none}
 .parallel-page .gather-print .photo{aspect-ratio:auto}
@@ -71,7 +72,7 @@
 .cp-6{left:26%;top:27%;width:46%;height:47%;--detail:110%;z-index:1;transform:rotate(-.3deg)}
 .stories li:nth-child(3n+2) .cp-0{left:3%;top:26%}.stories li:nth-child(3n+2) .cp-6{left:30%;top:17%;transform:rotate(.9deg)}
 .stories li:nth-child(3n) .cp-3{left:5%;top:47%}.stories li:nth-child(3n) .cp-6{left:21%;top:32%;transform:rotate(-1.2deg)}
-.stories .print-caption{display:block;text-align:center;padding-top:10px;transition:opacity .18s ease-out}
+.stories .print-caption{display:block;text-align:center;padding-top:10px}
 .parallel-page .stories li.is-assembling .print-caption{opacity:0}
 .gather-print .photo::before{width:var(--detail,100%);left:var(--crop-x,50%);top:var(--crop-y,50%)}
 @media(max-width:690px){.stories .prints li:nth-child(n){margin:0}.stories .prints{row-gap:31px}}

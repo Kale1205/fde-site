@@ -31,7 +31,7 @@ function fixture(){
   }
  }
  const all=node=>node.children.flatMap(child=>[child,...all(child)]);
- const qa=(selector,node)=>all(node).filter(child=>selector==='.photo'?child.classes.has('photo'):selector==='.is-in-flight'?child.classes.has('is-in-flight'):selector.includes('.collage-mark')?child.classes.has('collage-mark'):false);
+ const qa=(selector,node)=>all(node).filter(child=>selector==='.photo'?child.classes.has('photo'):selector==='.is-in-flight'?child.classes.has('is-in-flight'):selector==='.print-caption'?child.classes.has('print-caption'):selector.includes('.collage-mark')?child.classes.has('collage-mark'):false);
  const archive=new Node(),stories=new Node();archive.hidden=false;
  const context={Element:Node,document:{body:new Node(),hidden:false,createElement:()=>new Node(),createDocumentFragment:()=>Object.assign(new Node(),{fragment:true}),addEventListener:(name,fn)=>events['document:'+name]=fn},window:{scrollX:0,scrollY:0},innerWidth:1200,innerHeight:800,
   q:(selector,node)=>qa(selector,node)[0]||null,qa,clamp:(n,a,b)=>Math.min(b,Math.max(a,n)),archive,stories,gather:null,playback:null,inspectionPlayback:null,visibilityPaused:false,
@@ -48,7 +48,7 @@ function fixture(){
  ].join('\n'),context);
  function record(i,x,y,width=150,height=100,angle=0){
   const visual=new Node('collage-print'),photo=new Node('photo'),label=new Node('collage-mark');visual.append(photo,label);
-  const card=new Node();visual.card=card;card.append(visual);
+  const card=new Node();visual.card=card;card.append(visual,new Node('print-caption'));
   return {i,r:{x,y,width,height,angle},visual,element:visual,paint:{backgroundColor:'transparent',boxShadow:'none'},image:{left:'0%',top:'0%',width:'100%',height:'100%',filter:'none',boxShadow:'none'},palette:{},labels:['.4']};
  }
  const from=[record(0,60,80,220,170),record(1,770,350,130,210)],to=[record(0,300,250),record(0,470,220,90,70,3),record(1,850,90,110,75,-4)];
@@ -84,11 +84,11 @@ for(const width of [400,1440])test(`${width}px direction alone does not change a
  forward.context.endGather();reverse.context.endGather();await forward.flush();await reverse.flush();
 });
 
-test('one landed paper reveals its own target while other papers keep moving',async()=>{
+test('the Stories flight retains the complete paint stack until one atomic handoff',async()=>{
  const f=fixture();f.context.startGather(f.from,f.to,true);const task=f.context.gather;
  f.prints()[0].finish();await f.flush();
- assert(!f.to[0].element.classes.has('is-in-flight'));assert(f.to[1].element.classes.has('is-in-flight'));assert.equal(f.prints()[0].node.dataset.landed,'');
- assert.equal(f.prints()[0].node.style.visibility,'hidden');assert.equal(f.context.gather,task);
+ assert(f.to.every(record=>record.element.classes.has('is-in-flight')));assert.equal(f.prints()[0].node.dataset.arrived,'');
+ assert.notEqual(f.prints()[0].node.style.visibility,'hidden');assert.equal(f.context.gather,task);
  f.animations.forEach(animation=>animation.finish());await f.flush();
  assert.equal(f.context.gather,null);assert(task.layer.removed);assert(f.to.every(record=>!record.element.classes.has('is-in-flight')));assert(f.to.every(record=>!record.element.card.classes.has('is-assembling')));assert.equal(f.timers.size,0);
 });
@@ -125,4 +125,16 @@ test('viewport resize settles the Stories destination before its hidden-Archive 
 test('a hidden-field ResizeObserver callback with unchanged viewport does not cancel a new flight',()=>{
  const f=fixture();f.context.startGather(f.from,f.to,true);const task=f.context.gather;f.context.archive.hidden=true;f.context.resize();[...f.frames.values()][0]();
  assert.equal(f.context.gather,task);f.context.endGather();
+});
+
+test('the Archive-bound handoff still reveals each paper separately',async()=>{
+ const f=fixture();f.context.startGather(f.to,f.from,false);
+ f.prints()[0].finish();await f.flush();
+ assert.equal(f.prints()[0].node.style.visibility,'hidden');assert(!f.from[0].element.classes.has('is-in-flight'));assert(f.from[1].element.classes.has('is-in-flight'));
+ f.context.endGather();
+});
+test('each Stories caption finishes with its matte rather than delaying cleanup',()=>{
+ const f=fixture();f.context.startGather(f.from,f.to,true);
+ f.to.forEach((entry,i)=>{const caption=f.animations.find(a=>a.node===entry.element.card.children[1]),paper=f.prints()[i];assert(caption);assert.equal(caption.options.duration+caption.options.delay,paper.options.duration+paper.options.delay);});
+ f.context.endGather();
 });
