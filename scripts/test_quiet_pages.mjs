@@ -58,7 +58,11 @@ test('SEO configuration and route inventory are unchanged', () => {
   }
   // The repository requires commit-derived lastmods for modified HTML.
   const withoutDates = xml => xml.replace(/<lastmod>[^<]+<\/lastmod>/g, '<lastmod></lastmod>');
-  assert.equal(withoutDates(readFileSync(path.join(root, 'sitemap.xml'), 'utf8')), withoutDates(original('sitemap.xml')));
+  const current = readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const lp = /  <url>\n    <loc>https:\/\/kale1205\.github\.io\/fde-site\/ja\/lp\/(?:service\.html)?<\/loc>\n    <lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>\n    <changefreq>(?:weekly|monthly)<\/changefreq>\n    <priority>0\.[89]<\/priority>\n  <\/url>\n/g;
+  const admitted = [...current.matchAll(lp)].map(m => m[0].match(/<loc>([^<]+)<\/loc>/)[1]);
+  assert.deepEqual(admitted, ['https://kale1205.github.io/fde-site/ja/lp/', 'https://kale1205.github.io/fde-site/ja/lp/service.html']);
+  assert.equal(withoutDates(current.replace(lp,'')), withoutDates(original('sitemap.xml')));
 });
 
 test('shared theme stays scoped and keeps selection stationary', () => {

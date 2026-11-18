@@ -2,6 +2,8 @@
 """Regression tests for substantive sitemap lastmod updates."""
 
 import os
+import json
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -10,6 +12,8 @@ import unittest
 from generate_sitemap import generate_files
 from sitemap_config import (
     SITEMAP_HTML_PATHS,
+    SitemapStateError,
+    expected_lastmods_for_base,
     load_lastmod_manifest,
     normalize_html_for_lastmod,
     render_sitemap,
@@ -95,6 +99,27 @@ class SitemapLastmodTests(unittest.TestCase):
         self.assertEqual(normalize_html_for_lastmod(favicon_only), base)
         self.assertNotEqual(normalize_html_for_lastmod(favicon_only.replace('Before', 'After')), base)
         self.assertNotEqual(normalize_html_for_lastmod(favicon_only.replace('-16.png', '-other.png')), base)
+
+    def test_new_lp_paths_are_admitted_only_when_absent_in_previous_xml(self):
+        routes = {"ja/lp/index.html", "ja/lp/service.html"}
+        manifest = self.repo.root / "sitemap-lastmod.json"
+        xml = self.repo.root / "sitemap.xml"
+        self.repo.git("switch", "main")
+        lastmods = load_lastmod_manifest(self.repo.root)
+        del lastmods["ja/lp/index.html"]
+        del lastmods["ja/lp/service.html"]
+        manifest.write_text(json.dumps(lastmods), encoding="utf-8")
+        self.repo.commit("Incomplete manifest", CONTENT_DATE)
+        self.repo.git("switch", "feature")
+        with self.assertRaisesRegex(SitemapStateError, "missing known routes"):
+            expected_lastmods_for_base(self.repo.root, "main")
+        self.repo.git("switch", "main")
+        xml.write_text(re.sub(r"  <url>\n    <loc>[^<]*/ja/lp/(?:service\.html)?</loc>\n[\s\S]*?</url>\n", "", xml.read_text(encoding="utf-8")), encoding="utf-8")
+        self.repo.commit("Previous sitemap without LP pages", CACHE_DATE)
+        self.repo.git("switch", "feature")
+        expected, changed = expected_lastmods_for_base(self.repo.root, "main")
+        self.assertEqual(changed, set())
+        self.assertEqual({path: expected[path] for path in routes}, dict.fromkeys(routes, BASE_DATE))
 
     def test_case_a_updates_only_materially_changed_html(self):
         target = "index.html"
