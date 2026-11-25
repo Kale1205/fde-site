@@ -1,6 +1,6 @@
 import * as media from './media-runtime.js';
 import {LP_ARCHIVE_CASES} from './media-schema.js';
-import {archiveFrameForSlot} from './archive-layout.js?v=approved-archive-four-1';
+import {archiveFrameForSlot} from './archive-layout.js?v=approved-archive-v25-1';
 'use strict';
 (async () => {
 const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -55,7 +55,7 @@ function makeTile(col,row){
   const item=items[i],[w,ratio]=archiveFrameForSlot(slot,i),b=document.createElement('button');
   const px=(slot%5+.5)*20,py=(Math.floor(slot/5)+.5)*20;
   b.className='material-print';b.type='button';b.tabIndex=-1;b.dataset.material=i;b.dataset.slot=slot;b.dataset.archiveSource='archive:'+positions[slot];b.setAttribute('aria-label',(item?.dataset.title||'Archives')+'の素材');
-  b.style.cssText='left:'+px+'%;top:'+py+'%;width:'+w*20+'%;--ratio:'+ratio+';--detail:'+(ratio<1?118:100)+'%';
+  b.style.cssText='left:'+px+'%;top:'+py+'%;width:'+w*20.6+'%;--ratio:'+ratio+';--detail:'+(ratio<1?118:100)+'%';
   const config=material[slot];
   if(config)b.setAttribute('aria-label',config.title+'の素材');
   b.append((config?.photo||item.firstElementChild).cloneNode(true));tile.append(b);
@@ -95,8 +95,9 @@ function size(center=false){
  if(archive.hidden)return;
  const widthChanged=viewWidth!==field.clientWidth;
  viewWidth=field.clientWidth;viewHeight=field.clientHeight;
- const mobile=viewWidth<690,pitch=mobile?clamp(viewWidth*.43,142,220):clamp(viewWidth/5.12,210,300);
- const pitchY=mobile?pitch*1.13:pitch*.977,w=5*pitch,h=5*pitchY;
+ const mobile=viewWidth<690,pitch=mobile?clamp(viewWidth*.40,142,206):clamp(viewWidth/5.45,195,280);
+ const pitchY=mobile?pitch*1.06:pitch*.957,w=5*pitch,h=5*pitchY;
+ archive.style.setProperty('--archive-row-pitch',pitchY+'px');
  // Safari's toolbar changes the height during a gesture. Keep the plane's
  // origin and the active pointer intact until the width changes or reset.
  if(widthChanged||center){originX=(viewWidth-w)/2;originY=viewHeight/2-2.5*pitchY;}
@@ -174,6 +175,7 @@ q('.field-tools').addEventListener('click',e=>{
 function showItem(i,slot){
  const unlinked=i<0;openIndex=unlinked?0:(i+items.length)%items.length;const a=items[openIndex],config=material[slot];
  const box=q('.inspect-image');
+ box.classList.toggle('is-bookshelf-landscape',slot===19);
  inspectionPlayback?.unwatch(box);
  const still=(config?.photo||a.firstElementChild).cloneNode(true),alt=config?.alt||a.dataset.alt;
  if(alt){still.removeAttribute('aria-hidden');still.setAttribute('role','img');still.setAttribute('aria-label',alt);}

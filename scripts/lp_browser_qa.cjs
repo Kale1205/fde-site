@@ -36,7 +36,7 @@ const geometry=await page.locator('.material-print').evaluateAll(xs=>{
  const rs=xs.map(x=>x.getBoundingClientRect()).filter(r=>r.right>8&&r.bottom>10&&r.left<innerWidth-8&&r.top<innerHeight-10);
  // Individual print widths can change WebKit's fractional center rounding.
  // Test every rendered center against its nearest true lattice column instead.
- const center=innerWidth/2,pitch=Math.min(300,Math.max(210,innerWidth/5.12));
+ const center=innerWidth/2,pitch=Math.min(280,Math.max(195,innerWidth/5.45));
  const measured=rs.map(r=>{const x=r.left+r.width/2,column=Math.round((x-center)/pitch);return {column,drift:Math.abs(x-center-column*pitch)};});
  const cols=[...new Set(measured.map(x=>x.column))].sort((a,b)=>a-b);
  return {cols,count:rs.length,maxCenterDrift:Math.max(0,...measured.map(x=>x.drift))};
