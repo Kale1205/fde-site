@@ -25,7 +25,7 @@ function fixture({legacyCaptureListener=false}={}){
  const paper={dataset:{material:'0'},classList:{contains:name=>name==='material-print'}};
  paper.closest=selector=>selector==='[data-material]'?paper:null;
  const photo={closest:paper.closest},archiveEvents=new Map();
- const plane={style:{},replaceChildren(){}},archive={hidden:false,addEventListener:(name,fn)=>register(archiveEvents,name,fn)};
+ const plane={style:{},replaceChildren(){}},archive={hidden:false,style:{setProperty(){}},addEventListener:(name,fn)=>register(archiveEvents,name,fn)};
  const reduced={matches:false,addEventListener:(name,fn)=>register(windowEvents,'reduced:'+name,fn)};
  const c={field,plane,archive,reduced,playback:null,inspectionPlayback:null,visibilityPaused:false,points:new Map(),tileNodes:new Map(),
   x:0,y:0,originX:0,originY:0,z:1,W:1,H:1,vx:0,vy:0,anim:0,last:0,gesture:null,clickBlock:0,framePending:0,layoutFrame:0,

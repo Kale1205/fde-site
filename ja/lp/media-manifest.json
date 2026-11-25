@@ -36,6 +36,26 @@
       "photo": "assets/archive/21/f1176a9db7583272d26517264e23f03f450fc97434f3c43313c9b5d46a5b143a.jpg",
       "poster": "assets/archive/21/f1176a9db7583272d26517264e23f03f450fc97434f3c43313c9b5d46a5b143a.jpg",
       "video": "assets/archive/21/f6481fd8a8083fd54f5f4855d46caa6c54323aad2416b9132b098011ee7bc2eb.mp4"
+    },
+    "06": {
+      "caseId": null,
+      "title": "夜の街角",
+      "alt": "薄暮の街角。店先の赤い照明が通りを照らす縦長の動画。",
+      "video": "assets/archive/06/aeb1900b82b169f912c3c47cfcad8c446ae37d82c25dcce4817da288456c68a8.mp4",
+      "poster": "assets/archive/06/b8199293280195f8e8feeaaa9ce507681d92a32754df96ee9b61bbc6ee4a30fb.jpg"
+    },
+    "10": {
+      "caseId": null,
+      "title": "青空と街並み",
+      "alt": "青空を背景に、昼の街に建つ建物を捉えた縦長の動画。",
+      "video": "assets/archive/10/dbc484447d496d244f241f5169f451435bbb6bae005e850c68ccac9ee86ba25d.mp4",
+      "poster": "assets/archive/10/ff45b69420aa93770369489cd078a6393acffa5320c1c5b5f74fc1b76d7aca19.jpg"
+    },
+    "19": {
+      "caseId": null,
+      "title": "本棚のある風景",
+      "alt": "壁一面に続く本棚と星形の照明を捉えた横長の写真。",
+      "photo": "assets/archive/19/066da3768cd3344a7e41a2b69c1cb7112671f1d53c571ebc2ee70bdcbfbdab9b.jpg"
     }
   }
 }
