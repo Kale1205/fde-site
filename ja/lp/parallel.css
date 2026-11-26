@@ -23,7 +23,7 @@
 /* Archive only: light-table paper stock with breathing room on both axes. */
 .parallel-page #archive .material-print {
   --archive-paper-inset: 6px;
-  --archive-paper-stock: #fffdf4;
+  --archive-paper-stock: #e3e6db;
   --archive-paper-edge: #625a456b;
   box-sizing: border-box;
   max-width: calc((var(--archive-row-pitch) * .93 - var(--archive-paper-inset) * 2) * var(--ratio) + var(--archive-paper-inset) * 2);
