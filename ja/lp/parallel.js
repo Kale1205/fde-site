@@ -213,11 +213,13 @@ function watchInspectFlight(run,remaining=360){
  run.timer=setTimeout(finish,remaining+100);
  run.animations[0].finished.then(finish,()=>{});
 }
+const inspectMotionBlocked=()=>motionBlocked()||matchMedia('(prefers-reduced-motion: reduce)').matches;
 function startInspectFlight(opening=false){
+ if(inspectMotionBlocked())return false;
  const source=q('.inspect-image > .photo',dialog);
  const target=lastInspect?.isConnected&&lastInspect.matches('.material-print')&&!archive.hidden?lastInspect:null;
  const destination=target&&q('.photo',target);
- if(motionBlocked()||!source||!destination||typeof source.animate!=='function')return false;
+ if(!source||!destination||typeof source.animate!=='function')return false;
  const from=source.getBoundingClientRect(),to=destination.getBoundingClientRect(),bounds=field.getBoundingClientRect();
  if(!from.width||!from.height||!to.width||!to.height||to.right<=bounds.left||to.left>=bounds.right||to.bottom<=bounds.top||to.top>=bounds.bottom)return false;
  const flight=document.createElement('div');flight.className='inspect-return-flight';flight.setAttribute('aria-hidden','true');
@@ -242,10 +244,10 @@ function startInspectFlight(opening=false){
 }
 function closeInspect(){
  if(!dialog.open)return;
+ if(inspectMotionBlocked()){finishInspectReturn();return;}
  if(inspectReturn){
   const run=inspectReturn;
   if(run.phase==='closing')return;
-  if(motionBlocked()){finishInspectReturn();return;}
   const remaining=Math.max(0,Number(run.animations[0].currentTime)||0);
   if(!remaining){finishInspectReturn();return;}
   // Rewind the same presented geometry and crop blend, including an early
