@@ -57,7 +57,7 @@ html[data-lp-theme="dark"] .parallel-page #archive .material-print {
 .stories .prints{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,6vw,110px)}.stories .prints li{grid-column:auto;margin:0}.stories .prints li:nth-child(3n + 2){margin-top:14%}.stories .prints li:nth-child(3n){margin-top:6%}
 .stories.is-entering .prints li{animation:appear .52s cubic-bezier(.2,.7,.3,1) both;animation-delay:calc(var(--i,0)*40ms)}.stories.is-entering .prints li:nth-child(3n+2){--i:2}.stories.is-entering .prints li:nth-child(3n){--i:4}@keyframes appear{from{opacity:0;transform:translateY(17px)}to{opacity:1;transform:none}}
 #inspect{padding:0;border:0;background:transparent;color:var(--ink);max-width:none;width:min(760px,90vw);max-height:90dvh;overflow:auto}
-#inspect::backdrop{background:#111810b3;backdrop-filter:blur(7px)}.inspect-sheet{position:relative;background:var(--canvas);padding:clamp(10px,2vw,22px);animation:inspect .28s cubic-bezier(.2,.8,.3,1) both}.inspect-sheet:focus{outline:none}@keyframes inspect{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
+#inspect::backdrop{background:#111810b3;backdrop-filter:none;-webkit-backdrop-filter:none}.inspect-sheet{position:relative;background:var(--canvas);padding:clamp(10px,2vw,22px);animation:inspect .28s cubic-bezier(.2,.8,.3,1) both}.inspect-sheet:focus{outline:none}@keyframes inspect{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
 .inspect-image .photo{aspect-ratio:1.5;max-height:60dvh}.close-inspect{position:absolute;top:13px;right:13px;z-index:1;border:0;background:var(--canvas);border-radius:50%;width:37px;height:37px;font-size:23px!important;cursor:pointer}.inspect-caption{display:flex;align-items:center;gap:12px;padding:11px 0 2px}.inspect-caption h2{font-size:clamp(13px,2.8vw,18px);margin:0}.inspect-id{font:11px ui-monospace,monospace}.inspect-link{font-size:12px;margin-left:auto;white-space:nowrap}
 @media(max-width:690px){.parallel-head{grid-template-columns:1fr auto;row-gap:8px;padding:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 12px max(10px,env(safe-area-inset-left))}.left-tools{gap:10px}.view-switch{grid-row:2;grid-column:1/-1}.theme{grid-row:1;grid-column:2}.archive-notes{left:9px}.field-tools{right:9px}.stories .prints{grid-template-columns:repeat(2,minmax(0,1fr));gap:23px 17px}.stories .prints li:nth-child(n){margin:0}.stories .prints li:nth-child(even){margin-top:14%}}
 @media(prefers-reduced-motion:reduce){.stories.is-entering .prints li,.inspect-sheet{animation:none}.material-print{transition:none}}
@@ -153,14 +153,16 @@ html[data-lp-theme="dark"] .parallel-page #archive .material-print {
 .inspect-image .archive-only-photo{height:min(74dvh,70vw);aspect-ratio:9/16;width:auto;margin-inline:auto}
 .inspect-link[hidden]{display:none}
 
-/* Keep the real dialog modal until its image reaches the selected print. */
-#inspect.is-returning{background:transparent}
+/* One photo flight runs in either direction while the real dialog stays modal. */
+#inspect.is-photo-inspect .inspect-sheet{animation:none;transform:none}
+#inspect:is(.is-opening,.is-returning){background:transparent}
+#inspect.is-opening::backdrop{animation:inspect-return-backdrop 280ms ease-out reverse both}
 #inspect.is-returning::backdrop{animation:inspect-return-backdrop 280ms ease-out both}
-#inspect.is-returning .inspect-sheet{background:transparent;animation:none}
-#inspect.is-returning .inspect-image{visibility:hidden}
+#inspect:is(.is-opening,.is-returning) .inspect-sheet{background:transparent;animation:none}
+#inspect:is(.is-opening,.is-returning) .inspect-image{visibility:hidden}
 #inspect.is-returning :is(.inspect-caption,.close-inspect){animation:inspect-return-controls 130ms ease-out both}
 .is-inspect-return-target{opacity:0}
 .inspect-return-flight{position:fixed;z-index:2;pointer-events:none;transform-origin:0 0;isolation:isolate;overflow:hidden}
 .inspect-return-flight>.photo{position:absolute;inset:0 auto auto 0;width:100%;height:100%;max-height:none;aspect-ratio:auto!important;transform-origin:0 0;margin:0}
-@keyframes inspect-return-backdrop{to{background:transparent}}
+@keyframes inspect-return-backdrop{from{background:var(--inspect-backdrop-start,var(--canvas))}to{background:transparent}}
 @keyframes inspect-return-controls{to{opacity:0}}

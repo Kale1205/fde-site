@@ -1,8 +1,115 @@
 const {chromium,webkit}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const fs=require('node:fs');const path=require('node:path');
+async function verifyPhotoInspectMotion(target,touch=false){
+ const samples=[],viewport=target.viewportSize();
+ const equalRect=(a,b)=>a.every((value,i)=>Math.abs(value-b[i])<2);
+ const paintIsClear=paint=>paint.every(item=>['filter','backdrop','webkit'].every(key=>!item[key]||item[key]==='none')&&item.image==='none');
+ await target.evaluate(()=>{
+  window.__lpInspectPaint=()=>{
+   const dialog=document.querySelector('#inspect');
+   return [[dialog,null],[dialog,'::backdrop'],[dialog.querySelector('.inspect-sheet'),null]].map(([node,pseudo])=>{
+    const style=getComputedStyle(node,pseudo);return {filter:style.filter,backdrop:style.getPropertyValue('backdrop-filter'),webkit:style.getPropertyValue('-webkit-backdrop-filter'),image:style.backgroundImage,color:style.backgroundColor};
+   });
+  };
+  window.__lpInspectPose=flight=>{const r=flight.getBoundingClientRect();return {rect:[r.x,r.y,r.width,r.height],opacity:[...flight.children].map(child=>Number(getComputedStyle(child).opacity))};};
+ });
+ const pick=()=>target.locator('.material-print').evaluateAll(nodes=>{
+  const candidates=nodes.filter(node=>Number(node.dataset.material)>=0).map(node=>{
+   const r=node.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2,key=node.dataset.archiveSource||node.dataset.slot;
+   const copies=nodes.filter(other=>(other.dataset.archiveSource||other.dataset.slot)===key);
+   return {x,y,copy:copies.indexOf(node),copies:copies.length,hit:document.elementFromPoint(x,y)?.closest('.material-print')===node};
+  }).filter(p=>p.x>25&&p.x<innerWidth-25&&p.y>110&&p.y<innerHeight-80&&p.hit).sort((a,b)=>(b.copy>0)-(a.copy>0)||Math.hypot(a.x-innerWidth/2,a.y-innerHeight/2)-Math.hypot(b.x-innerWidth/2,b.y-innerHeight/2));
+  if(!candidates.length)throw Error('No visible repeated photo for inspect motion');return candidates[0];
+ });
+ const activate=point=>touch?target.touchscreen.tap(point.x,point.y):target.mouse.click(point.x,point.y);
+ const queue=(phase,point=null)=>target.evaluate(({phase,point})=>{
+  const dialog=document.querySelector('#inspect');
+  if(point)window.__lpInspectTile=document.elementFromPoint(point.x,point.y)?.closest('.material-print');
+  window.__lpInspectSample=new Promise(resolve=>{
+   const observer=new MutationObserver(()=>{
+    const flight=dialog.querySelector('.inspect-return-flight');if(!flight||!dialog.classList.contains(phase==='open'?'is-opening':'is-returning'))return;
+    const animation=flight.getAnimations()[0];if(!animation)return;
+    observer.disconnect();clearTimeout(timeout);
+    const animations=flight.getAnimations({subtree:true}),duration=Number(animation.effect.getTiming().duration);
+    animations.forEach(item=>item.pause());
+    const at=time=>{animations.forEach(item=>item.currentTime=time);return {...window.__lpInspectPose(flight),paint:window.__lpInspectPaint()};};
+    const rect=node=>{const r=node.getBoundingClientRect();return [r.x,r.y,r.width,r.height];};
+    const tile=window.__lpInspectTile,photo=tile.querySelector('.photo'),small=flight.lastElementChild;
+    const result={phase,duration,start:at(0),mid:at(duration/2),end:at(duration),origin:rect(photo),large:rect(dialog.querySelector('.inspect-image>.photo')),count:dialog.querySelectorAll('.inspect-return-flight').length,target:tile.classList.contains('is-inspect-return-target'),crop:[getComputedStyle(photo).backgroundImage,getComputedStyle(small).backgroundImage],open:dialog.open};
+    animations.forEach(item=>{item.currentTime=0;item.play();});resolve(result);
+   });
+   const timeout=setTimeout(()=>{observer.disconnect();resolve(null);},1200);observer.observe(dialog,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
+  });
+ },{phase,point});
+ const measure=async phase=>{
+  const value=await target.evaluate(()=>window.__lpInspectSample);
+  if(!value||!value.open||!value.target||value.count!==1||value.crop[0]!==value.crop[1]||![value.start,value.mid,value.end].every(sample=>paintIsClear(sample.paint)))throw Error('Inspect '+phase+' paint/origin setup '+JSON.stringify(value));
+  const from=phase==='open'?value.origin:value.large,to=phase==='open'?value.large:value.origin;
+  if(!equalRect(value.start.rect,from)||!equalRect(value.end.rect,to)||Math.abs(value.mid.rect[2]-from[2])<1||Math.abs(value.mid.rect[2]-to[2])<1)throw Error('Inspect '+phase+' exact tile/midpoint/final '+JSON.stringify(value));
+  samples.push(value);return value;
+ };
+ const opened=async()=>{
+  await target.locator('#inspect.is-opening').waitFor({state:'detached'});await target.locator('.inspect-return-flight').waitFor({state:'detached'});
+  if(!await target.locator('#inspect').isVisible()||!await target.locator('.close-inspect').evaluate(node=>node===document.activeElement)||!paintIsClear(await target.evaluate(()=>window.__lpInspectPaint())))throw Error('Inspect opened paint/focus state');
+ };
+ const cleaned=async()=>{
+  await target.locator('#inspect').waitFor({state:'hidden'});
+  await target.locator('#inspect.is-photo-inspect').waitFor({state:'detached'});
+  if(await target.locator('.inspect-return-flight,.is-inspect-return-target,#inspect.is-opening,#inspect.is-returning,#inspect.is-photo-inspect').count())throw Error('Inspect motion left a flight, hidden target or phase');
+  if(!await target.locator('#field').evaluate(node=>node===document.activeElement))throw Error('Inspect did not restore Archive focus');
+ };
+ await target.locator('[data-do=reset]').click();for(let i=0;i<3;i++)await target.locator('[data-do=minus]').click();
+ await target.locator('#field').focus();await target.keyboard.press('ArrowRight');await target.keyboard.press('ArrowDown');
+ let point=await pick();if(point.copies<2||point.copy===0)throw Error('Inspect regression must use a repeated tile after zoom/pan');
+ await queue('open',point);await activate(point);await measure('open');await opened();
+ await queue('close');await target.locator('.close-inspect').click();await measure('close');await cleaned();
+
+ // Escape must reverse the presented opening pose and crop on the same ghost.
+ point=await pick();await queue('open',point);await activate(point);await measure('open');
+ await target.evaluate(()=>{
+  const dialog=document.querySelector('#inspect'),flight=dialog.querySelector('.inspect-return-flight'),animations=flight.getAnimations({subtree:true}),duration=Number(animations[0].effect.getTiming().duration);
+  animations.forEach(item=>{item.pause();item.currentTime=duration*.35;});const before={...window.__lpInspectPose(flight),paint:window.__lpInspectPaint()};
+  dialog.addEventListener('cancel',()=>{before.paint=window.__lpInspectPaint();},{capture:true,once:true});
+  window.__lpInspectEarly=new Promise(resolve=>dialog.addEventListener('cancel',()=>resolve({before,after:window.__lpInspectPose(flight),same:dialog.querySelector('.inspect-return-flight')===flight&&animations.every(item=>flight.getAnimations({subtree:true}).includes(item)),count:dialog.querySelectorAll('.inspect-return-flight').length,paint:window.__lpInspectPaint()}),{once:true}));
+ });
+ await target.keyboard.press('Escape');const early=await target.evaluate(()=>window.__lpInspectEarly);
+ if(!early.same||early.count!==1||!equalRect(early.before.rect,early.after.rect)||early.before.opacity.some((value,i)=>Math.abs(value-early.after.opacity[i])>.02)||!paintIsClear(early.paint))throw Error('Early Escape snapped or replaced the opening flight '+JSON.stringify(early));
+ const rgba=value=>{const parts=value.match(/[\d.]+/g).map(Number);return parts.length===3?[...parts,1]:parts;};
+ const beforeBackdrop=rgba(early.before.paint[1].color),afterBackdrop=rgba(early.paint[1].color);
+ if(beforeBackdrop.some((value,i)=>Math.abs(value-afterBackdrop[i])>(i===3?.03:2)))throw Error('Early Escape reset the backdrop alpha '+JSON.stringify(early));
+ samples.push({early});await cleaned();
+ // Reopen immediately; an old completion must not close or hide the new target.
+ point=await pick();await queue('open',point);await activate(point);await measure('open');await opened();await target.waitForTimeout(100);
+ if(!await target.locator('#inspect').isVisible())throw Error('A stale inspect completion closed the reentered preview');
+ await queue('close');await target.locator('#inspect').dispatchEvent('click');await measure('close');samples.push({outsideClick:'synthetic dialog-target click; the full-screen sheet has no native backdrop hit area'});await cleaned();
+ point=await pick();await queue('open',point);await activate(point);await measure('open');
+ await target.evaluate(()=>document.querySelector('.inspect-return-flight').getAnimations({subtree:true}).forEach(animation=>{animation.pause();animation.currentTime=0;}));
+ await target.keyboard.press('Escape');await cleaned();samples.push({zeroClockEscape:'closed at the exact tile origin without rewinding to the large photo'});
+
+ if(!touch){
+  await target.emulateMedia({reducedMotion:'reduce'});point=await pick();await activate(point);
+  if(!await target.locator('#inspect').isVisible()||await target.locator('.inspect-return-flight').count()||!paintIsClear(await target.evaluate(()=>window.__lpInspectPaint())))throw Error('Reduced-motion opening did not settle immediately');
+  await target.locator('.close-inspect').click();await cleaned();await target.emulateMedia({reducedMotion:'no-preference'});
+  for(const trigger of ['reduced','resize']){
+   point=await pick();await queue('open',point);await activate(point);await measure('open');
+   if(trigger==='reduced')await target.emulateMedia({reducedMotion:'reduce'});else await target.setViewportSize({width:viewport.width+1,height:viewport.height});
+   await opened();await target.locator('.close-inspect').click();await target.locator('#inspect').waitFor({state:'hidden'});
+   if(trigger==='reduced')await target.emulateMedia({reducedMotion:'no-preference'});else await target.setViewportSize(viewport);
+   await cleaned();
+  }
+  point=await pick();await queue('open',point);await activate(point);await measure('open');await opened();
+  await target.locator('.close-inspect').click();await target.locator('#inspect.is-returning').waitFor({state:'attached'});await target.setViewportSize({width:viewport.width,height:viewport.height+1});await cleaned();await target.setViewportSize(viewport);
+  const access=target.locator('.material-access button').first();await access.focus();await access.press('Enter');
+  if(await target.locator('.inspect-return-flight').count())throw Error('Accessible-list fallback must not invent a tile origin');
+  await target.keyboard.press('Escape');await target.locator('#inspect').waitFor({state:'hidden'});
+  if(!await access.evaluate(node=>node===document.activeElement))throw Error('Accessible-list focus was not restored');
+ }
+ await target.emulateMedia({reducedMotion:'no-preference'});await target.setViewportSize(viewport);await target.locator('[data-do=reset]').click();
+ return {touch,selectedDuplicate:point.copy,samples};
+}
 (async()=>{
 const engine=process.env.BROWSER||'chromium';const out=process.env.QA_OUTPUT||'/tmp/lp-browser-qa';fs.mkdirSync(out,{recursive:true});
-const browser=await (engine==='webkit'?webkit:chromium).launch();const ctx=await browser.newContext();const page=await ctx.newPage();const errors=[],posts=[],broken=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(!['GET','HEAD'].includes(r.method()))posts.push(r.url())});page.on('response',r=>{if(r.status()>=400)broken.push({url:r.url(),status:r.status()})});const results=[];const base=process.env.BASE_URL||'http://127.0.0.1:4197/';
+const browser=await (engine==='webkit'?webkit:chromium).launch();const ctx=await browser.newContext();const page=await ctx.newPage();const errors=[],posts=[],broken=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(!['GET','HEAD'].includes(r.method()))posts.push(r.url())});page.on('response',r=>{if(r.status()>=400)broken.push({url:r.url(),status:r.status()})});const results=[],inspectMotion=[];const base=process.env.BASE_URL||'http://127.0.0.1:4197/';
 await require('./lp_cms_browser_qa.cjs')(browser,base,out,engine);
 await require('./lp_gallery_layout_browser_qa.cjs')(browser,base,out,engine);
 await page.setViewportSize({width:1331,height:894});await page.goto(base+'ja/lp/');await page.waitForTimeout(2200);
@@ -63,7 +170,7 @@ for(let i=0;i<8;i++)await page.keyboard.press('Equal');
 if(await page.locator('#zoom-value').textContent()!=='100%'||!await page.locator('[data-do=plus]').isDisabled())throw Error('Zoom above 100%');
 await page.locator('[data-do=reset]').click();await page.waitForFunction(old=>document.getElementById('plane').style.transform===old,initial);
 const hit=await page.locator('.material-print').evaluateAll(xs=>{for(const x of xs){const r=x.getBoundingClientRect(),a=r.x+r.width*.5,b=r.y+r.height*.5;if(a>100&&b>90&&x.contains(document.elementFromPoint(a,b)))return [a,b]}});
-if(!hit)throw Error('no clickable material');await page.mouse.click(...hit);if(!await page.locator('#inspect').isVisible())throw Error('material unavailable');
+if(!hit)throw Error('no clickable material');await page.mouse.click(...hit);if(!await page.locator('#inspect').isVisible())throw Error('material unavailable');await page.locator('#inspect.is-opening').waitFor({state:'detached'});
 if(await page.locator('.inspect-next,.inspect-prev').count())throw Error('Unrequested next material controls');
 const queueInspectReturnSample=(target,point)=>target.evaluate(([x,y])=>{
  const tile=[...document.querySelectorAll('.material-print')].find(node=>{
@@ -97,6 +204,7 @@ const assertInspectReturn=async target=>{
 const matte=await page.locator('.material-print').first().evaluate(node=>[getComputedStyle(node).backgroundColor,getComputedStyle(node.closest('body')).backgroundColor]);
 if(matte.join('|')!=='rgb(227, 230, 219)|rgb(232, 237, 226)')throw Error('Archive light matte changed '+matte);
 await queueInspectReturnSample(page,hit);await page.keyboard.press('Escape');await assertInspectReturn(page);
+inspectMotion.push(await verifyPhotoInspectMotion(page));
 await page.emulateMedia({reducedMotion:'reduce'});await page.mouse.click(...hit);
 if(!await page.locator('#inspect').isVisible())throw Error('Reduced-motion material unavailable');
 await page.locator('.close-inspect').click();
@@ -140,8 +248,9 @@ await page.screenshot({path:path.join(out,engine+'-detail.png')});await page.loc
 const touch=await browser.newContext({hasTouch:true,viewport:{width:390,height:844}});const phone=await touch.newPage();
 await phone.goto(base+'ja/lp/');await phone.waitForTimeout(2200);const m=await wordmark(phone);if(!m||m.count!==1||m.text!=='Baked Kale')throw Error('Phone Archive wordmark '+JSON.stringify(m));
 const phoneHit=await phone.locator('.material-print').evaluateAll(xs=>{for(const x of xs){const r=x.getBoundingClientRect(),a=r.x+r.width*.5,b=r.y+r.height*.5;if(a>10&&a<380&&b>100&&b<740&&x.contains(document.elementFromPoint(a,b)))return [a,b]}});
-if(!phoneHit)throw Error('no tappable mobile material');await phone.touchscreen.tap(...phoneHit);if(!await phone.locator('#inspect').isVisible())throw Error('material tap unavailable');
+if(!phoneHit)throw Error('no tappable mobile material');await phone.touchscreen.tap(...phoneHit);if(!await phone.locator('#inspect').isVisible())throw Error('material tap unavailable');await phone.locator('#inspect.is-opening').waitFor({state:'detached'});
 await queueInspectReturnSample(phone,phoneHit);await phone.locator('.close-inspect').tap();await assertInspectReturn(phone);
+inspectMotion.push(await verifyPhotoInspectMotion(phone,true));
 const phonePlane=phone.locator('#plane');
 await phone.mouse.move(180,390);await phone.mouse.down();await phone.mouse.move(220,420,{steps:4});
 await phone.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
@@ -168,5 +277,5 @@ for(const width of [320,390,768,1440,1920]){
   if(width===390&&i===2)await page.screenshot({path:path.join(out,engine+'-390-case02.png'),fullPage:true});
  }
 }
-await page.emulateMedia({reducedMotion:'reduce'});await page.goto(base+'ja/lp/');await page.waitForTimeout(2200);if(posts.length||errors.length||broken.length)throw Error(JSON.stringify({posts,errors,broken}));fs.writeFileSync(path.join(out,engine+'.json'),JSON.stringify({engine,results,diagnosis:true,opaqueFlight:flight,posts,errors,broken},null,2));await browser.close();console.log(engine,results.length,'views + diagnosis passed');
+await page.emulateMedia({reducedMotion:'reduce'});await page.goto(base+'ja/lp/');await page.waitForTimeout(2200);if(posts.length||errors.length||broken.length)throw Error(JSON.stringify({posts,errors,broken}));fs.writeFileSync(path.join(out,engine+'.json'),JSON.stringify({engine,results,diagnosis:true,opaqueFlight:flight,inspectMotion,posts,errors,broken},null,2));await browser.close();console.log(engine,results.length,'views + diagnosis passed');
 })().catch(e=>{console.error(e);process.exit(1)});
