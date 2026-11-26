@@ -65,7 +65,43 @@ await page.locator('[data-do=reset]').click();await page.waitForFunction(old=>do
 const hit=await page.locator('.material-print').evaluateAll(xs=>{for(const x of xs){const r=x.getBoundingClientRect(),a=r.x+r.width*.5,b=r.y+r.height*.5;if(a>100&&b>90&&x.contains(document.elementFromPoint(a,b)))return [a,b]}});
 if(!hit)throw Error('no clickable material');await page.mouse.click(...hit);if(!await page.locator('#inspect').isVisible())throw Error('material unavailable');
 if(await page.locator('.inspect-next,.inspect-prev').count())throw Error('Unrequested next material controls');
-await page.keyboard.press('Escape');if(await page.locator('#inspect').isVisible())throw Error('escape failed');
+const queueInspectReturnSample=(target,point)=>target.evaluate(([x,y])=>{
+ const tile=[...document.querySelectorAll('.material-print')].find(node=>{
+  const r=node.getBoundingClientRect();
+  return Math.abs(x-r.left-r.width/2)<1&&Math.abs(y-r.top-r.height/2)<1;
+ });
+ const dialog=document.querySelector('#inspect');
+ window.__lpReturnSample=new Promise(resolve=>{
+  if(!tile){resolve(null);return;}
+  const observer=new MutationObserver(()=>{
+   const ghost=dialog.querySelector('.inspect-return-flight');
+   if(!ghost)return;
+   observer.disconnect();clearTimeout(timeout);
+   const scale=ghost.getAnimations()[0];
+   const to=tile.querySelector('.photo').getBoundingClientRect(),at=t=>{
+    scale.currentTime=t;const r=ghost.getBoundingClientRect();return [r.left,r.top,r.width,r.height];
+   };
+   scale.pause();const start=at(0),mid=at(120),end=at(360);scale.currentTime=0;scale.play();
+   resolve({start,mid,end,to:[to.left,to.top,to.width,to.height],target:tile.classList.contains('is-inspect-return-target'),open:dialog.open});
+  });
+  const timeout=setTimeout(()=>{observer.disconnect();resolve(null);},1000);
+  observer.observe(dialog,{attributes:true,attributeFilter:['class']});
+ });
+},point);
+const assertInspectReturn=async target=>{
+ const m=await target.evaluate(()=>window.__lpReturnSample);
+ if(!m||!m.target||!m.open||m.end.some((v,i)=>Math.abs(v-m.to[i])>2)||m.start[2]-m.mid[2]<4||m.mid[2]-m.end[2]<1)throw Error('Photo did not shrink into the exact selected tile '+JSON.stringify(m));
+ await target.locator('#inspect').waitFor({state:'hidden'});
+ if(await target.locator('.inspect-return-flight,.is-inspect-return-target').count())throw Error('Inspect return did not clean up');
+};
+const matte=await page.locator('.material-print').first().evaluate(node=>[getComputedStyle(node).backgroundColor,getComputedStyle(node.closest('body')).backgroundColor]);
+if(matte.join('|')!=='rgb(227, 230, 219)|rgb(232, 237, 226)')throw Error('Archive light matte changed '+matte);
+await queueInspectReturnSample(page,hit);await page.keyboard.press('Escape');await assertInspectReturn(page);
+await page.emulateMedia({reducedMotion:'reduce'});await page.mouse.click(...hit);
+if(!await page.locator('#inspect').isVisible())throw Error('Reduced-motion material unavailable');
+await page.locator('.close-inspect').click();
+if(await page.locator('#inspect').isVisible()||await page.locator('.inspect-return-flight').count())throw Error('Reduced-motion close animated');
+await page.emulateMedia({reducedMotion:'no-preference'});
 await page.locator('.theme').click();if(await page.locator('body').getAttribute('data-theme')!=='dark')throw Error('theme unavailable');
 await page.locator('.theme').click();
 const beforeHash=await page.evaluate(()=>window.__fdePageLoading.started);
@@ -105,7 +141,7 @@ const touch=await browser.newContext({hasTouch:true,viewport:{width:390,height:8
 await phone.goto(base+'ja/lp/');await phone.waitForTimeout(2200);const m=await wordmark(phone);if(!m||m.count!==1||m.text!=='Baked Kale')throw Error('Phone Archive wordmark '+JSON.stringify(m));
 const phoneHit=await phone.locator('.material-print').evaluateAll(xs=>{for(const x of xs){const r=x.getBoundingClientRect(),a=r.x+r.width*.5,b=r.y+r.height*.5;if(a>10&&a<380&&b>100&&b<740&&x.contains(document.elementFromPoint(a,b)))return [a,b]}});
 if(!phoneHit)throw Error('no tappable mobile material');await phone.touchscreen.tap(...phoneHit);if(!await phone.locator('#inspect').isVisible())throw Error('material tap unavailable');
-await phone.locator('.close-inspect').tap();
+await queueInspectReturnSample(phone,phoneHit);await phone.locator('.close-inspect').tap();await assertInspectReturn(phone);
 const phonePlane=phone.locator('#plane');
 await phone.mouse.move(180,390);await phone.mouse.down();await phone.mouse.move(220,420,{steps:4});
 await phone.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));

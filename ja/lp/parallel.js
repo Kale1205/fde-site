@@ -20,7 +20,7 @@ if(motionControl&&material.some(item=>item?.video))motionControl.hidden=false;
 let currentView=null,gather=null,framePending=0,viewWidth=0,viewHeight=0,poolColumns=0,poolRows=0;
 const zoomValue=q('#zoom-value'),zoomMinus=q('[data-do=minus]'),zoomPlus=q('[data-do=plus]');
 let x=0,y=0,originX=0,originY=0,z=1,W=1,H=1,vx=0,vy=0,anim=0,last=0,gesture=null,clickBlock=0,lastInspect=null,openIndex=0;
-let visibilityPaused=false;
+let visibilityPaused=false,inspectReturn=null;
 const motionBlocked=()=>visibilityPaused||document.hidden||document.documentElement.classList.contains('fde-loading')||reduced.matches||window.BakedKaleDisplay?.motionPaused||document.documentElement.dataset.pageLoadingMotion==='still';
 const hasVideo=material.some(item=>item?.video);
 const playback=hasVideo?media?.archivePlayback(field,()=>archive.hidden||dialog.open||motionBlocked()):null;
@@ -190,14 +190,66 @@ function showItem(i,slot){
 function inspect(i,trigger){
  endGather(true);stop();lastInspect=trigger;showItem(i,Number(trigger.dataset.slot??-1));dialog.showModal();playback?.refresh();inspectionPlayback?.refresh();q('.close-inspect').focus();
 }
+function finishInspectReturn(close=true){
+ const run=inspectReturn;
+ if(run){
+  inspectReturn=null;
+  clearTimeout(run.timer);
+  run.animations.forEach(animation=>animation.cancel());
+  run.flight.remove();run.target.classList.remove('is-inspect-return-target');
+  dialog.classList.remove('is-returning');
+ }
+ if(close&&dialog.open)dialog.close();
+}
+function closeInspect(){
+ if(!dialog.open||inspectReturn)return;
+ const source=q('.inspect-image > .photo',dialog);
+ const target=lastInspect?.isConnected&&lastInspect.matches('.material-print')&&!archive.hidden?lastInspect:null;
+ const destination=target&&q('.photo',target);
+ if(motionBlocked()||!source||!destination||typeof source.animate!=='function'){dialog.close();return;}
+ const from=source.getBoundingClientRect(),to=destination.getBoundingClientRect(),bounds=field.getBoundingClientRect();
+ if(!from.width||!from.height||!to.width||!to.height||to.right<=bounds.left||to.left>=bounds.right||to.bottom<=bounds.top||to.top>=bounds.bottom){dialog.close();return;}
+ const flight=document.createElement('div');flight.className='inspect-return-flight';flight.setAttribute('aria-hidden','true');
+ Object.assign(flight.style,{left:from.left+'px',top:from.top+'px',width:from.width+'px',height:from.height+'px'});
+ const large=source.cloneNode(true),small=destination.cloneNode(true);
+ for(const copy of [large,small]){
+  copy.removeAttribute('role');copy.removeAttribute('aria-label');
+  copy.querySelectorAll('img').forEach(img=>{img.loading='eager';});
+ }
+ Object.assign(small.style,{width:to.width+'px',height:to.height+'px',transform:`scale(${from.width/to.width},${from.height/to.height})`});
+ small.style.setProperty('--detail',getComputedStyle(destination).getPropertyValue('--detail'));
+ flight.append(large,small);dialog.append(flight);
+ target.classList.add('is-inspect-return-target');dialog.classList.add('is-returning');
+ const duration=360,easing='cubic-bezier(.22,.75,.24,1)';
+ const animation=flight.animate([
+  {transform:'translate3d(0,0,0) scale(1,1)'},
+  {transform:`translate3d(${to.left-from.left}px,${to.top-from.top}px,0) scale(${to.width/from.width},${to.height/from.height})`},
+ ],{duration,easing,fill:'both'});
+ const blend=small.animate([{opacity:0},{opacity:0,offset:.36},{opacity:1}],{duration,easing:'linear',fill:'both'});
+ const run={flight,target,animations:[animation,blend],timer:setTimeout(()=>{if(inspectReturn===run)finishInspectReturn();},duration+100)};
+ inspectReturn=run;
+ animation.finished.then(()=>{if(inspectReturn===run)finishInspectReturn();},()=>{});
+}
+const settleInspectReturn=()=>{if(inspectReturn)finishInspectReturn();};
+addEventListener('resize',settleInspectReturn);
+window.visualViewport?.addEventListener('resize',settleInspectReturn);
+addEventListener('pagehide',settleInspectReturn);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)settleInspectReturn();});
+reduced.addEventListener('change',e=>{if(e.matches)settleInspectReturn();});
+document.addEventListener('lp:motionchange',()=>{if(motionBlocked())settleInspectReturn();});
 archive.addEventListener('click',e=>{
  const b=e.target.closest('[data-material]');if(!b)return;
  if(b.classList.contains('material-print')&&performance.now()<clickBlock)return;
  inspect(Number(b.dataset.material),b);
 });
-q('.close-inspect').addEventListener('click',()=>dialog.close());
-dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+q('.close-inspect').addEventListener('click',closeInspect);
+dialog.addEventListener('cancel',e=>{e.preventDefault();closeInspect();});
+dialog.addEventListener('click',e=>{
+ if(inspectReturn){e.preventDefault();e.stopPropagation();}
+ else if(e.target===dialog)closeInspect();
+},{capture:true});
 dialog.addEventListener('close',()=>{
+ finishInspectReturn(false);
  inspectionPlayback?.unwatch(q('.inspect-image'));playback?.refresh();
  if(lastInspect?.isConnected&&!lastInspect.closest('[hidden]')&&!lastInspect.classList.contains('material-print'))lastInspect.focus({preventScroll:true});
  else if(!archive.hidden)field.focus({preventScroll:true});
@@ -369,7 +421,7 @@ function route(){
  const from=motion?currentPhotos(currentView):[];
  endGather();clearGesture();
  currentView=work;archive.hidden=work;stories.hidden=!work;
- if(dialog.open)dialog.close();
+ if(dialog.open)finishInspectReturn();
  qa('.view-switch a').forEach(a=>{if(a.hash===(work?'#works':'#archive'))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
  window.scrollTo(0,0);
  if(work)stop();else size();

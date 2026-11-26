@@ -23,7 +23,7 @@
 /* Archive only: light-table paper stock with breathing room on both axes. */
 .parallel-page #archive .material-print {
   --archive-paper-inset: 6px;
-  --archive-paper-stock: #fffdf4;
+  --archive-paper-stock: #e3e6db;
   --archive-paper-edge: #625a456b;
   box-sizing: border-box;
   max-width: calc((var(--archive-row-pitch) * .93 - var(--archive-paper-inset) * 2) * var(--ratio) + var(--archive-paper-inset) * 2);
@@ -152,3 +152,15 @@ html[data-lp-theme="dark"] .parallel-page #archive .material-print {
 .material-print:has(.archive-only-photo)>.archive-loop{object-fit:contain}
 .inspect-image .archive-only-photo{height:min(74dvh,70vw);aspect-ratio:9/16;width:auto;margin-inline:auto}
 .inspect-link[hidden]{display:none}
+
+/* Keep the real dialog modal until its image reaches the selected print. */
+#inspect.is-returning{background:transparent}
+#inspect.is-returning::backdrop{animation:inspect-return-backdrop 280ms ease-out both}
+#inspect.is-returning .inspect-sheet{background:transparent;animation:none}
+#inspect.is-returning .inspect-image{visibility:hidden}
+#inspect.is-returning :is(.inspect-caption,.close-inspect){animation:inspect-return-controls 130ms ease-out both}
+.is-inspect-return-target{opacity:0}
+.inspect-return-flight{position:fixed;z-index:2;pointer-events:none;transform-origin:0 0;isolation:isolate;overflow:hidden}
+.inspect-return-flight>.photo{position:absolute;inset:0 auto auto 0;width:100%;height:100%;max-height:none;aspect-ratio:auto!important;transform-origin:0 0;margin:0}
+@keyframes inspect-return-backdrop{to{background:transparent}}
+@keyframes inspect-return-controls{to{opacity:0}}
