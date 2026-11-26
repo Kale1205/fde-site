@@ -277,6 +277,8 @@ dialog.addEventListener('click',e=>{
  else if(e.target===dialog)closeInspect();
 },{capture:true});
 dialog.addEventListener('close',()=>{
+ // A queued close event from the previous preview must not cancel a new one.
+ if(dialog.open)return;
  finishInspectReturn(false);
  dialog.classList.remove('is-photo-inspect');
  inspectionPlayback?.unwatch(q('.inspect-image'));playback?.refresh();
