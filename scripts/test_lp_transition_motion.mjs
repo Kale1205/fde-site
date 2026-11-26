@@ -6,6 +6,30 @@ import {runInNewContext} from 'node:vm';
 const js=readFileSync(new URL('../ja/lp/parallel.js',import.meta.url),'utf8');
 const extract=(start,end)=>js.slice(js.indexOf(start),js.indexOf(end,js.indexOf(start)));
 
+test('photo actions honor a fresh reduced-motion preference before the retained query updates',()=>{
+ // WebKit reported a fresh matches=true while the retained query still allowed
+ // an opening flight. Exercise the production action guards with that state.
+ for(const phase of [null,'opening','closing']){
+  let queries=0,closed=0;
+  const context={
+   dialog:{open:true},inspectReturn:phase?{phase}:null,
+   motionBlocked:()=>false,
+   matchMedia:query=>{assert.equal(query,'(prefers-reduced-motion: reduce)');queries++;return {matches:true};},
+   q(){throw Error('reduced-motion must stop before creating or measuring a flight');},
+   finishInspectReturn(){closed++;},
+  };
+  const actions=runInNewContext(
+   extract('const inspectMotionBlocked=','function startInspectFlight(')+
+   extract('function startInspectFlight(','const settleInspectReturn=')+
+   '\n({startInspectFlight,closeInspect})',context,
+  );
+  assert.equal(actions.startInspectFlight(true),false);
+  actions.closeInspect();
+  assert.equal(closed,1,'every open preview phase settles without a new animation');
+  assert.equal(queries,2);
+ }
+});
+
 // Run the production flight planner and completion handlers with controllable
 // WAAPI promises. The DOM fixture represents paper pieces, never live CMS data.
 function fixture(){
