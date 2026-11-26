@@ -21,7 +21,7 @@ let currentView=null,gather=null,framePending=0,viewWidth=0,viewHeight=0,poolCol
 const zoomValue=q('#zoom-value'),zoomMinus=q('[data-do=minus]'),zoomPlus=q('[data-do=plus]');
 let x=0,y=0,originX=0,originY=0,z=1,W=1,H=1,vx=0,vy=0,anim=0,last=0,gesture=null,clickBlock=0,lastInspect=null,openIndex=0;
 let visibilityPaused=false,inspectReturn=null;
-const motionBlocked=()=>visibilityPaused||document.hidden||document.documentElement.classList.contains('fde-loading')||reduced.matches||window.BakedKaleDisplay?.motionPaused||document.documentElement.dataset.pageLoadingMotion==='still';
+const motionBlocked=reduceMotion=>visibilityPaused||document.hidden||document.documentElement.classList.contains('fde-loading')||(reduceMotion??reduced.matches)||window.BakedKaleDisplay?.motionPaused||document.documentElement.dataset.pageLoadingMotion==='still';
 const hasVideo=material.some(item=>item?.video);
 const playback=hasVideo?media?.archivePlayback(field,()=>archive.hidden||dialog.open||motionBlocked()):null;
 const inspectionPlayback=hasVideo?media?.archivePlayback(null,()=>!dialog.open||motionBlocked()):null;
@@ -213,7 +213,7 @@ function watchInspectFlight(run,remaining=360){
  run.timer=setTimeout(finish,remaining+100);
  run.animations[0].finished.then(finish,()=>{});
 }
-const inspectMotionBlocked=()=>motionBlocked()||matchMedia('(prefers-reduced-motion: reduce)').matches;
+const inspectMotionBlocked=()=>motionBlocked(matchMedia('(prefers-reduced-motion: reduce)').matches);
 function startInspectFlight(opening=false){
  if(inspectMotionBlocked())return false;
  const source=q('.inspect-image > .photo',dialog);
