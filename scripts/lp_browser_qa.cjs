@@ -6,7 +6,14 @@ async function verifyPhotoInspectMotion(target,touch=false){
  const paintIsClear=paint=>paint.every(item=>['filter','backdrop','webkit'].every(key=>!item[key]||item[key]==='none')&&item.image==='none');
  const setReduced=async value=>{
   await target.emulateMedia({reducedMotion:value?'reduce':'no-preference'});
-  await target.waitForFunction(value=>matchMedia('(prefers-reduced-motion: reduce)').matches===value,value);
+  // Media-query change listeners also update the shared pause controller.
+  // Wait for that observable application state before the next user action.
+  try{
+   await target.waitForFunction(value=>matchMedia('(prefers-reduced-motion: reduce)').matches===value&&window.BakedKaleDisplay?.motionPaused===value,value,{timeout:5000});
+  }catch{
+   const state=await target.evaluate(()=>({matches:matchMedia('(prefers-reduced-motion: reduce)').matches,paused:window.BakedKaleDisplay?.motionPaused,rootPaused:document.documentElement.hasAttribute('data-lp-motion-paused'),userPaused:sessionStorage.getItem('bk-detail-motion')}));
+   throw Error('Application motion preference did not settle '+JSON.stringify({requested:value,...state}));
+  }
  };
  await target.evaluate(()=>{
   window.__lpInspectPaint=()=>{
@@ -42,7 +49,9 @@ async function verifyPhotoInspectMotion(target,touch=false){
     const result={phase,duration,start:at(0),mid:at(duration/2),end:at(duration),origin:rect(photo),large:rect(dialog.querySelector('.inspect-image>.photo')),count:dialog.querySelectorAll('.inspect-return-flight').length,target:tile.classList.contains('is-inspect-return-target'),crop:[getComputedStyle(photo).backgroundImage,getComputedStyle(small).backgroundImage],open:dialog.open};
     animations.forEach(item=>{item.currentTime=0;item.play();});resolve(result);
    });
-   const timeout=setTimeout(()=>{observer.disconnect();resolve(null);},1200);observer.observe(dialog,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
+   const timeout=setTimeout(()=>{
+    observer.disconnect();resolve({unobservedPhase:phase,state:{open:dialog.open,classes:dialog.className,flights:dialog.querySelectorAll('.inspect-return-flight').length,matches:matchMedia('(prefers-reduced-motion: reduce)').matches,paused:window.BakedKaleDisplay?.motionPaused,rootPaused:document.documentElement.hasAttribute('data-lp-motion-paused'),hidden:document.hidden,loading:document.documentElement.classList.contains('fde-loading'),still:document.documentElement.dataset.pageLoadingMotion,userPaused:sessionStorage.getItem('bk-detail-motion')}});
+   },1200);observer.observe(dialog,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
   });
  },{phase,point});
  const measure=async phase=>{
