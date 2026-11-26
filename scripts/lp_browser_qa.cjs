@@ -125,8 +125,17 @@ async function verifyPhotoInspectMotion(target,touch=false){
    if(trigger==='reduced')await setReduced(false);else await target.setViewportSize(viewport);
    await cleaned();
   }
+  // The field's ResizeObserver schedules its tile-pool update on the next RAF.
+  // Finish the preceding viewport restoration before choosing a new real tile.
+  await target.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   point=await pick();await queue('open',point);await activate(point);await measure('open');await opened();
-  await target.locator('.close-inspect').click();await target.locator('#inspect.is-returning').waitFor({state:'attached'});await target.setViewportSize({width:viewport.width,height:viewport.height+1});await cleaned();await target.setViewportSize(viewport);
+  const closeSetup=await target.evaluate(()=>({connected:window.__lpInspectTile.isConnected,matches:matchMedia('(prefers-reduced-motion: reduce)').matches,paused:window.BakedKaleDisplay?.motionPaused}));
+  if(!closeSetup.connected||closeSetup.matches||closeSetup.paused)throw Error('Mid-close resize setup is not settled '+JSON.stringify(closeSetup));
+  const resizeDuringClose=(async()=>{
+   await target.locator('#inspect.is-returning').waitFor({state:'attached',timeout:2000});
+   await target.setViewportSize({width:viewport.width,height:viewport.height+1});
+  })();
+  await Promise.all([resizeDuringClose,target.locator('.close-inspect').click()]);await cleaned();await target.setViewportSize(viewport);
   const access=target.locator('.material-access button').first();await access.focus();await access.press('Enter');
   if(await target.locator('.inspect-return-flight').count())throw Error('Accessible-list fallback must not invent a tile origin');
   await target.keyboard.press('Escape');await target.locator('#inspect').waitFor({state:'hidden'});
