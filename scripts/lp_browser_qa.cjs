@@ -4,6 +4,10 @@ async function verifyPhotoInspectMotion(target,touch=false){
  const samples=[],viewport=target.viewportSize();
  const equalRect=(a,b)=>a.every((value,i)=>Math.abs(value-b[i])<2);
  const paintIsClear=paint=>paint.every(item=>['filter','backdrop','webkit'].every(key=>!item[key]||item[key]==='none')&&item.image==='none');
+ const setReduced=async value=>{
+  await target.emulateMedia({reducedMotion:value?'reduce':'no-preference'});
+  await target.waitForFunction(value=>matchMedia('(prefers-reduced-motion: reduce)').matches===value,value);
+ };
  await target.evaluate(()=>{
   window.__lpInspectPaint=()=>{
    const dialog=document.querySelector('#inspect');
@@ -85,16 +89,31 @@ async function verifyPhotoInspectMotion(target,touch=false){
  point=await pick();await queue('open',point);await activate(point);await measure('open');
  await target.evaluate(()=>document.querySelector('.inspect-return-flight').getAnimations({subtree:true}).forEach(animation=>{animation.pause();animation.currentTime=0;}));
  await target.keyboard.press('Escape');await cleaned();samples.push({zeroClockEscape:'closed at the exact tile origin without rewinding to the large photo'});
+ point=await pick();await queue('open',point);await activate(point);await measure('open');await opened();
+ await target.evaluate(()=>{
+  const dialog=document.querySelector('#inspect'),tile=window.__lpInspectTile;
+  window.__lpInspectQueuedClose=new Promise(resolve=>dialog.addEventListener('close',()=>resolve({open:dialog.open,opening:dialog.classList.contains('is-opening'),photoInspect:dialog.classList.contains('is-photo-inspect'),flights:dialog.querySelectorAll('.inspect-return-flight').length,target:tile.classList.contains('is-inspect-return-target')}),{once:true}));
+  // Native close() queues its event; tile.click() is deliberately synthetic so
+  // the next preview starts in the same task before that old event is handled.
+  dialog.close();tile.click();
+ });
+ const reentered=await target.evaluate(()=>window.__lpInspectQueuedClose);
+ if(!reentered.open||!reentered.opening||!reentered.photoInspect||reentered.flights!==1||!reentered.target)throw Error('Queued native close cancelled the synthetic same-task tile reentry '+JSON.stringify(reentered));
+ samples.push({nativeCloseSyntheticReentry:reentered});await opened();await target.locator('.close-inspect').click();await cleaned();
 
  if(!touch){
-  await target.emulateMedia({reducedMotion:'reduce'});point=await pick();await activate(point);
-  if(!await target.locator('#inspect').isVisible()||await target.locator('.inspect-return-flight').count()||!paintIsClear(await target.evaluate(()=>window.__lpInspectPaint())))throw Error('Reduced-motion opening did not settle immediately');
-  await target.locator('.close-inspect').click();await cleaned();await target.emulateMedia({reducedMotion:'no-preference'});
+  await setReduced(true);point=await pick();await activate(point);
+  const reducedState=await target.evaluate(()=>{
+   const dialog=document.querySelector('#inspect'),style=getComputedStyle(dialog),rect=dialog.getBoundingClientRect();
+   return {visible:dialog.open&&style.display!=='none'&&style.visibility!=='hidden'&&rect.width>0&&rect.height>0,open:dialog.open,flightCount:dialog.querySelectorAll('.inspect-return-flight').length,paint:window.__lpInspectPaint(),matches:matchMedia('(prefers-reduced-motion: reduce)').matches,classes:dialog.className};
+  });
+  if(!reducedState.visible||reducedState.flightCount||!reducedState.matches||!paintIsClear(reducedState.paint))throw Error('Reduced-motion opening did not settle immediately '+JSON.stringify(reducedState));
+  samples.push({reducedBeforeOpen:reducedState});await target.locator('.close-inspect').click();await cleaned();await setReduced(false);
   for(const trigger of ['reduced','resize']){
    point=await pick();await queue('open',point);await activate(point);await measure('open');
-   if(trigger==='reduced')await target.emulateMedia({reducedMotion:'reduce'});else await target.setViewportSize({width:viewport.width+1,height:viewport.height});
+   if(trigger==='reduced')await setReduced(true);else await target.setViewportSize({width:viewport.width+1,height:viewport.height});
    await opened();await target.locator('.close-inspect').click();await target.locator('#inspect').waitFor({state:'hidden'});
-   if(trigger==='reduced')await target.emulateMedia({reducedMotion:'no-preference'});else await target.setViewportSize(viewport);
+   if(trigger==='reduced')await setReduced(false);else await target.setViewportSize(viewport);
    await cleaned();
   }
   point=await pick();await queue('open',point);await activate(point);await measure('open');await opened();
@@ -104,7 +123,7 @@ async function verifyPhotoInspectMotion(target,touch=false){
   await target.keyboard.press('Escape');await target.locator('#inspect').waitFor({state:'hidden'});
   if(!await access.evaluate(node=>node===document.activeElement))throw Error('Accessible-list focus was not restored');
  }
- await target.emulateMedia({reducedMotion:'no-preference'});await target.setViewportSize(viewport);await target.locator('[data-do=reset]').click();
+ await setReduced(false);await target.setViewportSize(viewport);await target.locator('[data-do=reset]').click();
  return {touch,selectedDuplicate:point.copy,samples};
 }
 (async()=>{
