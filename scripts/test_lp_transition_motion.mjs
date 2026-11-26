@@ -6,6 +6,41 @@ import {runInNewContext} from 'node:vm';
 const js=readFileSync(new URL('../ja/lp/parallel.js',import.meta.url),'utf8');
 const extract=(start,end)=>js.slice(js.indexOf(start),js.indexOf(end,js.indexOf(start)));
 
+test('photo actions use the fresh motion preference when the retained query lags in either direction',()=>{
+ // WebKit can retain either previous value immediately after media emulation.
+ // Exercise the production guards for both preference changes, without
+ // changing the shared predicate's default or other motion-blocking flags.
+ for(const [retained,fresh] of [[false,true],[true,false]])for(const phase of ['opening','closing']){
+  let queries=0,closed=0,measured=0,reversed=0;
+  const run={phase,animations:[{currentTime:120,reverse(){reversed++;}}]};
+  const context={
+   dialog:{open:true,classList:{add(){},remove(){}},style:{setProperty(){}}},inspectReturn:run,
+   reduced:{matches:retained},visibilityPaused:false,
+   document:{hidden:false,documentElement:{classList:{contains:()=>false},dataset:{}}},window:{},
+   lastInspect:null,archive:{hidden:false},
+   matchMedia:query=>{assert.equal(query,'(prefers-reduced-motion: reduce)');queries++;return {matches:fresh};},
+   q(){measured++;return null;},getComputedStyle:()=>({backgroundColor:'transparent'}),watchInspectFlight(){},
+   finishInspectReturn(){closed++;},
+  };
+  const actions=runInNewContext(
+   extract('const motionBlocked=','const hasVideo=')+
+   extract('const inspectMotionBlocked=','function startInspectFlight(')+
+   extract('function startInspectFlight(','const settleInspectReturn=')+
+   '\n({motionBlocked,startInspectFlight,closeInspect})',context,
+  );
+  assert.equal(actions.motionBlocked(),retained,'shared callers keep their retained-query behavior');
+  assert.equal(actions.motionBlocked(fresh),fresh);
+  assert.equal(actions.startInspectFlight(true),false);
+  assert.equal(measured,fresh?0:1,'fresh reduced motion blocks measurement; fresh normal motion reaches the photo');
+  actions.closeInspect();
+  assert.equal(closed,fresh?1:0);
+  assert.equal(reversed,!fresh&&phase==='opening'?1:0,'a fresh normal preference permits the live reverse');
+  assert.equal(queries,2);
+  context.window.BakedKaleDisplay={motionPaused:true};
+  assert.equal(actions.motionBlocked(false),true,'explicit pause still blocks photo motion');
+ }
+});
+
 // Run the production flight planner and completion handlers with controllable
 // WAAPI promises. The DOM fixture represents paper pieces, never live CMS data.
 function fixture(){
