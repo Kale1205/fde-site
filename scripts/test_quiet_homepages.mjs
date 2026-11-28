@@ -29,7 +29,7 @@ for (const [locale, directory] of Object.entries({en:'', ja:'ja/', zh:'zh/'})) {
     assert.match(html,/demo-v1\.js\?v=/);
     assert.match(html,/quiet-form\.js\?v=/);
     for(const value of [...(locale==='ja'?(locale==='ja'?['¥49,800','¥99,800','¥4,900']:['$349','$699','$31','$62']):['$349','$699','$31','$62']),'2026']) assert(html.includes(value));
-    for(const page of ['license','demo','goals','news','contact']) assert(html.includes(`${page}.html`));
-    assert.doesNotMatch(html,/buy-button|stripe|checkout\.html|data-buy/);
+    for(const page of ['license','goals','news','contact']) assert(html.includes(`${page}.html`));
+    assert.doesNotMatch(html,/demo\.html|buy-button|stripe|checkout\.html|data-buy/);
   });
 }

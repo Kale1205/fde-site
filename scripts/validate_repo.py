@@ -143,7 +143,7 @@ REMOVED_DECISION_PAGE_NAMES = {
 }
 INDEXED_PAGE_NAMES = {
     "index.html", "goals.html", "news.html", "contact.html",
-    "license.html", "demo.html",
+    "license.html",
 }
 EN_PAGES = INDEXED_PAGE_NAMES | {"order.html", "customer.html"}
 JA_PAGES = {f"ja/{name}" for name in EN_PAGES}
@@ -159,7 +159,7 @@ for prefix in ("", "ja/", "zh/"):
             fail(f"{retired_path}: removed decision-guide page must stay deleted")
 
 GALLERY_INNER_PAGE_NAMES = {
-    "goals.html", "news.html", "contact.html", "license.html", "demo.html",
+    "goals.html", "news.html", "contact.html", "license.html",
 }
 GALLERY_INNER_PAGES = (
     GALLERY_INNER_PAGE_NAMES
@@ -377,8 +377,6 @@ for rel, markers in search_markers.items():
 seo_page_markers = {
     "contact.html": ("Inventory Software Adoption & Migration Questions", "Ask about adopting or moving to IMS"),
     "ja/contact.html": ("在庫管理ソフトの導入・移行相談", "IMSの導入・移行を相談する"),
-    "demo.html": ("IMS Inventory Software Demo | Baked Kale FDE", "Try the core stock workflow"),
-    "ja/demo.html": ("IMS 在庫管理ソフト操作デモ | Baked Kale FDE", "基本の在庫業務を試す"),
     "license.html": ("IMS License & License Plus | Plan Policy", "Where do you want to start?"),
     "ja/license.html": ("IMS LicenseとLicense Plus | 料金・利用条件", "どちらから始めますか？"),
     "zh/license.html": ("IMS License 与 License Plus｜价格与使用条件", "您想从哪一种方案开始？"),
@@ -388,34 +386,6 @@ for rel, markers in seo_page_markers.items():
     for marker in markers:
         if marker not in source:
             fail(f"{rel}: page-specific inventory search marker missing: {marker}")
-
-demo_page_markers = {
-    "demo.html": (
-        "IMS / v1.0 SIMPLIFIED DEMO",
-        'id="imsDemoRoot"',
-        'value="receive"',
-        'value="transfer"',
-        'value="count"',
-        'value="ship"',
-        'src="demo-v1.js?v=',
-        "INTERACTIVE SIMULATION · NOT THE RELEASED PRODUCT",
-    ),
-    "ja/demo.html": (
-        "IMS / v1.0 簡易デモ",
-        'id="imsDemoRoot"',
-        'value="receive"',
-        'value="transfer"',
-        'value="count"',
-        'value="ship"',
-        'src="../demo-v1.js?v=',
-        "操作シミュレーション · 正式版製品ではありません",
-    ),
-}
-for rel, markers in demo_page_markers.items():
-    source = public_source_text.get(rel, "")
-    for marker in markers:
-        if marker not in source:
-            fail(f"{rel}: simplified v1.0 demo marker missing: {marker}")
 
 demo_runtime = (ROOT / "demo-v1.js").read_text(encoding="utf-8") if (ROOT / "demo-v1.js").exists() else ""
 for marker in ("receive", "transfer", "count", "ship", "insufficient", "demoHistoryBody"):
@@ -1110,13 +1080,8 @@ platform_values = {
     "Windows", "M1", "M2-or-later", "iOS-iPadOS", "Android", "Linux", "Other-Not-sure",
 }
 for value in sorted(platform_values):
-    if f"'{value}'" not in site_runtime:
-        fail(f"site.js: Web Demo platform-interest choice missing: {value}")
     if f"'{value}'" not in contact_runtime:
         fail(f"contact-direct.js: inquiry platform allowlist/display missing: {value}")
-for marker in ("source=web-demo", "Web Demo availability does not mean", "initial native release scope", "'zh-CN'"):
-    if marker not in site_runtime:
-        fail(f"site.js: Web Demo/native boundary marker missing: {marker}")
 for marker in ("[Source: Web Demo]", "[Native platform interest:", "message,lang:lang()"):
     if marker not in contact_runtime:
         fail(f"contact-direct.js: existing-message-field demand context missing: {marker}")

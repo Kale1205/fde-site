@@ -1,3 +1,4 @@
+import {withStandaloneDemoRetired as retired} from "./standalone_demo_retirement_test_helpers.mjs";
 import {withJapaneseImsSearchPresentation} from './jp_search_presentation.mjs';
 import {applyReviewedJapaneseUpdatesHtml} from './jpy_updates_test_helpers.mjs';
 import test from 'node:test';
@@ -74,7 +75,7 @@ test('only the exact owned bootstrap passes static metadata script protection',(
  assert.throws(()=>approvedHeadPrefix(home.replace('<title>','<script>unexpected()</script><title>'),{jsonLd:true}),/Only the approved JSON-LD/);
 });
 test('only entry documents contain the FDE loader; other page shells are unchanged',()=>{
- assert.deepEqual(loadingEntryPages,['index.html','ja/index.html','zh/index.html']);assert.equal(loadingPages.length,27);
+ assert.deepEqual(loadingEntryPages,['index.html','ja/index.html','zh/index.html']);assert.equal(loadingPages.length,24);
  const strip=html=>stripLoadingHead(normalizeSiteTabIcon(html),{strict:false}).replace(/<!-- FDE loading panel -->\n[\s\S]*?<!-- End FDE loading panel -->\n/g,'').replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g,'$1BUILD');
  const root=new URL('../',import.meta.url),baseline='2c222b5ec20f2623286f93ab5afe23eabdbbf222';
  for(const file of loadingPages){
@@ -84,7 +85,7 @@ test('only entry documents contain the FDE loader; other page shells are unchang
   assert.equal(html.includes('<span data-page-loading-count></span>'),eligible,file);
   assert.equal(html.includes('const remaining=2000-'),eligible,file);
   assert(!html.includes('<button type="button" data-page-loading-skip'),file);
-  assert.equal(strip(html),strip(withJapaneseImsSearchPresentation(file,applyReviewedJapaneseUpdatesHtml(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'})))),file);
+  assert.equal(strip(html),strip(retired(file,withJapaneseImsSearchPresentation(file,applyReviewedJapaneseUpdatesHtml(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'}))))),file);
  }
 });
 test('reload and history traversals never start the entry animation',()=>{

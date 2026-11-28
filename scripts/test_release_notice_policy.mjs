@@ -23,7 +23,7 @@ for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
       assert.ok(body.includes(releaseCopy[locale].unavailable));
       assert.equal((body.match(new RegExp(releaseCopy[locale].unavailable.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length,1);
     }
-    for(const page of ['goals','demo','news','contact']) {
+    for(const page of ['goals','news','contact']) {
       const html=read(`${prefix}${page}.html`);
       assert.ok(!html.includes(releaseCopy[locale].unavailable));
       assert.doesNotMatch(html,/data-faq-id="ims-sale-status"|Purchasing is not available|采购不可用|Formal sales are not open|正式販売は開始していません|正式销售不公开/);
@@ -34,7 +34,7 @@ for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh','zh/']]) {
       assert.equal(html.match(/<head>[\s\S]*?<\/head>/)[0],before(`${prefix}${page}.html`).match(/<head>[\s\S]*?<\/head>/)[0],'Metadata and scripts stay intact');
     }
     assert.doesNotMatch(read(`${prefix}order.html`),/<form|fetch\(|contact-direct\.js|checkout/i);
-    for(const page of ['demo','goals'])assert.equal(read(`${prefix}${page}.html`),before(`${prefix}${page}.html`),'Demo provenance and operational boundaries are unchanged');
+    for(const page of ['goals'])assert.equal(read(`${prefix}${page}.html`),before(`${prefix}${page}.html`),'Demo provenance and operational boundaries are unchanged');
   });
 }
 test('CMS hydration cannot restore purchase-unavailable FAQ or suffixes',()=>{

@@ -1,3 +1,4 @@
+import {withStandaloneDemoRetired as retired} from "./standalone_demo_retirement_test_helpers.mjs";
 import {withJapaneseImsSearchPresentation} from "./jp_search_presentation.mjs";
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
 import {applyReviewedUiChanges} from './focus_test_helpers.mjs';
@@ -23,13 +24,13 @@ const read = file => withoutW05BookCoverEditor(file,readFileSync(new URL(file,ro
 const baseline = 'e1ebe999d2acbbf7edc211688a51894eaf7b60a6';
 const previous = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', `${baseline}:${file}`], {cwd:root, encoding:'utf8'})); return applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
-  ['index', 'license', 'demo', 'goals', 'news', 'contact', 'order', 'customer', 'quiet-form'].map(page => `${prefix}${page}.html`)
+  ['index', 'license', 'goals', 'news', 'contact', 'order', 'customer', 'quiet-form'].map(page => `${prefix}${page}.html`)
 ).concat(['overview.html', 'products.html']); // CMS has its own draft/PR behavior suite.
 
 for (const file of pages) {
   test(`${file}: only approved product/operator naming and first-use expansion change`, () => {
     const html = read(file);
-    assert.equal(normalizeAssetBuildKeys(html.trimEnd()), normalizeAssetBuildKeys(withJapaneseImsSearchPresentation(file,applyApprovedContinuingUsePolicy(file,applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file)))))))).trimEnd()));
+    assert.equal(normalizeAssetBuildKeys(html.trimEnd()), normalizeAssetBuildKeys(retired(file,withJapaneseImsSearchPresentation(file,applyApprovedContinuingUsePolicy(file,applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file))))))))).trimEnd()));
     assert.doesNotMatch(html, /FDE IMS/);
     assert.equal(applyApprovedProductNaming(html), html);
   });
@@ -66,7 +67,7 @@ test('CMS hydration and Chinese dictionary contain the same approved names', () 
     const fixture=file==='content/faq-content.json'
       ? applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,readFaqMigrationFixture(file)))
       : read(file);
-    assert.deepEqual(JSON.parse(fixture), JSON.parse(applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file))))))));
+    assert.deepEqual(JSON.parse(fixture), JSON.parse(retired(file,applyReviewedZhSearchMetadata(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, applyApprovedProductNaming(previous(file)))))))));
     assert.doesNotMatch(read(file), /FDE IMS/);
     JSON.parse(read(file));
   }

@@ -26,7 +26,7 @@ def main():
         "language": "en",
         "commercialLaunchReady": False,
         "ctaIntent": "view_demo",
-        "ctaUrl": "https://kale1205.github.io/fde-site/demo.html",
+        "ctaUrl": "https://kale1205.github.io/fde-site/",
         "audienceLabel": "small businesses evaluating inventory workflow tools",
         "segmentRationale": "Synthetic segment used only to validate the P3-7 drafting boundary.",
         "sourceRefs": ["content/site-content.json"],

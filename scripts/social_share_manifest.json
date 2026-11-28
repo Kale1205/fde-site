@@ -25,14 +25,12 @@
     "cms-admin.html",
     "contact.html",
     "customer.html",
-    "demo.html",
     "docs/design-review/home-comparison-20260924/comparison.html",
     "docs/design-review/license-switcher-20260923/comparison.html",
     "goals.html",
     "index.html",
     "ja/contact.html",
     "ja/customer.html",
-    "ja/demo.html",
     "ja/goals.html",
     "ja/index.html",
     "ja/license.html",
@@ -49,7 +47,6 @@
     "why.html",
     "zh/contact.html",
     "zh/customer.html",
-    "zh/demo.html",
     "zh/goals.html",
     "zh/index.html",
     "zh/license.html",
@@ -65,15 +62,6 @@
       "<meta name=\"twitter:card\" content=\"summary_large_image\">"
     ],
     "customer.html": [],
-    "demo.html": [
-      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
-      "<meta property=\"og:image:alt\" content=\"IMS inventory operations development preview by Baked Kale FDE\">",
-      "<meta name=\"twitter:card\" content=\"summary_large_image\">",
-      "<meta name=\"twitter:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
-      "<meta name=\"twitter:image:alt\" content=\"IMS inventory operations development preview by Baked Kale FDE\">",
-      "<meta property=\"og:image:alt\" content=\"FDE IMS inventory operations development preview by Baked Kale FDE\">",
-      "<meta name=\"twitter:image:alt\" content=\"FDE IMS inventory operations development preview by Baked Kale FDE\">"
-    ],
     "docs/design-review/home-comparison-20260924/comparison.html": [],
     "docs/design-review/license-switcher-20260923/comparison.html": [],
     "goals.html": [
@@ -88,15 +76,6 @@
       "<meta name=\"twitter:card\" content=\"summary_large_image\">"
     ],
     "ja/customer.html": [],
-    "ja/demo.html": [
-      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
-      "<meta property=\"og:image:alt\" content=\"Baked Kale FDEによるIMS在庫管理の開発プレビュー\">",
-      "<meta name=\"twitter:card\" content=\"summary_large_image\">",
-      "<meta name=\"twitter:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
-      "<meta name=\"twitter:image:alt\" content=\"Baked Kale FDEによるIMS在庫管理の開発プレビュー\">",
-      "<meta property=\"og:image:alt\" content=\"Baked Kale FDEによるFDE IMS在庫管理の開発プレビュー\">",
-      "<meta name=\"twitter:image:alt\" content=\"Baked Kale FDEによるFDE IMS在庫管理の開発プレビュー\">"
-    ],
     "ja/goals.html": [
       "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">"
     ],
@@ -133,15 +112,6 @@
       "<meta name=\"twitter:card\" content=\"summary_large_image\">"
     ],
     "zh/customer.html": [],
-    "zh/demo.html": [
-      "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
-      "<meta property=\"og:image:alt\" content=\"IMS inventory operations development preview by Baked Kale FDE\">",
-      "<meta name=\"twitter:card\" content=\"summary_large_image\">",
-      "<meta name=\"twitter:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">",
-      "<meta name=\"twitter:image:alt\" content=\"IMS inventory operations development preview by Baked Kale FDE\">",
-      "<meta property=\"og:image:alt\" content=\"FDE IMS inventory operations development preview by Baked Kale FDE\">",
-      "<meta name=\"twitter:image:alt\" content=\"FDE IMS inventory operations development preview by Baked Kale FDE\">"
-    ],
     "zh/goals.html": [
       "<meta property=\"og:image\" content=\"https://kale1205.github.io/fde-site/assets/warehouse-operations.webp\">"
     ],

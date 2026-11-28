@@ -121,14 +121,6 @@
       document.body.append(languagePanel);
     }
 
-    const desktopNav = document.querySelector(".desktop-nav");
-    if (desktopNav && !desktopNav.querySelector('a[href$="demo.html"]')) {
-      const link = document.createElement("a");
-      link.href = "demo.html";
-      link.textContent = text.demo;
-      if (window.location.pathname.endsWith("/demo.html")) link.setAttribute("aria-current", "page");
-      (desktopNav.querySelector("[data-lp-destination]") || desktopNav.firstElementChild)?.after(link);
-    }
     const originalLinks = Array.from(mobileNav.querySelectorAll("a"));
     const byHref = (fragment) => originalLinks.find((link) => !link.hasAttribute("hreflang") && link.getAttribute("href")?.includes(fragment));
     const productLink = originalLinks[0];
@@ -136,10 +128,6 @@
     const goalsLink = byHref("goals.html");
     const newsLink = byHref("news.html");
     const contactLink = byHref("contact.html") || originalLinks.at(-1);
-    const demoLink = document.createElement("a");
-    demoLink.href = "demo.html";
-    demoLink.textContent = text.demo;
-    if (window.location.pathname.endsWith("/demo.html")) demoLink.setAttribute("aria-current", "page");
 
     const backdrop = document.createElement("button");
     backdrop.type = "button";
@@ -194,8 +182,8 @@
     shortcuts.className = "mobile-nav-shortcuts";
     shortcuts.append(
       makeShortcut(productLink, "product", text.product),
-      ...(lpSource ? [makeShortcut(lpSource, "lp", "LP制作"), makeShortcut(demoLink, "demo", text.demo)] :
-        [makeShortcut(demoLink, "demo", text.demo), makeShortcut(contactLink, "contact", text.contact)])
+      ...(lpSource ? [makeShortcut(lpSource, "lp", "LP制作")] :
+        [makeShortcut(contactLink, "contact", text.contact)])
     );
 
     const rows = document.createElement("div");

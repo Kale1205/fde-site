@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://kale1205.github.io/fde-site/</loc>
-    <lastmod>2026-11-14</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/" />
@@ -12,7 +12,7 @@
   </url>
   <url>
     <loc>https://kale1205.github.io/fde-site/ja/</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/" />
@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://kale1205.github.io/fde-site/zh/</loc>
-    <lastmod>2026-11-14</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/" />
@@ -59,36 +59,6 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/license.html" />
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://kale1205.github.io/fde-site/zh/license.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/license.html" />
-  </url>
-  <url>
-    <loc>https://kale1205.github.io/fde-site/demo.html</loc>
-    <lastmod>2026-11-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/demo.html" />
-    <xhtml:link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/demo.html" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://kale1205.github.io/fde-site/zh/demo.html" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/demo.html" />
-  </url>
-  <url>
-    <loc>https://kale1205.github.io/fde-site/ja/demo.html</loc>
-    <lastmod>2026-11-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/demo.html" />
-    <xhtml:link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/demo.html" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://kale1205.github.io/fde-site/zh/demo.html" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/demo.html" />
-  </url>
-  <url>
-    <loc>https://kale1205.github.io/fde-site/zh/demo.html</loc>
-    <lastmod>2026-11-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/demo.html" />
-    <xhtml:link rel="alternate" hreflang="ja" href="https://kale1205.github.io/fde-site/ja/demo.html" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://kale1205.github.io/fde-site/zh/demo.html" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://kale1205.github.io/fde-site/demo.html" />
   </url>
   <url>
     <loc>https://kale1205.github.io/fde-site/goals.html</loc>
@@ -152,7 +122,7 @@
   </url>
   <url>
     <loc>https://kale1205.github.io/fde-site/news.html</loc>
-    <lastmod>2026-11-14</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/news.html" />
@@ -162,7 +132,7 @@
   </url>
   <url>
     <loc>https://kale1205.github.io/fde-site/ja/news.html</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/news.html" />
@@ -172,7 +142,7 @@
   </url>
   <url>
     <loc>https://kale1205.github.io/fde-site/zh/news.html</loc>
-    <lastmod>2026-11-14</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kale1205.github.io/fde-site/news.html" />

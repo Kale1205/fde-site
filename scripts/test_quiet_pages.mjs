@@ -1,3 +1,4 @@
+import {withStandaloneDemoRetired as retired} from "./standalone_demo_retirement_test_helpers.mjs";
 import {priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {withoutW05BookCoverEditor} from "./w05_cover_editor_test_helpers.mjs";
 import assert from 'node:assert/strict';
@@ -7,7 +8,6 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import test from 'node:test';
 import { renderQuietLicense } from './build_quiet_license.mjs';
-import { renderQuietDemo } from './build_quiet_demo.mjs';
 import { renderQuietGoals } from './build_quiet_goals.mjs';
 import { renderQuietNews } from './build_quiet_news.mjs';
 import { renderQuietContact } from './build_quiet_contact.mjs';
@@ -17,7 +17,7 @@ import {applyApprovedContinuingUsePolicy} from './updates_continuing_use_copy.mj
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pages = ['', 'ja/', 'zh/'].flatMap(locale =>
-  ['license', 'demo', 'goals', 'news', 'contact', 'order', 'customer'].map(name => `${locale}${name}.html`)
+  ['license', 'goals', 'news', 'contact', 'order', 'customer'].map(name => `${locale}${name}.html`)
 ); // Intentional CMS workflow/copy changes are tested in the CMS suites.
 // Baseline for this design-only renewal; overridable for future approved copy updates.
 const baseline = process.env.QUIET_PAGES_BASE || 'e13457ad75068fa753b3f6dc6705d1aa1de2a61c';
@@ -40,21 +40,19 @@ for (const name of pages) {
     const normalizeBuildKeys = source => source.replace(/([?&]v=)[0-9A-Za-z._-]+/g, '$1BUILD');
     const expected = name.endsWith('license.html')
       ? renderQuietLicense(original(name), name.includes('/') ? '../' : '')
-      : name.endsWith('demo.html')
-        ? renderQuietDemo(original(name), name.startsWith('ja/') ? 'ja' : name.startsWith('zh/') ? 'zh' : 'en')
         : name.endsWith('goals.html') ? renderQuietGoals(original(name))
         : name.endsWith('news.html') ? renderQuietNews(original(name))
         : name.endsWith('contact.html') ? renderQuietContact(original(name))
         : name.endsWith('order.html') ? renderQuietOrder(original(name),readFileSync(path.join(root,name.replace('order.html','index.html')),'utf8')).replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m,'').replace('class="quiet-page ','class="')
         : name.endsWith('customer.html') ? renderQuietCustomer(name.startsWith('ja/')?'ja':name.startsWith('zh/')?'zh':'en',readFileSync(path.join(root,name.replace('customer.html','index.html')),'utf8')).replace(/^  <link rel="stylesheet" href="(?:\.\.\/)?quiet-pages\.css\?v=[0-9A-Za-z._-]+">\n/m,'').replace('class="quiet-page ','class="') : original(name);
-    assert.equal(normalizeBuildKeys(name === "ja/license.html" ? priorJapaneseUpdatesHtml(stripped) : stripped), normalizeBuildKeys(applyApprovedContinuingUsePolicy(name,expected)));
+    assert.equal(normalizeBuildKeys(name === "ja/license.html" ? priorJapaneseUpdatesHtml(stripped) : stripped), normalizeBuildKeys(retired(name,applyApprovedContinuingUsePolicy(name,expected))));
     assert.equal((html.match(/quiet-pages\.css/g) || []).length, 1);
   });
 }
 
 test('SEO configuration and route inventory are unchanged', () => {
   for (const name of ['robots.txt', 'content/zh-translations.json']) {
-    assert.equal(readFileSync(path.join(root, name), 'utf8'), original(name), name);
+    assert.equal(readFileSync(path.join(root, name), 'utf8'), retired(name,original(name)), name);
   }
   // The repository requires commit-derived lastmods for modified HTML.
   const withoutDates = xml => xml.replace(/<lastmod>[^<]+<\/lastmod>/g, '<lastmod></lastmod>');
@@ -62,7 +60,7 @@ test('SEO configuration and route inventory are unchanged', () => {
   const lp = /  <url>\n    <loc>https:\/\/kale1205\.github\.io\/fde-site\/ja\/lp\/(?:service\.html)?<\/loc>\n    <lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>\n    <changefreq>(?:weekly|monthly)<\/changefreq>\n    <priority>0\.[89]<\/priority>\n  <\/url>\n/g;
   const admitted = [...current.matchAll(lp)].map(m => m[0].match(/<loc>([^<]+)<\/loc>/)[1]);
   assert.deepEqual(admitted, ['https://kale1205.github.io/fde-site/ja/lp/', 'https://kale1205.github.io/fde-site/ja/lp/service.html']);
-  assert.equal(withoutDates(current.replace(lp,'')), withoutDates(original('sitemap.xml')));
+  assert.equal(withoutDates(current.replace(lp,'')), withoutDates(retired('sitemap.xml',original('sitemap.xml'))));
 });
 
 test('shared theme stays scoped and keeps selection stationary', () => {
