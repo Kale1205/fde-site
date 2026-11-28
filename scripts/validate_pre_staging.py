@@ -18,23 +18,13 @@ def text(path):
     return p.read_text(encoding="utf-8")
 
 
-# Demo is a paired feature in the two-site architecture.
-en_demo = text("demo.html")
-ja_demo = text("ja/demo.html")
-ja_home = text("ja/index.html")
-site_js = text("site.js")
-if en_demo and not re.search(r'<html\s+lang=["\']en["\']', en_demo, re.I):
-    fail("demo.html must be English source")
-if ja_demo and not re.search(r'<html\s+lang=["\']ja["\']', ja_demo, re.I):
-    fail("ja/demo.html must be Japanese source")
-has_inline_demo = ('id="imsDemoRoot"' in ja_home
-                   and 'src="../demo-v1.js' in ja_home
-                   and 'quiet-home' in ja_home)
-if ja_home and ('href="demo.html"' not in ja_home
-                or not ('data-demo-open' in ja_home or has_inline_demo)):
-    fail("ja/index.html must open the Japanese demo")
-if "../demo.html" in site_js:
-    fail("site.js must not route Japanese pages back to the English demo")
+# Standalone demo routes are retired in all public locales.
+for rel in ("demo.html", "ja/demo.html", "zh/demo.html"):
+    if (ROOT / rel).exists():
+        fail(f"{rel}: retired standalone demo must not be republished")
+for rel in ("index.html", "ja/index.html", "zh/index.html", "gallery-ui.js", "site.js", "sitemap.xml"):
+    if "demo.html" in text(rel):
+        fail(f"{rel}: retired standalone demo must not be linked")
 
 # Turnstile must follow the source language of the independent EN/JA sites.
 turnstile = text("turnstile-protection.js")

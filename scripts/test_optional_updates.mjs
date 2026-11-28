@@ -1,3 +1,4 @@
+import {withStandaloneDemoRetired as retired} from "./standalone_demo_retirement_test_helpers.mjs";
 import {priorJapaneseUpdatesFaq,priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {approveFaqDocument,approveUsdCopy} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
@@ -25,7 +26,7 @@ const baseline = 'ccc17a1f85ef079d82d4a8e616df78b8b457fccb';
 const read = file => priorJapaneseUpdatesFaq(file,withoutW05BookCoverEditor(file,readFileSync(new URL(file,root),'utf8')));
 const before = file => { const old=applyW02PurchaseCta(file,execFileSync('git', ['show', baseline + ':' + file], {cwd:root, encoding:'utf8'})); return file==='contact-config.js'?applyCmsMemoryKey(old):applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const pages = ['', 'ja/', 'zh/'].flatMap(prefix =>
-  ['index','license','order','contact','demo','goals','news','customer','quiet-form'].map(page => prefix + page + '.html')
+  ['index','license','order','contact','goals','news','customer','quiet-form'].map(page => prefix + page + '.html')
 ).concat(['overview.html','products.html']); // CMS has its own draft/PR behavior suite.
 const normalize = source => normalizeAssetBuildKeys(source.trimEnd());
 const prices = source => priorJapaneseUpdatesHtml(source).match(/(?:¥|\$)\s?\d[\d,.]*/g) || [];
@@ -34,7 +35,7 @@ const outsideFaq = source => source.replace(/<div id="cmsFaqList">[\s\S]*?<\/div
 for (const file of pages) {
   test(file + ': only the approved Updates copy changes; metadata, prices and controls are preserved', () => {
     const source = read(file);
-    assert.equal(normalize(source), normalize(applyApprovedContinuingUsePolicy(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file)))))));
+    assert.equal(normalize(source), normalize(retired(file,applyApprovedContinuingUsePolicy(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file, applyApprovedOptionalUpdates(file, before(file))))))));
     assert.equal(applyApprovedOptionalUpdates(file, source), source, 'copy migration is idempotent');
     assert.deepEqual(prices(outsideFaq(source)), prices(outsideFaq(before(file))), 'no JPY or candidate USD price changes outside the expanded FAQ');
     assert.equal(normalize(source.match(/<head>[\s\S]*?<\/head>/)?.[0] || ''),

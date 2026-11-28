@@ -10,7 +10,7 @@ export function stripSiteChromeAssets(source){
 }
 
 export function withSiteChrome(file,source){
- if(!/^(?:(?:ja|zh)\/)?(?:index|quiet-form|license|goals|news|demo|contact|customer|order)\.html$/.test(file)||!/^<!doctype html>/i.test(source))return source;
+ if(!/^(?:(?:ja|zh)\/)?(?:index|quiet-form|license|goals|news|contact|customer|order)\.html$/.test(file)||!/^<!doctype html>/i.test(source))return source;
  // Historical purchase templates acquire the shared header when their current
  // page composer runs; do not rewrite an unrelated legacy asset suffix.
  if(!source.includes('class="site-header"')||!source.includes('gallery-ui.css'))return source;

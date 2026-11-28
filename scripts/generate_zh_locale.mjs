@@ -5,7 +5,6 @@ import {withSharedImage} from './social_share_metadata.mjs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { renderQuietHomepage } from './build_quiet_homepages.mjs';
-import { renderQuietDemo } from './build_quiet_demo.mjs';
 import { renderQuietOrder } from './build_quiet_order.mjs';
 import { renderQuietCustomer } from './build_quiet_customer.mjs';
 import { applyReleaseNoticePolicy, removePurchaseStatusCopy, releaseCopy } from './release_notice_policy.mjs';
@@ -27,7 +26,6 @@ for(const [en,zh]of [['Planned launch price','计划优惠价格'],['Planned pri
 const pages = [
   'index.html',
   'license.html',
-  'demo.html',
   'goals.html',
   'contact.html',
   'news.html',
@@ -146,10 +144,6 @@ function renderPage(name) {
   if (name === 'license.html') {
     translated = applyApprovedContinuingUsePolicy('zh/license.html', translated);
   }
-  if (name === 'demo.html') {
-    // Social sharing locale follows this Chinese page, not its English source.
-    translated = translated.replace('<meta property="og:locale" content="en_US">', '<meta property="og:locale" content="zh_CN">\n  <meta property="og:locale:alternate" content="en_US">');
-  }
   if (name === 'news.html') {
     // This editorial section is not the commercial Updates product label.
     translated = translated.replace(/(<h2 id="news-updates-title"[^>]*>)[^<]+/, '$1更新信息');
@@ -172,7 +166,7 @@ function renderPage(name) {
     }
   }
   if(name==='news.html'&&output.includes('book-news'))return renderBookNews(applyReleaseNoticePolicy(translated,'news'));
-  return name === 'demo.html' ? renderQuietDemo(translated, 'zh') : applyReleaseNoticePolicy(translated,name.replace('.html',''));
+  return applyReleaseNoticePolicy(translated,name.replace('.html',''));
 }
 
 mkdirSync(path.join(root, 'zh'), { recursive: true });

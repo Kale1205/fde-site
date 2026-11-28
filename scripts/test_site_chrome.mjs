@@ -8,7 +8,7 @@ const read=f=>readFileSync(new URL('../'+f,import.meta.url),'utf8');
 test('the single-character view embeds unchanged native JPEG pixels and no generated artwork',()=>{
  const svg=read('assets/bakedkale-character.svg'),bytes=Buffer.from(svg.match(/data:image\/jpeg;base64,([^"]+)/)[1],'base64');assert.deepEqual(bytes,readFileSync(new URL('../assets/instagram-bakedkale-profile-20261110.jpg',import.meta.url)));assert.equal(createHash('sha256').update(bytes).digest('hex'),'3b2ad8bff9a086767706118651a0c27758c624d0f454291bffffb640193d7ecf');assert(svg.includes('<clipPath'));assert(!svg.includes('<text'));
 });
-test('all 27 navigable page shells own one character header and a complete fixed-row stylesheet',()=>{
+test('all 24 navigable page shells own one character header and a complete fixed-row stylesheet',()=>{
  for(const f of loadingPages){const html=read(f);assert.equal((html.match(/data-brand-character/g)||[]).length,1,f);assert.equal((html.match(/site-chrome\.css\?v=/g)||[]).length,1,f);assert.equal(withSiteChrome(f,html),html,f);assert.doesNotThrow(()=>stripSiteChromeAssets(stripLoadingHead(html)));}
  const css=read('site-chrome.css');assert(css.includes('position:fixed'));assert(css.includes('padding-top:var(--site-header-height)'));assert(css.includes('scroll-padding-top'));assert(css.includes('prefers-reduced-motion:reduce'));assert(css.includes('data-site-motion="still"'));
 });

@@ -15,8 +15,6 @@ ALLOWED_PUBLIC_SOURCE_REFS = (
     "ja/license.html",
     "news.html",
     "ja/news.html",
-    "demo.html",
-    "ja/demo.html",
     "why.html",
     "ja/why.html",
     "goals.html",

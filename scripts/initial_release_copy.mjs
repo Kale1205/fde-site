@@ -113,7 +113,7 @@ export function applyApprovedInitialReleaseScope(file, source) {
     data[initialReleaseCopy.en.restore] = initialReleaseCopy.zh.restore;
     return JSON.stringify(data, null, 2) + '\n';
   }
-  if (!/^(?:(?:ja|zh)\/)?(?:index|quiet-form|license|order|demo)\.html$/.test(file)) return source;
+  if (!/^(?:(?:ja|zh)\/)?(?:index|quiet-form|license|order)\.html$/.test(file)) return source;
   const locale = file.startsWith('ja/') ? 'ja' : file.startsWith('zh/') ? 'zh' : 'en';
   const copy = initialReleaseCopy[locale];
   let html = source

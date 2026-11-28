@@ -1,3 +1,4 @@
+import {withStandaloneDemoRetired as retired} from "./standalone_demo_retirement_test_helpers.mjs";
 import {priorJapaneseUpdatesFaq,priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {approveFaqDocument} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
@@ -41,17 +42,17 @@ for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']]) {
 }
 test('Chinese dictionary adds exactly the purchase-label translation; no other copy/URLs change',()=>{
   const file='content/zh-translations.json',expected=applyApprovedInitialReleaseScope(file,applyW02PurchaseCta(file,before(file)));
-  assert.deepEqual(JSON.parse(read(file)),JSON.parse(expected));
-  const now=JSON.parse(read(file)),old=JSON.parse(expected);assert.equal(now[purchaseCtaLabels.en],old[purchaseCtaLabels.en]);
+  assert.deepEqual(JSON.parse(read(file)),JSON.parse(retired(file,expected)));
+  const now=JSON.parse(read(file)),old=JSON.parse(retired(file,expected));assert.equal(now[purchaseCtaLabels.en],old[purchaseCtaLabels.en]);
 });
 test('no runtime, API, CSS, commerce, auth or unrelated pages change',()=>{
   for(const file of ['quiet-pages.css','license.css','contact-direct.js','contact-config.js','quiet-form.js',
     'worker/src/index-v14.js','robots.txt','content/faq-content.json','content/faq-policy-additions.json',
-    ...['','ja/','zh/'].flatMap(p=>['index','contact','demo','goals','news','order','customer'].map(n=>p+n+'.html'))]){
+    ...['','ja/','zh/'].flatMap(p=>['index','contact','goals','news','order','customer'].map(n=>p+n+'.html'))]){
     const current=read(file);
     const source=file==='content/faq-content.json'?readFaqMigrationFixture(file):before(file);
     const expected=renderCurrentFaqFixture(file,applyApprovedMultilingualContent(file,applyApprovedInitialReleaseScope(file,source)));
-    assert.equal(normalize(current),normalize(approveFaqDocument(file,applyReviewedUiChanges(file,applyApprovedContinuingUsePolicy(file,expected)))),file);
+    assert.equal(normalize(current),normalize(retired(file,approveFaqDocument(file,applyReviewedUiChanges(file,applyApprovedContinuingUsePolicy(file,expected))))),file);
   }
   assert.match(read('quiet-pages.css'),/\.quiet-page :is\(button,\[type=submit\]\):disabled \{ transform: none; opacity: \.55; cursor: not-allowed; \}/);
   assert.doesNotMatch(read('gallery-ui.js'),/data-license-purchase/);

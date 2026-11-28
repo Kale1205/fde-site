@@ -1,3 +1,4 @@
+import {withStandaloneDemoRetired as retired} from "./standalone_demo_retirement_test_helpers.mjs";
 import {withJapaneseImsSearchPresentation} from "./jp_search_presentation.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -25,37 +26,30 @@ for(const [file,copy] of Object.entries(descriptions)){
   assert.doesNotMatch(copy,/工作清单|Plus码|发展之中/);
  });
 }
-test('Chinese Demo sharing uses Chinese locale and retains both other locales',()=>{
- const html=read('zh/demo.html');
- assert.match(html,/<html lang="zh-CN">/);
- assert.equal((html.match(/property="og:locale" content="zh_CN"/g)||[]).length,1);
- for(const locale of ['en_US','ja_JP'])assert.equal((html.match(new RegExp(`property="og:locale:alternate" content="${locale}"`,'g'))||[]).length,1);
- assert.doesNotMatch(html,/property="og:locale" content="en_US"/);
-});
 test('all visible page content, price, commerce, metadata links and schema stay exact',()=>{
  const strip=html=>normalize(html).replace(/^.*<meta (?:name="description"|property="og:description"|property="og:locale(?::alternate)?")[^>]+>\s*\n/gm,'');
- for(const file of ['zh/index.html','zh/license.html','zh/demo.html'])assert.equal(strip(read(file)),strip(applyApprovedContinuingUsePolicy(file,applyApprovedInitialReleaseScope(file,baseline(file)))),file);
- for(const file of ['index.html','license.html','demo.html','ja/index.html','ja/license.html','ja/demo.html','zh/contact.html','zh/order.html','zh/customer.html','robots.txt'])assert.equal(normalize(read(file)),normalize(withJapaneseImsSearchPresentation(file,applyApprovedContinuingUsePolicy(file,renderCurrentFaqFixture(file,applyApprovedInitialReleaseScope(file,baseline(file)))))),file);
+ for(const file of ['zh/index.html','zh/license.html'])assert.equal(strip(read(file)),strip(retired(file,applyApprovedContinuingUsePolicy(file,applyApprovedInitialReleaseScope(file,baseline(file))))),file);
+ for(const file of ['index.html','license.html','ja/index.html','ja/license.html','zh/contact.html','zh/order.html','zh/customer.html','robots.txt'])assert.equal(normalize(read(file)),normalize(retired(file,withJapaneseImsSearchPresentation(file,applyApprovedContinuingUsePolicy(file,renderCurrentFaqFixture(file,applyApprovedInitialReleaseScope(file,baseline(file))))))),file);
  assert.equal(normalize(read('zh/news.html')),normalize(renderNewsPage(baseline('zh/news.html'),JSON.parse(read('content/site-content.json')),read('build-version.txt').trim())),'Chinese News keeps its layout/SEO and renders current reviewed content');
 });
 test('translation dictionary changes only the three reviewed metadata values',()=>{
  const current=JSON.parse(read('content/zh-translations.json'));
  const expected=JSON.parse(applyApprovedInitialReleaseScope('content/zh-translations.json',applyReviewedZhSearchMetadata('content/zh-translations.json',baseline('content/zh-translations.json'))));
- assert.deepEqual(current,expected);
+ assert.deepEqual(current,JSON.parse(retired('content/zh-translations.json',JSON.stringify(expected,null,2)+'\n')));
 });
 test('historical fixture accommodation accepts exactly the same reviewed metadata changes',()=>{
- for(const file of ['zh/index.html','zh/license.html','zh/demo.html','content/zh-translations.json']){
-  const expected=applyApprovedContinuingUsePolicy(file,applyApprovedInitialReleaseScope(file,applyReviewedZhSearchMetadata(file,baseline(file))));
+ for(const file of ['zh/index.html','zh/license.html','content/zh-translations.json']){
+  const expected=retired(file,applyApprovedContinuingUsePolicy(file,applyApprovedInitialReleaseScope(file,applyReviewedZhSearchMetadata(file,baseline(file)))));
   if(file.endsWith('.json'))assert.deepEqual(JSON.parse(read(file)),JSON.parse(expected),file);
   else assert.equal(normalize(expected),normalize(read(file)),file);
   assert.equal(applyReviewedZhSearchMetadata(file,read(file)),read(file),'idempotent');
  }
 });
 test('fixture accommodation cannot hide unrelated copy, routes, schema or unknown metadata',()=>{
- for(const file of ['zh/index.html','zh/license.html','zh/demo.html','index.html','content/zh-translations.json']){
+ for(const file of ['zh/index.html','zh/license.html','index.html','content/zh-translations.json']){
   const changed=read(file)+'\n<!-- unrelated content must remain detectable -->';
   assert.equal(applyReviewedZhSearchMetadata(file,changed),changed);
  }
  const unknown='<meta name="description" content="Unreviewed change"><link rel="canonical" href="https://example.invalid/"><script type="application/ld+json">{"name":"Different"}</script>';
- for(const file of ['zh/index.html','zh/license.html','zh/demo.html'])assert.equal(applyReviewedZhSearchMetadata(file,unknown),unknown);
+ for(const file of ['zh/index.html','zh/license.html'])assert.equal(applyReviewedZhSearchMetadata(file,unknown),unknown);
 });

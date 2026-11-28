@@ -91,7 +91,6 @@ def _pair(name, changefreq, priority, include_zh=False):
 SITEMAP_PAIRS = (
     _pair("index.html", "weekly", "1.0", include_zh=True),
     _pair("license.html", "monthly", "0.9", include_zh=True),
-    _pair("demo.html", "weekly", "0.8", include_zh=True),
     _pair("goals.html", "monthly", "0.8", include_zh=True),
     _pair("contact.html", "monthly", "0.7", include_zh=True),
     _pair("news.html", "weekly", "0.7", include_zh=True),

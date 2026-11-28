@@ -13,7 +13,7 @@ const faq=`<section class="section-frame" id="ims-faq" aria-labelledby="ims-faq-
 <dt><strong>IMSはどんな事業者向けですか？</strong></dt><dd>紙やExcelなどで管理している在庫を見直したい、小規模事業者向けです。在庫一覧・検索、入庫・出庫の記録、在庫不足の確認をひとつのソフトにまとめる予定です。</dd>
 <dt><strong>どの端末で使えますか？</strong></dt><dd>初回はWindows向けのインストール型アプリを予定しています。対応するWindowsのバージョンと動作要件は、販売開始前にご案内します。</dd>
 <dt><strong>買い切りと毎月のUpdatesはどう違いますか？</strong></dt><dd>LicenseとLicense Plusは買い切りです。LicenseのUpdatesは最初の3か月込みで、以降は任意です。License Plusにはソースコードが含まれ、更新・管理は購入者が行います。詳しくは<a href="license.html">ライセンスと利用条件</a>をご確認ください。</dd>
-<dt><strong>今すぐ購入や試用はできますか？</strong></dt><dd>正式版は開発中で、購入受付はありません。<a href="demo.html">ブラウザデモ</a>では、保存されないサンプルデータで基本操作を確認できます。正式版と接続するものではありません。</dd>
+<dt><strong>今すぐ購入や試用はできますか？</strong></dt><dd>正式版は開発中で、購入受付はありません。トップページの操作プレビューでは、保存されないサンプルデータで基本操作を確認できます。正式版と接続するものではありません。</dd>
 </dl></section>`;
 export function withJapaneseImsSearchPresentation(file,source){
  if(file!=='ja/index.html'||!source.includes('<html lang="ja">'))return source;

@@ -18,7 +18,7 @@ for (const prefix of ['', 'ja/']) {
   assert.match(home, /quiet-form\.css\?v=/);
   assert.match(home, /quiet-form\.js\?v=/);
   assert.doesNotMatch(home, /Explore freely|触って確認|Real interface/);
-  for (const name of ['index.html', 'goals.html', 'demo.html', 'license.html', 'contact.html']) {
+  for (const name of ['index.html', 'goals.html', 'license.html', 'contact.html']) {
     const html = read(prefix + name);
     assert.match(html, /gallery-ui\.css\?v=/);
     assert.ok(html.includes(prefix ? '概要' : 'Our Goals'));
@@ -64,8 +64,7 @@ assert.match(read('license.css'), /\.license-plan-switcher/);
 assert.match(read('license.css'), /\.license-plan-switcher\s*\{[^}]*display:\s*grid/);
 assert.doesNotMatch(read('license.css'), /\.license-plan-switcher\s*\{[^}]*position:\s*sticky/);
 const localizedPages = [
-  'index.html', 'license.html',
-  'demo.html', 'goals.html', 'contact.html', 'news.html', 'order.html',
+  'index.html', 'license.html', 'goals.html', 'contact.html', 'news.html', 'order.html',
 ];
 for (const prefix of ['', 'ja/', 'zh/']) {
   for (const name of [

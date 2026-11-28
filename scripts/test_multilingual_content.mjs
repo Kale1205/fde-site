@@ -1,3 +1,4 @@
+import {withStandaloneDemoRetired as retired} from "./standalone_demo_retirement_test_helpers.mjs";
 import {priorJapaneseUpdatesFaq,priorJapaneseUpdatesFaqItem,priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import {approveFaqDocument,approveUsdCopy} from '../price-policy.js';
 import {applyCmsMemoryKey} from './cms_config_test_helpers.mjs';
@@ -25,14 +26,14 @@ const read=file=>priorJapaneseUpdatesFaq(file,withoutW05BookCoverEditor(file,rea
 const before=file=>{ const old=applyW02PurchaseCta(file,execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8'})); return file==='contact-config.js'?applyCmsMemoryKey(old):applyReviewedZhSearchMetadata(file,/^(?:ja\/|zh\/)?goals\.html$/.test(file)?applyW04LayeredMotion(old):applyW05BookNews(file,old)); };
 const normalized=value=>normalizeAssetBuildKeys(value.trimEnd());
 const prefixes=['','ja/','zh/'];
-const names=['index','license','demo','goals','news','contact','order','customer','quiet-form'];
+const names=['index','license','goals','news','contact','order','customer','quiet-form'];
 const outsideFaq=value=>value.replace(/<div id="cmsFaqList">[\s\S]*?<\/div><div id="faqEmpty"/,'<div id="faqEmpty"');
 const meta=value=>value.match(/<(?:meta|link)\b[^>]*>/g);
 
 for(const prefix of prefixes)for(const page of names){
   const file=prefix+page+'.html';
   test(file+': only reviewed translations and static FAQ change; pricing, metadata and routes stay intact',()=>{
-    const current=read(file),old=before(file);
+    const current=read(file),old=retired(file,before(file));
     assert.equal(normalized(current),normalized(applyApprovedContinuingUsePolicy(file,apply(file,applyApprovedInitialReleaseScope(file,old)))),file);
     assert.equal(apply(file,current),current,'idempotent');
     assert.deepEqual(meta(normalized(current)),meta(normalized(apply(file,old))),'only pinned Chinese demo descriptions and date-only asset keys change');
@@ -98,10 +99,10 @@ for(const [locale,prefix] of [['en',''],['ja','ja/'],['zh-CN','zh/']])test(local
 });
 test('Chinese stock terms agree with the running demo and do not imply real server/backup support',()=>{
   const dict=JSON.parse(read('content/zh-translations.json'));
-  const expected=JSON.parse(apply('content/zh-translations.json',applyApprovedInitialReleaseScope('content/zh-translations.json',before('content/zh-translations.json'))));
+  const expected=JSON.parse(retired('content/zh-translations.json',apply('content/zh-translations.json',applyApprovedInitialReleaseScope('content/zh-translations.json',before('content/zh-translations.json')))));
   assert.deepEqual(dict,expected);
   for(const [key,value] of Object.entries(zhInventoryCopy))assert.equal(dict[key],value);
-  for(const prefix of ['zh/'])for(const page of ['index','demo','quiet-form']){
+  for(const prefix of ['zh/'])for(const page of ['index','quiet-form']){
     const html=read(prefix+page+'.html');
     assert.doesNotMatch(html,/船舶|飞船|股票|卫生和历史|备份\/备份/);
     assert.match(html,/入库、调拨、盘点、出库/);
@@ -144,5 +145,5 @@ test('visual design except approved W01 CTA, native demo operations, CMS editing
   for(const file of ['gallery-pages.css','quiet-form.css','quiet-pages.css','license.css','faq-v38.css',
     'demo-v1.js','quiet-form.js','site.js','contact-direct.js','contact-config.js','quiet-customer.js',
     'cms-content.js','cms-content-ja.js',
-    'worker/src/index-v14.js','robots.txt'])assert.equal(normalized(file.startsWith('cms-content')?withoutW05CmsBridge(read(file)):read(file)),normalized(applyReviewedUiChanges(file,applyW01ProductCta(file,before(file)))),file);
+    'worker/src/index-v14.js','robots.txt'])assert.equal(normalized(file.startsWith('cms-content')?withoutW05CmsBridge(read(file)):read(file)),normalized(retired(file,applyReviewedUiChanges(file,applyW01ProductCta(file,before(file))))),file);
 });

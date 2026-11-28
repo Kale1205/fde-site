@@ -74,13 +74,10 @@ async function renderQuietPreviewContent(locale) {
   const c = copy[locale];
   const lpItem = locale === 'ja' ? '<span class="nav-destination-pending" data-lp-destination aria-disabled="true" aria-label="LP制作（準備中）">LP制作 <span class="nav-destination-status">準備中</span></span>' : '';
   const prefix = locale === 'en' ? '' : '../';
-  const demo = await readFile(path.join(root, locales[locale], 'demo.html'), 'utf8');
-  // W01's approved embedded demo is a separate composition from W03's full page.
-  // Keep its current workspace unchanged when the full Demo page is renewed.
-  const renewedDemo = demo.includes('demo-renewal');
-  const workspaceSource = renewedDemo ? await readFile(path.join(root, locales[locale], 'index.html'), 'utf8') : demo;
+  // The homepage simulation is independent of the retired standalone route.
+  const workspaceSource = await readFile(path.join(root, locales[locale], 'index.html'), 'utf8');
   const workspaceStart = workspaceSource.indexOf('<section class="demo-workspace"');
-  const workspaceEnd = workspaceSource.indexOf(renewedDemo ? '<div class="mobile-stock"' : '</main>', workspaceStart);
+  const workspaceEnd = workspaceSource.indexOf('<div class="mobile-stock"', workspaceStart);
   if (workspaceStart < 0 || workspaceEnd < 0) throw new Error(`Missing approved ${locale} homepage demo workspace`);
   const workspace = workspaceSource.slice(workspaceStart, workspaceEnd).trim();
   const alternates = Object.entries(locales).map(([code, dir]) => `<link rel="alternate" hreflang="${code === 'zh' ? 'zh-CN' : code}" href="${prefix}${dir}quiet-form.html">`).join('\n');
@@ -102,7 +99,7 @@ ${alternates}
 <div class="site-shell language-${locale}">
 <header class="site-header">
 <a class="brand" href="quiet-form.html" aria-label="Baked Kale FDE"><img src="${prefix}assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a>
-<nav class="desktop-nav" aria-label="${c.menu}"><a href="#plans">${c.product}</a>${lpItem}<a href="demo.html">${c.demo}</a><a href="goals.html">${c.goals}</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav>
+<nav class="desktop-nav" aria-label="${c.menu}"><a href="#plans">${c.product}</a>${lpItem}<a href="goals.html">${c.goals}</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav>
 <div class="header-actions">${languageLinks}<button class="menu-button" type="button" aria-label="${c.menu}" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
 <nav class="mobile-nav" id="mobile-nav" aria-label="${c.menu}" hidden><a href="#plans">${c.product}</a>${lpItem}<a href="goals.html">${c.goals}</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav>
 </header>
@@ -127,7 +124,7 @@ ${alternates}
 <p class="updates-note">${c.retained}</p>
 </section>
 <section class="quiet-demo section-frame" id="motion-demo" aria-labelledby="demo-title">
-<header class="demo-section-heading"><div><h2 class="quiet-heading" id="demo-title">${c.demoTitle}</h2><p>${c.sample}</p></div><a class="quiet-text-link" href="demo.html">${c.fullDemo} <span aria-hidden="true">→</span></a></header>
+<header class="demo-section-heading"><div><h2 class="quiet-heading" id="demo-title">${c.demoTitle}</h2><p>${c.sample}</p></div></header>
 <div class="motion-toolbar"><ol class="motion-steps">${c.step.map((s, i) => `<li data-motion-step="${i}"><span aria-hidden="true">0${i + 1}</span>${s}</li>`).join('')}</ol></div>
 ${workspace}
 <div class="mobile-stock" aria-label="${c.mobileStock}"><strong data-mobile-product>PC-1204</strong><dl><div><dt>${c.main}</dt><dd data-mobile-main>326</dd></div><div><dt>${c.osaka}</dt><dd data-mobile-osaka>20</dd></div><div><dt>${c.total}</dt><dd data-mobile-total>346</dd></div></dl></div>
@@ -135,7 +132,7 @@ ${workspace}
 </section>
 <section class="quiet-news section-frame"><div><h2 class="quiet-heading">${c.newsTitle}</h2><p>${c.newsBody}</p></div><a class="button" href="news.html">${c.newsLink} <span aria-hidden="true">→</span></a></section>
 </main>
-<footer class="site-footer section-frame"><a href="quiet-form.html"><img src="${prefix}assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="#plans">${c.product}</a>${lpItem}<a href="demo.html">${c.demo}</a><a href="goals.html">${c.goals}</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav><small>© 2026 Baked Kale FDE</small></footer>
+<footer class="site-footer section-frame"><a href="quiet-form.html"><img src="${prefix}assets/baked-kale-logo.svg" alt="Baked Kale FDE" width="980" height="240"></a><nav class="footer-nav" aria-label="Footer"><a href="#plans">${c.product}</a>${lpItem}<a href="goals.html">${c.goals}</a><a href="news.html">${c.news}</a><a href="contact.html">${c.contact}</a></nav><small>© 2026 Baked Kale FDE</small></footer>
 </div>
 </body></html>`;
   return withSharedImage(html);

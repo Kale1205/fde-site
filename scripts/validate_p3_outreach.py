@@ -77,7 +77,7 @@ for forbidden in ("type==='outreach'", 'type === "outreach"', "type:'outreach'")
     if forbidden in worker_entry: fail("P3-7 must not add an Outreach send route to the production Worker")
 if '"news"' not in site_content: fail("Current public site-content News source is missing unexpectedly")
 
-for ref in ("content/site-content.json", "index.html", "ja/index.html", "license.html", "ja/license.html", "news.html", "ja/news.html", "demo.html", "ja/demo.html", "why.html", "ja/why.html", "goals.html", "ja/goals.html"):
+for ref in ("content/site-content.json", "index.html", "ja/index.html", "license.html", "ja/license.html", "news.html", "ja/news.html", "why.html", "ja/why.html", "goals.html", "ja/goals.html"):
     if not (ROOT / ref).exists(): fail(f"Approved public grounding source missing: {ref}")
 
 write_permission = re.compile(r"^\s*(contents|actions|pull-requests|id-token|checks|deployments|packages|statuses):\s*write\s*$", re.MULTILINE)

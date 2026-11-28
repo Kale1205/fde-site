@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 
-export const loadingPages=['','ja/','zh/'].flatMap(prefix=>['index','license','demo','goals','news','contact','order','customer','quiet-form'].map(name=>prefix+name+'.html'));
+export const loadingPages=['','ja/','zh/'].flatMap(prefix=>['index','license','goals','news','contact','order','customer','quiet-form'].map(name=>prefix+name+'.html'));
 export const loadingEntryPages=Object.freeze(['index.html','ja/index.html','zh/index.html']);
 export const loadingCopy={
  en:{label:'Preparing the page',preparing:'Preparing your page',done:'The page is ready.',partial:'Showing the page without waiting for every resource.',image:'Baked Kale character'},

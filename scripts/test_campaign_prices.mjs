@@ -1,3 +1,4 @@
+import {withStandaloneDemoRetired as retired} from "./standalone_demo_retirement_test_helpers.mjs";
 import {priorJapaneseUpdatesFaqItem,priorJapaneseUpdatesHtml} from "./jpy_updates_test_helpers.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -24,7 +25,7 @@ test('every active pricing surface uses the owner-approved locale book and relat
 });
 test('JPY Updates markup, historical article data, existing images and unrelated interaction engines remain exact',()=>{
  for(const name of ['index','order']){const selector=name==='index'?/<div class="updates-strip">[\s\S]*?<\/section>/:/<section class="order-updates"[\s\S]*?<\/section>/;assert.equal(priorJapaneseUpdatesHtml(read('ja/'+name+'.html')).match(selector)[0],before('ja/'+name+'.html').toString().match(selector)[0]);}
- for(const f of ['assets/instagram-bakedkale-profile-20261110.jpg','assets/social/baked-kale-instagram-share-36bd831a4bf1.png','content/site-content.json','content/instagram-feed.json','gallery-ui.js','quiet-form.js','sculpture-motion.js','motion-preferences.js','goals02-scene.js','demo-v1.js','quiet-pages.css','quiet-form.css','news-books.css'])assert.deepEqual(readFileSync(new URL(f,root)),before(f),f);
+ for(const f of ['assets/instagram-bakedkale-profile-20261110.jpg','assets/social/baked-kale-instagram-share-36bd831a4bf1.png','content/site-content.json','content/instagram-feed.json','gallery-ui.js','quiet-form.js','sculpture-motion.js','motion-preferences.js','goals02-scene.js','demo-v1.js','quiet-pages.css','quiet-form.css','news-books.css'])assert.deepEqual(readFileSync(new URL(f,root)),retired(f,before(f)),f);
 });
 test('current FAQs keep Japanese answers and IDs while disclosing approved USD and unknown tax',()=>{
  for(const f of ['content/faq-content.json','content/faq-policy-additions.json']){

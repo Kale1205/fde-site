@@ -1,3 +1,4 @@
+import {withStandaloneDemoRetired as retired} from "./standalone_demo_retirement_test_helpers.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -17,8 +18,8 @@ const tags = html => [...html.matchAll(/<meta\b[^>]*>/g)].map(([tag]) => {
   return {name: attrs.property || attrs.name, content: attrs.content};
 });
 
-test('all 35 HTML documents share one explicit, correctly typed official image', () => {
-  assert.equal(shareImage.paths.length, 35);
+test('all 32 HTML documents share one explicit, correctly typed official image', () => {
+  assert.equal(shareImage.paths.length, 32);
   for (const file of shareImage.paths) {
     const html = read(file), meta = tags(html);
     for (const [name, value] of Object.entries({'og:image': shareImage.imageUrl, 'og:image:secure_url': shareImage.imageUrl, 'og:image:type': 'image/png', 'og:image:width': '1200', 'og:image:height': '630', 'twitter:image': shareImage.imageUrl, 'twitter:card': 'summary_large_image'})) {
@@ -38,7 +39,7 @@ test('titles, descriptions, canonical, schema, robots, redirects and every body 
     .replace(/<meta\b[^>]*>/g, tag => /(?:property|name)="(?:og:image(?::(?:url|secure_url|type|width|height|alt))?|twitter:(?:image(?::alt)?|card))"/.test(tag) ? '' : tag)
     .replace(/(\.(?:js|css)\?v=)\d{8}-\d{6}/g, '$1BUILD')
     .replace(/>\s+</g, '><').trim();
-  for (const file of shareImage.paths) assert.equal(strip(read(file)), strip(applyReviewedJapaneseUpdatesHtml(file,applyReviewedPublicPresentation(file,baseline(file).toString()))), file);
+  for (const file of shareImage.paths) assert.equal(strip(read(file)), strip(retired(file,applyReviewedJapaneseUpdatesHtml(file,applyReviewedPublicPresentation(file,baseline(file).toString())))), file);
   const ownership = 'google7f844744756e4b18.html';
   assert.equal(read(ownership), baseline(ownership).toString());
 });
@@ -59,7 +60,7 @@ test('the PNG has a fresh content-hash URL and the complete native source remain
 });
 
 test('warehouse, site artwork, feed, motion and operational scripts remain byte-identical', () => {
-  for (const file of ['assets/warehouse-operations.webp', 'assets/instagram-bakedkale-profile-20261110.jpg', 'assets/instagram-kale1999-profile-20261110.jpg', 'content/instagram-feed.json', 'content/site-content.json', 'gallery-ui.js', 'quiet-form.js', 'demo-v1.js', 'quiet-customer.js', 'contact-direct.js', 'sculpture-motion.js', 'motion-preferences.js', 'goals02-scene.js', 'quiet-pages.css', 'quiet-form.css', 'news-books.css']) assert.deepEqual(readFileSync(new URL(file, root)), baseline(file), file);
+  for (const file of ['assets/warehouse-operations.webp', 'assets/instagram-bakedkale-profile-20261110.jpg', 'assets/instagram-kale1999-profile-20261110.jpg', 'content/instagram-feed.json', 'content/site-content.json', 'gallery-ui.js', 'quiet-form.js', 'demo-v1.js', 'quiet-customer.js', 'contact-direct.js', 'sculpture-motion.js', 'motion-preferences.js', 'goals02-scene.js', 'quiet-pages.css', 'quiet-form.css', 'news-books.css']) assert.deepEqual(readFileSync(new URL(file, root)), Buffer.from(retired(file,baseline(file))), file);
 });
 
 test('historical snapshot adaptation cannot hide unknown metadata or unrelated content', () => {

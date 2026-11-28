@@ -512,7 +512,6 @@
   "No public repositories or public file sharing": "没有公共寄存器或公共文件共享",
   "Self-hosted inventory management with IMS": "使用 IMS 自托管库存管理",
   "The operational problem IMS is addressing": "IMS 希望解决的运营问题",
-  "https://kale1205.github.io/fde-site/demo.html": "https://kale1205.github.io/fde-site/demo.html (中文(简体) ).",
   "https://kale1205.github.io/fde-site/news.html": "https://kale1205.github.io/fde-site/news.html (中文(简体) ).",
   "on_hand_atoms <= 0 { StockState::OutOfStock }": "on_hand_atoms <= 0 { StockState::OutOfStock }",
   "One-Time Purchase Inventory Software | IMS": "一次性购买的库存管理软件｜IMS",
